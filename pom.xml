@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.maxur.perfmodel</groupId>
+    <artifactId>super-pom</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <url>http://www.maxur.org</url>
+
+    <name>Super POM (Performance Model Project)</name>
+
+    <description>Top-level POM for Maxur Performance Model Project</description>
+
+    <organization>
+        <name>Maxim Yunusov</name>
+        <url>http://www.maxur.org</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>myunusov</id>
+            <name>Maxim</name>
+            <email>maximyunusov@maxur.org</email>
+            <url>http://www.maxur.org</url>
+            <organization>Maxim Yunusov</organization>
+            <organizationUrl>http://www.maxur.org</organizationUrl>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <timezone>-6</timezone>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git@github.com:myunusov/maxur.org.git</connection>
+        <developerConnection>scm:git:git@github.com:myunusov/maxur.org.git</developerConnection>
+        <url>git@github.com:myunusov/maxur.org.git</url>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub Social Coding</system>
+        <url>https://github.com/myunusov/maxur.org/issues</url>
+    </issueManagement>
+
+    <properties>
+        <project.root>${project.basedir}</project.root>
+        <project.source.encoding>UTF-8</project.source.encoding>
+        <project.build.sourceEncoding>${project.source.encoding}</project.build.sourceEncoding>
+        <project.source.compile>1.7</project.source.compile>
+        <project.target.compile>1.7</project.target.compile>
+
+        <sonar.host.url>http://127.0.0.1:8081/sonar</sonar.host.url>
+    </properties>
+
+    <modules>
+        <module>tools</module>
+        <module>components</module>
+        <module>assemblies</module>
+    </modules>
+
+    <profiles>
+        <profile>
+            <id>DEV</id>
+            <properties>
+                <env>DEV</env>
+
+            </properties>
+        </profile>
+        <profile>
+            <id>QA</id>
+            <properties>
+                <env>QA</env>
+            </properties>
+        </profile>
+        <profile>
+            <id>PROD</id>
+            <properties>
+                <env>PROD</env>
+            </properties>
+        </profile>
+        <profile>
+            <id>sonar</id>
+            <properties>
+                <sonar.host.url>http://127.0.0.1:8081/sonar/</sonar.host.url>
+                <sonar.forceAnalysis>true</sonar.forceAnalysis>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.sonar</groupId>
+                        <artifactId>sonar-maven-plugin</artifactId>
+                        <version>3.7</version>
+                    </plugin>
+                </plugins>
+            </build>
+            <reporting>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.sonar</groupId>
+                        <artifactId>sonar-maven-plugin</artifactId>
+                        <version>3.7</version>
+                    </plugin>
+                </plugins>
+            </reporting>
+        </profile>
+        <profile>
+            <id>javadov</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.9.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>2.3.2</version>
+                    <configuration>
+                        <source>${project.source.compile}</source>
+                        <target>${project.target.compile}</target>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>2.6</version>
+                    <configuration>
+                        <encoding>${project.source.encoding}</encoding>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.1.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.9.1</version>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <configuration>
+                        <tagBase>https://svn.apache.org/repos/asf/continuum/tags</tagBase>
+                        <preparationGoals>clean install</preparationGoals>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>appassembler-maven-plugin</artifactId>
+                    <version>1.0-beta-2</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>2.1.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>2.9</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.pitest</groupId>
+                    <artifactId>pitest-maven</artifactId>
+                    <version>0.27</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>2.10</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-pmd-plugin</artifactId>
+                    <version>2.7.1</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>findbugs-maven-plugin</artifactId>
+                    <version>2.5</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>1.2</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.jboss.tattletale</groupId>
+                    <artifactId>tattletale-maven</artifactId>
+                    <version>1.1.2.Final</version>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-property</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireProperty>
+                                    <property>env</property>
+                                    <message>You must specify one of the following profiles: DEV, QA, PROD!</message>
+                                    <regex>(DEV|QA|PROD)</regex>
+                                    <regexMessage>
+                                        You must specify one of the following profiles: DEV, QA, PROD!
+                                    </regexMessage>
+                                </requireProperty>
+                                <requireMavenVersion>
+                                    <version>[3.0,)</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>[1.7,)</version>
+                                </requireJavaVersion>
+                                <requireReleaseDeps>
+                                    <message>No Snapshots Allowed!</message>
+                                    <failWhenParentIsSnapshot>false</failWhenParentIsSnapshot>
+                                    <excludes>
+                                        <exclude>org.maxur.perfmodel:*</exclude>
+                                    </excludes>
+                                </requireReleaseDeps>
+                                <requireUpperBoundDeps/>
+                                <DependencyConvergence/>
+                            </rules>
+                            <fail>true</fail>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <encoding>${project.source.encoding}</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.maxur</groupId>
+                        <artifactId>tools</artifactId>
+                        <version>0.0.1-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.maxur</groupId>
+                        <artifactId>tools</artifactId>
+                        <version>0.0.1-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.maxur</groupId>
+                        <artifactId>tools</artifactId>
+                        <version>0.0.1-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <reporting>
+        <excludeDefaults>true</excludeDefaults>
+        <outputDirectory>${project.build.directory}/site</outputDirectory>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <locales>en</locales>
+                    <generateSitemap>true</generateSitemap>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.7</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>index</report>
+                            <report>dependencies</report>
+                            <report>dependency-convergence</report>
+                            <report>plugin-management</report>
+                            <report>license</report>
+                            <report>scm</report>
+                            <!--<report>cim</report> TODO -->
+                            <report>issue-tracking</report>
+                            <report>summary</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <aggregate>true</aggregate>
+                </configuration>
+            </plugin>
+
+            <!-- see https://jira.codehaus.org/browse/MCHECKSTYLE-189 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.10</version>
+                <configuration>
+                    <configLocation>maxur-check-style.xml</configLocation>
+                    <encoding>${project.source.encoding}</encoding>
+                    <linkXRef>true</linkXRef>
+                    <xrefLocation>${project.reporting.outputDirectory}/xref</xrefLocation>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>2.7.1</version>
+                <configuration>
+                    <linkXRef>true</linkXRef>
+                    <xrefLocation>${project.reporting.outputDirectory}/xref</xrefLocation>
+                    <targetJdk>${project.target.compile}</targetJdk>
+                    <aggregate>true</aggregate>
+                    <format>xml</format>
+                    <!-- CPD options -->
+                    <minimumTokens>20</minimumTokens>
+                    <ignoreIdentifiers>true</ignoreIdentifiers>
+                    <sourceEncoding>${project.source.encoding}</sourceEncoding>
+                    <rulesets>
+                        <ruleset>maxur-pmd.xml</ruleset>
+                    </rulesets>
+                    <excludes>
+                        <exclude>**/*Advice.java</exclude>
+                        <exclude>**/generated/*.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <includeFilterFile>maxur-findbugs.xml</includeFilterFile>
+                    <effort>Max</effort>
+                    <xmlOutput>true</xmlOutput>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <configuration>
+                    <doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+                    <docletArtifact>
+                        <groupId>org.umlgraph</groupId>
+                        <artifactId>umlgraph</artifactId>
+                        <version>5.6.6</version>
+                    </docletArtifact>
+
+                    <useStandardDocletOptions>true</useStandardDocletOptions>
+
+                    <source>${project.source.compile}</source>
+                    <encoding>${project.source.encoding}</encoding>
+                    <charset>${project.source.encoding}</charset>
+                    <docencoding>${project.source.encoding}</docencoding>
+                    <breakiterator>true</breakiterator>
+                    <version>true</version>
+                    <author>true</author>
+                    <keywords>true</keywords>
+
+                    <linksource>true</linksource>
+                    <excludePackageNames>*.it,*.test</excludePackageNames>
+                    <aggregate>true</aggregate>
+
+                    <additionalparam>
+                        -inferrel -inferdep -quiet -hide java.*
+                        -collpackages java.util.* -qualify
+                        -postfixpackage -nodefontsize 9
+                        -nodefontpackagesize 7
+                        -edgefontname "Trebuchet MS"
+                        -nodefontabstractname "Trebuchet MS"
+                        -nodefontclassabstractname "Trebuchet MS"
+                        -nodefontclassname "Trebuchet MS"
+                        -nodefontname "Trebuchet MS"
+                        -nodefontpackagename "Trebuchet MS"
+                        -nodefonttagname "Trebuchet MS"
+                        -view
+                    </additionalparam>
+
+                    <links>
+                        <link>http://java.sun.com/javase/7/docs/api/</link>
+                        <link>http://netty.io/4.0/api/</link>
+                        <link>http://google-guice.googlecode.com/git/javadoc/</link>
+                        <link>http://www.slf4j.org/api/</link>
+                    </links>
+
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.15</version>
+                <reportSets>
+                    <reportSet>
+                        <id>integration-tests</id>
+                        <reports>
+                            <report>report-only</report>
+                        </reports>
+                        <configuration>
+                            <outputName>failsafe-report</outputName>
+                            <reportsDirectories>
+                                <reportsDirectory>${project.build.directory}/failsafe-reports</reportsDirectory>
+                            </reportsDirectories>
+                        </configuration>
+                    </reportSet>
+                </reportSets>
+                <configuration>
+                    <showSuccess>false</showSuccess>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.5.2</version>
+                <configuration>
+                    <check>
+                        <haltOnFailure>false</haltOnFailure>
+                        <branchRate>85</branchRate>
+                        <lineRate>85</lineRate>
+                        <totalBranchRate>85</totalBranchRate>
+                        <totalLineRate>85</totalLineRate>
+                        <packageLineRate>85</packageLineRate>
+                        <packageBranchRate>85</packageBranchRate>
+                        <regexes>
+                            <regex>
+                                <pattern>com.org.maxur.telnetsender.*</pattern>
+                                <branchRate>0</branchRate>
+                                <lineRate>0</lineRate>
+                            </regex>
+                        </regexes>
+                    </check>
+                    <formats>
+                        <format>html</format>
+                        <format>xml</format>
+                    </formats>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jdepend-maven-plugin</artifactId>
+                <version>2.0-beta-2</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>taglist-maven-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <tags>
+                        <tag>fixme</tag>
+                        <tag>FixMe</tag>
+                        <tag>FIXME</tag>
+                        <tag>@todo</tag>
+                        <tag>todo</tag>
+                        <tag>TODO</tag>
+                        <tag>xxx</tag>
+                        <tag>@deprecated</tag>
+                    </tags>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>javancss-maven-plugin</artifactId>
+                <version>2.0</version>
+            </plugin>
+
+        </plugins>
+    </reporting>
+
+    <!-- AVOID RELEASE repositories/pluginRepositories: -->
+    <repositories>
+    </repositories>
+    <pluginRepositories>
+    </pluginRepositories>
+</project>
