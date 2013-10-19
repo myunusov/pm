@@ -19,12 +19,18 @@
     <properties>
         <project.root>${project.basedir}/..</project.root>
         <slf4j.version>1.6.4</slf4j.version>
+
+        <sonar.language>java</sonar.language>
+
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.jacoco.itReportPath>${project.root}/target/jacoco-it.exec</sonar.jacoco.itReportPath>
     </properties>
 
-<!--    <modules>
-        <module>standalone</module>
+    <modules>
+        <module>utils</module>
         <module>common</module>
-    </modules>-->
+    </modules>
 
     <dependencies>
         <!-- Unit Testing -->
@@ -78,7 +84,7 @@
 
     <profiles>
         <profile>
-            <id>with_check</id>
+            <id>check</id>
             <activation>
                 <property>
                     <name>packaging</name>
@@ -91,19 +97,19 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>cobertura-maven-plugin</artifactId>
-                        <version>2.5.2</version>
+                        <version>2.6</version>
                         <configuration>
                             <check>
                                 <haltOnFailure>true</haltOnFailure>
                                 <branchRate>85</branchRate>
-                                <lineRate>85</lineRate>
+                                <lineRate>65</lineRate>
                                 <totalBranchRate>85</totalBranchRate>
-                                <totalLineRate>85</totalLineRate>
-                                <packageLineRate>85</packageLineRate>
+                                <totalLineRate>80</totalLineRate>
+                                <packageLineRate>80</packageLineRate>
                                 <packageBranchRate>85</packageBranchRate>
                                 <regexes>
                                     <regex>
-                                        <pattern>org.maxur.telnetsender.*</pattern>
+                                        <pattern>org.maxur.telnetcli.*</pattern>
                                         <branchRate>0</branchRate>
                                         <lineRate>0</lineRate>
                                     </regex>
@@ -257,7 +263,7 @@
                         <packageBranchRate>0</packageBranchRate>
                         <regexes>
                             <regex>
-                                <pattern>org.maxur.telnetsender.*</pattern>
+                                <pattern>org.maxur.telnetcli.*</pattern>
                                 <branchRate>0</branchRate>
                                 <lineRate>0</lineRate>
                             </regex>

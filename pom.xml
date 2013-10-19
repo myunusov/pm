@@ -49,25 +49,30 @@
     <scm>
         <connection>scm:git:git@github.com:myunusov/maxur.org.git</connection>
         <developerConnection>scm:git:git@github.com:myunusov/maxur.org.git</developerConnection>
-        <url>git@github.com:myunusov/maxur.org.git</url>
+        <url>git@github.com:myunusov/pm.git</url>
     </scm>
 
     <issueManagement>
         <system>GitHub Social Coding</system>
-        <url>https://github.com/myunusov/maxur.org/issues</url>
+        <url>https://github.com/myunusov/pm/issues</url>
     </issueManagement>
 
     <properties>
         <project.root>${project.basedir}</project.root>
         <project.source.encoding>UTF-8</project.source.encoding>
         <project.build.sourceEncoding>${project.source.encoding}</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>${project.source.encoding}</project.reporting.outputEncoding>
+
         <project.source.compile>1.7</project.source.compile>
         <project.target.compile>1.7</project.target.compile>
 
         <sonar.host.url>http://127.0.0.1:8081/sonar</sonar.host.url>
+        <sonar.forceAnalysis>true</sonar.forceAnalysis>
+        <sonar.artifact.path>/target/</sonar.artifact.path>
     </properties>
 
     <modules>
+        <module>client</module>
         <module>tools</module>
         <module>components</module>
         <module>assemblies</module>
@@ -92,31 +97,6 @@
             <properties>
                 <env>PROD</env>
             </properties>
-        </profile>
-        <profile>
-            <id>sonar</id>
-            <properties>
-                <sonar.host.url>http://127.0.0.1:8081/sonar/</sonar.host.url>
-                <sonar.forceAnalysis>true</sonar.forceAnalysis>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.sonar</groupId>
-                        <artifactId>sonar-maven-plugin</artifactId>
-                        <version>3.7</version>
-                    </plugin>
-                </plugins>
-            </build>
-            <reporting>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.sonar</groupId>
-                        <artifactId>sonar-maven-plugin</artifactId>
-                        <version>3.7</version>
-                    </plugin>
-                </plugins>
-            </reporting>
         </profile>
         <profile>
             <id>javadov</id>
@@ -532,7 +512,7 @@
                         <packageBranchRate>85</packageBranchRate>
                         <regexes>
                             <regex>
-                                <pattern>com.org.maxur.telnetsender.*</pattern>
+                                <pattern>com.org.maxur.telnetcli.*</pattern>
                                 <branchRate>0</branchRate>
                                 <lineRate>0</lineRate>
                             </regex>

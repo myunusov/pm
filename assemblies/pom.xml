@@ -22,9 +22,10 @@
         <tattletale.failOnError>false</tattletale.failOnError>
     </properties>
 
- <!--   <modules>
+
+    <modules>
         <module>zip</module>
-    </modules>-->
+    </modules>
 
     <build>
         <pluginManagement>
@@ -41,12 +42,6 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-            </plugin>
-        </plugins>
     </build>
 
     <profiles>
