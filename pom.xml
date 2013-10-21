@@ -68,7 +68,7 @@
 
         <sonar.host.url>http://127.0.0.1:8081/sonar</sonar.host.url>
         <sonar.forceAnalysis>true</sonar.forceAnalysis>
-        <sonar.artifact.path>/target/</sonar.artifact.path>
+        <sonar.artifact.path>assemblies/zip/target/zip-1.0-SNAPSHOT-bin.zip</sonar.artifact.path>
     </properties>
 
     <modules>

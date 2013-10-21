@@ -16,6 +16,32 @@
 
     <build>
         <sourceDirectory>src/main/resources</sourceDirectory>
+
+        <plugins>
+            <plugin>
+                <groupId>com.github.searls</groupId>
+                <artifactId>jasmine-maven-plugin</artifactId>
+                <version>1.3.1.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <preloadSources>
+                        <source>${project.basedir}/src/main/resources/angular/angular.min.js</source>
+                        <source>${project.basedir}/src/main/resources/ng-bootstrap/ui-bootstrap-tpls-0.6.0.js</source>
+                    </preloadSources>
+                    <jsSrcDir>src/main/resources/js</jsSrcDir>
+                    <jsTestSrcDir>src/test/resources/js</jsTestSrcDir>
+                    <specIncludes>
+                        <include>*Spec.js</include>
+                    </specIncludes>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <properties>

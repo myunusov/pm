@@ -308,10 +308,8 @@ function PMUnit() {
     this.getLocks = function() {
         var result = [];
         for (var name in this.all) {
-            if (this.all.hasOwnProperty(name)) {
-                if (this.getByName(name).lock) {
-                    result.push(new Parameter(name, this));
-                }
+            if (this.all.hasOwnProperty(name) && this.getByName(name).lock) {
+                result.push(new Parameter(name, this));
             }
         }
         return result;
@@ -374,7 +372,7 @@ function PMSource(id) {
 
     this.removeNode = function (node) {
         delete this.visits[node.id];
-        delete this.all["V-" + node.id]
+        delete this.all["V-" + node.id];
     };
 
 
@@ -451,7 +449,7 @@ function Calculator(fields, expressions) {
     this.error = false;
 
     this.next = function() {
-        if (this.fields.length == 0){
+        if (this.fields.length === 0){
             return false;
         }
         var field = this.fields[0];
@@ -574,22 +572,65 @@ function Expression(expression, unit) {
     };
 }
 
-var app = angular.module('perfModelApp', ['ui.bootstrap'], function ($httpProvider) {
-    delete $httpProvider.defaults.headers.common['X-Requested-With'];
-});
+function Model() {
+    this.sources = [];
+    this.nodes = [];
+    var sourcesNo = 0;
+    var nodeNo = 0;
 
-app.controller('MainCtrl', function ($scope) {
+    this.addSource = function () {
+        var source = new PMSource(++sourcesNo);
+        this.sources.push(source);
+    };
+    this.removeSource = function (source) {
+        this.sources.remove(source);
+    };
+    this.addNode = function () {
+        var node = new PMNode(++nodeNo);
+        this.nodes.push(node);
+        for (var i = 0; i < this.sources.length; i++) {
+            this.sources[i].addNode(node);
+        }
+    };
+    this.removeNode = function (node) {
+        this.nodes.remove(node);
+        for (var i = 0; i < this.sources.length; i++) {
+            this.sources[i].removeNode(node);
+        }
+    };
 
-    $scope.alerts = [];
+    this.getFieldsSeqByChangedFieldName = function (fieldName, unit) {
+        var firstParameter = new Parameter(fieldName === 'V' ? "X" : fieldName, unit);
+        if (firstParameter.isUndefined()) {
+            return null;
+        }
+        var fields = [firstParameter];
+        [this.nodes, this.sources].each(
+                function (u) {
+                    fields = fields.concat(u.getLocks());
+                }
+        );
+        [this.nodes, this.sources].each(
+                function (u) {
+                    var notEmpty = u.getSignificance();
+                    for (var i = 0; i < notEmpty.length; i++) {
+                        if (!fields.contains(notEmpty[i])) {
+                            fields.push(notEmpty[i]);
+                        }
+                    }
+                }
+        );
+        return fields;
 
-    function makeRXNExps(source) {
+    };
+
+    this.makeRXNExps = function(source) {
         var result = [[new Parameter('R', source), new Parameter('X', source)]];
-        for (var j = 0; j < $scope.model.nodes.length; j++) {
-            var node = $scope.model.nodes[j];
-            result.push([-1, new Parameter('N', node)]);
+        for (var j = 0; j < this.nodes.length; j++) {
+            result.push([-1, new Parameter('N', this.nodes[j])]);
         }
         return new Expression(result);
-    }
+    };
 
     function makeVXIXExp(source, node) {
         return new Expression([
@@ -598,59 +639,78 @@ app.controller('MainCtrl', function ($scope) {
         ]);
     }
 
-    $scope.makeExpressions = function () {
+    this.makeExpressions = function () {
         var result = [];
-        for (var i = 0; i < $scope.model.sources.length; i++) {
-            var source = $scope.model.sources[i];
-            for (var j = 0; j < $scope.model.nodes.length; j++) {
-                var node = $scope.model.nodes[j];
-                result.push(makeVXIXExp(source, node));
+        for (var i = 0; i < this.sources.length; i++) {
+            for (var j = 0; j < this.nodes.length; j++) {
+                result.push(makeVXIXExp(this.sources[i], this.nodes[j]));
             }
-        }
-        for (var k = 0; k < $scope.model.sources.length; k++) {
-            result.push(makeRXNExps($scope.model.sources[k]));
+            result.push(this.makeRXNExps(this.sources[i]));
         }
         return result;
     };
 
-    $scope.change = function (fieldName, unit) {
-        $scope.closeAlert();
-
-        var firstParameter = new Parameter(fieldName === 'V' ? "X" : fieldName, unit);
-        if (firstParameter.isUndefined()) {
-            return;
-        }
-        var fields = [firstParameter];
-        [$scope.model.nodes, $scope.model.sources].each(
-                function (u) {
-                    fields = fields.concat(u.getLocks());
-                }
-        );
-        [$scope.model.nodes, $scope.model.sources].each(
-            function (u) {
-                var notEmpty = u.getSignificance();
-                for (var i = 0; i < notEmpty.length; i++) {
-                    if (!fields.contains(notEmpty[i])) {
-                        fields.push(notEmpty[i])
-                    }
-                }
-            }
-        );
+    this.getExpressions = function () {
         var expressions = [];
-        [$scope.model.nodes, $scope.model.sources].each(
+        [this.nodes, this.sources].each(
                 function (u) {
                     expressions = expressions.concat(u.expressions);
                 }
         );
+        expressions = expressions.concat(this.makeExpressions());
+        return expressions;
+    };
 
-        expressions = expressions.concat($scope.makeExpressions());
+    this.makeCalculator = function(fieldName, unit) {
+        var fields = this.getFieldsSeqByChangedFieldName(fieldName, unit);
+        if (!fields) {
+            return null;
+        }
+        var expressions = this.getExpressions();
+        if (!expressions) {
+            return null;
+        }
+        return new Calculator(fields, expressions);
+    };
 
-        var calculator  = new Calculator(fields, expressions);
+    this.addSource();
+    this.addNode();
+}
+
+
+var app = angular.module(
+        'perfModelApp',
+        ['ui.bootstrap'],
+        function ($httpProvider) {
+            delete $httpProvider.defaults.headers.common['X-Requested-With'];
+        }
+);
+
+app.controller('MainCtrl', function ($scope) {
+
+    $scope.model  = new Model();
+
+    $scope.alerts = [];
+
+    $scope.clearAlerts = function() {
+        $scope.alerts = [];
+    };
+
+    $scope.inconsistentAlert = function() {
+        if ($scope.alerts.length === 0) {
+            $scope.alerts.push({type: 'error', msg: "Error! Performance Model is not consistent"});
+        }
+    };
+
+    $scope.change = function (fieldName, unit) {
+        $scope.clearAlerts();
+
+        var calculator  = $scope.model.makeCalculator(fieldName, unit);
 
         while (true) {
             var result = calculator.execute();
             if (calculator.error) {
-                $scope.openAlert();
+                $scope.inconsistentAlert();
                 return;
             }
             if (!result && !calculator.next()) {
@@ -658,49 +718,6 @@ app.controller('MainCtrl', function ($scope) {
             }
         }
     };
-
-
-    $scope.model  = new function () {
-        this.sources = [];
-        this.nodes = [];
-        var sourcesNo = 0;
-        var nodeNo = 0;
-
-        this.addSource = function () {
-            var source = new PMSource(++sourcesNo);
-            this.sources.push(source);
-        };
-        this.removeSource = function (source) {
-            this.sources.remove(source);
-        };
-        this.addNode = function () {
-            var node = new PMNode(++nodeNo);
-            this.nodes.push(node);
-            for (var i = 0; i < this.sources.length; i++) {
-                this.sources[i].addNode(node);
-            }
-        };
-        this.removeNode = function (node) {
-            this.nodes.remove(node);
-            for (var i = 0; i < this.sources.length; i++) {
-                this.sources[i].removeNode(node);
-            }
-        };
-
-        this.addSource();
-        this.addNode();
-    };
-
-    $scope.openAlert = function() {
-        if ($scope.alerts.length === 0) {
-            $scope.alerts.push({type: 'error', msg: "Error! Performance Model is not consistent"});
-        }
-    };
-
-    $scope.closeAlert = function(index) {
-        $scope.alerts.splice(index, 1);
-    };
-
 
 });
 
