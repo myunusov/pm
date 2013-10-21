@@ -105,11 +105,6 @@ if (typeof Array.prototype.subst !=='function') {
     };
 }
 
-
-function format(value) {
-    return parseFloat(value.toPrecision(5));
-}
-
 function empty(value) {
     return !(value || value === 0 || isNaN(value) || !isFinite(value));
 }
@@ -117,6 +112,7 @@ function empty(value) {
 function number(value) {
     return !isNaN(parseFloat(value)) && isFinite(value);
 }
+
 
 function Quantity() {
     this.lock = false;
@@ -164,7 +160,7 @@ function Utilization(value) {
             return;
         }
         newValue = parseFloat(newValue);
-        this.value = format(this.unit === 'rate' ? newValue : newValue * 100);
+        this.value = this.unit === 'rate' ? newValue : newValue * 100;
     };
     this.isValid = function () {
         return !this.value || this.asNormForm() < 1;
@@ -208,11 +204,9 @@ function PMTime(value) {
             return;
         }
         newValue = parseFloat(newValue);
-        this.value = format(
-                this.unit === 'hr' ?
+        this.value = this.unit === 'hr' ?
                         (newValue / 3600) :
-                        (this.unit === 'min' ? (newValue / 60) : newValue)
-        );
+                        (this.unit === 'min' ? (newValue / 60) : newValue);
     };
     this.isValid = function () {
         return !this.value || this.value >= 0;
@@ -232,7 +226,7 @@ function PMNumber(value) {
             return;
         }
         newValue = parseFloat(newValue);
-        this.value = format(newValue);
+        this.value = newValue;
     };
 
     this.isValid = function () {
@@ -274,11 +268,9 @@ function Throughput(value) {
             return;
         }
         newValue = parseFloat(newValue);
-        this.value = format(
-                this.unit === 'tph' ?
+        this.value = this.unit === 'tph' ?
                         (newValue * 3600) :
-                        (this.unit === 'tpm' ? (newValue * 60) : newValue)
-        );
+                        (this.unit === 'tpm' ? (newValue * 60) : newValue);
     };
 
     this.isValid = function () {
@@ -332,7 +324,6 @@ function PMUnit() {
         }
         return result;
     };
-
 }
 
 function PMSource(id) {
@@ -388,6 +379,7 @@ function PMNode(id) {
     this.name = "Node " + id;
     this.serviceTime = new PMTime();
     this.utilizationEnv = new Utilization(0);
+    this.utilizationEnv.lock = true;
     this.utilization = new Utilization();
     this.meanNumberTasks = new PMNumber();
     this.residenceTime = new PMTime();
@@ -404,10 +396,10 @@ function PMNode(id) {
 
     this.expressions = [
         // U + NU - N = 0
-        new Expression([['U'], ['U','N'],[-1, 'N']], this),
+        new Expression([['U'],['UEX'],['UEX','N'],['U','N'],[-1, 'N']], this),
         new Expression([['U'], [-1, 'XI','S']], this),
         // RT - RTU - S = 0
-        new Expression([['RT'],[-1, 'RT','U'], [-1, 'S']], this),
+        new Expression([['RT'],[-1, 'RT','U'],[-1, 'RT','UEX'],[-1, 'S']], this),
         new Expression([[-1, 'RT', 'XI'], ['N']], this),
         new Expression([['S', 'N'],['S'], [-1, 'RT']], this)
     ];
@@ -561,13 +553,14 @@ function Expression(expression, unit) {
         var mult = 0;
         var term = 0;
         for (var i = 0; i < this.expression.length; i++) {
+            var factor = calculateFactor(this.expression[i], params);
             if (this.expression[i].contains(x)) {
-                mult += calculateFactor(this.expression[i], params);
+                mult = parseFloat((mult + factor).toPrecision(10));
             } else {
-                term -= calculateFactor(this.expression[i], params);
+                term = parseFloat((term - factor).toPrecision(10));
             }
         }
-        x.value = (term / mult);
+        x.value = term / mult;
         return x;
     };
 }
@@ -627,7 +620,9 @@ function Model() {
     this.makeRXNExps = function(source) {
         var result = [[new Parameter('R', source), new Parameter('X', source)]];
         for (var j = 0; j < this.nodes.length; j++) {
-            result.push([-1, new Parameter('N', this.nodes[j])]);
+            if (source.visits[this.nodes[j].id].value) {
+                result.push([-1, new Parameter('N', this.nodes[j])]);
+            }
         }
         return new Expression(result);
     };
@@ -643,7 +638,9 @@ function Model() {
         var result = [];
         for (var i = 0; i < this.sources.length; i++) {
             for (var j = 0; j < this.nodes.length; j++) {
-                result.push(makeVXIXExp(this.sources[i], this.nodes[j]));
+                if (this.sources[i].visits[this.nodes[j].id].value) {
+                    result.push(makeVXIXExp(this.sources[i], this.nodes[j]));
+                }
             }
             result.push(this.makeRXNExps(this.sources[i]));
         }
@@ -673,6 +670,15 @@ function Model() {
         return new Calculator(fields, expressions);
     };
 
+    this.init = function() {
+        for (var i = 0; i < this.sources.length; i++) {
+            for (var j = 0; j < this.nodes.length; j++) {
+                var visit = this.sources[i].visits[this.nodes[j].id];
+                visit.lock = visit.value ? true : false;
+            }
+        }
+    };
+
     this.addSource();
     this.addNode();
 }
@@ -685,6 +691,24 @@ var app = angular.module(
             delete $httpProvider.defaults.headers.common['X-Requested-With'];
         }
 );
+
+app.directive('input', function(){
+    return {
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelController) {
+            ngModelController.$parsers.push(function (data) {
+                return data;
+            });
+            ngModelController.$formatters.push(function(data) {
+                if (number(data)) {
+                    return parseFloat(data.toPrecision(5));
+                } else {
+                    return data;
+                }
+            });
+        }
+    }
+});
 
 app.controller('MainCtrl', function ($scope) {
 
@@ -705,7 +729,12 @@ app.controller('MainCtrl', function ($scope) {
     $scope.change = function (fieldName, unit) {
         $scope.clearAlerts();
 
+        $scope.model.init();
         var calculator  = $scope.model.makeCalculator(fieldName, unit);
+
+        if (!calculator) {
+            return;
+        }
 
         while (true) {
             var result = calculator.execute();
