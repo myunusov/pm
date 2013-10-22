@@ -324,6 +324,14 @@ function PMUnit() {
         }
         return result;
     };
+
+    this.equals  = function(other) {
+        if (!other) {
+            return null;
+        }
+        return (other instanceof PMUnit) &&
+                other.id ===  this.id;
+    };
 }
 
 function PMSource(id) {
@@ -331,7 +339,6 @@ function PMSource(id) {
     this.id = id;
     this.name = "Source " + id;
     this.isOpen = true;
-    this.visits = {};
 
     this.throughput = new Throughput();
     this.thinkTime = new PMTime();
@@ -355,31 +362,48 @@ function PMSource(id) {
         this.isOpen = false;
     };
 
-    this.addNode = function (node) {
-        this.visits[node.id] = new PMNumber(1);
-        this.visits[node.id].lock = true;
-        this.all["V-" + node.id] = this.visits[node.id];
-    };
-
-    this.removeNode = function (node) {
-        delete this.visits[node.id];
-        delete this.all["V-" + node.id];
-    };
-
-
     this.expressions = [
         new Expression([['R', 'X'], ['Z', 'X'], [-1, 'M']], this)
     ];
+
+    this.equals  = function(other) {
+        if (!other) {
+            return null;
+        }
+        return (other instanceof PMSource) &&
+                other.id ===  this.id;
+    };
 }
 PMSource.prototype = new PMUnit();
 
 function PMNode(id) {
-
     this.id = id;
     this.name = "Node " + id;
+    this.utilization = new Utilization();
+    this.utilizationEx = new Utilization(0);
+    this.utilizationEx.lock = true;
+    this.all = {
+        'U': this.utilization,
+        'UEX': this.utilizationEx
+    };
+    this.expressions = [];
+    this.equals  = function(other) {
+        if (!other) {
+            return null;
+        }
+        return (other instanceof PMNode) &&
+                other.id ===  this.id;
+    };
+}
+PMNode.prototype = new PMUnit();
+
+function PMVisit(source, node) {
+    this.id = source.id + "-" + node.id;
+    this.source = source;
+    this.node = node;
+    this.number = new PMNumber(1);
+
     this.serviceTime = new PMTime();
-    this.utilizationEnv = new Utilization(0);
-    this.utilizationEnv.lock = true;
     this.utilization = new Utilization();
     this.meanNumberTasks = new PMNumber();
     this.residenceTime = new PMTime();
@@ -390,21 +414,29 @@ function PMNode(id) {
         'U': this.utilization,
         'N': this.meanNumberTasks,
         'RT': this.residenceTime,
-        'UEX': this.utilizationEnv,
-        'XI': this.throughput
+        'XI': this.throughput,
+        'V': this.number
     };
 
     this.expressions = [
-        // U + NU - N = 0
-        new Expression([['U'],['UEX'],['UEX','N'],['U','N'],[-1, 'N']], this),
+        new Expression([['V', new Parameter('X', this.source)], [-1, 'XI']], this),
+        new Expression([['U'],[new Parameter('U', this.node),'N'],[-1, 'N']], this),
         new Expression([['U'], [-1, 'XI','S']], this),
-        // RT - RTU - S = 0
-        new Expression([['RT'],[-1, 'RT','U'],[-1, 'RT','UEX'],[-1, 'S']], this),
-        new Expression([[-1, 'RT', 'XI'], ['N']], this),
-        new Expression([['S', 'N'],['S'], [-1, 'RT']], this)
+        new Expression([['RT'],[-1, 'RT',new Parameter('U', this.node)],[-1, 'S']], this),
+        new Expression([[-1, 'RT', 'XI'], ['N']], this)
+    //    ,new Expression([['S', 'N'],['S'], [-1, 'RT']], this) TODO
     ];
+
+    this.equals  = function(other) {
+        if (!other) {
+            return null;
+        }
+        return (other instanceof PMVisit) &&
+                other.id ===  this.id;
+    };
 }
-PMNode.prototype = new PMUnit();
+PMVisit.prototype = new PMUnit();
+
 
 function Parameter(name, unit) {
     this.name  = name;
@@ -418,8 +450,8 @@ function Parameter(name, unit) {
     this.equals = function(other) {
         return  other &&
                 other instanceof Parameter &&
-                other.unit.name === this.unit.name &&
-                other.name === this.name;
+                other.name === this.name &&
+                other.unit.equals(this.unit);
     };
 
     this.sync = function() {
@@ -474,6 +506,7 @@ function Calculator(fields, expressions) {
 
     this.input = function(param)  {
         if (this.parameters.contains(param)) {
+            this.error = true;
             return null;
         }
         this.error = param.isUndefined();
@@ -493,10 +526,6 @@ function Calculator(fields, expressions) {
         return this.parameters.length;
     };
 
-    this.equals = function(other) {
-        return this.unit.name === other.unit.name;
-    };
-
 }
 
 function Expression(expression, unit) {
@@ -506,7 +535,7 @@ function Expression(expression, unit) {
     if (unit) {
         this.expression.subst(
                 function (v) {
-                    return number(v) ? v : new Parameter(v, unit);
+                    return (number(v) || v instanceof Parameter) ? v : new Parameter(v, unit);
                 }
         );
     }
@@ -568,42 +597,84 @@ function Expression(expression, unit) {
 function Model() {
     this.sources = [];
     this.nodes = [];
+    this.visits = [];
     var sourcesNo = 0;
     var nodeNo = 0;
+
+    this.getVisitBy = function(source, node) {
+        for (var i = 0; i < this.visits.length; i++) {
+            if (this.visits[i].source == source && this.visits[i].node == node) {
+                return this.visits[i];
+            }
+        }
+        return null;
+    };
+
+    this.getVisitsBySource = function(source) {
+        var result = [];
+        for (var i = 0; i < this.visits.length; i++) {
+            if (this.visits[i].source == source) {
+                result.push(this.visits[i]);
+            }
+        }
+        return result;
+    };
+
+    this.getVisitsByNode = function(node) {
+        var result = [];
+        for (var i = 0; i < this.visits.length; i++) {
+            if (this.visits[i].node == node) {
+                result.push(this.visits[i]);
+            }
+        }
+        return result;
+    };
 
     this.addSource = function () {
         var source = new PMSource(++sourcesNo);
         this.sources.push(source);
+        for (var i = 0; i < this.nodes.length; i++) {
+            this.visits.push(new PMVisit(source, this.nodes[i]));
+        }
     };
     this.removeSource = function (source) {
         this.sources.remove(source);
+        for (var i = 0; i < this.nodes.length; i++) {
+            var visit = getVisitBy(source, this.nodes[i]);
+            this.visits.remove(visit);
+        }
     };
     this.addNode = function () {
         var node = new PMNode(++nodeNo);
         this.nodes.push(node);
         for (var i = 0; i < this.sources.length; i++) {
-            this.sources[i].addNode(node);
+            this.visits.push(new PMVisit(this.sources[i], node));
         }
     };
     this.removeNode = function (node) {
         this.nodes.remove(node);
         for (var i = 0; i < this.sources.length; i++) {
-            this.sources[i].removeNode(node);
+            this.visits.remove(getVisitBy(this.sources[i], node));
         }
     };
 
     this.getFieldsSeqByChangedFieldName = function (fieldName, unit) {
-        var firstParameter = new Parameter(fieldName === 'V' ? "X" : fieldName, unit);
+        var firstParameter = new Parameter(fieldName, unit);
         if (firstParameter.isUndefined()) {
             return null;
         }
         var fields = [firstParameter];
-        [this.nodes, this.sources].each(
+        [this.nodes, this.sources, this.visits].each(
                 function (u) {
-                    fields = fields.concat(u.getLocks());
+                    var locks = u.getLocks();
+                    for (var i = 0; i < locks.length; i++) {
+                        if (!fields.contains(locks[i])) {
+                            fields.push(locks[i]);
+                        }
+                    }
                 }
         );
-        [this.nodes, this.sources].each(
+        [this.nodes, this.sources, this.visits].each(
                 function (u) {
                     var notEmpty = u.getSignificance();
                     for (var i = 0; i < notEmpty.length; i++) {
@@ -619,37 +690,40 @@ function Model() {
 
     this.makeRXNExps = function(source) {
         var result = [[new Parameter('R', source), new Parameter('X', source)]];
-        for (var j = 0; j < this.nodes.length; j++) {
-            if (source.visits[this.nodes[j].id].value) {
-                result.push([-1, new Parameter('N', this.nodes[j])]);
+        var visits = this.getVisitsBySource(source);
+        for (var j = 0; j < visits.length; j++) {
+            if (visits[j].number.value) {
+                result.push([-1, new Parameter('N', visits[j])]);
             }
         }
         return new Expression(result);
     };
 
-    function makeVXIXExp(source, node) {
-        return new Expression([
-            [new Parameter('V-' + node.id, source), new Parameter('X', source)],
-            [-1, new Parameter('XI', node)]
-        ]);
-    }
+    this.makeUUEXExp = function(node) {
+        var result = [[-1, new Parameter('U', node)], [new Parameter('UEX', node)]];
+        var visits = this.getVisitsByNode(node);
+        for (var j = 0; j < visits.length; j++) {
+            if (visits[j].number.value) {
+                result.push([new Parameter('U', visits[j])]);
+            }
+        }
+        return new Expression(result);
+    };
 
     this.makeExpressions = function () {
         var result = [];
         for (var i = 0; i < this.sources.length; i++) {
-            for (var j = 0; j < this.nodes.length; j++) {
-                if (this.sources[i].visits[this.nodes[j].id].value) {
-                    result.push(makeVXIXExp(this.sources[i], this.nodes[j]));
-                }
-            }
             result.push(this.makeRXNExps(this.sources[i]));
+        }
+        for (var j = 0; j < this.nodes.length; j++) {
+            result.push(this.makeUUEXExp(this.nodes[j]));
         }
         return result;
     };
 
     this.getExpressions = function () {
         var expressions = [];
-        [this.nodes, this.sources].each(
+        [this.nodes, this.sources, this.visits].each(
                 function (u) {
                     expressions = expressions.concat(u.expressions);
                 }
@@ -671,11 +745,9 @@ function Model() {
     };
 
     this.init = function() {
-        for (var i = 0; i < this.sources.length; i++) {
-            for (var j = 0; j < this.nodes.length; j++) {
-                var visit = this.sources[i].visits[this.nodes[j].id];
-                visit.lock = visit.value ? true : false;
-            }
+        for (var i = 0; i < this.visits.length; i++) {
+            var visit = this.visits[i];
+            visit.number.lock = visit.number.value ? true : false;
         }
     };
 
@@ -685,7 +757,7 @@ function Model() {
 
 
 var app = angular.module(
-        'perfModelApp',
+        'qnmApp',
         ['ui.bootstrap'],
         function ($httpProvider) {
             delete $httpProvider.defaults.headers.common['X-Requested-With'];
@@ -736,14 +808,11 @@ app.controller('MainCtrl', function ($scope) {
             return;
         }
 
-        while (true) {
-            var result = calculator.execute();
+        for (var result = null; result || calculator.next();) {
+            result = calculator.execute();
             if (calculator.error) {
                 $scope.inconsistentAlert();
                 return;
-            }
-            if (!result && !calculator.next()) {
-                break;
             }
         }
     };
