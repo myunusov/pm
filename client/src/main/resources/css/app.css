@@ -107,6 +107,13 @@ section {
     height: 16px;
 }
 
+.container,
+.navbar-static-top .container,
+.navbar-fixed-top .container,
+.navbar-fixed-bottom .container {
+    width: 1224px;
+}
+
 .simplebox {
     outline: none;
     border:none !important;
@@ -114,6 +121,7 @@ section {
     margin-bottom: 0;
     padding-bottom: 0;
     padding-top: 0;
+    font-size: 24px;
 }
 
 /* Not enough room on mobile for markup tab, js tab, and plunk btn.

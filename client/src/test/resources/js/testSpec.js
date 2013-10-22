@@ -5,7 +5,7 @@ describe("Midway: Testing Modules", function() {
         var module;
 
         beforeEach(function() {
-            module = angular.module("perfModelApp");
+            module = angular.module("qnmApp");
         });
 
         it("should be registered", function() {

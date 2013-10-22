@@ -14,6 +14,7 @@
     <version>1.0-SNAPSHOT</version>
     <description>Java Script Client of Performance Model Project</description>
 
+
     <build>
         <sourceDirectory>src/main/resources</sourceDirectory>
 
@@ -47,6 +48,7 @@
     <properties>
         <sonar.language>js</sonar.language>
         <sonar.exclusions>**/angular/**,**/bootstrap/**,**/ng-bootstrap/**</sonar.exclusions>
+        <sonar.javascript.jstest.reportsPath>target/jasmine</sonar.javascript.jstest.reportsPath>
     </properties>
 
 </project>

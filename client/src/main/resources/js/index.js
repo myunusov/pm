@@ -420,11 +420,12 @@ function PMVisit(source, node) {
 
     this.expressions = [
         new Expression([['V', new Parameter('X', this.source)], [-1, 'XI']], this),
-        new Expression([['U'],[new Parameter('U', this.node),'N'],[-1, 'N']], this),
         new Expression([['U'], [-1, 'XI','S']], this),
         new Expression([['RT'],[-1, 'RT',new Parameter('U', this.node)],[-1, 'S']], this),
         new Expression([[-1, 'RT', 'XI'], ['N']], this)
-    //    ,new Expression([['S', 'N'],['S'], [-1, 'RT']], this) TODO
+    //  new Expression([['S', 'N'],['S'], [-1, 'RT']], this) TODO
+    //    new Expression([['U'],[new Parameter('U', this.node),'N'],[-1, 'N']], this)
+
     ];
 
     this.equals  = function(other) {
@@ -603,7 +604,7 @@ function Model() {
 
     this.getVisitBy = function(source, node) {
         for (var i = 0; i < this.visits.length; i++) {
-            if (this.visits[i].source == source && this.visits[i].node == node) {
+            if (this.visits[i].source === source && this.visits[i].node === node) {
                 return this.visits[i];
             }
         }
@@ -613,7 +614,7 @@ function Model() {
     this.getVisitsBySource = function(source) {
         var result = [];
         for (var i = 0; i < this.visits.length; i++) {
-            if (this.visits[i].source == source) {
+            if (this.visits[i].source === source) {
                 result.push(this.visits[i]);
             }
         }
@@ -623,7 +624,7 @@ function Model() {
     this.getVisitsByNode = function(node) {
         var result = [];
         for (var i = 0; i < this.visits.length; i++) {
-            if (this.visits[i].node == node) {
+            if (this.visits[i].node === node) {
                 result.push(this.visits[i]);
             }
         }
@@ -640,7 +641,7 @@ function Model() {
     this.removeSource = function (source) {
         this.sources.remove(source);
         for (var i = 0; i < this.nodes.length; i++) {
-            var visit = getVisitBy(source, this.nodes[i]);
+            var visit = this.getVisitBy(source, this.nodes[i]);
             this.visits.remove(visit);
         }
     };
@@ -654,7 +655,7 @@ function Model() {
     this.removeNode = function (node) {
         this.nodes.remove(node);
         for (var i = 0; i < this.sources.length; i++) {
-            this.visits.remove(getVisitBy(this.sources[i], node));
+            this.visits.remove(this.getVisitBy(this.sources[i], node));
         }
     };
 
@@ -685,7 +686,6 @@ function Model() {
                 }
         );
         return fields;
-
     };
 
     this.makeRXNExps = function(source) {
@@ -710,6 +710,21 @@ function Model() {
         return new Expression(result);
     };
 
+    this.makeUUEXNExp = function(source, node) {
+        var visit = this.getVisitBy(source, node);
+        var result = [
+            [new Parameter('U', visit)],
+            [-1, new Parameter('N', visit)],
+            [new Parameter('UEX', node), new Parameter('N', visit)]
+        ];
+        var visits = this.getVisitsByNode(node);
+        for (var j = 0; j < visits.length; j++) {
+            result.push([new Parameter('U', visits[j]), new Parameter('N', visit)]);
+        }
+        return new Expression(result);
+    };
+
+
     this.makeExpressions = function () {
         var result = [];
         for (var i = 0; i < this.sources.length; i++) {
@@ -718,6 +733,13 @@ function Model() {
         for (var j = 0; j < this.nodes.length; j++) {
             result.push(this.makeUUEXExp(this.nodes[j]));
         }
+        for (var i1 = 0; i1 < this.sources.length; i1++) {
+            for (var j1 = 0; j1 < this.nodes.length; j1++) {
+                result.push(this.makeUUEXNExp(this.sources[i1], this.nodes[j1]));
+            }
+        }
+
+
         return result;
     };
 
@@ -779,7 +801,7 @@ app.directive('input', function(){
                 }
             });
         }
-    }
+    };
 });
 
 app.controller('MainCtrl', function ($scope) {
