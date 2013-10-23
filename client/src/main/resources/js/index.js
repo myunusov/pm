@@ -116,10 +116,12 @@ function number(value) {
 
 function Quantity() {
     this.lock = false;
+    this.eval = false;
     this.inconsistent = false;
 
-    this.check = function(newValue) {
-        this.inconsistent = this.lock ? this.asNormForm() !==newValue : false;
+    this.beforeUpdate = function(newValue) {
+        this.inconsistent = (this.eval || this.lock) ? this.asNormForm() !==newValue : false;
+        this.eval = true;
         return !this.inconsistent;
     };
 
@@ -156,14 +158,14 @@ function Utilization(value) {
         return this.unit === "percent" ? this.asNormFormStr() : '';
     };
     this.setAsNormForm = function (newValue) {
-        if (!this.check(newValue)) {
+        if (!this.beforeUpdate(newValue)) {
             return;
         }
         newValue = parseFloat(newValue);
         this.value = this.unit === 'rate' ? newValue : newValue * 100;
     };
     this.isValid = function () {
-        return !this.value || this.asNormForm() < 1;
+        return !this.inconsistent && (!this.value || this.asNormForm() < 1);
     };
 }
 Utilization.prototype = new Quantity();
@@ -200,7 +202,7 @@ function PMTime(value) {
         return this.unit === "sec" ? '' : this.asNormFormStr();
     };
     this.setAsNormForm = function (newValue) {
-        if (!this.check(newValue)) {
+        if (!this.beforeUpdate(newValue)) {
             return;
         }
         newValue = parseFloat(newValue);
@@ -209,7 +211,7 @@ function PMTime(value) {
                         (this.unit === 'min' ? (newValue / 60) : newValue);
     };
     this.isValid = function () {
-        return !this.value || this.value >= 0;
+        return !this.inconsistent && (!this.value || this.value >= 0);
     };
 }
 PMTime.prototype = new Quantity();
@@ -222,7 +224,7 @@ function PMNumber(value) {
         return this.value;
     };
     this.setAsNormForm = function (newValue) {
-        if (!this.check(newValue)) {
+        if (!this.beforeUpdate(newValue)) {
             return;
         }
         newValue = parseFloat(newValue);
@@ -230,7 +232,7 @@ function PMNumber(value) {
     };
 
     this.isValid = function () {
-        return !this.value || this.value >= 0;
+        return !this.inconsistent && (!this.value || this.value >= 0);
     };
 }
 PMNumber.prototype = new Quantity();
@@ -264,7 +266,7 @@ function Throughput(value) {
         return (this.empty()) || this.unit === "tps" ? '' : this.asNormFormStr();
     };
     this.setAsNormForm = function (newValue) {
-        if (!this.check(newValue)) {
+        if (!this.beforeUpdate(newValue)) {
             return;
         }
         newValue = parseFloat(newValue);
@@ -274,7 +276,7 @@ function Throughput(value) {
     };
 
     this.isValid = function () {
-        return !this.value || this.value >= 0;
+        return !this.inconsistent && (!this.value || this.value >= 0);
     };
 }
 Throughput.prototype = new Quantity();
@@ -295,6 +297,16 @@ function PMUnit() {
         if (!this.invalid) {
             this.lastEvalParam = param;
         }
+    };
+
+    this.getAll = function() {
+        var result = [];
+        for (var name in this.all) {
+            if (this.all.hasOwnProperty(name)) {
+                result.push(this.getByName(name));
+            }
+        }
+        return result;
     };
 
     this.getLocks = function() {
@@ -402,6 +414,7 @@ function PMVisit(source, node) {
     this.source = source;
     this.node = node;
     this.number = new PMNumber(1);
+    this.number.lock = true;
 
     this.serviceTime = new PMTime();
     this.utilization = new Utilization();
@@ -421,11 +434,7 @@ function PMVisit(source, node) {
     this.expressions = [
         new Expression([['V', new Parameter('X', this.source)], [-1, 'XI']], this),
         new Expression([['U'], [-1, 'XI','S']], this),
-        new Expression([['RT'],[-1, 'RT',new Parameter('U', this.node)],[-1, 'S']], this),
         new Expression([[-1, 'RT', 'XI'], ['N']], this)
-    //  new Expression([['S', 'N'],['S'], [-1, 'RT']], this) TODO
-    //    new Expression([['U'],[new Parameter('U', this.node),'N'],[-1, 'N']], this)
-
     ];
 
     this.equals  = function(other) {
@@ -443,6 +452,7 @@ function Parameter(name, unit) {
     this.name  = name;
     this.unit  = unit;
     this.value = unit ? unit.getByName(name).asNormForm() : null;
+
 
     this.isUndefined = function() {
        return empty(this.value);
@@ -665,7 +675,7 @@ function Model() {
             return null;
         }
         var fields = [firstParameter];
-        [this.nodes, this.sources, this.visits].each(
+        [this.sources, this.nodes, this.visits].each(
                 function (u) {
                     var locks = u.getLocks();
                     for (var i = 0; i < locks.length; i++) {
@@ -675,7 +685,7 @@ function Model() {
                     }
                 }
         );
-        [this.nodes, this.sources, this.visits].each(
+        [this.sources, this.nodes, this.visits].each(
                 function (u) {
                     var notEmpty = u.getSignificance();
                     for (var i = 0; i < notEmpty.length; i++) {
@@ -724,6 +734,22 @@ function Model() {
         return new Expression(result);
     };
 
+    this.makeRTUSExp = function(source, node) {
+        var visit = this.getVisitBy(source, node);
+        var result = [
+            [-1, new Parameter('RT', visit)],
+            [new Parameter('S', visit)],
+            [new Parameter('UEX', node), new Parameter('RT', visit)]
+        ];
+        var visits = this.getVisitsByNode(node);
+        for (var j = 0; j < visits.length; j++) {
+            result.push([new Parameter('U', visits[j]), new Parameter('RT', visit)]);
+        }
+        return new Expression(result);
+    };
+
+    // new Expression([['RT'],[-1, 'RT',new Parameter('U', this.node)],[-1, 'S']], this),
+
 
     this.makeExpressions = function () {
         var result = [];
@@ -736,16 +762,15 @@ function Model() {
         for (var i1 = 0; i1 < this.sources.length; i1++) {
             for (var j1 = 0; j1 < this.nodes.length; j1++) {
                 result.push(this.makeUUEXNExp(this.sources[i1], this.nodes[j1]));
+                result.push(this.makeRTUSExp(this.sources[i1], this.nodes[j1]));
             }
         }
-
-
         return result;
     };
 
     this.getExpressions = function () {
         var expressions = [];
-        [this.nodes, this.sources, this.visits].each(
+        [this.sources, this.visits, this.nodes].each(
                 function (u) {
                     expressions = expressions.concat(u.expressions);
                 }
@@ -767,10 +792,15 @@ function Model() {
     };
 
     this.init = function() {
-        for (var i = 0; i < this.visits.length; i++) {
-            var visit = this.visits[i];
-            visit.number.lock = visit.number.value ? true : false;
-        }
+        [this.sources, this.visits, this.nodes].each(
+                function (u) {
+                    var all = u.getAll();
+                    for (var j = 0; j < all.length; j++) {
+                        all[j].eval = false;
+                        all[j].inconsistent = false;
+                    }
+                }
+        );
     };
 
     this.addSource();
