@@ -9,6 +9,7 @@
     <script src="ng-bootstrap/ui-bootstrap-tpls-0.6.0.js"></script>
     <script src="js/index.js"></script>
 
+    <link rel="shortcut icon" href="img/favicon.ico" />
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css"/>
     <link rel="stylesheet" href="css/app.css"/>
@@ -20,18 +21,35 @@
 <header class="navbar navbar-fixed-top">
 </header>
 
-<!--<div style="margin: 32px;"></div>-->
+<header class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <div class="dropdown pull-left">
+                <a href="#"
+                   class="brand dropdown-toggle" role="button" data-toggle="dropdown"
+                   ng-click="model.addSource()">
+                    <i class="icon-plus"></i>
+                    <i class="icon-user"></i>
+                    Add Source
+                </a>
+                <a href="#"
+                   class="brand dropdown-toggle" role="button" data-toggle="dropdown"
+                   ng-click="model.addNode()">
+                    <i class="icon-plus"></i>
+                    <i class="icon-desktop"></i>
+                    Add Node
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+<div style="margin: 32px;"></div>
 
 <header class="hero-unit" id="overview">
-    <div class="container">
+    <div class="container-fluid">
         <h1>Performance Model Calculator</h1>
-
         <p>Computer System Analysis Using <strong>Queueing Network Models</strong> by the
             <strong><a href="http://www.maxur.org">Maxim Yunusov</a></strong></p>
-    </div>
-    <div class="bs-docs-social">
-        <div class="container">
-        </div>
     </div>
 </header>
 
@@ -217,7 +235,6 @@
             </div>
         </accordion-group>
     </accordion>
-    <button class="btn btn-small" ng-click="model.addSource()"><i class="icon-user"></i> Add Source</button>
 </div>
 
 <div class="span6">
@@ -523,7 +540,6 @@
 </div>
 </accordion-group>
 </accordion>
-<button class="btn btn-small" ng-click="model.addNode()"><i class="icon-desktop"></i> Add Node</button>
 
 </div>
 </div>
@@ -532,7 +548,7 @@
 </div>
 
 <footer class="footer">
-    <div class="container">
+    <div class="container-fluid">
         <p>Designed and built by <a href="http://www.maxur.org">Maxim Yunusov</a></p>
 
         <p>Code licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License, Version 2.0</a>.
