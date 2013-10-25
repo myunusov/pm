@@ -69,6 +69,82 @@
 <div class="container-fluid">
 <section id="main">
 <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+
+<div class="well">
+<div class="row-fluid">
+    <div class="span4">
+        <div class="row-fluid">
+        <b class="span6">Utilisation Unit:</b>
+        <div class="btn-group span6">
+            <button type="button"
+                    class="btn {{model.utilisationUnit == 'percent' ? 'btn-primary' : ''}}"
+                    ng-model="model.utilisationUnit"
+                    btn-radio="'percent'">%
+            </button>
+            <button type="button"
+                    class="btn {{model.utilisationUnit == 'rate' ? 'btn-primary' : ''}}"
+                    ng-model="model.utilisationUnit"
+                    btn-radio="'rate'"
+                    >rate
+            </button>
+        </div>
+        </div>
+    </div>
+
+    <div class="span4">
+        <div class="row-fluid">
+        <b class="span6">Throughput Unit:</b>
+        <div class="btn-group span6">
+            <button type="button"
+                    class="btn {{model.throughputUnit == 'tps' ? 'btn-primary' : ''}}"
+                    ng-model="model.throughputUnit"
+                    btn-radio="'tps'">sec
+            </button>
+            <button type="button"
+                    class="btn {{model.throughputUnit == 'tpm' ? 'btn-primary' : ''}}"
+                    ng-model="model.throughputUnit"
+                    btn-radio="'tpm'">min
+            </button>
+            <button type="button"
+                    class="btn {{model.throughputUnit == 'tph' ? 'btn-primary' : ''}}"
+                    ng-model="model.throughputUnit"
+                    btn-radio="'tph'">hr
+            </button>
+        </div>
+        </div>
+    </div>
+
+    <div class="span4">
+        <div class="row-fluid">
+        <b class="span6">Time Unit:</b>
+        <div class="btn-group span6">
+            <button type="button"
+                    class="btn {{model.timeUnit == 'ms' ? 'btn-primary' : ''}}"
+                    ng-model="model.timeUnit"
+                    btn-radio="'ms'">ms
+            </button>
+            <button type="button"
+                    class="btn {{model.timeUnit == 'sec' ? 'btn-primary' : ''}}"
+                    ng-model="model.timeUnit"
+                    btn-radio="'sec'">sec
+            </button>
+            <button type="button"
+                    class="btn {{model.timeUnit == 'min' ? 'btn-primary' : ''}}"
+                    ng-model="model.timeUnit"
+                    btn-radio="'min'">min
+            </button>
+            <button type="button"
+                    class="btn {{model.timeUnit == 'hr' ? 'btn-primary' : ''}}"
+                    ng-model="model.timeUnit"
+                    btn-radio="'hr'">hr
+            </button>
+        </div>
+        </div>
+    </div>
+</div>
+</div>
+<p></p>
+
 <div class="row-fluid">
 <div class="span6">
     <accordion close-others="oneAtATime">
@@ -93,32 +169,16 @@
                            class="pull-right {{source.responseTime.isValid() ? (source.responseTime.eval ? 'alert-info':'') : 'alert-danger'}}"><b>Response
                         Time (R):</b></label>
                 </div>
-                <div class="span3" tooltip-placement="left" tooltip="{{source.responseTime.asNormFormTips()}}">
+                <div class="span6" tooltip-placement="left" tooltip="{{source.responseTime.asNormFormTips()}}">
                     <input id="responseTime" type="number"
                            class="span12"
                            ng-disabled="source.responseTime.lock"
                            ng-model="source.responseTime.value"
                            ng-change="change('R', source)"
                            value="1"
-                           input/>
+                           time/>
                 </div>
-                <div class="btn-group span3" ng-hide="source.responseTime.lock">
-                    <button type="button"
-                            class="btn btn-mini {{source.responseTime.unit == 'sec' ? 'btn-primary' : ''}}"
-                            ng-model="source.responseTime.unit"
-                            btn-radio="'sec'" ng-change="change('R', source)">sec
-                    </button>
-                    <button type="button"
-                            class="btn btn-mini {{source.responseTime.unit == 'min' ? 'btn-primary' : ''}}"
-                            ng-model="source.responseTime.unit"
-                            btn-radio="'min'" ng-change="change('R', source)">min
-                    </button>
-                    <button type="button"
-                            class="btn btn-mini {{source.responseTime.unit == 'hr' ? 'btn-primary' : ''}}"
-                            ng-model="source.responseTime.unit"
-                            btn-radio="'hr'" ng-change="change('R', source)">hr
-                    </button>
-                </div>
+
                 <div class="btn-group, span3" ng-show="source.responseTime.lock">
                     {{source.responseTime.unit}}.
                 </div>
@@ -151,9 +211,9 @@
                         Number of Users (M):
                     </label>
                 </div>
-                <div class="span3">
+                <div class="span6">
                     <input id="numberUsers" type="number" ng-disabled="source.numberUsers.lock" class="span12"
-                           ng-model="source.numberUsers.value" value="1" ng-change="change('M', source)" input/>
+                           ng-model="source.numberUsers.value" value="1" ng-change="change('M', source)" number/>
                 </div>
             </div>
             <div class="row-fluid" ng-hide="source.isOpen">
@@ -171,29 +231,9 @@
                         Think Time (Z):
                     </label>
                 </div>
-                <div class="span3" tooltip-placement="left" tooltip="{{source.thinkTime.asNormFormTips()}}">
+                <div class="span6" tooltip-placement="left" tooltip="{{source.thinkTime.asNormFormTips()}}">
                     <input id="thinkTime" type="number" ng-disabled="source.thinkTime.lock" class="span12"
-                           ng-model="source.thinkTime.value" ng-change="change('Z', source)" value="1" input/>
-                </div>
-                <div class="btn-group span3" ng-hide="source.thinkTime.lock">
-                    <button type="button"
-                            class="btn btn-mini {{source.thinkTime.unit == 'sec' ? 'btn-primary' : ''}}"
-                            ng-model="source.thinkTime.unit"
-                            btn-radio="'sec'" ng-change="change('Z', source)">sec
-                    </button>
-                    <button type="button"
-                            class="btn btn-mini {{source.thinkTime.unit == 'min' ? 'btn-primary' : ''}}"
-                            ng-model="source.thinkTime.unit"
-                            btn-radio="'min'" ng-change="change('Z', source)">min
-                    </button>
-                    <button type="button"
-                            class="btn btn-mini {{source.thinkTime.unit == 'hr' ? 'btn-primary' : ''}}"
-                            ng-model="source.thinkTime.unit"
-                            btn-radio="'hr'" ng-change="change('Z', source)">hr
-                    </button>
-                </div>
-                <div class="btn-group, span3" ng-show="source.thinkTime.lock">
-                    {{source.thinkTime.unit}}.
+                           ng-model="source.thinkTime.value" ng-change="change('Z', source)" value="1" time/>
                 </div>
             </div>
             <div class="row-fluid">
@@ -210,29 +250,9 @@
                         Throughput (X):
                     </label>
                 </div>
-                <div class="span3" tooltip-placement="left" tooltip="{{source.throughput.asNormFormTips()}}">
+                <div class="span6" tooltip-placement="left" tooltip="{{source.throughput.asNormFormTips()}}">
                     <input id="throughput" type="number" ng-disabled="source.throughput.lock" class="span12"
-                           ng-model="source.throughput.value" ng-change="change('X', source)" value="1" input/>
-                </div>
-                <div class="btn-group span3" ng-hide="source.throughput.lock">
-                    <button type="button"
-                            class="btn btn-mini {{source.throughput.unit == 'tps' ? 'btn-primary' : ''}}"
-                            ng-model="source.throughput.unit"
-                            btn-radio="'tps'" ng-change="change('X', source)">tps
-                    </button>
-                    <button type="button"
-                            class="btn btn-mini {{source.throughput.unit == 'tpm' ? 'btn-primary' : ''}}"
-                            ng-model="source.throughput.unit"
-                            btn-radio="'tpm'" ng-change="change('X', source)">tpm
-                    </button>
-                    <button type="button"
-                            class="btn btn-mini {{source.throughput.unit == 'tph' ? 'btn-primary' : ''}}"
-                            ng-model="source.throughput.unit"
-                            btn-radio="'tph'" ng-change="change('X', source)">tph
-                    </button>
-                </div>
-                <div class="btn-group, span3" ng-show="source.throughput.lock">
-                    {{source.throughput.unit}}.
+                           ng-model="source.throughput.value" ng-change="change('X', source)" value="1" throughput/>
                 </div>
             </div>
         </accordion-group>
@@ -260,24 +280,9 @@
                class="pull-right {{node.utilization.isValid() ? (node.utilization.eval ? 'alert-info':'') : 'alert-danger'}}">Utilization
             (U):</label>
     </div>
-    <div class="span3" tooltip-placement="left" tooltip="{{node.utilization.asNormFormTips()}}">
+    <div class="span6" tooltip-placement="left" tooltip="{{node.utilization.asNormFormTips()}}">
         <input id="utilizationFull" type="number" ng-disabled="node.utilization.lock" class="span12"
-               ng-model="node.utilization.value" ng-change="change('U', node)" value="1" input/>
-    </div>
-    <div class="btn-group span3" ng-hide="node.utilization.lock">
-        <button type="button"
-                class="btn btn-mini {{node.utilization.unit == 'percent' ? 'btn-primary' : ''}}"
-                ng-model="node.utilization.unit"
-                btn-radio="'percent'" ng-change="change('U', node)">%
-        </button>
-        <button type="button"
-                class="btn btn-mini {{node.utilization.unit == 'rate' ? 'btn-primary' : ''}}"
-                ng-model="node.utilization.unit"
-                btn-radio="'rate'" ng-change="change('U', node)">rate
-        </button>
-    </div>
-    <div class="btn-group, span3" ng-show="node.utilization.lock">
-        {{node.utilization.unit}}.
+               ng-model="node.utilization.value" ng-change="change('U', node)" value="1" utilisation/>
     </div>
 </div>
 <h4>Other Systems</h4>
@@ -296,24 +301,9 @@
                class="pull-right {{node.utilizationEx.isValid() ? (node.utilizationEx.eval ? 'alert-info':'') : 'alert-danger'}}">Utilization
             (U):</label>
     </div>
-    <div class="span3" tooltip-placement="left" tooltip="{{node.utilization.asNormFormTips()}}">
+    <div class="span6" tooltip-placement="left" tooltip="{{node.utilization.asNormFormTips()}}">
         <input id="utilizationEx" type="number" ng-disabled="node.utilizationEx.lock" class="span12"
-               ng-model="node.utilizationEx.value" ng-change="change('UEX', node)" value="1" input/>
-    </div>
-    <div class="btn-group span3" ng-hide="node.utilizationEx.lock">
-        <button type="button"
-                class="btn btn-mini {{node.utilizationEx.unit == 'percent' ? 'btn-primary' : ''}}"
-                ng-model="node.utilizationEx.unit"
-                btn-radio="'percent'" ng-change="change('UEX', node)">%
-        </button>
-        <button type="button"
-                class="btn btn-mini {{node.utilizationEx.unit == 'rate' ? 'btn-primary' : ''}}"
-                ng-model="node.utilizationEx.unit"
-                btn-radio="'rate'" ng-change="change('UEX', node)">rate
-        </button>
-    </div>
-    <div class="btn-group, span3" ng-show="node.utilizationEx.lock">
-        {{node.utilizationEx.unit}}.
+               ng-model="node.utilizationEx.value" ng-change="change('UEX', node)" value="1" utilisation/>
     </div>
 </div>
 <div ng-repeat="visit in model.getVisitsByNode(node)">
@@ -334,12 +324,12 @@
             Number of Visits (V):
         </label>
     </div>
-    <div class="span3">
+    <div class="span6">
         <input id="numberVisits" type="number" ng-disabled="visit.number.lock"
                class="span12"
                ng-model="visit.number.value"
                ng-change="change('V', visit)"
-               value="1" input/>
+               value="1" number/>
     </div>
 </div>
 
@@ -357,29 +347,9 @@
             Throughput (X):
         </label>
     </div>
-    <div class="span3" tooltip-placement="left" tooltip="{{visit.throughput.asNormFormTips()}}">
+    <div class="span6" tooltip-placement="left" tooltip="{{visit.throughput.asNormFormTips()}}">
         <input id="throughputNode" type="number" ng-disabled="visit.throughput.lock" class="span12"
-               ng-model="visit.throughput.value" ng-change="change('XI', visit)" value="1" input/>
-    </div>
-    <div class="btn-group span3" ng-hide="visit.throughput.lock">
-        <button type="button"
-                class="btn btn-mini {{visit.throughput.unit == 'tps' ? 'btn-primary' : ''}}"
-                ng-model="visit.throughput.unit"
-                btn-radio="'tps'" ng-change="change('XI', visit)">tps
-        </button>
-        <button type="button"
-                class="btn btn-mini {{visit.throughput.unit == 'tpm' ? 'btn-primary' : ''}}"
-                ng-model="visit.throughput.unit"
-                btn-radio="'tpm'" ng-change="change('XI', visit)">tpm
-        </button>
-        <button type="button"
-                class="btn btn-mini {{visit.throughput.unit == 'tph' ? 'btn-primary' : ''}}"
-                ng-model="visit.throughput.unit"
-                btn-radio="'tph'" ng-change="change('XI', visit)">tph
-        </button>
-    </div>
-    <div class="btn-group, span3" ng-show="visit.throughput.lock">
-        {{visit.throughput.unit}}.
+               ng-model="visit.throughput.value" ng-change="change('XI', visit)" value="1" throughput/>
     </div>
 </div>
 
@@ -398,29 +368,9 @@
             Mean Service Time (S):
         </label>
     </div>
-    <div class="span3" tooltip-placement="left" tooltip="{{visit.serviceTime.asNormFormTips()}}">
+    <div class="span6" tooltip-placement="left" tooltip="{{visit.serviceTime.asNormFormTips()}}">
         <input id="serviceTime" type="number" ng-disabled="visit.serviceTime.lock" class="span12"
-               ng-model="visit.serviceTime.value" ng-change="change('S', visit)" value="1" input/>
-    </div>
-    <div class="btn-group span3" ng-hide="visit.serviceTime.lock">
-        <button type="button"
-                class="btn btn-mini {{visit.serviceTime.unit == 'sec' ? 'btn-primary' : ''}}"
-                ng-model="visit.serviceTime.unit"
-                btn-radio="'sec'" ng-change="change('S', visit)">sec
-        </button>
-        <button type="button"
-                class="btn btn-mini {{visit.serviceTime.unit == 'min' ? 'btn-primary' : ''}}"
-                ng-model="visit.serviceTime.unit"
-                btn-radio="'min'" ng-change="change('S', visit)">min
-        </button>
-        <button type="button"
-                class="btn btn-mini {{visit.serviceTime.unit == 'hr' ? 'btn-primary' : ''}}"
-                ng-model="visit.serviceTime.unit"
-                btn-radio="'hr'" ng-change="change('S', visit)">hr
-        </button>
-    </div>
-    <div class="btn-group, span3" ng-show="visit.serviceTime.lock">
-        {{visit.serviceTime.unit}}.
+               ng-model="visit.serviceTime.value" ng-change="change('S', visit)" value="1" time/>
     </div>
 </div>
 
@@ -438,24 +388,9 @@
                class="pull-right {{visit.utilization.isValid() ? (visit.utilization.eval ? 'alert-info':'') : 'alert-danger'}}">Utilization
             (U):</label>
     </div>
-    <div class="span3" tooltip-placement="left" tooltip="{{visit.utilization.asNormFormTips()}}">
+    <div class="span6" tooltip-placement="left" tooltip="{{visit.utilization.asNormFormTips()}}">
         <input id="utilization" type="number" ng-disabled="visit.utilization.lock" class="span12"
-               ng-model="visit.utilization.value" ng-change="change('U', visit)" value="1" input/>
-    </div>
-    <div class="span3 btn-group" ng-hide="visit.utilization.lock">
-        <button type="button"
-                class="btn btn-mini {{visit.utilization.unit == 'percent' ? 'btn-primary' : ''}}"
-                ng-model="visit.utilization.unit"
-                btn-radio="'percent'" ng-change="change('U', visit)">%
-        </button>
-        <button type="button"
-                class="btn btn-mini {{visit.utilization.unit == 'rate' ? 'btn-primary' : ''}}"
-                ng-model="visit.utilization.unit"
-                btn-radio="'rate'" ng-change="change('U',visit)">rate
-        </button>
-    </div>
-    <div class="btn-group, span3" ng-show="visit.utilization.lock">
-        {{visit.utilization.unit}}.
+               ng-model="visit.utilization.value" ng-change="change('U', visit)" value="1" utilisation/>
     </div>
 </div>
 
@@ -474,12 +409,12 @@
             Mean Number of Tasks (N):
         </label>
     </div>
-    <div class="span3">
+    <div class="span6">
         <input id="meanNumberTasks" type="number" ng-disabled="visit.meanNumberTasks.lock"
                class="span12"
                ng-model="visit.meanNumberTasks.value"
                ng-change="change('N', visit)"
-               value="1" input/>
+               value="1" number/>
     </div>
 </div>
 
@@ -498,29 +433,9 @@
             Residence Time (RT):
         </label>
     </div>
-    <div class="span3" tooltip-placement="left" tooltip="{{visit.residenceTime.asNormFormTips()}}">
+    <div class="span6" tooltip-placement="left" tooltip="{{visit.residenceTime.asNormFormTips()}}">
         <input id="residenceTime" type="number" ng-disabled="visit.residenceTime.lock"
-               class="span12" ng-model="visit.residenceTime.value" ng-change="change('RT', visit)" value="1" input/>
-    </div>
-    <div class="btn-group span3" ng-hide="visit.residenceTime.lock">
-        <button type="button"
-                class="btn btn-mini {{visit.residenceTime.unit == 'sec' ? 'btn-primary' : ''}}"
-                ng-model="visit.residenceTime.unit"
-                btn-radio="'sec'" ng-change="change('RT', visit)">sec
-        </button>
-        <button type="button"
-                class="btn btn-mini {{visit.residenceTime.unit == 'min' ? 'btn-primary' : ''}}"
-                ng-model="visit.residenceTime.unit"
-                btn-radio="'min'" ng-change="change('RT', visit)">min
-        </button>
-        <button type="button"
-                class="btn btn-mini {{visit.residenceTime.unit == 'hr' ? 'btn-primary' : ''}}"
-                ng-model="visit.residenceTime.unit"
-                btn-radio="'hr'" ng-change="change('RT', visit)">hr
-        </button>
-    </div>
-    <div class="btn-group, span3" ng-show="visit.residenceTime.lock">
-        {{visit.residenceTime.unit}}.
+               class="span12" ng-model="visit.residenceTime.value" ng-change="change('RT', visit)" value="1" time/>
     </div>
 </div>
 </div>
@@ -542,11 +457,6 @@
     </div>
 </footer>
 
-
-<!--
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-<script src="bootstrap/js/bootstrap.js"></script>
--->
 <script src="angular/angular.min.js"></script>
 <script src="ng-bootstrap/ui-bootstrap-tpls-0.6.0.min.js"></script>
 <script src="bootstrap/js/jquery.js"></script>

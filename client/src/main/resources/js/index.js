@@ -132,7 +132,6 @@ function Quantity() {
 
 function Utilization(value) {
     this.value = value;
-    this.unit = 'percent';
 
     this.asNormForm = function () {
         if (this.empty()) {
@@ -606,6 +605,13 @@ function Expression(expression, unit) {
 }
 
 function Model() {
+    // ms, sec. min, hr
+    this.timeUnit = 'sec';
+    // rate, percent
+    this.utilisationUnit = 'percent';
+    // tps, tpm, tph
+    this.throughputUnit = 'tps';
+
     this.sources = [];
     this.nodes = [];
     this.visits = [];
@@ -816,20 +822,129 @@ var app = angular.module(
         }
 );
 
-app.directive('input', function(){
+
+app.directive('number', function () {
     return {
         require: 'ngModel',
-        link: function(scope, element, attrs, ngModelController) {
-            ngModelController.$parsers.push(function (data) {
-                return data;
-            });
-            ngModelController.$formatters.push(function(data) {
-                if (number(data)) {
-                    return parseFloat(data.toPrecision(5));
-                } else {
-                    return data;
-                }
-            });
+        link: function (scope, element, attrs, ngModelController) {
+            ngModelController.$parsers.push(
+                    function (data) {
+                        return data;
+                    }
+            );
+            ngModelController.$formatters.push(
+                    function (data) {
+                        if (number(data)) {
+                            return parseFloat(data.toPrecision(5));
+                        } else {
+                            return data;
+                        }
+                    }
+            );
+        }
+    };
+});
+
+app.directive('time', function () {
+    return {
+        require: 'ngModel',
+        link: function (scope, element, attrs, ngModelController) {
+            ngModelController.$parsers.push(
+                    function (data) {
+                        if (!number(data)) {
+                            return data;
+                        }
+                        switch (scope.model.timeUnit) {
+                            case 'ms': return parseFloat(data * 1000).toPrecision(10);
+                            case 'sec': return data;
+                            case 'min': return parseFloat(data / 60).toPrecision(10);
+                            case 'hr': return parseFloat(data / 3600).toPrecision(10);
+                        }
+                        return null;
+                    }
+            );
+            ngModelController.$formatters.push(
+                    function (data) {
+                        if (number(data)) {
+                            return parseFloat(data.toPrecision(5));
+                        }
+                        switch (scope.model.timeUnit) {
+                            case 'ms': return parseFloat(data / 1000).toPrecision(5);
+                            case 'sec': return data;
+                            case 'min': return parseFloat(data * 60).toPrecision(5);
+                            case 'hr': return parseFloat(data * 3600).toPrecision(5);
+                        }
+                        return null;
+                    }
+            );
+        }
+    };
+});
+
+
+
+app.directive('utilisation', function () {
+    return {
+        require: 'ngModel',
+        link: function (scope, element, attrs, ngModelController) {
+            ngModelController.$parsers.push(
+                    function (data) {
+                        if (!number(data)) {
+                            return data;
+                        }
+                        switch (scope.model.timeUnit) {
+                            case 'percent': return parseFloat((data / 100).toPrecision(10));
+                            case 'rate': return parseFloat(data.toPrecision(10));
+                        }
+                        return null;
+                    }
+            );
+            ngModelController.$formatters.push(
+                    function (data) {
+                        if (!number(data)) {
+                            return data;
+                        }
+                        switch (scope.model.timeUnit) {
+                            case 'percent': return parseFloat((data * 100).toPrecision(5));
+                            case 'rate': return parseFloat(data.toPrecision(5));
+                        }
+                        return null;
+                    }
+            );
+        }
+    };
+});
+
+app.directive('throughput', function () {
+    return {
+        require: 'ngModel',
+        link: function (scope, element, attrs, ngModelController) {
+            ngModelController.$parsers.push(
+                    function (data) {
+                        if (number(data)) {
+                            return data;
+                        }
+                        switch (scope.model.timeUnit) {
+                            case 'tps': return data;
+                            case 'tpm': return parseFloat((data * 60).toPrecision(5));
+                            case 'tph': return parseFloat((data * 3600).toPrecision(5));
+                        }
+                        return null;
+                    }
+            );
+            ngModelController.$formatters.push(
+                    function (data) {
+                        if (number(data)) {
+                            return parseFloat(data.toPrecision(5));
+                        }
+                        switch (scope.model.timeUnit) {
+                            case 'tps': return data;
+                            case 'tpm': return parseFloat((data * 60).toPrecision(5));
+                            case 'tph': return parseFloat((data * 3600).toPrecision(5));
+                        }
+                        return null;
+                    }
+            );
         }
     };
 });
@@ -868,6 +983,19 @@ app.controller('MainCtrl', function ($scope) {
             }
         }
     };
+
+
+    $scope.$watch(
+            "model.timeUnit",
+            function( newValue, oldValue ) {
+// Ignore initial setup.
+                if ( newValue === oldValue ) {
+                    return;
+                }
+                console.log( "$watch: helena.quality changed." );
+                $scope.model.sources[0].responseTime.value = 2;
+            }
+    );
 
 });
 
