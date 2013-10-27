@@ -99,7 +99,7 @@
             </properties>
         </profile>
         <profile>
-            <id>javadov</id>
+            <id>javadoc</id>
             <build>
                 <plugins>
                     <plugin>

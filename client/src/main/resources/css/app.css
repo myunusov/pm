@@ -22,6 +22,7 @@ body {
 
 .ng-cloak {
     opacity: 0;
+    background-color: white;
 }
 
 .ng-invalid {
@@ -101,11 +102,6 @@ section {
     line-height: 1;
 }
 
-.icon-github {
-    background: no-repeat url('../img/github-16px.png');
-    width: 16px;
-    height: 16px;
-}
 
 .simplebox {
     outline: none;
@@ -117,8 +113,213 @@ section {
     font-size: 24px;
 }
 
-@media only screen and (max-device-width: 480px) {
+.hdrbutton {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border: 0 none;
+    cursor: pointer;
+    padding: 0 0 0 5px;
+    color: #000000;
+    float: right;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 20px;
+    opacity: 0.2;
+    text-shadow: 0 1px 0 #FFFFFF;
+}
+
+.frame {
+    min-height: 20px;
+    margin-bottom: 20px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.framehdr {
+    min-height: 20px;
+    padding: 9px;
+    background-color: #f5f5f5;
+    font-weight: bold;
+    border: 1px solid #e3e3e3;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+
+/*
+Generic Styling, for Desktops/Laptops
+*/
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+/* Zebra striping */
+tr:nth-of-type(odd) {
+    background: #eee;
+}
+th {
+    background: #e3e3e3;
+    color: #333;
+    font-weight: bold;
+}
+td, th {
+    padding: 6px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+/* Large desktop */
+@media (min-width: 1200px) {
+    #brand {
+        display: none;
+    }
+    #label1 {
+        display: block;
+    }
+    #label2 {
+        display: none;
+    }
+}
+
+/* Portrait tablet to landscape and desktop */
+@media (min-width: 768px) and (max-width: 979px) {
+    #brand {
+        display: none;
+    }
+    #label1 {
+        display: block;
+    }
+    #label2 {
+        display: none;
+    }
+}
+
+/* Landscape phone to portrait tablet */
+@media (max-width: 767px) {
+    #brand {
+        display: none;
+    }
+    #label1 {
+        display: block;
+    }
+    #label2 {
+        display: none;
+    }
+
+    /* Force table to not be like tables anymore */
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    /* Hide table headers (but not display: none;, for accessibility) */
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    tr { border: 1px solid #ccc; }
+
+    td {
+        /* Behave  like a "row" */
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+    }
+
+    td:before {
+        /* Now like a table header */
+        position: absolute;
+        /* Top/left values mimic padding */
+        top: 6px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+    }
+
+    /*
+    Label the data
+    */
+    .nodes td:nth-of-type(1):before {
+        content: "Node Name";
+    }
+    .nodes td:nth-of-type(2):before {
+        content: "U (ext)";
+    }
+    .nodes td:nth-of-type(3):before {
+        content: "U (full)";
+    }
+
+    .sources td:nth-of-type(1):before {
+        content: "Source Name";
+    }
+    .sources td:nth-of-type(2):before {
+        content: "M";
+    }
+    .sources td:nth-of-type(3):before {
+        content: "Z";
+    }
+    .sources td:nth-of-type(4):before {
+        content: "X";
+    }
+    .sources td:nth-of-type(5):before {
+        content: "RT";
+    }
+
+    .visits td:nth-of-type(1):before {
+        content: "Node";
+    }
+    .visits td:nth-of-type(2):before {
+        content: "Source";
+    }
+    .visits td:nth-of-type(3):before {
+        content: "V(I)";
+    }
+    .visits td:nth-of-type(4):before {
+        content: "X(I)";
+    }
+    .visits td:nth-of-type(5):before {
+        content: "S(I)";
+    }
+    .visits td:nth-of-type(6):before {
+        content: "U(I)";
+    }
+    .visits td:nth-of-type(7):before {
+        content: "N(I)";
+    }
+    .visits td:nth-of-type(8):before {
+        content: "RT(I)";
+    }
+
+
+}
+
+
+
+
+
+/* Landscape phones and down */
+@media (max-width: 480px) {
     #overview {
         display: none;
     }
+    #label1 {
+        display: none;
+    }
+    #label2 {
+        display: block;
+    }
+    #brand {
+        display: block;
+    }
+
 }

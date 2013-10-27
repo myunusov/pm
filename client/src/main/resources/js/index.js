@@ -826,6 +826,7 @@ var app = angular.module(
 app.directive('number', function () {
     return {
         require: 'ngModel',
+        template: '',
         link: function (scope, element, attrs, ngModelController) {
             ngModelController.$parsers.push(
                     function (data) {
