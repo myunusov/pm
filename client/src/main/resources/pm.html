@@ -55,7 +55,7 @@
 
 <div style="margin: 32px;"></div>
 
-<header class="hero-unit" id="overview">
+<header id="overview" class="hero-unit">
     <div class="container">
         <div class="container-fluid">
             <h1>Performance Model Calculator</h1>
@@ -75,10 +75,10 @@
                 <div class="framehdr">
                     <i class="icon icon-hdd"></i>
                     Nodes
-                    <button class="hdrbutton" ng-click="model.removeSource(source)">
+                    <button ng-click="model.addNode()">
                         <i class="icon-plus"></i>
                     </button>
-                    <button class="hdrbutton" ng-click="model.removeSource(source)">
+                    <button ng-click="">
                         <i class="icon-cog"></i>
                     </button>
                 </div>
@@ -87,60 +87,47 @@
                         <thead>
                         <tr>
                             <th>Node Name</th>
-                            <th class="numeric">Utilization</th>
-                            <th class="numeric">Utilization</th>
+                            <th class="numeric">Utilization Ext.</th>
+                            <th class="numeric">Utilization Full</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>CPU</td>
+                        <tr ng-repeat="node in model.nodes">
+                            <td>
+                                <input type="text" class="input input-small simplebox" ng-model="node.name">
+                                <button ng-click="model.removeNode(node)">
+                                    <i class="icon-remove"></i>
+                                </button>
+                            </td>
                             <td nowrap="nowrap">
-                                <div style="float: left; display: inline-block; white-space: nowrap;">
-                                <span id="id1l" class="numeric dropdown" onclick="
-                                    $('#id1l').css('display', 'none');
-                                    $('#id1i').css('display', 'inline-block').focus();
-                                ">&nbsp;{{u1}}</span>
-                                    <span>
-                                    <input id="id1i" type="number"
-                                           class="input input-mini simplebox" style="display:none"
-                                           ng-model="u1"
-                                           onblur="
-                                    $('#id1i').css('display', 'none');
-                                    $('#id1l').css('display', 'inline-block');
-                                " value="0.01">
-                                     </span>
-                                <span class="numeric dropdown" style="align: right;">
-                                <a class="dropdown-toggle">%</a>
+                                <div>
+                                    <input utilization="node.utilizationEx"
+                                           type="text" pattern="\d*[\., \,]?\d*"
+                                           class="input input-small simplebox"
+                                           ng-model="node.utilizationEx.value">
+                                <span class="numeric dropdown">
+                                <a class="dropdown-toggle">{{node.utilizationEx.unit === "rate" ? "rate" : "%"}}</a>
                                 <ul class="dropdown-menu">
-                                    <li><a>%</a></li>
-                                    <li><a>rate</a></li>
+                                    <li ng-hide="node.utilizationEx.unit === 'percent'"><a ng-click="node.utilizationEx.unit  = 'percent'">%</a></li>
+                                    <li ng-hide="node.utilizationEx.unit === 'rate'" ><a ng-click="node.utilizationEx.unit  = 'rate'">rate</a></li>
                                 </ul>
                                 </span>
                                 </div>
                             </td>
-                            <td class="numeric dropdown">
-                                <div style="float: left; display: inline-block; white-space: nowrap;">
-                                <span id="id2l" class="numeric dropdown" onclick="
-                                    $('#id2l').css('display', 'none');
-                                    $('#id2i').css('display', 'inline-block').focus();
-                                ">&nbsp;{{u2}}</span>
-                                    <span>
-                                    <input id="id2i" type="number"
-                                           class="input input-mini simplebox" style="display:none"
-                                           ng-model="u2"
-                                           onblur="
-                                    $('#id2i').css('display', 'none');
-                                    $('#id2l').css('display', 'inline-block');
-                                " value="0.01">
-                                     </span>
-                                <span class="numeric dropdown" style="align: right;">
-                                <a class="dropdown-toggle">%</a>
-                                <ul class="dropdown-menu">
-                                    <li><a>%</a></li>
-                                    <li><a>rate</a></li>
-                                </ul>
-                                </span>
-                                </div>
+                            <td nowrap="nowrap">
+                                <utilization ng-model="node.utilization"></utilization>
+                                <!--                                <div>
+                                                                    <input type="text" pattern="[\d, \., \,]*"
+                                                                           class="input input-small simplebox"
+                                                                           ng-model="node.utilization.value">
+                                                                <span class="numeric dropdown">
+                                                                <a class="dropdown-toggle">{{node.utilization.unit === "rate" ? "rate" : "%"}}</a>
+                                                                <ul class="dropdown-menu">
+                                                                    <li ng-hide="node.utilization.unit === 'percent'"><a ng-click="node.utilization.unit  = 'percent'">%</a></li>
+                                                                    <li ng-hide="node.utilization.unit === 'rate'" ><a ng-click="node.utilization.unit  = 'rate'">rate</a></li>
+                                                                </ul>
+                                                                </span>
+                                                                </div>-->
                             </td>
                         </tr>
                         </tbody>
@@ -153,10 +140,10 @@
                 <div class="framehdr">
                     <i class="icon icon-user"></i>
                     Sources
-                    <button class="hdrbutton" ng-click="model.removeSource(source)">
+                    <button class="hdrbutton" ng-click="model.addSource()">
                         <i class="icon-plus"></i>
                     </button>
-                    <button class="hdrbutton" ng-click="model.removeSource(source)">
+                    <button class="hdrbutton" ng-click="">
                         <i class="icon-cog"></i>
                     </button>
                 </div>
@@ -172,8 +159,16 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>CPU</td>
+                        <tr ng-repeat="source in model.sources">
+                            <td>
+                                <button  ng-click="model.removeSource(source)">
+                                    <i class="icon-remove"></i>
+                                </button>
+                                <input type="text"
+                                       class="input input-small simplebox"
+                                       ng-model="source.name"
+                                       value="Source 1">
+                            </td>
                             <td class="numeric">1000</td>
                             <td class="numeric">1 sec</td>
                             <td class="numeric">100 tps</td>
@@ -193,10 +188,7 @@
                     <div class="framehdr">
                         <i class="icon icon-time"></i>
                         Visits
-                        <button class="hdrbutton" ng-click="model.removeSource(source)">
-                            <i class="icon-plus"></i>
-                        </button>
-                        <button class="hdrbutton" ng-click="model.removeSource(source)">
+                        <button class="hdrbutton" ng-click="">
                             <i class="icon-cog"></i>
                         </button>
                     </div>
@@ -216,9 +208,9 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>Read</td>
-                                <td>CPU</td>
+                            <tr ng-repeat="visit in model.visits">
+                                <td>{{visit.source.name}}</td>
+                                <td>{{visit.node.name}}</td>
                                 <td class="numeric">0.01</td>
                                 <td class="numeric">-0.01</td>
                                 <td class="numeric">-0.36%</td>
@@ -254,6 +246,8 @@
 <script src="bootstrap/js/bootstrap-transition.js"></script>
 <script src="bootstrap/js/bootstrap-collapse.js"></script>
 
+<script src="js/maxur-utils.js"></script>
+<script src="js/qnm-model.js"></script>
 <script src="js/pm.js"></script>
 
 </body>
