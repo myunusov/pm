@@ -202,11 +202,10 @@ tr:nth-of-type(odd) .simplebox {
     background-color: #eee;
 }
 
-
 /* Large desktop */
-@media (min-width: 1200px) {
+@media (min-width: 979px) {
     #brand {
-        display: block;
+        display: none;
     }
     #label1 {
         display: block;
@@ -215,11 +214,9 @@ tr:nth-of-type(odd) .simplebox {
         display: none;
     }
     #overview {
-        display: none;
+        display: block;
     }
-
 }
-
 
 /* Landscape phone to portrait tablet */
 @media (max-width: 979px) {

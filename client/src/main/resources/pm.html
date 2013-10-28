@@ -100,34 +100,33 @@
                                 </button>
                             </td>
                             <td nowrap="nowrap">
-                                <div>
-                                    <input utilization="node.utilizationEx"
-                                           type="text" pattern="\d*[\., \,]?\d*"
-                                           class="input input-small simplebox"
-                                           ng-model="node.utilizationEx.value">
+                                <input type="text" quantity
+                                       class="input input-small simplebox"
+                                       ng-model="node.utilizationEx.value"
+                                       style="{{node.utilizationEx.isValid() ? '' : 'color: red'}}"
+                                       pattern="{{node.utilizationEx.unit.pattern}}">
                                 <span class="numeric dropdown">
-                                <a class="dropdown-toggle">{{node.utilizationEx.unit === "rate" ? "rate" : "%"}}</a>
-                                <ul class="dropdown-menu">
-                                    <li ng-hide="node.utilizationEx.unit === 'percent'"><a ng-click="node.utilizationEx.unit  = 'percent'">%</a></li>
-                                    <li ng-hide="node.utilizationEx.unit === 'rate'" ><a ng-click="node.utilizationEx.unit  = 'rate'">rate</a></li>
-                                </ul>
+                                    <a class="dropdown-toggle">{{node.utilizationEx.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in node.utilizationEx.availableUnits()">
+                                            <a ng-click="node.utilizationEx.unit = unit;">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
                                 </span>
-                                </div>
                             </td>
                             <td nowrap="nowrap">
-                                <utilization ng-model="node.utilization"></utilization>
-                                <!--                                <div>
-                                                                    <input type="text" pattern="[\d, \., \,]*"
-                                                                           class="input input-small simplebox"
-                                                                           ng-model="node.utilization.value">
-                                                                <span class="numeric dropdown">
-                                                                <a class="dropdown-toggle">{{node.utilization.unit === "rate" ? "rate" : "%"}}</a>
-                                                                <ul class="dropdown-menu">
-                                                                    <li ng-hide="node.utilization.unit === 'percent'"><a ng-click="node.utilization.unit  = 'percent'">%</a></li>
-                                                                    <li ng-hide="node.utilization.unit === 'rate'" ><a ng-click="node.utilization.unit  = 'rate'">rate</a></li>
-                                                                </ul>
-                                                                </span>
-                                                                </div>-->
+                                <input type="text" class="input input-small simplebox"
+                                       ng-model="node.utilization.value"
+                                       style="{{node.utilization.isValid() ? '' : 'color: red'}}"
+                                       pattern="{{node.utilization.unit.pattern}}">
+                                <span class="numeric dropdown">
+                                    <a class="dropdown-toggle">{{node.utilization.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in node.utilization.availableUnits()">
+                                            <a ng-click="node.utilization.unit = unit;">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
                             </td>
                         </tr>
                         </tbody>
@@ -161,7 +160,7 @@
                         <tbody>
                         <tr ng-repeat="source in model.sources">
                             <td>
-                                <button  ng-click="model.removeSource(source)">
+                                <button ng-click="model.removeSource(source)">
                                     <i class="icon-remove"></i>
                                 </button>
                                 <input type="text"

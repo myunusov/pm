@@ -16,50 +16,7 @@
 angular.module('pm.service', []);
 
 
-angular.module('pm.directive', [])
-        .directive('utilization', function () {
-            return {
-                require: 'ngModel',
-                link: function (scope, element, attrs, ngModelController) {
-                    ngModelController.$parsers.push(
-                            function (data) {
-                                if (!number(data)) {
-                                    return data;
-                                }
-                                switch (scope.model.timeUnit) {
-                                    case 'percent':
-                                        return parseFloat((data / 100).toPrecision(10));
-                                    case 'rate':
-                                        return parseFloat(data.toPrecision(10));
-                                }
-                                return null;
-                            }
-                    );
-                    ngModelController.$formatters.push(
-                            function (data) {
-                                if (!number(data)) {
-                                    return data;
-                                }
-                                switch (scope.model.timeUnit) {
-                                    case 'percent':
-                                        return parseFloat((data * 100).toPrecision(5));
-                                    case 'rate':
-                                        return parseFloat(data.toPrecision(5));
-                                }
-                                return null;
-                            }
-                    );
-                }
-            };
-        })
-        .directive('utilization', function() {
-            return {
-                restrict: 'E',
-                require: '^ngModel',
-                template: '<div>\n    <input type="text" pattern="[\\d, \\., \\,]*"\n           class="input input-small simplebox"\n           ng-model="ngModel.value">\n                                <span class="numeric dropdown">\n                                <a class="dropdown-toggle">{{ngModel.unit === "rate" ? "rate" : "%"}}</a>\n                                <ul class="dropdown-menu">\n                                    <li ng-hide="ngModel.unit === \'percent\'"><a ng-click="ngModel.unit  = \'percent\'">%</a></li>\n                                    <li ng-hide="ngModel.unit === \'rate\'" ><a ng-click="ngModel.unit  = \'rate\'">rate</a></li>\n                                </ul>\n                                </span>\n</div>'
-            }
-        });
-
+angular.module('pm.directive', []);
 
 
 angular.module('pm.filter', []);

@@ -1,7 +1,49 @@
+function QNMUnit(id, title, rate, pattern) {
+    this.id = id;
+    this.title = title || id;
+    this.rate = rate || 1;
+    this.pattern = pattern || "\\d*[\\., \\,]?\\d*";
+
+    this.equals  = function(other) {
+        if (!other) {
+            return null;
+        }
+        return (other instanceof QNMUnit) &&
+                other.id === this.id;
+    };
+}
+
 function Quantity() {
     this.lock = false;
     this.eval = false;
     this.inconsistent = false;
+
+    this.empty = function() {
+        return empty(this.value);
+    };
+
+    this.availableUnits = function () {
+        var result = [];
+        if (!this.units) {
+            return  result;
+        }
+        for (var i = 0; i < this.units.length; i++) {
+            if (!this.units[i].equals(this.unit)) {
+                result.push(this.units[i]);
+            }
+        }
+        return result;
+    };
+
+    this.asNormForm = function () {
+        if (this.empty()) {
+            return null;
+        }
+        if (isNaN(this.value) || !isFinite(this.value)) {
+            return this.value;
+        }
+        return (this.value / this.unit.rate).toPrecision(5);
+    };
 
     this.beforeUpdate = function(newValue) {
         this.inconsistent = (this.eval || this.lock) ? this.asNormForm() !==newValue : false;
@@ -9,91 +51,39 @@ function Quantity() {
         return !this.inconsistent;
     };
 
-    this.empty = function() {
-        return empty(this.value);
-    };
-}
-
-function Utilization(value) {
-    this.value = value;
-    this.unit = 'percent';
-
-    this.asNormForm = function () {
-        if (this.empty()) {
-            return null;
-        }
-        if (isNaN(this.value) || !isFinite(this.value)) {
-            return this.value;
-        }
-        return this.unit === 'percent' ?
-                (this.value / 100).toPrecision(5) :
-                this.value;
-    };
-    this.asNormFormStr = function () {
-        if (this.empty()) {
-            return '';
-        }
-        return this.asNormForm();
-    };
-    this.asNormFormTips = function () {
-        if (this.empty()) {
-            return '';
-        }
-        return this.unit === "percent" ? this.asNormFormStr() : '';
-    };
     this.setAsNormForm = function (newValue) {
         if (!this.beforeUpdate(newValue)) {
             return;
         }
         newValue = parseFloat(newValue);
-        this.value = this.unit === 'rate' ? newValue : newValue * 100;
+        this.value = newValue * this.unit.rate;
     };
+}
+
+function Utilization(value) {
+    this.value = value;
+    this.units = [
+        new QNMUnit('rate'),
+        new QNMUnit('percent', '%', 100)
+    ];
+    this.unit = this.units[1];
+
     this.isValid = function () {
-        return !this.inconsistent && (!this.value || this.asNormForm() < 1);
+        return !this.inconsistent && (!this.value || this.asNormForm() < 1 && this.asNormForm() >= 0);
     };
 }
 Utilization.prototype = new Quantity();
 
 function QNMTime(value) {
     this.value = value;
-    this.unit = 'sec';
+    this.units = [
+        new QNMUnit('ms', 'ms', 0.001),
+        new QNMUnit('sec'),
+        new QNMUnit('min', 'min', 60),
+        new QNMUnit('hr', 'hr', 3600)
+    ];
+    this.unit = this.units[1];
 
-    this.asNormForm = function () {
-        if (this.empty()) {
-            return null;
-        }
-        if (isNaN(this.value) || !isFinite(this.value)) {
-            return this.value;
-        }
-        return this.unit === 'hr' ?
-                (this.value * 3600).toPrecision(5) :
-                (
-                        this.unit === 'min' ?
-                                (this.value * 60).toPrecision(5) :
-                                this.value
-                        );
-    };
-    this.asNormFormStr = function () {
-        if (this.empty()) {
-            return '';
-        }
-        return this.asNormForm() + " sec.";
-    };
-    this.asNormFormTips = function () {
-        if (this.empty()) {
-            return '';
-        }
-        return this.unit === "sec" ? '' : this.asNormFormStr();
-    };
-    this.setAsNormForm = function (newValue) {
-        if (!this.beforeUpdate(newValue)) {
-            return;
-        }
-        newValue = parseFloat(newValue);
-        this.value = this.unit === 'hr' ?
-                (newValue / 3600) :
-                (this.unit === 'min' ? (newValue / 60) : newValue);
-    };
     this.isValid = function () {
         return !this.inconsistent && (!this.value || this.value >= 0);
     };
@@ -102,18 +92,8 @@ QNMTime.prototype = new Quantity();
 
 function QNMNumber(value) {
     this.value = value;
-    this.unit = 'sec';
-
-    this.asNormForm = function () {
-        return this.value;
-    };
-    this.setAsNormForm = function (newValue) {
-        if (!this.beforeUpdate(newValue)) {
-            return;
-        }
-        newValue = parseFloat(newValue);
-        this.value = newValue;
-    };
+    this.units = [new QNMUnit('pcs', '')];
+    this.unit = this.units[0];
 
     this.isValid = function () {
         return !this.inconsistent && (!this.value || this.value >= 0);
@@ -123,41 +103,12 @@ QNMNumber.prototype = new Quantity();
 
 function Throughput(value) {
     this.value = value;
-    this.unit = 'tps';
-
-    this.asNormForm = function () {
-        if (this.empty()) {
-            return null;
-        }
-        if (isNaN(this.value) || !isFinite(this.value)) {
-            return this.value;
-        }
-        return this.unit === 'tph' ?
-                (this.value / 3600).toPrecision(5) :
-                (
-                        this.unit === 'tpm' ?
-                                (this.value / 60).toPrecision(5) :
-                                this.value.toPrecision(5)
-                        );
-    };
-    this.asNormFormStr = function () {
-        if (this.empty()) {
-            return '';
-        }
-        return this.asNormForm() + " tps.";
-    };
-    this.asNormFormTips = function () {
-        return (this.empty()) || this.unit === "tps" ? '' : this.asNormFormStr();
-    };
-    this.setAsNormForm = function (newValue) {
-        if (!this.beforeUpdate(newValue)) {
-            return;
-        }
-        newValue = parseFloat(newValue);
-        this.value = this.unit === 'tph' ?
-                (newValue * 3600) :
-                (this.unit === 'tpm' ? (newValue * 60) : newValue);
-    };
+    this.units = [
+        new QNMUnit('tps'),
+        new QNMUnit('tpm', 'tpm', 60),
+        new QNMUnit('tpm', 'tph', 3600)
+    ];
+    this.unit = this.units[0];
 
     this.isValid = function () {
         return !this.inconsistent && (!this.value || this.value >= 0);
@@ -165,7 +116,7 @@ function Throughput(value) {
 }
 Throughput.prototype = new Quantity();
 
-function QNMUnit() {
+function QNMElement() {
 
     this.invalid = false;
     this.lastEvalParam = null;
@@ -225,7 +176,7 @@ function QNMUnit() {
         if (!other) {
             return null;
         }
-        return (other instanceof QNMUnit) &&
+        return (other instanceof QNMElement) &&
                 other.id ===  this.id;
     };
 }
@@ -269,7 +220,7 @@ function QNMSource(id, name) {
                 other.id ===  this.id;
     };
 }
-QNMSource.prototype = new QNMUnit();
+QNMSource.prototype = new QNMElement();
 
 function QNMNode(id, name) {
     this.id = id;
@@ -290,7 +241,7 @@ function QNMNode(id, name) {
                 other.id ===  this.id;
     };
 }
-QNMNode.prototype = new QNMUnit();
+QNMNode.prototype = new QNMElement();
 
 function QNMVisit(source, node) {
     this.id = source.id + "-" + node.id;
@@ -328,12 +279,12 @@ function QNMVisit(source, node) {
                 other.id ===  this.id;
     };
 }
-QNMVisit.prototype = new QNMUnit();
+QNMVisit.prototype = new QNMElement();
 
-function Parameter(name, unit) {
+function Parameter(name, element) {
     this.name  = name;
-    this.unit  = unit;
-    this.value = unit ? unit.getByName(name).asNormForm() : null;
+    this.element  = element;
+    this.value = element ? element.getByName(name).asNormForm() : null;
 
 
     this.isUndefined = function() {
@@ -344,15 +295,15 @@ function Parameter(name, unit) {
         return  other &&
                 other instanceof Parameter &&
                 other.name === this.name &&
-                other.unit.equals(this.unit);
+                other.element.equals(this.element);
     };
 
     this.sync = function() {
-        if (empty(this.value) || (!this.unit)) {
+        if (empty(this.value) || (!this.element)) {
             return null;
         }
-        this.unit.setValue(this);
-        if (this.unit.invalid) {
+        this.element.setValue(this);
+        if (this.element.invalid) {
             return null;
         }
         return this;
@@ -421,14 +372,14 @@ function Calculator(fields, expressions) {
 
 }
 
-function Expression(expression, unit) {
+function Expression(expression, element) {
 
     this.expression = expression.clone();
 
-    if (unit) {
+    if (element) {
         this.expression.subst(
                 function (v) {
-                    return (number(v) || v instanceof Parameter) ? v : new Parameter(v, unit);
+                    return (number(v) || v instanceof Parameter) ? v : new Parameter(v, element);
                 }
         );
     }
@@ -555,8 +506,8 @@ function QNM(name) {
         return result;
     };
 
-    this.getFieldsSeqByChangedFieldName = function (fieldName, unit) {
-        var firstParameter = new Parameter(fieldName, unit);
+    this.getFieldsSeqByChangedFieldName = function (fieldName, element) {
+        var firstParameter = new Parameter(fieldName, element);
         if (firstParameter.isUndefined()) {
             return null;
         }
@@ -665,8 +616,8 @@ function QNM(name) {
         return expressions;
     };
 
-    this.makeCalculator = function(fieldName, unit) {
-        var fields = this.getFieldsSeqByChangedFieldName(fieldName, unit);
+    this.makeCalculator = function(fieldName, element) {
+        var fields = this.getFieldsSeqByChangedFieldName(fieldName, element);
         if (!fields) {
             return null;
         }
