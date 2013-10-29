@@ -40,7 +40,9 @@ function Quantity() {
 
     Object.defineProperty(this, 'text', {
         get: function() {
-            return this._text || (number(this.value) ? (this.value / this.unit.rate).toPrecision(5) : this.value);
+            return (this._text || this._text === 0) ?
+                    this._text :
+                    (number(this.value) ? (this.value / this.unit.rate).toPrecision(5) : this.value);
         },
         set: function(value) {
             this._text = value;
@@ -93,6 +95,7 @@ function Utilization(value) {
     ];
     this.unit = this.units[1];
     this.value = value;
+    this._text = value;
     this.valid = function () {
         return !this.value || (number(this.value) && this.value < 1 && this.value >= 0);
     };
@@ -101,6 +104,7 @@ Utilization.prototype = new Quantity();
 
 function QNMTime(value) {
     this.value = value;
+    this._text = value;
     this.units = [
         new QNMUnit('ms', 'ms', 0.001),
         new QNMUnit('sec'),
@@ -113,6 +117,7 @@ QNMTime.prototype = new Quantity();
 
 function QNMNumber(value) {
     this.value = value;
+    this._text = value;
     this.units = [new QNMUnit('pcs', '')];
     this.unit = this.units[0];
 }
@@ -120,10 +125,11 @@ QNMNumber.prototype = new Quantity();
 
 function Throughput(value) {
     this.value = value;
+    this._text = value;
     this.units = [
         new QNMUnit('tps'),
-        new QNMUnit('tpm', 'tpm', 60),
-        new QNMUnit('tph', 'tph', 3600)
+        new QNMUnit('tpm', 'tpm', 1/60),
+        new QNMUnit('tph', 'tph', 1/3600)
     ];
     this.unit = this.units[0];
 }
@@ -441,33 +447,40 @@ function QNM(name) {
 
     var sourcesNo = 0;
     var nodeNo = 0;
+    var changedFields = [];
 
     this.addSource = function () {
          var source = new QNMSource(++sourcesNo);
          this.sources.push(source);
+         changedFields = changedFields.concat(source.getSignificance());
          for (var i = 0; i < this.nodes.length; i++) {
-         this.visits.push(new QNMVisit(source, this.nodes[i]));
+             var visit = new QNMVisit(source, this.nodes[i]);
+             this.visits.push(visit);
+             changedFields = changedFields.concat(visit.getSignificance());
          }
     };
     this.removeSource = function (source) {
          this.sources.remove(source);
          for (var i = 0; i < this.nodes.length; i++) {
          var visit = this.getVisitBy(source, this.nodes[i]);
-         this.visits.remove(visit);
+            this.visits.remove(visit);
          }
     };
     this.addNode = function () {
         var node = new QNMNode(++nodeNo);
         this.nodes.push(node);
+        changedFields = changedFields.concat(node.getSignificance());
         for (var i = 0; i < this.sources.length; i++) {
-         this.visits.push(new QNMVisit(this.sources[i], node));
-         }
+            var visit = new QNMVisit(this.sources[i], node);
+            this.visits.push(visit);
+            changedFields = changedFields.concat(visit.getSignificance());
+        }
     };
     this.removeNode = function (node) {
         this.nodes.remove(node);
         for (var i = 0; i < this.sources.length; i++) {
-         this.visits.remove(this.getVisitBy(this.sources[i], node));
-         }
+            this.visits.remove(this.getVisitBy(this.sources[i], node));
+        }
     };
 
     this.getVisitBy = function(source, node) {
@@ -596,11 +609,23 @@ function QNM(name) {
         return expressions;
     };
 
-    this.makeCalculator = function(changedFields) {
+    this.makeCalculator = function(fieldName, element) {
+
+        var changedField = new Parameter(fieldName, element);
+
+        if (changedFields.contains(changedField)) {
+            changedFields.remove(changedField);
+        }
+        if (changedField.isUndefined()) {
+            return null;
+        }
+        changedFields.push(changedField);
+
         var fields = this.getFieldsSeqBy(changedFields);
         if (!fields) {
             return null;
         }
+
         var expressions = this.getExpressions();
         if (!expressions) {
             return null;

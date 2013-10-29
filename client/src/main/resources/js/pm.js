@@ -61,30 +61,13 @@ function QNMCtrl($scope, qnmFactory) {
 
     $scope.model = qnmFactory.qnm();
 
-
-    $scope.fields = [];
-    // $scope.fields = $scope.model.getFieldsSeqBy([]); TODO add new node or source must recalculate model
-
     $scope.change = function (fieldName, element) {
-
-        var changedField = new Parameter(fieldName, element);
-        if (changedField.isUndefined()) {
-            return;
-        }
         $scope.clearAlerts();
         $scope.model.init();
-
-        if ($scope.fields.contains(changedField)) {
-            $scope.fields.remove(changedField);
-        }
-        $scope.fields.push(changedField);
-
-        var calculator  = $scope.model.makeCalculator($scope.fields);
-
+        var calculator  = $scope.model.makeCalculator(fieldName, element);
         if (!calculator) {
             return;
         }
-
         for (var result = null; result || calculator.next();) {
             result = calculator.execute();
             if (calculator.error) {

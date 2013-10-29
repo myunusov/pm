@@ -104,7 +104,6 @@
                                        ng-change="change('UEX', node)"
                                        class="input input-small simplebox quantity {{node.utilizationEx.state}}"
                                        ng-model="node.utilizationEx.text"
-                                       style="{{node.utilizationEx.valid() ? '' : 'color: red'}}"
                                        pattern="{{node.utilizationEx.unit.pattern}}">
                                 <span class="numeric dropdown">
                                     <a class="dropdown-toggle simpleank" >{{node.utilizationEx.unit.title}}</a>
@@ -120,7 +119,6 @@
                                        ng-change="change('U', node)"
                                        class="input input-small simplebox quantity {{node.utilization.state}}"
                                        ng-model="node.utilization.text"
-                                       style="{{node.utilization.valid() ? '' : 'color: red'}}"
                                        pattern="{{node.utilization.unit.pattern}}">
                                 <span class="numeric dropdown">
                                     <a class="dropdown-toggle simpleank" >{{node.utilization.unit.title}}</a>
@@ -174,9 +172,8 @@
                             <td nowrap="nowrap">
                                 <input type="text"
                                        ng-change="change('M', source)"
-                                       class="input input-small simplebox quantity"
+                                       class="input input-small simplebox quantity {{source.numberUsers.state}}"
                                        ng-model="source.numberUsers.text"
-                                       style="{{source.numberUsers.valid() ? '' : 'color: red'}}"
                                        pattern="{{source.numberUsers.unit.pattern}}">
                                 <span class="numeric dropdown">
                                     <a class="dropdown-toggle simpleank" >{{source.numberUsers.unit.title}}</a>
@@ -190,9 +187,8 @@
                             <td nowrap="nowrap">
                                 <input type="text"
                                        ng-change="change('Z', source)"
-                                       class="input input-small simplebox quantity"
+                                       class="input input-small simplebox quantity {{source.thinkTime.state}}"
                                        ng-model="source.thinkTime.text"
-                                       style="{{source.thinkTime.valid() ? '' : 'color: red'}}"
                                        pattern="{{source.thinkTime.unit.pattern}}">
                                 <span class="numeric dropdown">
                                     <a class="dropdown-toggle simpleank" >{{source.thinkTime.unit.title}}</a>
@@ -206,9 +202,8 @@
                             <td nowrap="nowrap">
                                 <input type="text"
                                        ng-change="change('X', source)"
-                                       class="input input-small simplebox quantity"
+                                       class="input input-small simplebox quantity {{source.throughput.state}}"
                                        ng-model="source.throughput.text"
-                                       style="{{source.throughput.valid() ? '' : 'color: red'}}"
                                        pattern="{{source.throughput.unit.pattern}}">
                                 <span class="numeric dropdown">
                                     <a class="dropdown-toggle simpleank" >{{source.throughput.unit.title}}</a>
@@ -222,9 +217,8 @@
                             <td nowrap="nowrap">
                                 <input type="text"
                                        ng-change="change('R', source)"
-                                       class="input input-small simplebox quantity"
+                                       class="input input-small simplebox quantity {{source.responseTime.state}}"
                                        ng-model="source.responseTime.text"
-                                       style="{{source.responseTime.valid() ? '' : 'color: red'}}"
                                        pattern="{{source.responseTime.unit.pattern}}">
                                 <span class="numeric dropdown">
                                     <a class="dropdown-toggle simpleank" >{{source.responseTime.unit.title}}</a>
@@ -276,9 +270,8 @@
                                 <td nowrap="nowrap">
                                     <input type="text"
                                            ng-change="change('V', visit)"
-                                           class="input input-small simplebox quantity"
+                                           class="input input-small simplebox quantity {{visit.number.state}}"
                                            ng-model="visit.number.text"
-                                           style="{{visit.number.valid() ? '' : 'color: red'}}"
                                            pattern="{{visit.number.unit.pattern}}">
                                 <span class="numeric dropdown">
                                     <a class="dropdown-toggle simpleank" >{{visit.number.unit.title}}</a>
@@ -292,9 +285,8 @@
                                 <td nowrap="nowrap">
                                     <input type="text"
                                            ng-change="change('XI', visit)"
-                                           class="input input-small simplebox quantity"
+                                           class="input input-small simplebox quantity {{visit.throughput.state}}"
                                            ng-model="visit.throughput.text"
-                                           style="{{visit.throughput.valid() ? '' : 'color: red'}}"
                                            pattern="{{visit.throughput.unit.pattern}}">
                                 <span class="numeric dropdown">
                                     <a class="dropdown-toggle simpleank" >{{visit.throughput.unit.title}}</a>
@@ -308,9 +300,8 @@
                                 <td nowrap="nowrap">
                                     <input type="text"
                                            ng-change="change('S', visit)"
-                                           class="input input-small simplebox quantity"
+                                           class="input input-small simplebox quantity {{visit.serviceTime.state}}"
                                            ng-model="visit.serviceTime.text"
-                                           style="{{visit.serviceTime.valid() ? '' : 'color: red'}}"
                                            pattern="{{visit.serviceTime.unit.pattern}}">
                                 <span class="numeric dropdown">
                                     <a class="dropdown-toggle simpleank" >{{visit.serviceTime.unit.title}}</a>
@@ -324,9 +315,8 @@
                                 <td nowrap="nowrap">
                                     <input type="text"
                                            ng-change="change('U', visit)"
-                                           class="input input-small simplebox quantity"
+                                           class="input input-small simplebox quantity {{visit.utilization.state}}"
                                            ng-model="visit.utilization.text"
-                                           style="{{visit.utilization.valid() ? '' : 'color: red'}}"
                                            pattern="{{visit.utilization.unit.pattern}}">
                                 <span class="numeric dropdown">
                                     <a class="dropdown-toggle simpleank" >{{visit.utilization.unit.title}}</a>
@@ -340,9 +330,8 @@
                                 <td nowrap="nowrap">
                                     <input type="text"
                                            ng-change="change('N', visit)"
-                                           class="input input-small simplebox quantity"
+                                           class="input input-small simplebox quantity {{visit.meanNumberTasks.state}}"
                                            ng-model="visit.meanNumberTasks.text"
-                                           style="{{visit.meanNumberTasks.valid() ? '' : 'color: red'}}"
                                            pattern="{{visit.meanNumberTasks.unit.pattern}}">
                                 <span class="numeric dropdown">
                                     <a class="dropdown-toggle simpleank" >{{visit.meanNumberTasks.unit.title}}</a>
@@ -356,9 +345,8 @@
                                 <td nowrap="nowrap">
                                     <input type="text"
                                            ng-change="change('RT', visit)"
-                                           class="input input-small simplebox quantity"
+                                           class="input input-small simplebox quantity {{visit.residenceTime.state}}"
                                            ng-model="visit.residenceTime.text"
-                                           style="{{visit.residenceTime.valid() ? '' : 'color: red'}}"
                                            pattern="{{visit.residenceTime.unit.pattern}}">
                                 <span class="numeric dropdown">
                                     <a class="dropdown-toggle simpleank" >{{visit.residenceTime.unit.title}}</a>
