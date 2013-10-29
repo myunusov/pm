@@ -34,7 +34,7 @@
 
 <body class="ng-cloak">
 
-<div class="navbar navbar-inverse navbar-fixed-top">
+<div class="navbar navbar-inverse navbar-fixed-top" ng-controller="MainCtrl">
     <div class="navbar-inner">
         <div class="container">
             <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -44,7 +44,7 @@
             <div class="nav-collapse collapse">
                 <ul class="nav pull-right">
                     <li class="active"><a href="#">QNM Model</a></li>
-                    <li><a href="#">About </a></li>
+                    <li><a href="#" ng-click="about()">About </a></li>
                     <li><a href="https://github.com/myunusov/pm/"><strong><i class="icon-github"></i> Code on
                         Github</strong></a></li>
                 </ul>
@@ -60,7 +60,7 @@
         <div class="container-fluid">
             <h1>Performance Model Calculator</h1>
 
-            <p>Computer System Analysis Using <strong>Queueing Network Models</strong> by the
+            <p>Computer System Analysis Using <strong>Performance Models</strong> by the
                 <strong><a href="http://www.maxur.org">Maxim Yunusov</a></strong></p>
         </div>
     </div>
@@ -389,6 +389,22 @@
 <script src="js/maxur-utils.js"></script>
 <script src="js/qnm-model.js"></script>
 <script src="js/pm.js"></script>
+
+<script type="text/ng-template" id="myModalContent.html">
+    <div ng-click="ok()">
+    <div class="modal-header">
+    </div>
+    <div class="modal-body hero-unit">
+        <div class="container-fluid">
+            <h3>Performance Model Calculator</h3>
+            <h4><strong>1.0-SNAPSHOT</strong></h4>
+
+            <p>Computer System Analysis Using <strong>Performance Models</strong> by the
+                <strong><a href="http://www.maxur.org">Maxim Yunusov</a></strong></p>
+        </div>
+    </div>
+    </div>
+</script>
 
 </body>
 </html>
