@@ -102,7 +102,7 @@
                             <td nowrap="nowrap">
                                 <input type="text"
                                        ng-change="change('UEX', node)"
-                                       class="input input-small simplebox quantity"
+                                       class="input input-small simplebox quantity {{node.utilizationEx.state}}"
                                        ng-model="node.utilizationEx.text"
                                        style="{{node.utilizationEx.valid() ? '' : 'color: red'}}"
                                        pattern="{{node.utilizationEx.unit.pattern}}">
@@ -118,7 +118,7 @@
                             <td nowrap="nowrap">
                                 <input type="text"
                                        ng-change="change('U', node)"
-                                       class="input input-small simplebox quantity"
+                                       class="input input-small simplebox quantity {{node.utilization.state}}"
                                        ng-model="node.utilization.text"
                                        style="{{node.utilization.valid() ? '' : 'color: red'}}"
                                        pattern="{{node.utilization.unit.pattern}}">

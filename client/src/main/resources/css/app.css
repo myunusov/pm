@@ -211,6 +211,19 @@ tr:nth-of-type(odd) .simplebox {
     background-color: #eee;
 }
 
+.eval {
+    color: green !important;
+}
+
+.conflict {
+    color: orange !important;
+}
+
+.invalid {
+    color: red !important;
+}
+
+
 /* Large desktop */
 @media (min-width: 979px) {
     #brand {

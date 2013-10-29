@@ -13,9 +13,26 @@ if (typeof String.prototype.endsWith !=='function') {
 
 if (typeof Array.prototype.remove !=='function') {
     Array.prototype.remove = function (v) {
-        this.splice(this.indexOf(v) === -1 ? this.length : this.indexOf(v), 1);
+        var index = this.findIndex(v);
+        this.splice(index === -1 ? this.length : index, 1);
     };
 }
+
+if (typeof Array.prototype.findIndex !=='function') {
+    Array.prototype.findIndex = function (v) {
+        for (var i = 0; i < this.length; i++) {
+            if (this[i].equals && typeof this[i].equals ==='function') {
+                if (this[i].equals(v)) {
+                    return i;
+                }
+            } else if (this[i] === v) {
+                return i;
+            }
+        }
+        return -1;
+    };
+}
+
 
 if (typeof Array.prototype.contains !=='function') {
     Array.prototype.contains = function (v) {

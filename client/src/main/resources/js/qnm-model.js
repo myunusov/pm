@@ -15,7 +15,6 @@ function QNMUnit(id, title, rate, pattern) {
 
 function Quantity() {
 
-    this.lock = false;
     this.eval = false;
     this.inconsistent = false;
     this._text;
@@ -24,6 +23,20 @@ function Quantity() {
         return empty(this.value);
     };
 
+    Object.defineProperty(this, 'state', {
+        get: function() {
+            if (!this.valid()) {
+                return "invalid"
+            }
+            if (this.inconsistent) {
+                return "conflict"
+            }
+            if (this.eval) {
+                return "eval"
+            }
+            return "";
+        }
+    });
 
     Object.defineProperty(this, 'text', {
         get: function() {
@@ -49,7 +62,7 @@ function Quantity() {
     };
 
     this.beforeUpdate = function(newValue) {
-        this.inconsistent = (this.eval || this.lock) ? this.value() !==newValue : false;
+        this.inconsistent = this.eval ? this.value() !==newValue : false;
         this.eval = true;
         return !this.inconsistent;
     };
@@ -140,16 +153,6 @@ function QNMElement() {
         return result;
     };
 
-    this.getLocks = function() {
-        var result = [];
-        for (var name in this.all) {
-            if (this.all.hasOwnProperty(name) && this.getByName(name).lock) {
-                result.push(new Parameter(name, this));
-            }
-        }
-        return result;
-    };
-
     this.getSignificance = function() {
         var result = [];
         for (var name in this.all) {
@@ -223,7 +226,6 @@ function QNMNode(id, name) {
     this.name = name || "Node " + id;
     this.utilization = new Utilization();
     this.utilizationEx = new Utilization(0);
-    this.utilizationEx.lock = true;
     this.all = {
         'U': this.utilization,
         'UEX': this.utilizationEx
@@ -244,8 +246,6 @@ function QNMVisit(source, node) {
     this.source = source;
     this.node = node;
     this.number = new QNMNumber(1);
-    this.number.lock = true;
-
     this.serviceTime = new QNMTime();
     this.utilization = new Utilization();
     this.meanNumberTasks = new QNMNumber();
@@ -499,22 +499,9 @@ function QNM(name) {
         return result;
     };
 
-    this.getFieldsSeqByChangedFieldName = function (fieldName, element) {
-        var firstParameter = new Parameter(fieldName, element);
-        if (firstParameter.isUndefined()) {
-            return null;
-        }
-        var fields = [firstParameter];
-        [this.sources, this.nodes, this.visits].each(
-                function (u) {
-                    var locks = u.getLocks();
-                    for (var i = 0; i < locks.length; i++) {
-                        if (!fields.contains(locks[i])) {
-                            fields.push(locks[i]);
-                        }
-                    }
-                }
-        );
+    this.getFieldsSeqBy = function (changedFields) {
+        var fields = changedFields.clone().reverse();
+
         [this.sources, this.nodes, this.visits].each(
                 function (u) {
                     var notEmpty = u.getSignificance();
@@ -609,8 +596,8 @@ function QNM(name) {
         return expressions;
     };
 
-    this.makeCalculator = function(fieldName, element) {
-        var fields = this.getFieldsSeqByChangedFieldName(fieldName, element);
+    this.makeCalculator = function(changedFields) {
+        var fields = this.getFieldsSeqBy(changedFields);
         if (!fields) {
             return null;
         }
