@@ -26,13 +26,13 @@ function Quantity() {
     Object.defineProperty(this, 'state', {
         get: function() {
             if (!this.valid()) {
-                return "invalid"
+                return "invalid";
             }
             if (this.inconsistent) {
-                return "conflict"
+                return "conflict";
             }
             if (this.eval) {
-                return "eval"
+                return "eval";
             }
             return "";
         }

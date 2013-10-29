@@ -1,5 +1,20 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="qnmApp" id="top">
+<!--
+  ~ Copyright (c) 2013 Maxim Yunusov
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  -->
+
+<html lang="en" ng-app="pm" id="top">
 <head>
     <title>Performance Model Calculator</title>
 
@@ -12,458 +27,368 @@
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="bootstrap/css/bootstrap-responsive.min.css">
     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css"/>
+
     <link rel="stylesheet" href="css/app.css"/>
 
 </head>
 
-<body class="ng-cloak" ng-controller="MainCtrl">
+<body class="ng-cloak">
 
-<header class="navbar  navbar-fixed-top">
+<div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
-            <div class="dropdown pull-left">
-                <a class="brand dropdown-toggle" role="button" data-toggle="dropdown" href="#">
-                    Performance Model Calculator
-                    <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                    <li><a href="https://github.com/myunusov/pm/"><strong><i class="icon-github"></i> Code on Github</strong></a></li>
-                </ul>
-            </div>
-            <a class="btn btn-navbar" role="button" data-toggle="collapse" data-target="#menu">
-                <span class="icon-th-list"></span>
-            </a>
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-th-list"></span></a>
+            <a href="#" class="brand" id="brand">Performance Model</a>
 
-            <div id="menu" class="nav-collapse collapse">
-                <ul class="nav  pull-right">
-                    <li>
-                        <a href="#" ng-click="model.addSource()">
-                            <strong><i class="icon-plus"></i> <i class="icon-user"></i> Add Source</strong>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" ng-click="model.addNode()">
-                            <strong><i class="icon-plus"></i> <i class="icon-desktop"></i> Add Node</strong>
-                        </a>
-                    </li>
+            <div class="nav-collapse collapse">
+                <ul class="nav pull-right">
+                    <li class="active"><a href="#">QNM Model</a></li>
+                    <li><a href="#">About </a></li>
+                    <li><a href="https://github.com/myunusov/pm/"><strong><i class="icon-github"></i> Code on
+                        Github</strong></a></li>
                 </ul>
             </div>
         </div>
     </div>
-</header>
+</div>
 
 <div style="margin: 32px;"></div>
 
-<header class="hero-unit" id="overview">
+<header id="overview" class="hero-unit">
     <div class="container">
         <div class="container-fluid">
             <h1>Performance Model Calculator</h1>
+
             <p>Computer System Analysis Using <strong>Queueing Network Models</strong> by the
                 <strong><a href="http://www.maxur.org">Maxim Yunusov</a></strong></p>
         </div>
     </div>
 </header>
 
-<div role="main">
+<div role="main" ng-controller="QNMCtrl">
 
-<div class="container-fluid">
-<section id="main">
-<alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
-
-<div class="well">
-<div class="row-fluid">
-    <div class="span4">
+    <div class=container-fluid>
         <div class="row-fluid">
-        <b class="span6">Utilisation Unit:</b>
-        <div class="btn-group span6">
-            <button type="button"
-                    class="btn {{model.utilisationUnit == 'percent' ? 'btn-primary' : ''}}"
-                    ng-model="model.utilisationUnit"
-                    btn-radio="'percent'">%
-            </button>
-            <button type="button"
-                    class="btn {{model.utilisationUnit == 'rate' ? 'btn-primary' : ''}}"
-                    ng-model="model.utilisationUnit"
-                    btn-radio="'rate'"
-                    >rate
-            </button>
-        </div>
-        </div>
-    </div>
+            <div class="span6">
 
-    <div class="span4">
+                <div class="framehdr">
+                    <i class="icon icon-hdd"></i>
+                    Nodes
+                    <button ng-click="model.addNode()">
+                        <i class="icon-plus"></i>
+                    </button>
+                    <button ng-click="">
+                        <i class="icon-cog"></i>
+                    </button>
+                </div>
+                <div class="frame">
+                    <table class="nodes">
+                        <thead>
+                        <tr>
+                            <th>Node Name</th>
+                            <th class="numeric">Utilization Ext.</th>
+                            <th class="numeric">Utilization Full</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="node in model.nodes">
+                            <td>
+                                <input type="text" class="input input-small simplebox" ng-model="node.name">
+                                <button ng-click="model.removeNode(node)">
+                                    <i class="icon-remove"></i>
+                                </button>
+                            </td>
+                            <td nowrap="nowrap">
+                                <input type="text"
+                                       ng-change="change('UEX', node)"
+                                       class="input input-small simplebox quantity {{node.utilizationEx.state}}"
+                                       ng-model="node.utilizationEx.text"
+                                       pattern="{{node.utilizationEx.unit.pattern}}">
+                                <span class="numeric dropdown">
+                                    <a class="dropdown-toggle simpleank" >{{node.utilizationEx.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in node.utilizationEx.availableUnits()">
+                                            <a ng-click="node.utilizationEx.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                            </td>
+                            <td nowrap="nowrap">
+                                <input type="text"
+                                       ng-change="change('U', node)"
+                                       class="input input-small simplebox quantity {{node.utilization.state}}"
+                                       ng-model="node.utilization.text"
+                                       pattern="{{node.utilization.unit.pattern}}">
+                                <span class="numeric dropdown">
+                                    <a class="dropdown-toggle simpleank" >{{node.utilization.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in node.utilization.availableUnits()">
+                                            <a ng-click="node.utilization.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+            <div class="span6">
+                <div class="framehdr">
+                    <i class="icon icon-user"></i>
+                    Sources
+                    <button class="hdrbutton" ng-click="model.addSource()">
+                        <i class="icon-plus"></i>
+                    </button>
+                    <button class="hdrbutton" ng-click="">
+                        <i class="icon-cog"></i>
+                    </button>
+                </div>
+                <div class="frame">
+                    <table class="sources">
+                        <thead>
+                        <tr>
+                            <th>Source Name</th>
+                            <th class="numeric">Number of Users</th>
+                            <th class="numeric">Think Time</th>
+                            <th class="numeric">Throughput</th>
+                            <th class="numeric">Response Time</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="source in model.sources">
+                            <td>
+                                <button ng-click="model.removeSource(source)">
+                                    <i class="icon-remove"></i>
+                                </button>
+                                <input type="text"
+                                       class="input input-small simplebox"
+                                       ng-model="source.name"
+                                       value="Source 1">
+                            </td>
+                            <td nowrap="nowrap">
+                                <input type="text"
+                                       ng-change="change('M', source)"
+                                       class="input input-small simplebox quantity {{source.numberUsers.state}}"
+                                       ng-model="source.numberUsers.text"
+                                       pattern="{{source.numberUsers.unit.pattern}}">
+                                <span class="numeric dropdown">
+                                    <a class="dropdown-toggle simpleank" >{{source.numberUsers.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in source.numberUsers.availableUnits()">
+                                            <a ng-click="source.numberUsers.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                            </td>
+                            <td nowrap="nowrap">
+                                <input type="text"
+                                       ng-change="change('Z', source)"
+                                       class="input input-small simplebox quantity {{source.thinkTime.state}}"
+                                       ng-model="source.thinkTime.text"
+                                       pattern="{{source.thinkTime.unit.pattern}}">
+                                <span class="numeric dropdown">
+                                    <a class="dropdown-toggle simpleank" >{{source.thinkTime.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in source.thinkTime.availableUnits()">
+                                            <a ng-click="source.thinkTime.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                            </td>
+                            <td nowrap="nowrap">
+                                <input type="text"
+                                       ng-change="change('X', source)"
+                                       class="input input-small simplebox quantity {{source.throughput.state}}"
+                                       ng-model="source.throughput.text"
+                                       pattern="{{source.throughput.unit.pattern}}">
+                                <span class="numeric dropdown">
+                                    <a class="dropdown-toggle simpleank" >{{source.throughput.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in source.throughput.availableUnits()">
+                                            <a ng-click="source.throughput.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                            </td>
+                            <td nowrap="nowrap">
+                                <input type="text"
+                                       ng-change="change('R', source)"
+                                       class="input input-small simplebox quantity {{source.responseTime.state}}"
+                                       ng-model="source.responseTime.text"
+                                       pattern="{{source.responseTime.unit.pattern}}">
+                                <span class="numeric dropdown">
+                                    <a class="dropdown-toggle simpleank" >{{source.responseTime.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in source.responseTime.availableUnits()">
+                                            <a ng-click="source.responseTime.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
         <div class="row-fluid">
-        <b class="span6">Throughput Unit:</b>
-        <div class="btn-group span6">
-            <button type="button"
-                    class="btn {{model.throughputUnit == 'tps' ? 'btn-primary' : ''}}"
-                    ng-model="model.throughputUnit"
-                    btn-radio="'tps'">sec
-            </button>
-            <button type="button"
-                    class="btn {{model.throughputUnit == 'tpm' ? 'btn-primary' : ''}}"
-                    ng-model="model.throughputUnit"
-                    btn-radio="'tpm'">min
-            </button>
-            <button type="button"
-                    class="btn {{model.throughputUnit == 'tph' ? 'btn-primary' : ''}}"
-                    ng-model="model.throughputUnit"
-                    btn-radio="'tph'">hr
-            </button>
+            <div class="span12">
+
+                <div class="row-fluid">
+                    <div class="framehdr">
+                        <i class="icon icon-time"></i>
+                        Visits
+                        <button class="hdrbutton" ng-click="">
+                            <i class="icon-cog"></i>
+                        </button>
+                    </div>
+
+                    <div class="frame">
+                        <table class="visits">
+                            <thead>
+                            <tr>
+                                <th>Source</th>
+                                <th>Node</th>
+                                <th class="numeric">Number of Visits</th>
+                                <th class="numeric">Throughput</th>
+                                <th class="numeric">Service Time</th>
+                                <th class="numeric">Utilization</th>
+                                <th class="numeric">Mean Number of Tasks</th>
+                                <th class="numeric">Response Time</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="visit in model.visits">
+                                <td>{{visit.source.name}}</td>
+                                <td>{{visit.node.name}}</td>
+                                <td nowrap="nowrap">
+                                    <input type="text"
+                                           ng-change="change('V', visit)"
+                                           class="input input-small simplebox quantity {{visit.number.state}}"
+                                           ng-model="visit.number.text"
+                                           pattern="{{visit.number.unit.pattern}}">
+                                <span class="numeric dropdown">
+                                    <a class="dropdown-toggle simpleank" >{{visit.number.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in visit.number.availableUnits()">
+                                            <a ng-click="visit.number.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                                </td>
+                                <td nowrap="nowrap">
+                                    <input type="text"
+                                           ng-change="change('XI', visit)"
+                                           class="input input-small simplebox quantity {{visit.throughput.state}}"
+                                           ng-model="visit.throughput.text"
+                                           pattern="{{visit.throughput.unit.pattern}}">
+                                <span class="numeric dropdown">
+                                    <a class="dropdown-toggle simpleank" >{{visit.throughput.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in visit.throughput.availableUnits()">
+                                            <a ng-click="visit.throughput.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                                </td>
+                                <td nowrap="nowrap">
+                                    <input type="text"
+                                           ng-change="change('S', visit)"
+                                           class="input input-small simplebox quantity {{visit.serviceTime.state}}"
+                                           ng-model="visit.serviceTime.text"
+                                           pattern="{{visit.serviceTime.unit.pattern}}">
+                                <span class="numeric dropdown">
+                                    <a class="dropdown-toggle simpleank" >{{visit.serviceTime.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in visit.serviceTime.availableUnits()">
+                                            <a ng-click="visit.serviceTime.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                                </td>
+                                <td nowrap="nowrap">
+                                    <input type="text"
+                                           ng-change="change('U', visit)"
+                                           class="input input-small simplebox quantity {{visit.utilization.state}}"
+                                           ng-model="visit.utilization.text"
+                                           pattern="{{visit.utilization.unit.pattern}}">
+                                <span class="numeric dropdown">
+                                    <a class="dropdown-toggle simpleank" >{{visit.utilization.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in visit.utilization.availableUnits()">
+                                            <a ng-click="visit.utilization.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                                </td>
+                                <td nowrap="nowrap">
+                                    <input type="text"
+                                           ng-change="change('N', visit)"
+                                           class="input input-small simplebox quantity {{visit.meanNumberTasks.state}}"
+                                           ng-model="visit.meanNumberTasks.text"
+                                           pattern="{{visit.meanNumberTasks.unit.pattern}}">
+                                <span class="numeric dropdown">
+                                    <a class="dropdown-toggle simpleank" >{{visit.meanNumberTasks.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in visit.meanNumberTasks.availableUnits()">
+                                            <a ng-click="visit.meanNumberTasks.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                                </td>
+                                <td nowrap="nowrap">
+                                    <input type="text"
+                                           ng-change="change('RT', visit)"
+                                           class="input input-small simplebox quantity {{visit.residenceTime.state}}"
+                                           ng-model="visit.residenceTime.text"
+                                           pattern="{{visit.residenceTime.unit.pattern}}">
+                                <span class="numeric dropdown">
+                                    <a class="dropdown-toggle simpleank" >{{visit.residenceTime.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in visit.residenceTime.availableUnits()">
+                                            <a ng-click="visit.residenceTime.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
         </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container-fluid">
+            <p>Designed and built by <a href="http://www.maxur.org">Maxim Yunusov</a></p>
+
+            <p>Code licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License, Version
+                2.0</a>.
+            </p>
         </div>
-    </div>
-
-    <div class="span4">
-        <div class="row-fluid">
-        <b class="span6">Time Unit:</b>
-        <div class="btn-group span6">
-            <button type="button"
-                    class="btn {{model.timeUnit == 'ms' ? 'btn-primary' : ''}}"
-                    ng-model="model.timeUnit"
-                    btn-radio="'ms'">ms
-            </button>
-            <button type="button"
-                    class="btn {{model.timeUnit == 'sec' ? 'btn-primary' : ''}}"
-                    ng-model="model.timeUnit"
-                    btn-radio="'sec'">sec
-            </button>
-            <button type="button"
-                    class="btn {{model.timeUnit == 'min' ? 'btn-primary' : ''}}"
-                    ng-model="model.timeUnit"
-                    btn-radio="'min'">min
-            </button>
-            <button type="button"
-                    class="btn {{model.timeUnit == 'hr' ? 'btn-primary' : ''}}"
-                    ng-model="model.timeUnit"
-                    btn-radio="'hr'">hr
-            </button>
-        </div>
-        </div>
-    </div>
-</div>
-</div>
-<p></p>
-
-<div class="row-fluid">
-<div class="span6">
-    <accordion close-others="oneAtATime">
-        <accordion-group ng-repeat="source in model.sources" is-open="true">
-            <accordion-heading>
-                <input id="sourceId" class="simplebox" ng-model="source.name" value="Source"/>
-                <button class="close" ng-click="model.removeSource(source)"><i class="icon-remove"></i></button>
-            </accordion-heading>
-            <h4>Response</h4>
-
-            <div class="row-fluid">
-                <div class="span6">
-                    <button type="button"
-                            ng-model="source.responseTime.lock"
-                            ng-hide="!source.responseTime.value"
-                            class="btn btn-success btn-mini  pull-left"
-                            btn-checkbox btn-checkbox-true="true"
-                            btn-checkbox-false="false">
-                        <i class="{{source.responseTime.lock ? 'icon-lock' : 'icon-unlock'}}"></i>
-                    </button>
-                    <label for="responseTime"
-                           class="pull-right {{source.responseTime.isValid() ? (source.responseTime.eval ? 'alert-info':'') : 'alert-danger'}}"><b>Response
-                        Time (R):</b></label>
-                </div>
-                <div class="span6" tooltip-placement="left" tooltip="{{source.responseTime.asNormFormTips()}}">
-                    <input id="responseTime" type="number"
-                           class="span12"
-                           ng-disabled="source.responseTime.lock"
-                           ng-model="source.responseTime.value"
-                           ng-change="change('R', source)"
-                           value="1"
-                           time/>
-                </div>
-
-                <div class="btn-group, span3" ng-show="source.responseTime.lock">
-                    {{source.responseTime.unit}}.
-                </div>
-            </div>
-            <div class="row-fluid">
-                <div class="span6">
-                    <h4>Workload</h4>
-                </div>
-                <div class="span6">
-                    <h4 class="btn-group">
-                        <a class="btn btn-mini {{source.isOpen ? 'btn-primary' : ''}}" ng-model="source.isOpen"
-                           btn-radio="true" ng-click="source.open()"><i class="icon-eye-open"></i> Open</a>
-                        <a class="btn btn-mini {{!source.isOpen ? 'btn-primary' : ''}}" ng-model="source.isOpen"
-                           btn-radio="false" ng-click="source.close()"><i class="icon-eye-close"></i> Closed</a>
-                    </h4>
-                </div>
-            </div>
-            <div class="row-fluid" ng-hide="source.isOpen">
-                <div class="span6">
-                    <button type="button"
-                            ng-model="source.numberUsers.lock"
-                            ng-hide="!source.numberUsers.value"
-                            class="btn btn-success btn-mini  pull-left"
-                            btn-checkbox btn-checkbox-true="true"
-                            btn-checkbox-false="false">
-                        <i class="{{source.numberUsers.lock ? 'icon-lock' : 'icon-unlock'}}"></i>
-                    </button>
-                    <label for="numberUsers"
-                           class="pull-right {{source.numberUsers.isValid() ? (source.numberUsers.eval ? 'alert-info':'') : 'alert-danger'}}">
-                        Number of Users (M):
-                    </label>
-                </div>
-                <div class="span6">
-                    <input id="numberUsers" type="number" ng-disabled="source.numberUsers.lock" class="span12"
-                           ng-model="source.numberUsers.value" value="1" ng-change="change('M', source)" number/>
-                </div>
-            </div>
-            <div class="row-fluid" ng-hide="source.isOpen">
-                <div class="span6">
-                    <button type="button"
-                            ng-model="source.thinkTime.lock"
-                            ng-hide="!source.thinkTime.value"
-                            class="btn btn-success btn-mini  pull-left"
-                            btn-checkbox btn-checkbox-true="true"
-                            btn-checkbox-false="false">
-                        <i class="{{source.thinkTime.lock ? 'icon-lock' : 'icon-unlock'}}"></i>
-                    </button>
-                    <label for="thinkTime"
-                           class="pull-right {{source.thinkTime.isValid() ? (source.thinkTime.eval ? 'alert-info':'') : 'alert-danger'}}">
-                        Think Time (Z):
-                    </label>
-                </div>
-                <div class="span6" tooltip-placement="left" tooltip="{{source.thinkTime.asNormFormTips()}}">
-                    <input id="thinkTime" type="number" ng-disabled="source.thinkTime.lock" class="span12"
-                           ng-model="source.thinkTime.value" ng-change="change('Z', source)" value="1" time/>
-                </div>
-            </div>
-            <div class="row-fluid">
-                <div class="span6">
-                    <button type="button" ng-model="source.throughput.lock"
-                            ng-hide="!source.throughput.value"
-                            class="btn btn-success btn-mini  pull-left"
-                            btn-checkbox btn-checkbox-true="true"
-                            btn-checkbox-false="false">
-                        <i class="{{source.throughput.lock ? 'icon-lock' : 'icon-unlock'}}"></i>
-                    </button>
-                    <label for="throughput"
-                           class="pull-right {{source.throughput.isValid() ? (source.throughput.eval ? 'alert-info':'') : 'alert-danger'}}">
-                        Throughput (X):
-                    </label>
-                </div>
-                <div class="span6" tooltip-placement="left" tooltip="{{source.throughput.asNormFormTips()}}">
-                    <input id="throughput" type="number" ng-disabled="source.throughput.lock" class="span12"
-                           ng-model="source.throughput.value" ng-change="change('X', source)" value="1" throughput/>
-                </div>
-            </div>
-        </accordion-group>
-    </accordion>
-</div>
-
-<div class="span6">
-<accordion close-others="oneAtATime">
-<accordion-group ng-repeat="node in model.nodes" is-open="true">
-<accordion-heading>
-    <input id="nodeId" class="simplebox" ng-model="node.name" value="Source"/>
-    <button class="close" ng-click="model.removeNode(node)"><i class="icon-remove"></i></button>
-</accordion-heading>
-<div class="row-fluid">
-    <div class="span6">
-        <button type="button"
-                ng-model="node.utilization.lock"
-                ng-hide="!node.utilization.value && node.utilization.value != 0"
-                class="btn btn-success btn-mini  pull-left"
-                btn-checkbox btn-checkbox-true="true"
-                btn-checkbox-false="false">
-            <i class="{{node.utilization.lock ? 'icon-lock' : 'icon-unlock'}}"></i>
-        </button>
-        <label for="utilizationFull"
-               class="pull-right {{node.utilization.isValid() ? (node.utilization.eval ? 'alert-info':'') : 'alert-danger'}}">Utilization
-            (U):</label>
-    </div>
-    <div class="span6" tooltip-placement="left" tooltip="{{node.utilization.asNormFormTips()}}">
-        <input id="utilizationFull" type="number" ng-disabled="node.utilization.lock" class="span12"
-               ng-model="node.utilization.value" ng-change="change('U', node)" value="1" utilisation/>
-    </div>
-</div>
-<h4>Other Systems</h4>
-
-<div class="row-fluid">
-    <div class="span6">
-        <button type="button"
-                ng-model="node.utilizationEx.lock"
-                ng-hide="!node.utilizationEx.value && node.utilizationEx.value != 0"
-                class="btn btn-success btn-mini  pull-left"
-                btn-checkbox btn-checkbox-true="true"
-                btn-checkbox-false="false">
-            <i class="{{node.utilizationEx.lock ? 'icon-lock' : 'icon-unlock'}}"></i>
-        </button>
-        <label for="utilizationEx"
-               class="pull-right {{node.utilizationEx.isValid() ? (node.utilizationEx.eval ? 'alert-info':'') : 'alert-danger'}}">Utilization
-            (U):</label>
-    </div>
-    <div class="span6" tooltip-placement="left" tooltip="{{node.utilization.asNormFormTips()}}">
-        <input id="utilizationEx" type="number" ng-disabled="node.utilizationEx.lock" class="span12"
-               ng-model="node.utilizationEx.value" ng-change="change('UEX', node)" value="1" utilisation/>
-    </div>
-</div>
-<div ng-repeat="visit in model.getVisitsByNode(node)">
-<h4>{{visit.source.name}}</h4>
-
-<div class="row-fluid">
-    <div class="span6">
-        <button type="button"
-                ng-model="visit.number.lock"
-                ng-hide="!visit.number.value"
-                class="btn btn-success btn-mini  pull-left"
-                btn-checkbox btn-checkbox-true="true"
-                btn-checkbox-false="false">
-            <i class="{{visit.number.lock ? 'icon-lock' : 'icon-unlock'}}"></i>
-        </button>
-        <label for="numberVisits"
-               class="pull-right {{visit.number.isValid() ? (visit.number.eval ? 'alert-info':'') : 'alert-danger'}}">
-            Number of Visits (V):
-        </label>
-    </div>
-    <div class="span6">
-        <input id="numberVisits" type="number" ng-disabled="visit.number.lock"
-               class="span12"
-               ng-model="visit.number.value"
-               ng-change="change('V', visit)"
-               value="1" number/>
-    </div>
-</div>
-
-<div class="row-fluid">
-    <div class="span6">
-        <button type="button" ng-model="visit.throughput.lock"
-                ng-hide="!visit.throughput.value"
-                class="btn btn-success btn-mini  pull-left"
-                btn-checkbox btn-checkbox-true="true"
-                btn-checkbox-false="false">
-            <i class="{{visit.throughput.lock ? 'icon-lock' : 'icon-unlock'}}"></i>
-        </button>
-        <label for="throughputNode"
-               class="pull-right {{visit.throughput.isValid() ? (visit.throughput.eval ? 'alert-info':'') : 'alert-danger'}}">
-            Throughput (X):
-        </label>
-    </div>
-    <div class="span6" tooltip-placement="left" tooltip="{{visit.throughput.asNormFormTips()}}">
-        <input id="throughputNode" type="number" ng-disabled="visit.throughput.lock" class="span12"
-               ng-model="visit.throughput.value" ng-change="change('XI', visit)" value="1" throughput/>
-    </div>
-</div>
-
-<div class="row-fluid">
-    <div class="span6">
-        <button type="button"
-                ng-model="visit.serviceTime.lock"
-                ng-hide="!visit.serviceTime.value"
-                class="btn btn-success btn-mini  pull-left"
-                btn-checkbox btn-checkbox-true="true"
-                btn-checkbox-false="false">
-            <i class="{{visit.serviceTime.lock ? 'icon-lock' : 'icon-unlock'}}"></i>
-        </button>
-        <label for="serviceTime"
-               class="pull-right {{visit.serviceTime.isValid() ? (visit.serviceTime.eval ? 'alert-info':'') : 'alert-danger'}}">
-            Mean Service Time (S):
-        </label>
-    </div>
-    <div class="span6" tooltip-placement="left" tooltip="{{visit.serviceTime.asNormFormTips()}}">
-        <input id="serviceTime" type="number" ng-disabled="visit.serviceTime.lock" class="span12"
-               ng-model="visit.serviceTime.value" ng-change="change('S', visit)" value="1" time/>
-    </div>
-</div>
-
-<div class="row-fluid">
-    <div class="span6">
-        <button type="button"
-                ng-model="visit.utilization.lock"
-                ng-hide="!visit.utilization.value"
-                class="btn btn-success btn-mini  pull-left"
-                btn-checkbox btn-checkbox-true="true"
-                btn-checkbox-false="false">
-            <i class="{{visit.utilization.lock ? 'icon-lock' : 'icon-unlock'}}"></i>
-        </button>
-        <label for="utilization"
-               class="pull-right {{visit.utilization.isValid() ? (visit.utilization.eval ? 'alert-info':'') : 'alert-danger'}}">Utilization
-            (U):</label>
-    </div>
-    <div class="span6" tooltip-placement="left" tooltip="{{visit.utilization.asNormFormTips()}}">
-        <input id="utilization" type="number" ng-disabled="visit.utilization.lock" class="span12"
-               ng-model="visit.utilization.value" ng-change="change('U', visit)" value="1" utilisation/>
-    </div>
-</div>
-
-<div class="row-fluid">
-    <div class="span6">
-        <button type="button"
-                ng-model="visit.meanNumberTasks.lock"
-                ng-hide="!visit.meanNumberTasks.value"
-                class="btn btn-success btn-mini  pull-left"
-                btn-checkbox btn-checkbox-true="true"
-                btn-checkbox-false="false">
-            <i class="{{visit.meanNumberTasks.lock ? 'icon-lock' : 'icon-unlock'}}"></i>
-        </button>
-        <label for="meanNumberTasks"
-               class="pull-right {{visit.meanNumberTasks.isValid() ? (visit.meanNumberTasks.eval ? 'alert-info':'') : 'alert-danger'}}">
-            Mean Number of Tasks (N):
-        </label>
-    </div>
-    <div class="span6">
-        <input id="meanNumberTasks" type="number" ng-disabled="visit.meanNumberTasks.lock"
-               class="span12"
-               ng-model="visit.meanNumberTasks.value"
-               ng-change="change('N', visit)"
-               value="1" number/>
-    </div>
-</div>
-
-<div class="row-fluid">
-    <div class="span6">
-        <button type="button"
-                ng-model="visit.residenceTime.lock"
-                ng-hide="!visit.residenceTime.value"
-                class="btn btn-success btn-mini  pull-left"
-                btn-checkbox btn-checkbox-true="true"
-                btn-checkbox-false="false">
-            <i class="{{visit.residenceTime.lock ? 'icon-lock' : 'icon-unlock'}}"></i>
-        </button>
-        <label for="residenceTime"
-               class="pull-right {{visit.residenceTime.isValid() ? (visit.residenceTime.eval ? 'alert-info':'') : 'alert-danger'}}">
-            Residence Time (RT):
-        </label>
-    </div>
-    <div class="span6" tooltip-placement="left" tooltip="{{visit.residenceTime.asNormFormTips()}}">
-        <input id="residenceTime" type="number" ng-disabled="visit.residenceTime.lock"
-               class="span12" ng-model="visit.residenceTime.value" ng-change="change('RT', visit)" value="1" time/>
-    </div>
-</div>
-</div>
-</accordion-group>
-</accordion>
+    </footer>
 
 </div>
-</div>
-</section>
-</div>
-</div>
-
-<footer class="footer">
-    <div class="container-fluid">
-        <p>Designed and built by <a href="http://www.maxur.org">Maxim Yunusov</a></p>
-
-        <p>Code licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License, Version 2.0</a>.
-        </p>
-    </div>
-</footer>
-
 <script src="angular/angular.min.js"></script>
 <script src="ng-bootstrap/ui-bootstrap-tpls-0.6.0.min.js"></script>
 <script src="bootstrap/js/jquery.js"></script>
 <script src="bootstrap/js/bootstrap-transition.js"></script>
 <script src="bootstrap/js/bootstrap-collapse.js"></script>
-<script src="js/index.js"></script>
 
+<script src="js/maxur-utils.js"></script>
+<script src="js/qnm-model.js"></script>
+<script src="js/pm.js"></script>
 
 </body>
 </html>

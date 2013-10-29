@@ -30,17 +30,10 @@
 
 
 ** Bug
-    * [MAXUR-0007] - Correct style in chrome
 
 ** Improvement
 
 
 ** New Feature
-    * [MAXUR-0001] - Case One Source To One Node
-    * [MAXUR-0002] - Case One Source To Many Node
-    * [MAXUR-0003] - Case Many Source To One Node
-    * [MAXUR-0004] - Case Many Source To Many Node
-    * [MAXUR-0005] - Execution Model of Application
 
 ** Task
-    * [MAXUR-0006] - Disable visits view for one source case
