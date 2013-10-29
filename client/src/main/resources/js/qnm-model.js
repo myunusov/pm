@@ -1,6 +1,6 @@
 function QNMUnit(id, title, rate, pattern) {
     this.id = id;
-    this.title = title || id;
+    this.title = (title || title === '') ? title : id;
     this.rate = rate || 1;
     this.pattern = pattern || "\\d*[\\., \\,]?\\d*";
 
@@ -14,13 +14,26 @@ function QNMUnit(id, title, rate, pattern) {
 }
 
 function Quantity() {
+
     this.lock = false;
     this.eval = false;
     this.inconsistent = false;
+    this._text;
 
     this.empty = function() {
         return empty(this.value);
     };
+
+
+    Object.defineProperty(this, 'text', {
+        get: function() {
+            return this._text || (number(this.value) ? (this.value / this.unit.rate).toPrecision(5) : this.value);
+        },
+        set: function(value) {
+            this._text = value;
+            this.value = number(value) ? (value * this.unit.rate).toPrecision(10) : value;
+        }
+    });
 
     this.availableUnits = function () {
         var result = [];
@@ -35,41 +48,40 @@ function Quantity() {
         return result;
     };
 
-    this.asNormForm = function () {
-        if (this.empty()) {
-            return null;
-        }
-        if (isNaN(this.value) || !isFinite(this.value)) {
-            return this.value;
-        }
-        return (this.value / this.unit.rate).toPrecision(5);
-    };
-
     this.beforeUpdate = function(newValue) {
-        this.inconsistent = (this.eval || this.lock) ? this.asNormForm() !==newValue : false;
+        this.inconsistent = (this.eval || this.lock) ? this.value() !==newValue : false;
         this.eval = true;
         return !this.inconsistent;
     };
 
-    this.setAsNormForm = function (newValue) {
+    this.setValue = function (newValue) {
         if (!this.beforeUpdate(newValue)) {
             return;
         }
-        newValue = parseFloat(newValue);
-        this.value = newValue * this.unit.rate;
+        this.value = parseFloat(newValue).toPrecision(10);
+        this._text = null;
     };
+
+    this.setUnit = function (newValue) {
+        this.unit = newValue;
+        this._text = null;
+    };
+
+    this.valid = function () {
+        return !this.value || (number(this.value) &&  this.value >= 0);
+    };
+
 }
 
 function Utilization(value) {
-    this.value = value;
     this.units = [
         new QNMUnit('rate'),
-        new QNMUnit('percent', '%', 100)
+        new QNMUnit('percent', '%', 0.01)
     ];
     this.unit = this.units[1];
-
-    this.isValid = function () {
-        return !this.inconsistent && (!this.value || this.asNormForm() < 1 && this.asNormForm() >= 0);
+    this.value = value;
+    this.valid = function () {
+        return !this.value || (number(this.value) && this.value < 1 && this.value >= 0);
     };
 }
 Utilization.prototype = new Quantity();
@@ -83,10 +95,6 @@ function QNMTime(value) {
         new QNMUnit('hr', 'hr', 3600)
     ];
     this.unit = this.units[1];
-
-    this.isValid = function () {
-        return !this.inconsistent && (!this.value || this.value >= 0);
-    };
 }
 QNMTime.prototype = new Quantity();
 
@@ -94,10 +102,6 @@ function QNMNumber(value) {
     this.value = value;
     this.units = [new QNMUnit('pcs', '')];
     this.unit = this.units[0];
-
-    this.isValid = function () {
-        return !this.inconsistent && (!this.value || this.value >= 0);
-    };
 }
 QNMNumber.prototype = new Quantity();
 
@@ -106,19 +110,14 @@ function Throughput(value) {
     this.units = [
         new QNMUnit('tps'),
         new QNMUnit('tpm', 'tpm', 60),
-        new QNMUnit('tpm', 'tph', 3600)
+        new QNMUnit('tph', 'tph', 3600)
     ];
     this.unit = this.units[0];
-
-    this.isValid = function () {
-        return !this.inconsistent && (!this.value || this.value >= 0);
-    };
 }
 Throughput.prototype = new Quantity();
 
 function QNMElement() {
 
-    this.invalid = false;
     this.lastEvalParam = null;
 
     this.getByName = function(name) {
@@ -127,11 +126,8 @@ function QNMElement() {
 
     this.setValue = function (param) {
         var quantity = this.getByName(param.name);
-        quantity.setAsNormForm(param.value);
-        this.invalid = quantity.inconsistent;
-        if (!this.invalid) {
-            this.lastEvalParam = param;
-        }
+        quantity.setValue(param.value);
+        this.lastEvalParam = param;
     };
 
     this.getAll = function() {
@@ -284,7 +280,7 @@ QNMVisit.prototype = new QNMElement();
 function Parameter(name, element) {
     this.name  = name;
     this.element  = element;
-    this.value = element ? element.getByName(name).asNormForm() : null;
+    this.value = element ? element.getByName(name).value : null;
 
 
     this.isUndefined = function() {
@@ -303,9 +299,6 @@ function Parameter(name, element) {
             return null;
         }
         this.element.setValue(this);
-        if (this.element.invalid) {
-            return null;
-        }
         return this;
     };
 }

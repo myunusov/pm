@@ -46,5 +46,37 @@ application.factory('qnmFactory', function() {
 });
 
 function QNMCtrl($scope, qnmFactory) {
+
+    $scope.alerts = [];
+
+    $scope.clearAlerts = function() {
+        $scope.alerts = [];
+    };
+
+    $scope.inconsistentAlert = function() {
+        if ($scope.alerts.length === 0) {
+            $scope.alerts.push({type: 'error', msg: "Error! Performance Model is not consistent"});
+        }
+    };
+
     $scope.model = qnmFactory.qnm();
+
+    $scope.change = function (fieldName, unit) {
+        $scope.clearAlerts();
+
+        $scope.model.init();
+        var calculator  = $scope.model.makeCalculator(fieldName, unit);
+
+        if (!calculator) {
+            return;
+        }
+
+        for (var result = null; result || calculator.next();) {
+            result = calculator.execute();
+            if (calculator.error) {
+                $scope.inconsistentAlert();
+                return;
+            }
+        }
+    };
 }

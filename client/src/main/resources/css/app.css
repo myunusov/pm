@@ -106,11 +106,6 @@ section {
     line-height: 1;
 }
 
-
-.frame .simplebox:hover {
-    background-color: #999;
-}
-
 .framehdr button {
     background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
     border: 0 none;
@@ -188,14 +183,28 @@ td, th {
 }
 
 
-.simplebox {
+.frame input {
     outline: none;
     border:none !important;
     box-shadow:none !important;
     margin-bottom: 0 !important;
-    padding-bottom: 0;
-    padding-top: 0;
-    font-size: 24px;
+}
+
+.frame span {
+    height: 20px;
+    margin-top: 2px;
+    padding: 6px 4px;
+}
+
+.frame a {
+    color: #555555;
+    text-decoration: none;
+}
+
+
+.frame a:hover {
+    color: #555555;
+    text-decoration: none;
 }
 
 tr:nth-of-type(odd) .simplebox {
