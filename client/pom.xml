@@ -90,6 +90,13 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+                <excludes>
+                    <exclude>**/angular/**</exclude>
+                    <exclude>**/bootstrap/**</exclude>
+                    <exclude>**/ng-bootstrap/**</exclude>
+                    <exclude>**/font-awesome/**</exclude>
+                    <exclude>**/img/**</exclude>
+                </excludes>
             </resource>
         </resources>
         <plugins>
@@ -105,16 +112,16 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <nomunge>true</nomunge>
+                    <force>true</force>
+                    <nosuffix>true</nosuffix>
                     <excludes>
                         <exclude>**/angular/**</exclude>
                         <exclude>**/bootstrap/**</exclude>
                         <exclude>**/ng-bootstrap/**</exclude>
                         <exclude>**/font-awesome/**</exclude>
-                        <exclude>**/font/**</exclude>
+                        <exclude>**/img/**</exclude>
                     </excludes>
-                    <nomunge>true</nomunge>
-                    <force>true</force>
-                    <nosuffix>true</nosuffix>
                 </configuration>
             </plugin>
         </plugins>
