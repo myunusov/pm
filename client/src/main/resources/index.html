@@ -59,7 +59,6 @@
     <div class="container">
         <div class="container-fluid">
             <h1>Performance Model Calculator</h1>
-
             <p>Computer System Analysis Using <strong>Performance Models</strong> by the
                 <strong><a href="http://www.maxur.org">Maxim Yunusov</a></strong></p>
         </div>
@@ -70,8 +69,7 @@
 <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
     <div class=container-fluid>
         <div class="row-fluid">
-            <div class="span6">
-
+            <div class="span5">
                 <div class="framehdr">
                     <i class="icon icon-hdd"></i>
                     Nodes
@@ -87,8 +85,8 @@
                         <thead>
                         <tr>
                             <th>Node Name</th>
-                            <th class="numeric">Utilization of Ext.System</th>
-                            <th class="numeric">Utilization</th>
+                            <th class="numeric">Utilization of other sources</th>
+                            <th class="numeric">Aggregate Utilization</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -105,7 +103,7 @@
                                        class="input input-small simplebox quantity {{node.utilizationEx.state}}"
                                        ng-model="node.utilizationEx.text"
                                        pattern="{{node.utilizationEx.unit.pattern}}">
-                                <span class="numeric dropdown">
+                                <span class="dropdown">
                                     <a class="dropdown-toggle simpleank" >{{node.utilizationEx.unit.title}}</a>
                                     <ul class="dropdown-menu">
                                         <li ng-repeat="unit in node.utilizationEx.availableUnits()">
@@ -120,7 +118,7 @@
                                        class="input input-small simplebox quantity {{node.utilization.state}}"
                                        ng-model="node.utilization.text"
                                        pattern="{{node.utilization.unit.pattern}}">
-                                <span class="numeric dropdown">
+                                <span class="dropdown">
                                     <a class="dropdown-toggle simpleank" >{{node.utilization.unit.title}}</a>
                                     <ul class="dropdown-menu">
                                         <li ng-repeat="unit in node.utilization.availableUnits()">
@@ -132,11 +130,9 @@
                         </tr>
                         </tbody>
                     </table>
-
                 </div>
             </div>
-
-            <div class="span6">
+            <div class="span7">
                 <div class="framehdr">
                     <i class="icon icon-user"></i>
                     Sources
@@ -161,13 +157,10 @@
                         <tbody>
                         <tr ng-repeat="source in model.sources">
                             <td>
+                                <input type="text" class="input input-small simplebox" ng-model="source.name">
                                 <button ng-click="model.removeSource(source)">
                                     <i class="icon-remove"></i>
                                 </button>
-                                <input type="text"
-                                       class="input input-small simplebox"
-                                       ng-model="source.name"
-                                       value="Source 1">
                             </td>
                             <td nowrap="nowrap">
                                 <input type="text"
@@ -175,7 +168,7 @@
                                        class="input input-small simplebox quantity {{source.numberUsers.state}}"
                                        ng-model="source.numberUsers.text"
                                        pattern="{{source.numberUsers.unit.pattern}}">
-                                <span class="numeric dropdown">
+                                <span class="dropdown">
                                     <a class="dropdown-toggle simpleank" >{{source.numberUsers.unit.title}}</a>
                                     <ul class="dropdown-menu">
                                         <li ng-repeat="unit in source.numberUsers.availableUnits()">
@@ -190,7 +183,7 @@
                                        class="input input-small simplebox quantity {{source.thinkTime.state}}"
                                        ng-model="source.thinkTime.text"
                                        pattern="{{source.thinkTime.unit.pattern}}">
-                                <span class="numeric dropdown">
+                                <span class="dropdown">
                                     <a class="dropdown-toggle simpleank" >{{source.thinkTime.unit.title}}</a>
                                     <ul class="dropdown-menu">
                                         <li ng-repeat="unit in source.thinkTime.availableUnits()">
@@ -205,7 +198,7 @@
                                        class="input input-small simplebox quantity {{source.throughput.state}}"
                                        ng-model="source.throughput.text"
                                        pattern="{{source.throughput.unit.pattern}}">
-                                <span class="numeric dropdown">
+                                <span class="dropdown">
                                     <a class="dropdown-toggle simpleank" >{{source.throughput.unit.title}}</a>
                                     <ul class="dropdown-menu">
                                         <li ng-repeat="unit in source.throughput.availableUnits()">
@@ -220,7 +213,7 @@
                                        class="input input-small simplebox quantity {{source.responseTime.state}}"
                                        ng-model="source.responseTime.text"
                                        pattern="{{source.responseTime.unit.pattern}}">
-                                <span class="numeric dropdown">
+                                <span class="dropdown">
                                     <a class="dropdown-toggle simpleank" >{{source.responseTime.unit.title}}</a>
                                     <ul class="dropdown-menu">
                                         <li ng-repeat="unit in source.responseTime.availableUnits()">
@@ -235,11 +228,9 @@
 
                 </div>
             </div>
-
         </div>
         <div class="row-fluid">
             <div class="span12">
-
                 <div class="row-fluid">
                     <div class="framehdr">
                         <i class="icon icon-time"></i>
@@ -248,7 +239,6 @@
                             <i class="icon-cog"></i>
                         </button>
                     </div>
-
                     <div class="frame">
                         <table class="visits">
                             <thead>
@@ -273,7 +263,7 @@
                                            class="input input-small simplebox quantity {{visit.number.state}}"
                                            ng-model="visit.number.text"
                                            pattern="{{visit.number.unit.pattern}}">
-                                <span class="numeric dropdown">
+                                <span class="dropdown">
                                     <a class="dropdown-toggle simpleank" >{{visit.number.unit.title}}</a>
                                     <ul class="dropdown-menu">
                                         <li ng-repeat="unit in visit.number.availableUnits()">
@@ -288,7 +278,7 @@
                                            class="input input-small simplebox quantity {{visit.throughput.state}}"
                                            ng-model="visit.throughput.text"
                                            pattern="{{visit.throughput.unit.pattern}}">
-                                <span class="numeric dropdown">
+                                <span class="dropdown">
                                     <a class="dropdown-toggle simpleank" >{{visit.throughput.unit.title}}</a>
                                     <ul class="dropdown-menu">
                                         <li ng-repeat="unit in visit.throughput.availableUnits()">
@@ -303,7 +293,7 @@
                                            class="input input-small simplebox quantity {{visit.serviceTime.state}}"
                                            ng-model="visit.serviceTime.text"
                                            pattern="{{visit.serviceTime.unit.pattern}}">
-                                <span class="numeric dropdown">
+                                <span class="dropdown">
                                     <a class="dropdown-toggle simpleank" >{{visit.serviceTime.unit.title}}</a>
                                     <ul class="dropdown-menu">
                                         <li ng-repeat="unit in visit.serviceTime.availableUnits()">
@@ -318,7 +308,7 @@
                                            class="input input-small simplebox quantity {{visit.utilization.state}}"
                                            ng-model="visit.utilization.text"
                                            pattern="{{visit.utilization.unit.pattern}}">
-                                <span class="numeric dropdown">
+                                <span class="dropdown">
                                     <a class="dropdown-toggle simpleank" >{{visit.utilization.unit.title}}</a>
                                     <ul class="dropdown-menu">
                                         <li ng-repeat="unit in visit.utilization.availableUnits()">
@@ -333,7 +323,7 @@
                                            class="input input-small simplebox quantity {{visit.meanNumberTasks.state}}"
                                            ng-model="visit.meanNumberTasks.text"
                                            pattern="{{visit.meanNumberTasks.unit.pattern}}">
-                                <span class="numeric dropdown">
+                                <span class="dropdown">
                                     <a class="dropdown-toggle simpleank" >{{visit.meanNumberTasks.unit.title}}</a>
                                     <ul class="dropdown-menu">
                                         <li ng-repeat="unit in visit.meanNumberTasks.availableUnits()">
@@ -348,7 +338,7 @@
                                            class="input input-small simplebox quantity {{visit.residenceTime.state}}"
                                            ng-model="visit.residenceTime.text"
                                            pattern="{{visit.residenceTime.unit.pattern}}">
-                                <span class="numeric dropdown">
+                                <span class="dropdown">
                                     <a class="dropdown-toggle simpleank" >{{visit.residenceTime.unit.title}}</a>
                                     <ul class="dropdown-menu">
                                         <li ng-repeat="unit in visit.residenceTime.availableUnits()">
@@ -362,9 +352,7 @@
                         </table>
 
                     </div>
-
                 </div>
-
             </div>
         </div>
     </div>

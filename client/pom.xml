@@ -53,7 +53,8 @@
         <profile>
             <id>karma</id>
             <properties>
-                <sonar.javascript.jstest.reportsPath>target/surefire-reports</sonar.javascript.jstest.reportsPath>
+                <sonar.javascript.jstest.reportsPath>target/karma</sonar.javascript.jstest.reportsPath>
+                <sonar.javascript.lcov.reportPath>target/karma/lcov.info</sonar.javascript.lcov.reportPath>
             </properties>
             <build>
                 <plugins>
@@ -71,7 +72,7 @@
                         <configuration>
                             <configFile>${basedir}/karma.conf.js</configFile>
                             <browsers>PhantomJS</browsers>
-                            <reporters>dots,junit</reporters>
+                            <reporters>dots,junit,coverage</reporters>
                             <colors>false</colors>
                             <autoWatch>false</autoWatch>
                         </configuration>
@@ -89,6 +90,7 @@
 
     <properties>
         <sonar.language>js</sonar.language>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.exclusions>**/angular/**,**/bootstrap/**,**/ng-bootstrap/**</sonar.exclusions>
     </properties>
 

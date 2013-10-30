@@ -72,11 +72,18 @@
             <outputDirectory>${project.build.finalName}/tomcat/webapp</outputDirectory>
             <fileMode>0755</fileMode>
             <directoryMode>0755</directoryMode>
-            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
-            <unpack>true</unpack>
             <includes>
                 <include>org.maxur.perfmodel:client</include>
             </includes>
+            <unpack>true</unpack>
+            <unpackOptions>
+                <includes>
+                    <include>*.html</include>
+                    <include>css/*.*</include>
+                    <include>js/*.*</include>
+                    <include>img/*.*</include>
+                </includes>
+            </unpackOptions>
         </dependencySet>
     </dependencySets>
 

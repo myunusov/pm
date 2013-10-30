@@ -17,7 +17,7 @@ module.exports = function(config) {
         ],
 
         preprocessors: {
-            'src/main/resources/js/*.js': ['commonjs'],
+            'src/main/resources/js/*.js': ['commonjs', 'coverage'],
             'src/test/resources/js/*.js': ['commonjs']
         },
 
@@ -28,7 +28,7 @@ module.exports = function(config) {
 
         junitReporter: {
             // will be resolved to basePath (in the same way as files/exclude patterns)
-            outputFile: 'test-results.xml'
+            outputFile: 'target/karma/test-results.xml'
         },
 
         // web server port
@@ -77,7 +77,8 @@ module.exports = function(config) {
             'karma-firefox-launcher',
             'karma-junit-reporter',
             'karma-phantomjs-launcher',
-            'karma-commonjs'
+            'karma-commonjs',
+            'karma-coverage'
         ]
     });
 };

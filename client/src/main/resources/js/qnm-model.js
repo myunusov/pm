@@ -133,7 +133,7 @@ function Throughput(value) {
 }
 Throughput.prototype = new Quantity();
 
-function QNMElement() {
+function QNMCenter() {
 
     this.lastEvalParam = null;
 
@@ -179,7 +179,7 @@ function QNMElement() {
         if (!other) {
             return null;
         }
-        return (other instanceof QNMElement) &&
+        return (other instanceof QNMCenter) &&
                 other.id ===  this.id;
     };
 }
@@ -223,7 +223,7 @@ function QNMSource(id, name) {
                 other.id ===  this.id;
     };
 }
-QNMSource.prototype = new QNMElement();
+QNMSource.prototype = new QNMCenter();
 
 function QNMNode(id, name) {
     this.id = id;
@@ -243,7 +243,7 @@ function QNMNode(id, name) {
                 other.id ===  this.id;
     };
 }
-QNMNode.prototype = new QNMElement();
+QNMNode.prototype = new QNMCenter();
 
 function QNMVisit(source, node) {
     this.id = source.id + "-" + node.id;
@@ -279,12 +279,12 @@ function QNMVisit(source, node) {
                 other.id ===  this.id;
     };
 }
-QNMVisit.prototype = new QNMElement();
+QNMVisit.prototype = new QNMCenter();
 
-function Parameter(name, element) {
+function Parameter(name, center) {
     this.name  = name;
-    this.element  = element;
-    this.value = element ? element.getByName(name).value : null;
+    this.center  = center;
+    this.value = center ? center.getByName(name).value : null;
 
 
     this.isUndefined = function() {
@@ -295,14 +295,14 @@ function Parameter(name, element) {
         return  other &&
                 other instanceof Parameter &&
                 other.name === this.name &&
-                other.element.equals(this.element);
+                other.center.equals(this.center);
     };
 
     this.sync = function() {
-        if (empty(this.value) || (!this.element)) {
+        if (empty(this.value) || (!this.center)) {
             return null;
         }
-        this.element.setValue(this);
+        this.center.setValue(this);
         return this;
     };
 }
@@ -369,14 +369,14 @@ function Calculator(fields, expressions) {
 
 }
 
-function Expression(expression, element) {
+function Expression(expression, center) {
 
     this.expression = expression.clone();
 
-    if (element) {
+    if (center) {
         this.expression.subst(
                 function (v) {
-                    return (number(v) || v instanceof Parameter) ? v : new Parameter(v, element);
+                    return (number(v) || v instanceof Parameter) ? v : new Parameter(v, center);
                 }
         );
     }
@@ -623,9 +623,9 @@ function QNM(name) {
         return expressions;
     };
 
-    this.makeCalculator = function(fieldName, element) {
+    this.makeCalculator = function(fieldName, center) {
 
-        var changedField = new Parameter(fieldName, element);
+        var changedField = new Parameter(fieldName, center);
 
         if (changedFields.contains(changedField)) {
             changedFields.remove(changedField);
