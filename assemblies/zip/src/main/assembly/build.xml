@@ -85,6 +85,15 @@
                 </includes>
             </unpackOptions>
         </dependencySet>
+        <dependencySet>
+            <outputDirectory>${project.build.finalName}/tomcat/rest</outputDirectory>
+            <fileMode>0755</fileMode>
+            <directoryMode>0755</directoryMode>
+            <includes>
+                <include>org.maxur.perfmodel:backend:war</include>
+            </includes>
+            <unpack>true</unpack>
+        </dependencySet>
     </dependencySets>
 
 </assembly>

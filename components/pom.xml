@@ -30,6 +30,7 @@
     <modules>
         <module>utils</module>
         <module>common</module>
+        <module>backend</module>
     </modules>
 
     <dependencies>
@@ -93,6 +94,28 @@
             </activation>
             <build>
                 <plugins>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>integration-test</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>verify</id>
+                                <goals>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <forkMode>pertest</forkMode>
+                            <encoding>${project.source.encoding}</encoding>
+                        </configuration>
+                    </plugin>
+
                     <!-- CODE COVERAGE -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>

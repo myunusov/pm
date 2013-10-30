@@ -13,7 +13,19 @@
  *    limitations under the License.
  */
 
-angular.module('pm.service', []);
+angular.module('pm.service', []).
+        service('modelProvider', function () {
+            var model = null;
+
+            return {
+                getModel: function () {
+                    return model;
+                },
+                setModel: function (value) {
+                    model = value;
+                }
+            };
+        });
 
 
 angular.module('pm.directive', []);
@@ -45,7 +57,8 @@ application.factory('qnmFactory', function() {
     };
 });
 
-function QNMCtrl($scope, qnmFactory) {
+
+function QNMCtrl($scope, qnmFactory, modelProvider) {
 
     $scope.alerts = [];
 
@@ -65,13 +78,14 @@ function QNMCtrl($scope, qnmFactory) {
         }
     };
 
-
     $scope.model = qnmFactory.qnm();
+    modelProvider.setModel($scope.model);
 
     $scope.change = function (fieldName, element) {
+        var model =  modelProvider.getModel();
         $scope.clearAlerts();
-        $scope.model.init();
-        var calculator  = $scope.model.makeCalculator(fieldName, element);
+        model.init();
+        var calculator  = model.makeCalculator(fieldName, element);
         if (!calculator) {
             return;
         }
@@ -82,46 +96,41 @@ function QNMCtrl($scope, qnmFactory) {
                 return;
             }
         }
-        if (!$scope.model.valid()) {
+        if (!model.valid()) {
             $scope.invalidAlert();
         }
     };
 }
 
-function MainCtrl($scope, $modal, $log) {
-
-    $scope.items = ['item1', 'item2', 'item3'];
+function MainCtrl($scope, $modal, $http, modelProvider) {
 
     $scope.about = function () {
-
         var modalInstance = $modal.open({
             templateUrl: 'myModalContent.html',
-            controller: ModalInstanceCtrl,
-            resolve: {
-                items: function () {
-                    return $scope.items;
-                }
-            }
-        });
-
-        modalInstance.result.then(function (selectedItem) {
-            $scope.selected = selectedItem;
-        }, function () {
-            $log.info('Modal dismissed at: ' + new Date());
+            controller: ModalInstanceCtrl
         });
     };
+
+    $scope.load = function () {
+        $http.get('../rest/services/load' + '/' + 'id').success(function(data) {  //TODO
+                $scope.result = data;
+            });
+    };
+
+    $scope.save = function () {
+        $http.post('../rest/services/save', "{'id': 'id'}").success(function(data) { //TODO
+                $scope.result = data;
+            }
+        );
+    };
+
 
 }
 
-function ModalInstanceCtrl($scope, $modalInstance, items) {
-
-    $scope.items = items;
-    $scope.selected = {
-        item: $scope.items[0]
-    };
+function ModalInstanceCtrl($scope, $modalInstance) {
 
     $scope.ok = function () {
-        $modalInstance.close($scope.selected.item);
+        $modalInstance.close();
     };
 
     $scope.cancel = function () {

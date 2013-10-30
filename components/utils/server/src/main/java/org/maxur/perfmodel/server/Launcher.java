@@ -22,6 +22,7 @@ import org.apache.catalina.startup.Tomcat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletException;
 import java.io.File;
 
 /**
@@ -46,7 +47,9 @@ public final class Launcher {
 
     public static final String SHUTDOWN_KEY = "shutdown";
 
-    public static final String WEBAPP_DIR_NAME = "webapp";
+    public static final String CLIENT_DIR_NAME = "webapp";
+
+    public static final String REST_DIR_NAME = "rest";
 
 
     public static void main(final String[] args) {
@@ -71,16 +74,21 @@ public final class Launcher {
             tomcat.getHost().setAutoDeploy(true);
             tomcat.getHost().setAppBase(TOMCAT_DIR_NAME);
 
-            final File webapp = new File(TOMCAT_DIR_NAME, WEBAPP_DIR_NAME);
-            final Context webAppCtx = tomcat.addWebapp("/" + WEBAPP_DIR_NAME, webapp.getAbsolutePath());
-            webAppCtx.setReloadable(true);
-            LOGGER.info("Configuring app with basedir: " + webapp.getAbsolutePath());
+            addWebApp(tomcat, CLIENT_DIR_NAME);
+            addWebApp(tomcat, REST_DIR_NAME);
             tomcat.start();
             LOGGER.info(String.format("Go to http://%s:%d/ to check out your embedded web server!", HOST, PORT));
             tomcat.getServer().await();
         } catch (Exception ex) {
             LOGGER.error(ex.getMessage(), ex);
         }
+    }
+
+    private static void addWebApp(final Tomcat tomcat, final String dirName) throws ServletException {
+        final File webapp = new File(TOMCAT_DIR_NAME, dirName);
+        final Context webAppCtx = tomcat.addWebapp("/" + dirName, webapp.getAbsolutePath());
+        webAppCtx.setReloadable(true);
+        LOGGER.info("Configuring app with basedir: " + webapp.getAbsolutePath());
     }
 
     private Launcher() {

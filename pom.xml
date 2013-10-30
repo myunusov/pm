@@ -131,6 +131,7 @@
                     <configuration>
                         <source>${project.source.compile}</source>
                         <target>${project.target.compile}</target>
+                        <encoding>${project.source.encoding}</encoding>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -341,6 +342,7 @@
                 <configuration>
                     <locales>en</locales>
                     <generateSitemap>true</generateSitemap>
+                    <outputEncoding>${project.source.encoding}</outputEncoding>
                 </configuration>
             </plugin>
 
