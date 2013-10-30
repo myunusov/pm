@@ -59,6 +59,13 @@ function QNMCtrl($scope, qnmFactory) {
         }
     };
 
+    $scope.invalidAlert = function() {
+        if ($scope.alerts.length === 0) {
+            $scope.alerts.push({type: 'error', msg: "Error! Performance Model is invalid"});
+        }
+    };
+
+
     $scope.model = qnmFactory.qnm();
 
     $scope.change = function (fieldName, element) {
@@ -74,6 +81,9 @@ function QNMCtrl($scope, qnmFactory) {
                 $scope.inconsistentAlert();
                 return;
             }
+        }
+        if (!$scope.model.valid()) {
+            $scope.invalidAlert();
         }
     };
 }

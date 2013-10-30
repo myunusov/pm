@@ -17,6 +17,7 @@ function Quantity() {
 
     this.eval = false;
     this.inconsistent = false;
+    this.coflicted = false;
     this._text;
 
     this.empty = function() {
@@ -25,10 +26,10 @@ function Quantity() {
 
     Object.defineProperty(this, 'state', {
         get: function() {
-            if (!this.valid()) {
+            if (!this.valid() || this.inconsistent) {
                 return "invalid";
             }
-            if (this.inconsistent) {
+            if (this.coflicted) {
                 return "conflict";
             }
             if (this.eval) {
@@ -63,17 +64,14 @@ function Quantity() {
         return result;
     };
 
-    this.beforeUpdate = function(newValue) {
+    this.setValue = function (newValue) {
         this.inconsistent = this.eval ? this.value() !==newValue : false;
         this.eval = true;
-        return !this.inconsistent;
-    };
-
-    this.setValue = function (newValue) {
-        if (!this.beforeUpdate(newValue)) {
+        if (this.inconsistent) {
             return;
         }
         this.value = parseFloat(newValue).toPrecision(10);
+        this.coflicted = (this._text || this._text === 0) ? this._text !==  newValue : false;
         this._text = null;
     };
 
@@ -526,6 +524,22 @@ function QNM(name) {
                 }
         );
         return fields;
+    };
+
+    this.valid = function () {
+        var result = true;
+        [this.sources, this.nodes, this.visits].each(
+                function (u) {
+                    var fields = u.getAll();
+                    for (var i = 0; i < fields.length; i++) {
+                        if (!fields[i].valid()) {
+                            result = false;
+                            break;
+                        }
+                    }
+                }
+        );
+        return result;
     };
 
     this.makeRXNExps = function(source) {

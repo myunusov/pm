@@ -67,7 +67,7 @@
 </header>
 
 <div role="main" ng-controller="QNMCtrl">
-
+<alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
     <div class=container-fluid>
         <div class="row-fluid">
             <div class="span6">
@@ -87,8 +87,8 @@
                         <thead>
                         <tr>
                             <th>Node Name</th>
-                            <th class="numeric">Utilization Ext.</th>
-                            <th class="numeric">Utilization Full</th>
+                            <th class="numeric">Utilization of Ext.System</th>
+                            <th class="numeric">Utilization</th>
                         </tr>
                         </thead>
                         <tbody>
