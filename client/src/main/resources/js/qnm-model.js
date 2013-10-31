@@ -625,6 +625,8 @@ function QNM(name) {
 
     this.makeCalculator = function(fieldName, center) {
 
+
+
         var changedField = new Parameter(fieldName, center);
 
         if (changedFields.contains(changedField)) {

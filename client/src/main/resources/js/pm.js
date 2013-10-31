@@ -14,19 +14,34 @@
  */
 
 angular.module('pm.service', []).
-        service('modelProvider', function () {
+        service('modelProvider', function ($http) {
             var model = null;
-
+            var url = '../rest/services/';
             return {
                 getModel: function () {
                     return model;
                 },
                 setModel: function (value) {
                     model = value;
+                },
+                load: function (id) {
+                    $http.get(url + 'load' + '/' + id)
+                            .success(function (dto) {
+                                model.setDTO(dto);
+                            })
+                            .error(function (data) {
+                            });
+                },
+                save: function (id) {
+                    model.id = id;
+                    $http.post(url + 'save', JSON.stringify(model.createDTO()))
+                            .success(function (data) {
+                            })
+                            .error(function (data) {
+                            });
                 }
             };
         });
-
 
 angular.module('pm.directive', []);
 
@@ -71,8 +86,7 @@ function QNMCtrl($scope, qnmFactory, modelProvider) {
             $scope.alerts.push({type: 'error', msg: "Error! Performance Model is not consistent"});
         }
     };
-
-    $scope.invalidAlert = function() {
+                               $scope.invalidAlert = function() {
         if ($scope.alerts.length === 0) {
             $scope.alerts.push({type: 'error', msg: "Error! Performance Model is invalid"});
         }
@@ -102,7 +116,7 @@ function QNMCtrl($scope, qnmFactory, modelProvider) {
     };
 }
 
-function MainCtrl($scope, $modal, $http, modelProvider) {
+function MainCtrl($scope, $modal, modelProvider) {
 
     $scope.about = function () {
         var modalInstance = $modal.open({
@@ -112,16 +126,15 @@ function MainCtrl($scope, $modal, $http, modelProvider) {
     };
 
     $scope.load = function () {
-        $http.get('../rest/services/load' + '/' + 'id').success(function(data) {  //TODO
-                $scope.result = data;
-            });
+        // var id = getModelId() // TODO get model name from dialog
+        var id = 'model 1';
+        modelProvider.load(id);
     };
 
     $scope.save = function () {
-        $http.post('../rest/services/save', "{'id': 'id'}").success(function(data) { //TODO
-                $scope.result = data;
-            }
-        );
+        // var id = getModelId() // TODO get model name from dialog
+        var id = 'model 1';
+        modelProvider.save(id);
     };
 
 
