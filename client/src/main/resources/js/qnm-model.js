@@ -4,7 +4,7 @@ function QNMUnit(id, title, rate, pattern) {
     this.rate = rate || 1;
     this.pattern = pattern || "\\d*[\\., \\,]?\\d*";
 
-    this.equals  = function(other) {
+    this.equals = function (other) {
         if (!other) {
             return null;
         }
@@ -20,12 +20,12 @@ function Quantity() {
     this.coflicted = false;
     this._text;
 
-    this.empty = function() {
+    this.empty = function () {
         return empty(this.value);
     };
 
     Object.defineProperty(this, 'state', {
-        get: function() {
+        get: function () {
             if (!this.valid() || this.inconsistent) {
                 return "invalid";
             }
@@ -40,12 +40,12 @@ function Quantity() {
     });
 
     Object.defineProperty(this, 'text', {
-        get: function() {
+        get: function () {
             return (this._text || this._text === 0) ?
                     this._text :
                     (number(this.value) ? (this.value / this.unit.rate).toPrecision(5) : this.value);
         },
-        set: function(value) {
+        set: function (value) {
             this._text = value;
             this.value = number(value) ? (value * this.unit.rate).toPrecision(10) : value;
         }
@@ -65,13 +65,13 @@ function Quantity() {
     };
 
     this.setValue = function (newValue) {
-        this.inconsistent = this.eval ? this.value() !==newValue : false;
+        this.inconsistent = this.eval ? this.value() !== newValue : false;
         this.eval = true;
         if (this.inconsistent) {
             return;
         }
         this.value = parseFloat(newValue).toPrecision(10);
-        this.coflicted = (this._text || this._text === 0) ? this._text !==  newValue : false;
+        this.coflicted = (this._text || this._text === 0) ? this._text !== newValue : false;
         this._text = null;
     };
 
@@ -81,7 +81,7 @@ function Quantity() {
     };
 
     this.valid = function () {
-        return !this.value || (number(this.value) &&  this.value >= 0);
+        return !this.value || (number(this.value) && this.value >= 0);
     };
 
 }
@@ -126,8 +126,8 @@ function Throughput(value) {
     this._text = value;
     this.units = [
         new QNMUnit('tps'),
-        new QNMUnit('tpm', 'tpm', 1/60),
-        new QNMUnit('tph', 'tph', 1/3600)
+        new QNMUnit('tpm', 'tpm', 1 / 60),
+        new QNMUnit('tph', 'tph', 1 / 3600)
     ];
     this.unit = this.units[0];
 }
@@ -137,7 +137,7 @@ function QNMCenter() {
 
     this.lastEvalParam = null;
 
-    this.getByName = function(name) {
+    this.getByName = function (name) {
         return this.all[name];
     };
 
@@ -147,7 +147,7 @@ function QNMCenter() {
         this.lastEvalParam = param;
     };
 
-    this.getAll = function() {
+    this.getAll = function () {
         var result = [];
         for (var name in this.all) {
             if (this.all.hasOwnProperty(name)) {
@@ -157,7 +157,7 @@ function QNMCenter() {
         return result;
     };
 
-    this.getSignificance = function() {
+    this.getSignificance = function () {
         var result = [];
         for (var name in this.all) {
             if (this.all.hasOwnProperty(name)) {
@@ -175,13 +175,20 @@ function QNMCenter() {
         return result;
     };
 
-    this.equals  = function(other) {
+    this.equals = function (other) {
         if (!other) {
             return null;
         }
         return (other instanceof QNMCenter) &&
-                other.id ===  this.id;
+                other.id === this.id;
     };
+
+    this.createDTO = function() {
+        return {
+            id: this.id,
+            name: this.name
+        };
+    }
 }
 
 function QNMSource(id, name) {
@@ -203,7 +210,7 @@ function QNMSource(id, name) {
 
     this.open = function () {
         this.isOpen = true;
-        this.thinkTime.value   = null;
+        this.thinkTime.value = null;
         this.numberUsers.value = null;
     };
 
@@ -212,15 +219,19 @@ function QNMSource(id, name) {
     };
 
     this.expressions = [
-        new Expression([['R', 'X'], ['Z', 'X'], [-1, 'M']], this)
+        new Expression([
+            ['R', 'X'],
+            ['Z', 'X'],
+            [-1, 'M']
+        ], this)
     ];
 
-    this.equals  = function(other) {
+    this.equals = function (other) {
         if (!other) {
             return null;
         }
         return (other instanceof QNMSource) &&
-                other.id ===  this.id;
+                other.id === this.id;
     };
 }
 QNMSource.prototype = new QNMCenter();
@@ -235,12 +246,12 @@ function QNMNode(id, name) {
         'UEX': this.utilizationEx
     };
     this.expressions = [];
-    this.equals  = function(other) {
+    this.equals = function (other) {
         if (!other) {
             return null;
         }
         return (other instanceof QNMNode) &&
-                other.id ===  this.id;
+                other.id === this.id;
     };
 }
 QNMNode.prototype = new QNMCenter();
@@ -254,7 +265,7 @@ function QNMVisit(source, node) {
     this.utilization = new Utilization();
     this.meanNumberTasks = new QNMNumber();
     this.residenceTime = new QNMTime();
-    this.throughput  = new Throughput();
+    this.throughput = new Throughput();
 
     this.all = {
         'S': this.serviceTime,
@@ -266,44 +277,62 @@ function QNMVisit(source, node) {
     };
 
     this.expressions = [
-        new Expression([['V', new Parameter('X', this.source)], [-1, 'XI']], this),
-        new Expression([['U'], [-1, 'XI','S']], this),
-        new Expression([[-1, 'RT', 'XI'], ['N']], this)
+        new Expression([
+            ['V', new Parameter('X', this.source)],
+            [-1, 'XI']
+        ], this),
+        new Expression([
+            ['U'],
+            [-1, 'XI', 'S']
+        ], this),
+        new Expression([
+            [-1, 'RT', 'XI'],
+            ['N']
+        ], this)
     ];
 
-    this.equals  = function(other) {
+    this.equals = function (other) {
         if (!other) {
             return null;
         }
         return (other instanceof QNMVisit) &&
-                other.id ===  this.id;
+                other.id === this.id;
     };
 }
 QNMVisit.prototype = new QNMCenter();
 
 function Parameter(name, center) {
-    this.name  = name;
-    this.center  = center;
+    this.name = name;
+    this.center = center;
     this.value = center ? center.getByName(name).value : null;
 
-
-    this.isUndefined = function() {
+    this.isUndefined = function () {
         return empty(this.value);
     };
 
-    this.equals = function(other) {
+    this.equals = function (other) {
         return  other &&
                 other instanceof Parameter &&
                 other.name === this.name &&
                 other.center.equals(this.center);
     };
 
-    this.sync = function() {
+    this.sync = function () {
         if (empty(this.value) || (!this.center)) {
             return null;
         }
         this.center.setValue(this);
         return this;
+    };
+
+    this.createDTO = function () {
+        return {
+            name: this.name,
+            value: this.value,
+            centerId: this.center.id,
+            centerType: this.center instanceof QNMSource ? "source" :
+                    (this.center instanceof QNMNode ? "node" : "visit")
+        };
     };
 }
 
@@ -313,8 +342,8 @@ function Calculator(fields, expressions) {
     this.expressions = expressions;
     this.error = false;
 
-    this.next = function() {
-        if (this.fields.length === 0){
+    this.next = function () {
+        if (this.fields.length === 0) {
             return false;
         }
         var field = this.fields[0];
@@ -322,7 +351,7 @@ function Calculator(fields, expressions) {
         return this.input(field);
     };
 
-    this.execute = function() {
+    this.execute = function () {
         for (var i = this.expressions.length - 1; i >= 0; i--) {
             var exp = this.expressions[i];
             var result = exp.solve(this.parameters);
@@ -332,7 +361,7 @@ function Calculator(fields, expressions) {
                 if (!this.error) {
                     this.parameters.push(result);
                     for (var j = 0; j < this.fields.length; j++) {
-                        if(this.fields[j].equals(result)) {
+                        if (this.fields[j].equals(result)) {
                             this.fields.remove(this.fields[j]);
                             break;
                         }
@@ -345,7 +374,7 @@ function Calculator(fields, expressions) {
         return null;
     };
 
-    this.input = function(param)  {
+    this.input = function (param) {
         if (this.parameters.contains(param)) {
             this.error = true;
             return null;
@@ -359,11 +388,11 @@ function Calculator(fields, expressions) {
     };
 
 
-    this.last = function()  {
+    this.last = function () {
         return this.parameters[this.parameters.length - 1];
     };
 
-    this.number = function()  {
+    this.number = function () {
         return this.parameters.length;
     };
 
@@ -382,14 +411,14 @@ function Expression(expression, center) {
     }
 
     this.args = this.expression.unique().filterBy(
-            function(v){
+            function (v) {
                 return !number(v);
             }
     );
 
-    this.unknown = function(params)  {
+    this.unknown = function (params) {
         var result = this.args.filterBy(
-                function(v){
+                function (v) {
                     return !params.contains(v);
                 }
         );
@@ -415,7 +444,7 @@ function Expression(expression, center) {
         return result;
     }
 
-    this.solve = function(params) {
+    this.solve = function (params) {
         var x = this.unknown(params);
         if (!x) {
             return null;
@@ -435,9 +464,12 @@ function Expression(expression, center) {
     };
 }
 
+function Memento() {
+
+}
 
 function QNM(name) {
-
+    this.id = null;
     this.name = name;
     this.sources = [];
     this.nodes = [];
@@ -447,22 +479,109 @@ function QNM(name) {
     var nodeNo = 0;
     var changedFields = [];
 
+    function createArrayDTO(array) {
+        var result = [];
+        for (var i = 0; i < array.length; i++) {
+            result.push(array[i].createDTO());
+        }
+        return result;
+    }
+
+    this.createDTO = function () {
+        var memento = new Memento();
+        memento.id = this.id;
+        memento.name = this.name;
+        memento.sourcesNo = sourcesNo;
+        memento.nodeNo = nodeNo;
+        memento.changedFields = createArrayDTO(changedFields);
+        memento.sources = createArrayDTO(this.sources);
+        memento.nodes = createArrayDTO(this.nodes);
+        memento.visits = createArrayDTO(this.visits);
+        return  memento;
+    };
+
+    this.setDTO = function (memento) {
+        this.id = memento.id;
+        this.name = memento.name;
+        sourcesNo = memento.sourcesNo;
+        nodeNo = memento.nodeNo;
+        this.sources = [];
+        for (var i1= 0; i1 < memento.sources.length; i1++) {
+            var source = new QNMSource(
+                    memento.sources[i1].id,
+                    memento.sources[i1].name
+            );
+            this.sources.push(source);
+        }
+        this.nodes = [];
+        for (var i2= 0; i2 < memento.nodes.length; i2++) {
+            var node = new QNMNode(
+                    memento.nodes[i2].id,
+                    memento.nodes[i2].name
+            );
+            this.nodes.push(node);
+        }
+        this.visits = [];
+        for (var i3= 0; i3 < this.sources.length; i3++) {
+            for (var i4= 0; i4 < this.nodes.length; i4++) {
+                var visit = new QNMVisit(this.sources[i3], this.nodes[i4]);
+                this.visits.push(visit);
+            }
+        }
+
+        changedFields = [];
+        for (var i5= 0; i5 < memento.changedFields.length; i5++) {
+            var field = memento.changedFields[i5];
+            var center = this.getCenterBy(field);
+            if (!center) {
+                return false;
+            }
+            var parameter = new Parameter(field.name, center);
+            parameter.value = field.value;
+            if (!parameter.sync()) {
+                return false;
+            }
+            if (!this.calculate(parameter)) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    function getElementById(array, id) {
+        for (var i = 0; i < array.length; i++) {
+            if (id === array[i].id) {
+                return array[i]
+            }
+        }
+        return null;
+    }
+
+    this.getCenterBy = function (field) {
+        switch (field.centerType) {
+            case "source": return getElementById(this.sources, field.centerId);
+            case "node":   return getElementById(this.nodes, field.centerId);
+            case "visit":  return getElementById(this.visits, field.centerId);
+        }
+        return null;
+    };
+
     this.addSource = function () {
-         var source = new QNMSource(++sourcesNo);
-         this.sources.push(source);
-         changedFields = changedFields.concat(source.getSignificance());
-         for (var i = 0; i < this.nodes.length; i++) {
-             var visit = new QNMVisit(source, this.nodes[i]);
-             this.visits.push(visit);
-             changedFields = changedFields.concat(visit.getSignificance());
-         }
+        var source = new QNMSource(++sourcesNo);
+        this.sources.push(source);
+        changedFields = changedFields.concat(source.getSignificance());
+        for (var i = 0; i < this.nodes.length; i++) {
+            var visit = new QNMVisit(source, this.nodes[i]);
+            this.visits.push(visit);
+            changedFields = changedFields.concat(visit.getSignificance());
+        }
     };
     this.removeSource = function (source) {
-         this.sources.remove(source);
-         for (var i = 0; i < this.nodes.length; i++) {
-         var visit = this.getVisitBy(source, this.nodes[i]);
+        this.sources.remove(source);
+        for (var i = 0; i < this.nodes.length; i++) {
+            var visit = this.getVisitBy(source, this.nodes[i]);
             this.visits.remove(visit);
-         }
+        }
     };
     this.addNode = function () {
         var node = new QNMNode(++nodeNo);
@@ -481,7 +600,7 @@ function QNM(name) {
         }
     };
 
-    this.getVisitBy = function(source, node) {
+    this.getVisitBy = function (source, node) {
         for (var i = 0; i < this.visits.length; i++) {
             if (this.visits[i].source === source && this.visits[i].node === node) {
                 return this.visits[i];
@@ -490,7 +609,7 @@ function QNM(name) {
         return null;
     };
 
-    this.getVisitsBySource = function(source) {
+    this.getVisitsBySource = function (source) {
         var result = [];
         for (var i = 0; i < this.visits.length; i++) {
             if (this.visits[i].source === source) {
@@ -500,7 +619,7 @@ function QNM(name) {
         return result;
     };
 
-    this.getVisitsByNode = function(node) {
+    this.getVisitsByNode = function (node) {
         var result = [];
         for (var i = 0; i < this.visits.length; i++) {
             if (this.visits[i].node === node) {
@@ -542,8 +661,10 @@ function QNM(name) {
         return result;
     };
 
-    this.makeRXNExps = function(source) {
-        var result = [[new Parameter('R', source), new Parameter('X', source)]];
+    this.makeRXNExps = function (source) {
+        var result = [
+            [new Parameter('R', source), new Parameter('X', source)]
+        ];
         var visits = this.getVisitsBySource(source);
         for (var j = 0; j < visits.length; j++) {
             if (visits[j].number.value) {
@@ -553,8 +674,11 @@ function QNM(name) {
         return new Expression(result);
     };
 
-    this.makeUUEXExp = function(node) {
-        var result = [[-1, new Parameter('U', node)], [new Parameter('UEX', node)]];
+    this.makeUUEXExp = function (node) {
+        var result = [
+            [-1, new Parameter('U', node)],
+            [new Parameter('UEX', node)]
+        ];
         var visits = this.getVisitsByNode(node);
         for (var j = 0; j < visits.length; j++) {
             if (visits[j].number.value) {
@@ -564,7 +688,7 @@ function QNM(name) {
         return new Expression(result);
     };
 
-    this.makeUUEXNExp = function(source, node) {
+    this.makeUUEXNExp = function (source, node) {
         var visit = this.getVisitBy(source, node);
         var result = [
             [new Parameter('U', visit)],
@@ -578,7 +702,7 @@ function QNM(name) {
         return new Expression(result);
     };
 
-    this.makeRTUSExp = function(source, node) {
+    this.makeRTUSExp = function (source, node) {
         var visit = this.getVisitBy(source, node);
         var result = [
             [-1, new Parameter('RT', visit)],
@@ -623,11 +747,7 @@ function QNM(name) {
         return expressions;
     };
 
-    this.makeCalculator = function(fieldName, center) {
-
-
-
-        var changedField = new Parameter(fieldName, center);
+    this.makeCalculator = function (changedField) {
 
         if (changedFields.contains(changedField)) {
             changedFields.remove(changedField);
@@ -649,7 +769,7 @@ function QNM(name) {
         return new Calculator(fields, expressions);
     };
 
-    this.init = function() {
+    this.init = function () {
         [this.sources, this.visits, this.nodes].each(
                 function (u) {
                     var all = u.getAll();
@@ -661,5 +781,17 @@ function QNM(name) {
         );
     };
 
-
+    this.calculate = function (changedField) {
+        var calculator  = this.makeCalculator(changedField);
+        if (!calculator) {
+            return true;
+        }
+        for (var result = null; result || calculator.next();) {
+            result = calculator.execute();
+            if (calculator.error) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

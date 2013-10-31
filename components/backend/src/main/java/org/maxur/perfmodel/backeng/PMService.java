@@ -7,6 +7,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -16,10 +18,13 @@ import javax.ws.rs.core.MediaType;
 @Path("/{a:load|save}")
 public class PMService {
 
+    final private static Map<String, String> data = new HashMap<>();     // TODO
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String save(String message) {
+        data.put("1", message);   // TODO
         return header() + body() + footer();
     }
 
@@ -28,7 +33,7 @@ public class PMService {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public String load(@PathParam("id") String id) {
-        return header() + body() + footer();
+        return data.get("1");
     }
 
     private String header() {

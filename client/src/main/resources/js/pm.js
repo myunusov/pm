@@ -34,7 +34,8 @@ angular.module('pm.service', []).
                 },
                 save: function (id) {
                     model.id = id;
-                    $http.post(url + 'save', JSON.stringify(model.createDTO()))
+                    var dto = model.createDTO();
+                    $http.post(url + 'save', JSON.stringify(dto))
                             .success(function (data) {
                             })
                             .error(function (data) {
@@ -95,20 +96,13 @@ function QNMCtrl($scope, qnmFactory, modelProvider) {
     $scope.model = qnmFactory.qnm();
     modelProvider.setModel($scope.model);
 
-    $scope.change = function (fieldName, element) {
+    $scope.change = function (fieldName, center) {
         var model =  modelProvider.getModel();
         $scope.clearAlerts();
         model.init();
-        var calculator  = model.makeCalculator(fieldName, element);
-        if (!calculator) {
-            return;
-        }
-        for (var result = null; result || calculator.next();) {
-            result = calculator.execute();
-            if (calculator.error) {
-                $scope.inconsistentAlert();
-                return;
-            }
+        var changedField = new Parameter(fieldName, center);
+        if (!model.calculate(changedField)) {
+            $scope.inconsistentAlert();
         }
         if (!model.valid()) {
             $scope.invalidAlert();
@@ -135,6 +129,7 @@ function MainCtrl($scope, $modal, modelProvider) {
         // var id = getModelId() // TODO get model name from dialog
         var id = 'model 1';
         modelProvider.save(id);
+
     };
 
 
