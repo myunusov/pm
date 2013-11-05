@@ -1,4 +1,4 @@
-package org.maxur.perfmodel.backeng;
+package org.maxur.perfmodel.backend;
 
 import org.junit.Before;
 

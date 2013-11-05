@@ -65,7 +65,7 @@ function Quantity() {
     };
 
     this.setValue = function (newValue) {
-        this.inconsistent = this.eval ? this.value() !== newValue : false;
+        this.inconsistent = this.eval ? this.value !== newValue : false;
         this.eval = true;
         if (this.inconsistent) {
             return;

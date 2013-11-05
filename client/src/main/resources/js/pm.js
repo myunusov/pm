@@ -18,8 +18,8 @@ angular.module('pm.service', [])
             var alerts = null;
             function getMessageBy(errorcode) {
                 switch (parseFloat(errorcode)) {
-                    case 403: return "The server is refusing to respond to request";
-                    case 404: return "The requested resource could not be found";
+                    case 403: return "The server is refusing to respond to request.";
+                    case 404: return "The requested resource could not be found.";
                     default : return "Unknown error with code " + errorcode;
                 }
             }
@@ -63,10 +63,10 @@ angular.module('pm.service', [])
                     $http.get(url + 'load' + '/' + id)
                             .success(function (dto) {
                                 model.setDTO(dto);
-                                messageProvider.error("Performance Model is loaded");
+                                messageProvider.info("Performance Model is loaded.");
                             })
                             .error(function (data, status) {
-                                messageProvider.error("Error! Performance Model is not loaded", status);
+                                messageProvider.error("Error! Performance Model is not loaded.", status);
                             });
                 },
                 save: function (id) {
@@ -74,8 +74,12 @@ angular.module('pm.service', [])
                     model.id = id;
                     var dto = model.createDTO();
                     $http.post(url + 'save', JSON.stringify(dto))
-                            .success(function (data) {
-                                messageProvider.error("Performance Model is not saved");
+                            .success(function (data, status) {
+                                if (status && parseFloat(status) === 201) {
+                                    messageProvider.info("Performance Model is saved as '" + data + "'.");
+                                } else {
+                                    messageProvider.error("Error! Performance Model is not saved.", status);
+                                }
                             })
                             .error(function (data, status) {
                                 messageProvider.error("Error! Performance Model is not saved.", status);
