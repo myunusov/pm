@@ -13,8 +13,42 @@
  *    limitations under the License.
  */
 
-angular.module('pm.service', []).
-        service('modelProvider', function ($http) {
+angular.module('pm.service', [])
+        .service('messageProvider', function () {
+            var alerts = null;
+            function getMessageBy(errorcode) {
+                switch (parseFloat(errorcode)) {
+                    case 403: return "The server is refusing to respond to request";
+                    case 404: return "The requested resource could not be found";
+                    default : return "Unknown error with code " + errorcode;
+                }
+            }
+            return {
+                setAlerts: function (value) {
+                    alerts = value;
+                },
+                clear: function() {
+                    alerts.length = 0;
+                },
+                close: function(index) {
+                    alerts.splice(index, 1);
+                },
+                error: function(message, errorcode) {
+                    if (alerts.length === 0) {
+                        if (errorcode) {
+                            message += " " + getMessageBy(errorcode);
+                        }
+                        alerts.push({type: 'error', msg: message});
+                    }
+                },
+                info: function(message) {
+                    if (alerts.length === 0) {
+                        alerts.push({type: 'success', msg: message});
+                    }
+                }
+            };
+        })
+        .service('modelProvider', function ($http, messageProvider) {
             var model = null;
             var url = '../rest/services/';
             return {
@@ -25,20 +59,26 @@ angular.module('pm.service', []).
                     model = value;
                 },
                 load: function (id) {
+                    messageProvider.clear();
                     $http.get(url + 'load' + '/' + id)
                             .success(function (dto) {
                                 model.setDTO(dto);
+                                messageProvider.error("Performance Model is loaded");
                             })
-                            .error(function (data) {
+                            .error(function (data, status) {
+                                messageProvider.error("Error! Performance Model is not loaded", status);
                             });
                 },
                 save: function (id) {
+                    messageProvider.clear();
                     model.id = id;
                     var dto = model.createDTO();
                     $http.post(url + 'save', JSON.stringify(dto))
                             .success(function (data) {
+                                messageProvider.error("Performance Model is not saved");
                             })
-                            .error(function (data) {
+                            .error(function (data, status) {
+                                messageProvider.error("Error! Performance Model is not saved.", status);
                             });
                 }
             };
@@ -74,38 +114,28 @@ application.factory('qnmFactory', function() {
 });
 
 
-function QNMCtrl($scope, qnmFactory, modelProvider) {
+function QNMCtrl($scope, qnmFactory, modelProvider, messageProvider) {
 
     $scope.alerts = [];
-
-    $scope.clearAlerts = function() {
-        $scope.alerts = [];
-    };
-
-    $scope.inconsistentAlert = function() {
-        if ($scope.alerts.length === 0) {
-            $scope.alerts.push({type: 'error', msg: "Error! Performance Model is not consistent"});
-        }
-    };
-                               $scope.invalidAlert = function() {
-        if ($scope.alerts.length === 0) {
-            $scope.alerts.push({type: 'error', msg: "Error! Performance Model is invalid"});
-        }
-    };
+    messageProvider.setAlerts($scope.alerts);
 
     $scope.model = qnmFactory.qnm();
     modelProvider.setModel($scope.model);
 
+    $scope.closeAlert = function(index) {
+        messageProvider.close(index);
+    };
+
     $scope.change = function (fieldName, center) {
         var model =  modelProvider.getModel();
-        $scope.clearAlerts();
+        messageProvider.clear();
         model.init();
         var changedField = new Parameter(fieldName, center);
         if (!model.calculate(changedField)) {
-            $scope.inconsistentAlert();
+            messageProvider.error("Error! Performance Model is not consistent");
         }
         if (!model.valid()) {
-            $scope.invalidAlert();
+            messageProvider.error("Error! Performance Model is invalid");
         }
     };
 }
