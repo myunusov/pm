@@ -468,9 +468,10 @@ function Memento() {
 
 }
 
-function QNM(name) {
-    this.id = null;
+function QNM(name, id) {
+    this.id = id;
     this.name = name;
+    this.version = 0;
     this.sources = [];
     this.nodes = [];
     this.visits = [];
@@ -491,6 +492,7 @@ function QNM(name) {
         var memento = new Memento();
         memento.id = this.id;
         memento.name = this.name;
+        memento.version = this.version;
         memento.sourcesNo = sourcesNo;
         memento.nodeNo = nodeNo;
         memento.changedFields = createArrayDTO(changedFields);
@@ -503,6 +505,7 @@ function QNM(name) {
     this.setDTO = function (memento) {
         this.id = memento.id;
         this.name = memento.name;
+        this.version = memento.version;
         sourcesNo = memento.sourcesNo;
         nodeNo = memento.nodeNo;
         this.sources = [];

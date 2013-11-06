@@ -20,6 +20,7 @@ angular.module('pm.service', [])
                 switch (parseFloat(errorcode)) {
                     case 403: return "The server is refusing to respond to request.";
                     case 404: return "The requested resource could not be found.";
+                    case 409: return "The request could not be completed due to a conflict with the current state.";
                     default : return "Unknown error with code " + errorcode;
                 }
             }
@@ -35,10 +36,18 @@ angular.module('pm.service', [])
                 },
                 error: function(message, errorcode) {
                     if (alerts.length === 0) {
-                        if (errorcode) {
-                            message += " " + getMessageBy(errorcode);
+                        var result = "Error!";
+                        if (message instanceof Array) {
+                            for (var i = 0; i < message.length; i++) {
+                                result += " " + message[i];
+                            }
+                        } else {
+                            result += " " + message;
                         }
-                        alerts.push({type: 'error', msg: message});
+                        if (errorcode) {
+                            result +=  " " + getMessageBy(errorcode);
+                        }
+                        alerts.push({type: 'error', msg: result});
                     }
                 },
                 info: function(message) {
@@ -58,31 +67,32 @@ angular.module('pm.service', [])
                 setModel: function (value) {
                     model = value;
                 },
-                load: function (id) {
+                load: function (name) {
                     messageProvider.clear();
-                    $http.get(url + 'load' + '/' + id)
+                    $http.get(url + 'load' + '/' + name)
                             .success(function (dto) {
                                 model.setDTO(dto);
                                 messageProvider.info("Performance Model is loaded.");
                             })
                             .error(function (data, status) {
-                                messageProvider.error("Error! Performance Model is not loaded.", status);
+                                messageProvider.error(data, status);
                             });
                 },
-                save: function (id) {
+                save: function (name) {
                     messageProvider.clear();
-                    model.id = id;
+                    model.name = name;
                     var dto = model.createDTO();
                     $http.post(url + 'save', JSON.stringify(dto))
                             .success(function (data, status) {
                                 if (status && parseFloat(status) === 201) {
+                                    model.version = model.version + 1;
                                     messageProvider.info("Performance Model is saved as '" + data + "'.");
                                 } else {
-                                    messageProvider.error("Error! Performance Model is not saved.", status);
+                                    messageProvider.error(data, status);
                                 }
                             })
                             .error(function (data, status) {
-                                messageProvider.error("Error! Performance Model is not saved.", status);
+                                messageProvider.error(data, status);
                             });
                 }
             };
@@ -109,7 +119,7 @@ var application = angular.module(
 application.factory('qnmFactory', function() {
     return {
         qnm: function() {
-            var qnm = new QNM();
+            var qnm = new QNM("New QN Model", uuid());
             qnm.addNode();
             qnm.addSource();
             return  qnm;
@@ -136,10 +146,10 @@ function QNMCtrl($scope, qnmFactory, modelProvider, messageProvider) {
         model.init();
         var changedField = new Parameter(fieldName, center);
         if (!model.calculate(changedField)) {
-            messageProvider.error("Error! Performance Model is not consistent");
+            messageProvider.error("Performance Model is not consistent");
         }
         if (!model.valid()) {
-            messageProvider.error("Error! Performance Model is invalid");
+            messageProvider.error("Performance Model is invalid");
         }
     };
 }
@@ -155,14 +165,14 @@ function MainCtrl($scope, $modal, modelProvider) {
 
     $scope.load = function () {
         // var id = getModelId() // TODO get model name from dialog
-        var id = 'model 1';
-        modelProvider.load(id);
+        var name = 'model 1';
+        modelProvider.load(name);
     };
 
     $scope.save = function () {
         // var id = getModelId() // TODO get model name from dialog
-        var id = 'model 1';
-        modelProvider.save(id);
+        var name = 'model 1';
+        modelProvider.save(name);
 
     };
 

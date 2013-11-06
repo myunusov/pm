@@ -14,6 +14,8 @@ import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.maxur.perfmodel.backend.WebException.badRequestException;
+import static org.maxur.perfmodel.backend.WebException.conflictException;
 import static org.maxur.perfmodel.backend.WebException.notFoundException;
 
 
@@ -29,28 +31,49 @@ public class PMService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response save(final String message) {
+    public Response save(final String object) {
         try {
-            final JSONObject qnm = new JSONObject(message);
-            final String id = qnm.getString("id");
-            data.put(id, message);
-            return Response.status(Response.Status.CREATED).entity(id).build();
+            final JSONObject qnm = new JSONObject(object);
+            final String error = checkConflict(qnm);
+            if (error != null) {
+                throw conflictException("Performance Model is not saved", error);
+            }
+            int version = qnm.getInt("version");
+            qnm.put("version", ++version);
+            final String name = qnm.getString("name");
+            data.put(name, qnm.toString());
+            return Response.status(Response.Status.CREATED).entity(name).build();
         } catch (JSONException e) {
-            throw notFoundException(
-                    "Performance Model with id = '%s' is not saved",
-                    e.getMessage()
-            );
+            throw badRequestException("Performance Model is not saved", e.getMessage());
         }
     }
 
+    private String checkConflict(JSONObject newQNModel) throws JSONException {
+        final String newName = newQNModel.getString("name");
+        final String oldObject  = data.get(newName);
+        if (oldObject != null) {
+            final JSONObject oldQNModel = new JSONObject(oldObject);
+            final String newId = newQNModel.getString("id");
+            final String oldId = oldQNModel.getString("id");
+            if (!newId.equals(oldId)) {
+                return String.format("Performance Model '%s' already exists.", newName);
+            }
+            int newVersion = newQNModel.getInt("version");
+            int oldVersion = oldQNModel.getInt("version");
+            if (newVersion != oldVersion) {
+                return String.format("Performance Model '%s' has already been changed by another user.", newName);
+            }
+        }
+        return null;
+    }
 
     @GET
-    @Path("/{id}")
+    @Path("/{name}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String load(@PathParam("id") String id) {
-        final String model = data.get(id);
+    public String load(@PathParam("name") String name) {
+        final String model = data.get(name);
         if (model == null) {
-            throw notFoundException(String.format("Performance Model with id = '%s' is not founded", id));
+            throw notFoundException(String.format("Performance Model '%s' is not founded", name));
         }
         return model;
     }

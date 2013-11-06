@@ -24,6 +24,7 @@ import java.util.List;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.CONFLICT;
 
 /**
  * @author Maxim Yunusov
@@ -44,6 +45,7 @@ public class WebException extends WebApplicationException {
         this.errors = Arrays.asList(errors);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public List<String> getErrors() {
         return this.errors;
     }
@@ -55,5 +57,10 @@ public class WebException extends WebApplicationException {
     public static WebException badRequestException(final String... errors) {
         return new WebException(BAD_REQUEST, errors);
     }
+
+    public static WebException conflictException(final String... errors) {
+        return new WebException(CONFLICT, errors);
+    }
+
 
 }
