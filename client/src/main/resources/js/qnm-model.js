@@ -554,7 +554,7 @@ function QNM(name, id) {
     function getElementById(array, id) {
         for (var i = 0; i < array.length; i++) {
             if (id === array[i].id) {
-                return array[i]
+                return array[i];
             }
         }
         return null;
@@ -565,8 +565,8 @@ function QNM(name, id) {
             case "source": return getElementById(this.sources, field.centerId);
             case "node":   return getElementById(this.nodes, field.centerId);
             case "visit":  return getElementById(this.visits, field.centerId);
+            default: return null;
         }
-        return null;
     };
 
     this.addSource = function () {
@@ -796,5 +796,5 @@ function QNM(name, id) {
             }
         }
         return true;
-    }
+    };
 }

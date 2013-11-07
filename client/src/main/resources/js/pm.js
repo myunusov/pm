@@ -59,7 +59,7 @@ angular.module('pm.service', [])
         })
         .service('modelProvider', function ($http, messageProvider) {
             var model = null;
-            var url = '../rest/services/';
+            var url = '../rest/services/qnm';
             return {
                 getModel: function () {
                     return model;
@@ -69,10 +69,20 @@ angular.module('pm.service', [])
                 },
                 load: function (name) {
                     messageProvider.clear();
-                    $http.get(url + 'load' + '/' + name)
+                    $http.get(url + '/' + name)
                             .success(function (dto) {
                                 model.setDTO(dto);
-                                messageProvider.info("Performance Model is loaded.");
+                                messageProvider.info("Performance Model '" + dto.name +"' is loaded.");
+                            })
+                            .error(function (data, status) {
+                                messageProvider.error(data, status);
+                            });
+                },
+                delete: function (name) {
+                    messageProvider.clear();
+                    $http.delete(url + '/' + name)
+                            .success(function (dto) {
+                                messageProvider.info("Performance Model '" + dto.name +"' is deleted.");
                             })
                             .error(function (data, status) {
                                 messageProvider.error(data, status);
@@ -82,7 +92,7 @@ angular.module('pm.service', [])
                     messageProvider.clear();
                     model.name = name;
                     var dto = model.createDTO();
-                    $http.post(url + 'save', JSON.stringify(dto))
+                    $http.post(url, JSON.stringify(dto))
                             .success(function (data, status) {
                                 if (status && parseFloat(status) === 201) {
                                     model.version = model.version + 1;

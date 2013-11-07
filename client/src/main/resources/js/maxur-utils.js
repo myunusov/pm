@@ -131,27 +131,10 @@ function number(value) {
     return !isNaN(parseFloat(value)) && isFinite(value);
 }
 
-function censor(censor) {
-    return (function() {
-        var i = 0;
-
-        return function(key, value) {
-            if(i !== 0 && typeof(censor) === 'object' && typeof(value) == 'object' && censor == value)
-                return '[Circular]';
-
-            if(i >= 29) // seems to be a harded maximum of 30 serialized objects?
-                return '[Unknown]';
-
-            ++i; // so we know we aren't using the original object anymore
-
-            return value;
-        }
-    })(censor);
-}
-
 function uuid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+        var r = Math.random() * 16 | 0;
+        var v = c === 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
     });
 }
