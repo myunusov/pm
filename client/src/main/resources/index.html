@@ -73,15 +73,15 @@
 <div class="viewport">
 <div class="window">
 
-<div id="panel" class="menu nav-collapse collapse width" style="z-index: -1">
+<div id="panel" class="menu nav-collapse collapse width" >
     <div class="collapse-inner">
         <div class="framehdr">
-            <i class="icon icon-user"></i>
+            <i class="icon icon-briefcase"></i>
             Projects
-            <button class="hdrbutton" ng-click="model.addSource()">
+            <button class="hdrbutton" data-toggle="collapse" data-target="#panel">
                 <i class="icon-remove"></i>
             </button>
-            <button class="hdrbutton" ng-click="">
+            <button class="hdrbutton">
                 <i class="icon-cog"></i>
             </button>
         </div>
@@ -91,7 +91,6 @@
 </div>
 
 <div class="view">
-
 
 <div id="content">
 
@@ -387,21 +386,23 @@
         </div>
     </div>
 
-    <footer class="footer">
-        <div class="container-fluid">
-            <p>Designed and built by <a href="http://www.maxur.org">Maxim Yunusov</a></p>
-
-            <p>Code licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License, Version
-                2.0</a>.
-            </p>
-        </div>
-    </footer>
-
 </div>
 
 </div>
 
 </div>
+</div>
+</div>
+
+<footer class="footer">
+    <div class="container-fluid">
+        <p>Designed and built by <a href="http://www.maxur.org">Maxim Yunusov</a></p>
+
+        <p>Code licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License, Version
+            2.0</a>.
+        </p>
+    </div>
+</footer>
 
 <script src="angular/angular.min.js"></script>
 <script src="ng-bootstrap/ui-bootstrap-tpls-0.6.0.min.js"></script>
