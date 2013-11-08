@@ -14,10 +14,12 @@
  */
 
 body {
+/*
     opacity: 1;
     -webkit-transition: opacity 1s ease;
     -moz-transition: opacity 1s ease;
     transition: opacity 1s;
+*/
 }
 
 #brand {
@@ -243,6 +245,14 @@ tr:nth-of-type(odd) .simplebox {
 /* Landscape phone to portrait tablet */
 @media (max-width: 979px) {
 
+    .navbar-fixed-top {
+        margin: 0;
+    }
+
+    .container {
+        margin: 0;
+    }
+
     #brand {
         display: block;
     }
@@ -316,7 +326,7 @@ tr:nth-of-type(odd) .simplebox {
         content: "X";
     }
     .sources td:nth-of-type(5):before {
-        content: "RT";
+        content: "R";
     }
 
     .visits td:nth-of-type(1):before {

@@ -29,6 +29,7 @@
     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css"/>
 
     <link rel="stylesheet" href="css/app.css"/>
+    <link rel="stylesheet" href="css/slide.css"/>
 
 </head>
 
@@ -37,13 +38,15 @@
 <div class="navbar navbar-inverse navbar-fixed-top" ng-controller="MainCtrl">
     <div class="navbar-inner">
         <div class="container">
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target="#menu">
                 <span class="icon-th-list"></span></a>
+
             <a href="#" class="brand" id="brand">Performance Model</a>
 
-            <div class="nav-collapse collapse">
+            <div id="menu" class="nav-collapse collapse">
                 <ul class="nav pull-right">
                     <li class="active"><a href="#">QNM Model</a></li>
+                    <li><a href="#" data-toggle="collapse" data-target="#panel">Projects</a></li>
                     <li><a href="#" ng-click="load()">Load Models</a></li>
                     <li><a href="#" ng-click="save()">Save Models</a></li>
                     <li><a href="#" ng-click="about()">About </a></li>
@@ -66,6 +69,31 @@
         </div>
     </div>
 </header>
+
+<div class="viewport">
+<div class="window">
+
+<div id="panel" class="menu nav-collapse collapse width" style="z-index: -1">
+    <div class="collapse-inner">
+        <div class="framehdr">
+            <i class="icon icon-user"></i>
+            Projects
+            <button class="hdrbutton" ng-click="model.addSource()">
+                <i class="icon-remove"></i>
+            </button>
+            <button class="hdrbutton" ng-click="">
+                <i class="icon-cog"></i>
+            </button>
+        </div>
+        <div class="frame">
+        </div>
+    </div>
+</div>
+
+<div class="view">
+
+
+<div id="content">
 
 <div role="main" ng-controller="QNMCtrl">
 <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
@@ -252,7 +280,7 @@
                                 <th class="numeric">Service Time</th>
                                 <th class="numeric">Utilization</th>
                                 <th class="numeric">Mean Number of Tasks</th>
-                                <th class="numeric">Response Time</th>
+                                <th class="numeric">Residence Time</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -370,6 +398,11 @@
     </footer>
 
 </div>
+
+</div>
+
+</div>
+
 <script src="angular/angular.min.js"></script>
 <script src="ng-bootstrap/ui-bootstrap-tpls-0.6.0.min.js"></script>
 <script src="bootstrap/js/jquery.js"></script>

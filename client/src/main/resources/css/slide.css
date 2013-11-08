@@ -1,0 +1,101 @@
+body {
+    /*position: absolute;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;          */
+    background: #ffffff;
+}
+
+body .viewport {
+/*    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;             */
+    overflow: hidden;
+}
+
+body .viewport .window {
+    /*position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    bottom: 0;
+    left: 0;             */
+}
+
+/*body .viewport .window .navbar .navbar-inner {
+    border-radius: 0;
+    padding-left: 5px;
+}*/
+
+body .viewport .window .menu {
+    height: 100%;
+}
+
+body .viewport .window .menu.collapse {
+    float: left;
+    height: 100% !important;
+    width: auto;
+}
+
+body .viewport .window .menu.collapse.height {
+    position: relative;
+    height: 0;
+    overflow: hidden;
+    -webkit-transition: height 0.35s ease;
+    -moz-transition: height 0.35s ease;
+    -o-transition: height 0.35s ease;
+    transition: height 0.35s ease;
+}
+
+body .viewport .window .menu.collapse.width {
+    position: relative;
+    width: 0;
+    overflow: hidden;
+    -webkit-transition: width 0.35s ease;
+    -moz-transition: width 0.35s ease;
+    -o-transition: width 0.35s ease;
+    transition: width 0.35s ease;
+}
+
+body .viewport .window .menu.collapse.in.width {
+    width: auto;
+}
+
+body .viewport .window .menu.collapse.in.height {
+    height: auto;
+}
+
+body .viewport .window .menu .collapse-inner {
+    position: relative;
+    width: 400px;
+    height: 100%;
+}
+
+/*body .viewport .window .menu .navbar .navbar-inner {
+    text-align: center;
+    color: grey;
+    font-size: 1.2em;
+    line-height: 38px;
+}*/
+
+body .viewport .window .menu .nav-stacked {
+    padding: 0 10px;
+}
+
+body .viewport .window .view {
+/*    width: 50%;
+    height: 100%; */
+    overflow: hidden;
+}
+
+/*body .viewport .window .view .navbar .navbar-inner .btn-navbar {
+    display: block;
+    float: left;
+}*/
+
+body .viewport .window .view #content {
+    background-color: #ffffff;
+}
