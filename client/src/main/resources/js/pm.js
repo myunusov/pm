@@ -75,7 +75,7 @@ angular.module('pm.service', [])
                                 messageProvider.info("Performance Model '" + dto.name +"' is loaded.");
                             })
                             .error(function (data, status) {
-                                messageProvider.error(data, status);
+                                messageProvider.error(data || "Performance Model is not loaded.", status);
                             });
                 },
                 delete: function (name) {
@@ -85,7 +85,7 @@ angular.module('pm.service', [])
                                 messageProvider.info("Performance Model '" + dto.name +"' is deleted.");
                             })
                             .error(function (data, status) {
-                                messageProvider.error(data, status);
+                                messageProvider.error(data || "Performance Model is not deleted.", status);
                             });
                 },
                 save: function (name) {
@@ -102,7 +102,7 @@ angular.module('pm.service', [])
                                 }
                             })
                             .error(function (data, status) {
-                                messageProvider.error(data, status);
+                                messageProvider.error(data || "Performance Model is not saved.", status);
                             });
                 }
             };
@@ -186,8 +186,21 @@ function MainCtrl($scope, $modal, modelProvider) {
 
     };
 
-
 }
+
+function ProjectCtrl($scope, modelProvider) {
+
+    $scope.projects = [{name: 'model 1'}, {name: 'model 2'}, {name: 'model 3'}, {name: 'model 4'}, {name: 'model 5'}];
+
+    $scope.load = function (project) {
+        modelProvider.load(project.name);
+    };
+
+    $scope.delete = function (project) {
+        modelProvider.delete(project.name);
+    };
+}
+
 
 function ModalInstanceCtrl($scope, $modalInstance) {
 

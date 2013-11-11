@@ -14,12 +14,8 @@
  */
 
 body {
-/*
-    opacity: 1;
-    -webkit-transition: opacity 1s ease;
-    -moz-transition: opacity 1s ease;
     transition: opacity 1s;
-*/
+    background-color: #ffffff;
 }
 
 #brand {
@@ -278,7 +274,9 @@ tr:nth-of-type(odd) .simplebox {
         left: -9999px;
     }
 
-    tr { border: 1px solid #ccc; }
+    tr {
+        border: 1px solid #ccc;
+    }
 
     td {
         /* Behave  like a "row" */

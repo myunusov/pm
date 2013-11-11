@@ -19,36 +19,72 @@
     <title>Performance Model Calculator</title>
 
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Performance Model Calculator">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+
 
     <link rel="shortcut icon" href="img/favicon.ico"/>
 
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="bootstrap/css/bootstrap-responsive.min.css">
     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="snap/snap.css" />
 
     <link rel="stylesheet" href="css/app.css"/>
-    <link rel="stylesheet" href="css/slide.css"/>
 
 </head>
 
 <body class="ng-cloak">
 
-<div class="navbar navbar-inverse navbar-fixed-top" ng-controller="MainCtrl">
+<div class="snap-drawers" ng-controller="ProjectCtrl">
+    <div class="snap-drawer snap-drawer-left">
+        <div class="framehdr">
+            <i class="icon icon-briefcase"></i>
+            Projects
+            <button class="hdrbutton" onclick="snapper.close();">
+                <i class="icon-remove"></i>
+            </button>
+            <button class="hdrbutton">
+                <i class="icon-cog"></i>
+            </button>
+        </div>
+        <div class="frame">
+            <table>
+                <tr ng-repeat="project in projects">
+                    <td width = "10px"><i class="icon-file"></i></td>
+                    <td>{{project.name}}</td>
+                    <td width = "10px"><a href="#" ng-click="delete(project)"><i class="icon-remove"></i></a></td>
+                    <td width = "10px"><a href="#" ng-click="load(project)"><i class="icon-download-alt"></i></a></td>
+                </tr>
+<!--                <tr>
+                    <td><i class="icon-folder-close"></i></td><td>folder</td>
+                </tr>
+                <tr>
+                    <td><i class="icon-file"></i></td><td>file</td>
+                </tr>-->
+            </table>
+        </div>
+        <div class="snap-drawer snap-drawer-right"></div>
+    </div>
+</div>
+
+<div id="content" class="snap-content">
+
+<div id="menu" class="navbar navbar-inverse navbar-fixed-top" ng-controller="MainCtrl">
     <div class="navbar-inner">
         <div class="container">
-            <a class="btn btn-navbar" data-toggle="collapse" data-target="#menu">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                 <span class="icon-th-list"></span></a>
-
             <a href="#" class="brand" id="brand">Performance Model</a>
 
-            <div id="menu" class="nav-collapse collapse">
+            <div class="nav-collapse collapse">
                 <ul class="nav pull-right">
                     <li class="active"><a href="#">QNM Model</a></li>
-                    <li><a href="#" data-toggle="collapse" data-target="#panel">Projects</a></li>
-                    <li><a href="#" ng-click="load()">Load Models</a></li>
-                    <li><a href="#" ng-click="save()">Save Models</a></li>
+                    <li><a href="#" onclick="snapper.state().state === 'closed' ?  snapper.open('left') : snapper.close();">Projects</a></li>
+                    <li><a href="#" ng-click="load()">Load</a></li>
+                    <li><a href="#" ng-click="save()">Save</a></li>
                     <li><a href="#" ng-click="about()">About </a></li>
                     <li><a href="https://github.com/myunusov/pm/"><strong><i class="icon-github"></i> Code on
                         Github</strong></a></li>
@@ -69,28 +105,6 @@
         </div>
     </div>
 </header>
-
-<div class="viewport">
-<div class="window">
-
-<div id="panel" class="menu nav-collapse collapse width" >
-    <div class="collapse-inner">
-        <div class="framehdr">
-            <i class="icon icon-briefcase"></i>
-            Projects
-            <button class="hdrbutton" data-toggle="collapse" data-target="#panel">
-                <i class="icon-remove"></i>
-            </button>
-            <button class="hdrbutton">
-                <i class="icon-cog"></i>
-            </button>
-        </div>
-        <div class="frame">
-        </div>
-    </div>
-</div>
-
-<div class="view" id="content">
 
 <div role="main" ng-controller="QNMCtrl">
 <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
@@ -277,7 +291,7 @@
                                 <th class="numeric">Service Time</th>
                                 <th class="numeric">Utilization</th>
                                 <th class="numeric">Mean Number of Tasks</th>
-                                <th class="numeric">Residence Time</th>
+                                <th class="numeric">Response Time</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -384,32 +398,43 @@
         </div>
     </div>
 
-</div>
+    <footer class="footer">
+        <div class="container-fluid">
+            <p>Designed and built by <a href="http://www.maxur.org">Maxim Yunusov</a></p>
+
+            <p>Code licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License, Version
+                2.0</a>.
+            </p>
+        </div>
+    </footer>
 
 </div>
 
 </div>
-</div>
-
-<footer class="footer">
-    <div class="container-fluid">
-        <p>Designed and built by <a href="http://www.maxur.org">Maxim Yunusov</a></p>
-
-        <p>Code licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License, Version
-            2.0</a>.
-        </p>
-    </div>
-</footer>
 
 <script src="angular/angular.min.js"></script>
 <script src="ng-bootstrap/ui-bootstrap-tpls-0.6.0.min.js"></script>
 <script src="bootstrap/js/jquery.js"></script>
 <script src="bootstrap/js/bootstrap-transition.js"></script>
 <script src="bootstrap/js/bootstrap-collapse.js"></script>
+<script src="snap/snap.min.js" ></script>
 
 <script src="js/maxur-utils.js"></script>
 <script src="js/qnm-model.js"></script>
 <script src="js/pm.js"></script>
+
+<script type="text/javascript">
+    var menu = $('#menu');
+    menu.hide();
+
+    var snapper = new Snap({
+        element: document.getElementById('content'),
+        disable: 'right'
+    });
+    snapper.settings({maxPosition: 400, minPosition: -400});
+
+    menu.toggle(100);
+</script>
 
 <script type="text/ng-template" id="myModalContent.html">
     <div ng-click="ok()">
