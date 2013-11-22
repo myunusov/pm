@@ -122,6 +122,29 @@ body {
     background-color: #ffffff;
 }
 
+.snapjs-right .snap-drawer-left {
+    display: block;
+    left: auto;
+    right: 0;
+}
+.snapjs-right .snap-drawer-right {
+    display: none;
+}
+
+.snapjs-expand-left .drawer-inner, .snapjs-expand-right .drawer-inner {
+    opacity: 0;
+}
+.snap-content {
+    background: none repeat scroll 0 0 white;
+}
+.snap-drawers {
+    background: none repeat scroll 0 0 white;
+}
+.snap-drawer {
+    background: none repeat scroll 0 0 white;
+    color: #000000;
+}
+
 #brand {
     display: none;
 }
