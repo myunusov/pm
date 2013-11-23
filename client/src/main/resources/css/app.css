@@ -12,137 +12,10 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-.snapjs-right .snap-drawer-left {
-    display: block;
-    left: auto;
-    right: 0;
-}
-.snapjs-right .snap-drawer-right {
-    display: none;
-}
-#open-left {
-    display: block;
-    height: 44px;
-    width: 44px;
-}
-#no-drag, #do-drag {
-    background: none repeat scroll 0 0 #FF0000;
-    color: #FFFFFF;
-    height: 100px;
-    left: 50%;
-    line-height: 100px;
-    margin-left: -25%;
-    margin-top: -50px;
-    position: absolute;
-    text-align: center;
-    top: 50%;
-    width: 50%;
-}
-#do-drag {
-    background: none repeat scroll 0 0 #008000;
-}
-.demo-social {
-    padding: 0 15px;
-}
-.toggler {
-    background: none repeat scroll 0 0 rgba(255, 255, 255, 0.5);
-    margin: 0 auto 20px;
-    padding: 20px;
-    position: relative;
-    text-align: center;
-    top: 70px;
-    width: 80%;
-}
-.search {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
-    padding-bottom: 10px;
-}
-
-.drawer-inner {
-    transition: opacity 0.3s ease 0s;
-}
-.snapjs-expand-left .drawer-inner, .snapjs-expand-right .drawer-inner {
-    opacity: 0;
-}
-.opt {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 20px;
-}
-.opt p {
-    color: rgba(0, 0, 0, 0.6);
-    font-weight: bold;
-    margin-bottom: 5px;
-    margin-top: 0;
-}
-.snap-content {
-    background: none repeat scroll 0 0 white;
-}
-.snap-drawers {
-    background: none repeat scroll 0 0 white;
-}
-.snap-drawer {
-    background: none repeat scroll 0 0 white;
-    color: #000000;
-}
-.snap-drawer h3 {
-    font-size: 36px;
-    font-weight: normal;
-    margin: 15px;
-}
-.snap-drawer h4 {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    margin-bottom: 0;
-    padding: 15px;
-}
-.snap-drawer ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-.snap-drawer li > a {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    color: #CCCCCC;
-    display: block;
-    font-weight: bold;
-    padding: 15px;
-    text-decoration: none;
-    text-indent: 20px;
-    text-shadow: 0 1px 0 #000000;
-}
-.snap-drawer p {
-    font-size: 12px;
-    opacity: 0.5;
-    padding: 15px;
-}
 
 body {
     transition: opacity 1s;
     background-color: #ffffff;
-}
-
-.snapjs-right .snap-drawer-left {
-    display: block;
-    left: auto;
-    right: 0;
-}
-.snapjs-right .snap-drawer-right {
-    display: none;
-}
-
-.snapjs-expand-left .drawer-inner, .snapjs-expand-right .drawer-inner {
-    opacity: 0;
-}
-.snap-content {
-    background: none repeat scroll 0 0 white;
-}
-.snap-drawers {
-    background: none repeat scroll 0 0 white;
-}
-.snap-drawer {
-    background: none repeat scroll 0 0 white;
-    color: #000000;
 }
 
 #brand {
@@ -288,11 +161,14 @@ section {
 /*
 Generic Styling, for Desktops/Laptops
 */
+
 table {
     width: 100%;
     border-collapse: collapse;
 }
+
 /* Zebra striping */
+
 tr:nth-of-type(odd) {
     background: #eee;
 }
@@ -301,11 +177,13 @@ th {
     color: #333;
     font-weight: bold;
 }
+
 td, th {
     padding: 6px;
     border: 1px solid #ccc;
     text-align: left;
 }
+
 
 
 .frame input {
@@ -428,6 +306,16 @@ tr:nth-of-type(odd) .simplebox {
     /*
     Label the data
     */
+
+    .projects td:nth-of-type(1):before {
+    }
+    .projects td:nth-of-type(2):before {
+    }
+    .projects td:nth-of-type(3):before {
+    }
+    .projects td:nth-of-type(4):before {
+    }
+
     .nodes td:nth-of-type(1):before {
         content: "Node Name";
     }
@@ -437,6 +325,9 @@ tr:nth-of-type(odd) .simplebox {
     .nodes td:nth-of-type(3):before {
         content: "U (full)";
     }
+    .nodes td:nth-of-type(4):before {
+    }
+
 
     .sources td:nth-of-type(1):before {
         content: "Source Name";
@@ -452,6 +343,8 @@ tr:nth-of-type(odd) .simplebox {
     }
     .sources td:nth-of-type(5):before {
         content: "R";
+    }
+    .sources td:nth-of-type(6):before {
     }
 
     .visits td:nth-of-type(1):before {

@@ -51,12 +51,25 @@
             </button>
         </div>
         <div class="frame">
-            <table>
+            <table class="projects">
                 <tr ng-repeat="project in projects">
-                    <td width = "10px"><i class="icon-file"></i></td>
+                    <td><i class="icon-file"></i></td>
                     <td>{{project.name}}</td>
-                    <td width = "10px"><a href="#" ng-click="delete(project)"><i class="icon-remove"></i></a></td>
-                    <td width = "10px"><a href="#" ng-click="load(project)"><i class="icon-download-alt"></i></a></td>
+                    <td>
+                         <span style="height: 28px">
+                            <button class="hdrbutton" href="#" ng-click="delete(project)">
+                                <i class="icon-remove"></i>
+                        </button>
+                        </span>
+                    </td>
+                    <td>
+                         <span style="height: 28px">
+                            <button class="hdrbutton" href="#" ng-click="load(project)">
+                                <i class="icon-download-alt"></i>
+                            </button>
+                         </span>
+                    </td>
+
                 </tr>
 <!--                <tr>
                     <td><i class="icon-folder-close"></i></td><td>folder</td>
@@ -128,15 +141,13 @@
                             <th>Node Name</th>
                             <th class="numeric">Utilization of other sources</th>
                             <th class="numeric">Aggregate Utilization</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr ng-repeat="node in model.nodes">
-                            <td>
+                            <td nowrap="nowrap">
                                 <input type="text" class="input input-small simplebox" ng-model="node.name">
-                                <button ng-click="model.removeNode(node)">
-                                    <i class="icon-remove"></i>
-                                </button>
                             </td>
                             <td nowrap="nowrap">
                                 <input type="text"
@@ -168,6 +179,13 @@
                                     </ul>
                                 </span>
                             </td>
+                            <td nowrap="nowrap">
+                                <span style="height: 28px">
+                                <button class="hdrbutton" ng-click="model.removeNode(node)">
+                                    <i class="icon-remove"></i>
+                                </button>
+                                    </span>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -193,15 +211,13 @@
                             <th class="numeric">Think Time</th>
                             <th class="numeric">Throughput</th>
                             <th class="numeric">Response Time</th>
+                            <th width="10px">&nbsp;</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr ng-repeat="source in model.sources">
-                            <td>
+                            <td nowrap="nowrap">
                                 <input type="text" class="input input-small simplebox" ng-model="source.name">
-                                <button ng-click="model.removeSource(source)">
-                                    <i class="icon-remove"></i>
-                                </button>
                             </td>
                             <td nowrap="nowrap">
                                 <input type="text"
@@ -262,6 +278,13 @@
                                         </li>
                                     </ul>
                                 </span>
+                            </td>
+                            <td nowrap="nowrap">
+                                <span style="height: 28px">
+                                <button class="hdrbutton" ng-click="model.removeSource(source)">
+                                    <i class="icon-remove"></i>
+                                </button>
+                                    </span>
                             </td>
                         </tr>
                         </tbody>

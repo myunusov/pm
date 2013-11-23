@@ -8,8 +8,8 @@ html, body {
 }
 
 .snap-content {
+    background: none repeat scroll 0 0 white;
     position: absolute;
-    background-color: #ffffff;
     top: 0;
     right: 0;
     bottom: 0;
@@ -27,6 +27,7 @@ html, body {
 }
 
 .snap-drawers {
+    background: none repeat scroll 0 0 white;
     position: absolute;
     top: 0;
     right: 0;
@@ -37,14 +38,15 @@ html, body {
 }
 
 .snap-drawer {
-
+    background: none repeat scroll 0 0 white;
+    color: #000000;
+    width: 360px;
     position: absolute;
     top: 0;
     right: auto;
     bottom: 0;
     left: auto;
-    width: 380px;
-    padding: 10px 10px 10px 10px;
+    padding: 20px 20px 20px 20px;
     height: auto;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
@@ -73,4 +75,6 @@ html, body {
 .snapjs-expand-left .snap-drawer-left,
 .snapjs-expand-right .snap-drawer-right {
     width: 100%;
+    opacity: 0;
 }
+
