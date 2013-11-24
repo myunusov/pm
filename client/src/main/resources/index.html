@@ -30,7 +30,6 @@
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="bootstrap/css/bootstrap-responsive.min.css">
     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css"/>
-    <link rel="stylesheet" type="text/css" href="snap/snap.css" />
 
     <link rel="stylesheet" href="css/app.css"/>
 
@@ -38,7 +37,7 @@
 
 <body class="ng-cloak">
 
-<div class="snap-drawers" ng-controller="ProjectCtrl">
+<div class="snap-drawers" ng-controller="ProjectCtrl" ng-init="init()">
     <div class="snap-drawer snap-drawer-left">
         <div class="framehdr">
             <i class="icon icon-briefcase"></i>
@@ -46,25 +45,26 @@
             <button class="hdrbutton" onclick="snapper.close();">
                 <i class="icon-remove"></i>
             </button>
-            <button class="hdrbutton">
-                <i class="icon-cog"></i>
+            <button class="hdrbutton" ng-click="findAll()">
+                <i class="icon-refresh"></i>
             </button>
         </div>
         <div class="frame">
             <table class="projects">
-                <tr ng-repeat="project in projects">
+                <tr ng-repeat="project in getProjects()">
                     <td><i class="icon-file"></i></td>
                     <td>{{project.name}}</td>
+                    <td>({{project.version}})</td>
                     <td>
                          <span style="height: 28px">
-                            <button class="hdrbutton" href="#" ng-click="delete(project)">
+                            <button class="hdrbutton" ng-click="delete(project)">
                                 <i class="icon-remove"></i>
                         </button>
                         </span>
                     </td>
                     <td>
                          <span style="height: 28px">
-                            <button class="hdrbutton" href="#" ng-click="load(project)">
+                            <button class="hdrbutton" ng-click="load(project)">
                                 <i class="icon-download-alt"></i>
                             </button>
                          </span>
@@ -96,7 +96,6 @@
                 <ul class="nav pull-right">
                     <li class="active"><a href="#">QNM Model</a></li>
                     <li><a href="#" onclick="snapper.state().state === 'closed' ?  snapper.open('left') : snapper.close();">Projects</a></li>
-                    <li><a href="#" ng-click="load()">Load</a></li>
                     <li><a href="#" ng-click="save()">Save</a></li>
                     <li><a href="#" ng-click="about()">About </a></li>
                     <li><a href="https://github.com/myunusov/pm/"><strong><i class="icon-github"></i> Code on
@@ -120,6 +119,26 @@
 </header>
 
 <div role="main" ng-controller="QNMCtrl">
+
+<div class=container-fluid>
+<div class="row-fluid">
+    <div class="span12">
+        <div class="framehdr">
+            <input type="text" class="input input-large simplebox" ng-model="model.name">
+            <button class="hdrbutton" ng-click="delete()">
+                <i class="icon-remove icon-large"></i>
+            </button>
+            <button class="hdrbutton" ng-click="save()">
+                <i class="icon-book icon-large"></i>
+            </button>
+            <button class="hdrbutton" ng-click="load()">
+                <i class="icon-download-alt icon-large"></i>
+            </button>
+        </div>
+    </div>
+</div>
+<div style="margin: 20px;"></div>
+
 <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
     <div class=container-fluid>
         <div class="row-fluid">

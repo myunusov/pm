@@ -15,7 +15,7 @@
 
 angular.module('pm.service', [])
         .service('messageProvider', function () {
-            var alerts = null;
+            var alerts = [];
             function getMessageBy(errorcode) {
                 switch (parseFloat(errorcode)) {
                     case 403: return "The server is refusing to respond to request.";
@@ -59,13 +59,37 @@ angular.module('pm.service', [])
         })
         .service('modelProvider', function ($http, messageProvider) {
             var model = null;
-            var url = '../rest/services/qnm';
+            var projects = [];
+            var url = '../rest/services/projects';
+
+            var remove = function(name) {
+                for (var i = 0; i < projects.length; i++) {
+                    if (projects[i].name === name) {
+                        projects.remove(projects[i]);
+                        break;
+                    }
+                }
+            };
+
             return {
+                getProjects: function () {
+                    return projects;
+                },
                 getModel: function () {
                     return model;
                 },
                 setModel: function (value) {
                     model = value;
+                },
+                findAll: function () {
+                    messageProvider.clear();
+                    $http.get(url + '/')
+                            .success(function (dto) {
+                                projects = dto;
+                            })
+                            .error(function (data, status) {
+                                messageProvider.error(data || "Performance Model List is not loaded.", status);
+                            });
                 },
                 load: function (name) {
                     messageProvider.clear();
@@ -83,6 +107,7 @@ angular.module('pm.service', [])
                     $http.delete(url + '/' + name)
                             .success(function (dto) {
                                 messageProvider.info("Performance Model '" + dto.name +"' is deleted.");
+                                remove(dto.name);
                             })
                             .error(function (data, status) {
                                 messageProvider.error(data || "Performance Model is not deleted.", status);
@@ -93,18 +118,26 @@ angular.module('pm.service', [])
                     model.name = name;
                     var dto = model.createDTO();
                     $http.post(url, JSON.stringify(dto))
-                            .success(function (data, status) {
+                            .success(function (dto, status) {
                                 if (status && parseFloat(status) === 201) {
                                     model.version = model.version + 1;
-                                    messageProvider.info("Performance Model is saved as '" + data + "'.");
+                                    remove(dto.name);
+                                    projects.push({
+                                        id: dto.id,
+                                        name: dto.name,
+                                        version: dto.version
+                                    });
+                                    messageProvider.info("Performance Model is saved as '" + dto.name + "'.");
                                 } else {
-                                    messageProvider.error(data, status);
+                                    messageProvider.error(dto.name, status);
                                 }
                             })
                             .error(function (data, status) {
                                 messageProvider.error(data || "Performance Model is not saved.", status);
                             });
-                }
+                },
+
+
             };
         });
 
@@ -162,6 +195,23 @@ function QNMCtrl($scope, qnmFactory, modelProvider, messageProvider) {
             messageProvider.error("Performance Model is invalid");
         }
     };
+
+    $scope.delete = function () {
+        var model =  modelProvider.getModel();
+        modelProvider.delete(model.name);
+    };
+
+    $scope.load = function () {
+        var model =  modelProvider.getModel();
+        modelProvider.load(model.name);
+    };
+
+
+    $scope.save = function () {
+        var model =  modelProvider.getModel();
+        modelProvider.save(model.name);
+    };
+
 }
 
 function MainCtrl($scope, $modal, modelProvider) {
@@ -173,24 +223,26 @@ function MainCtrl($scope, $modal, modelProvider) {
         });
     };
 
-    $scope.load = function () {
-        // var id = getModelId() // TODO get model name from dialog
-        var name = 'model 1';
-        modelProvider.load(name);
-    };
-
     $scope.save = function () {
-        // var id = getModelId() // TODO get model name from dialog
-        var name = 'model 1';
-        modelProvider.save(name);
-
+        var model =  modelProvider.getModel();
+        modelProvider.save(model.name);
     };
 
 }
 
 function ProjectCtrl($scope, modelProvider) {
 
-    $scope.projects = [{name: 'model 1'}, {name: 'model 2'}, {name: 'model 3'}, {name: 'model 4'}, {name: 'model 5'}];
+    $scope.init = function () {
+        modelProvider.findAll();
+    };
+
+    $scope.getProjects = function () {
+        return modelProvider.getProjects();
+    };
+
+    $scope.findAll = function () {
+        modelProvider.findAll();
+    };
 
     $scope.load = function (project) {
         modelProvider.load(project.name);

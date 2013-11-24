@@ -15,25 +15,31 @@
 
 package org.maxur.perfmodel.backend;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MemoryDataSource implements DataSource {
 
-    private static final  Map<String, String> MAP = new ConcurrentHashMap<>();
+    private static final  Map<String, Project> MAP = new ConcurrentHashMap<>();
 
     @Override
-    public String put(final String key, final String value) {
-        return MAP.put(key, value);
-    }
-
-    @Override
-    public String get(final String key) {
+    public Project get(final String key) {
         return MAP.get(key);
     }
 
     @Override
-    public String remove(final String key) {
+    public Project remove(final String key) {
         return MAP.remove(key);
+    }
+
+    @Override
+    public Project put(final Project project) {
+        return MAP.put(project.getName(), project);
+    }
+
+    @Override
+    public Collection<Project> findAll() {
+        return MAP.values();
     }
 }

@@ -15,19 +15,15 @@
 
 package org.maxur.perfmodel.backend;
 
-import java.util.Collection;
-
 /**
  * @author Maxim Yunusov
- * @version 1.0 07.11.13
+ * @version 1.0 24.11.13
  */
-public interface DataSource {
+public class ValidationException extends Exception {
 
-    Project get(String key);
+    private static final long serialVersionUID = -8101843196828276782L;
 
-    Project remove(String key);
-
-    Project put(Project project);
-
-    Collection<Project> findAll();
+    public ValidationException(String message) {
+        super(message);
+    }
 }
