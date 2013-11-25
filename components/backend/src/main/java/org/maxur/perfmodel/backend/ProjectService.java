@@ -4,6 +4,7 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -38,7 +39,8 @@ public class ProjectService {
 
     public static final String ID = "id";
 
-    private final DataSource dataSource = new MemoryDataSource();
+    @Inject
+    private DataSource dataSource;
 
     @GET
     public Collection<Project> findAll() {

@@ -15,23 +15,17 @@
 
 package org.maxur.perfmodel.backend;
 
-import org.glassfish.jersey.jackson.JacksonFeature;
-import org.glassfish.jersey.server.ResourceConfig;
-
-import javax.ws.rs.ApplicationPath;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 /**
  * @author Maxim Yunusov
  * @version 1.0
  * @since <pre>11/25/13</pre>
  */
-@ApplicationPath("services")
-public class PMApplication extends ResourceConfig {
+public class PMBinder extends AbstractBinder {
 
-    public PMApplication() {
-        packages("org.maxur.perfmodel.backend");
-        register(PMObjectMapperProvider.class);
-        register(JacksonFeature.class);
-        register(new PMBinder());
+    @Override
+    protected void configure() {
+        bind(new MemoryDataSource()).to(DataSource.class);
     }
 }
