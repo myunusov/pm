@@ -24,6 +24,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import java.io.File;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
 
 /**
  * @author Maxim Yunusov
@@ -55,6 +59,13 @@ public final class Launcher {
     public static void main(final String[] args) {
         try {
             final Tomcat tomcat = new Tomcat();
+
+            final java.util.logging.Logger logger = java.util.logging.Logger.getLogger("");
+            final Handler fileHandler = new FileHandler("logs/catalina.out", true);
+            fileHandler.setFormatter(new SimpleFormatter());
+            fileHandler.setLevel(Level.INFO);
+            fileHandler.setEncoding("UTF-8");
+            logger.addHandler(fileHandler);
 
             // Add AprLifecycleListener
             final StandardServer server = (StandardServer) tomcat.getServer();
