@@ -8,11 +8,11 @@ import org.junit.Before;
  */
 public class PMServiceTest {
 
-    private ProjectService service;
+    private ProjectResource service;
 
     @Before
     public void setUp() throws Exception {
-        service = new ProjectService();
+        service = new ProjectResource();
     }
 
 }

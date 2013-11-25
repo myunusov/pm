@@ -3,6 +3,8 @@ package org.maxur.perfmodel.backend;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -29,9 +31,9 @@ import static org.maxur.perfmodel.backend.WebException.notFoundException;
  * @version 1.0 01.09.13
  */
 @Path("/{a:projects}")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
-public class ProjectService {
+public class ProjectResource {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProjectResource.class);
 
     public static final String NAME = "name";
 
@@ -43,31 +45,40 @@ public class ProjectService {
     private DataSource dataSource;
 
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
     public Collection<Project> findAll() {
         return dataSource.findAll();
     }
 
     @GET
     @Path("/{name}")
+    @Produces(MediaType.APPLICATION_JSON)
     public String load(@PathParam(NAME) String name) {
         final Project project = dataSource.get(name);
         if (project == null) {
-            throw notFoundException(String.format("Performance Model '%s' is not founded", name));
+            final String message = String.format("Performance Model '%s' is not founded", name);
+            LOGGER.error(message);
+            throw notFoundException(message);
         }
         return project.asRaw();
     }
 
     @DELETE
     @Path("/{name}")
+    @Produces(MediaType.APPLICATION_JSON)
     public Project delete(@PathParam(NAME) String name) {
         final Project project = dataSource.remove(name);
         if (project == null) {
-            throw notFoundException(String.format("Performance Model '%s' is not founded", name));
+            final String message = String.format("Performance Model '%s' is not founded", name);
+            LOGGER.error(message);
+            throw notFoundException(message);
         }
         return  project;
     }
 
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public synchronized Response save(final String object) {
         try {
             final ObjectMapper mapper = new ObjectMapper(new JsonFactory());
@@ -89,8 +100,10 @@ public class ProjectService {
             dataSource.put(project);
             return Response.status(Response.Status.CREATED).entity(project).build();
         } catch (ValidationException e) {
+            LOGGER.error("Performance Model is not saved", e);
             throw conflictException("Performance Model is not saved", e.getMessage());
         } catch (IOException | NumberFormatException e) {
+            LOGGER.error("Performance Model is not saved", e);
             throw badRequestException("Performance Model is not saved", e.getMessage());
         }
     }

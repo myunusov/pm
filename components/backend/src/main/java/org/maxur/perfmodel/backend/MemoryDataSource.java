@@ -15,13 +15,58 @@
 
 package org.maxur.perfmodel.backend;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MemoryDataSource implements DataSource {
 
-    private static final  Map<String, Project> MAP = new ConcurrentHashMap<>();
+    private static final Logger LOGGER = LoggerFactory.getLogger(MemoryDataSource.class);
+
+    public static final String FILE_NAME = "data/projects.ser";
+
+    private static Map<String, Project> MAP = new ConcurrentHashMap<>();
+
+    static {
+        read();
+    }
+
+    public static void read() {
+        final File file = new File(FILE_NAME);
+        if (file.exists()) {
+            try (
+                    FileInputStream fileIn = new FileInputStream(file);
+                    ObjectInputStream in = new ObjectInputStream(fileIn)
+            ) {
+                //noinspection unchecked
+                MAP = (Map<String, Project>) in.readObject();
+                LOGGER.info("Persistent Data was be restored from file " + FILE_NAME);
+            } catch (IOException | ClassNotFoundException e) {
+                LOGGER.error("Data file is not loaded", e);
+            }
+        }
+    }
+
+    public static void write() {
+        try (
+                FileOutputStream fileOut = new FileOutputStream(FILE_NAME);
+                ObjectOutputStream out = new ObjectOutputStream(fileOut)
+        ) {
+            out.writeObject(MAP);
+            LOGGER.info("Persistent Data was be serialized to file " + FILE_NAME);
+        } catch (IOException e) {
+            LOGGER.error("Data file is not created", e);
+        }
+    }
 
     @Override
     public Project get(final String key) {
@@ -30,12 +75,16 @@ public class MemoryDataSource implements DataSource {
 
     @Override
     public Project remove(final String key) {
-        return MAP.remove(key);
+        final Project result = MAP.remove(key);
+        write();
+        return result;
     }
 
     @Override
     public Project put(final Project project) {
-        return MAP.put(project.getName(), project);
+        final Project result = MAP.put(project.getName(), project);
+        write();
+        return result;
     }
 
     @Override
