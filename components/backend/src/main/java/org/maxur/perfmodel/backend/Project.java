@@ -15,10 +15,7 @@
 
 package org.maxur.perfmodel.backend;
 
-import org.codehaus.jettison.json.JSONObject;
-
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 
 /**
@@ -30,16 +27,18 @@ public class Project implements Serializable {
 
     private static final long serialVersionUID = -5236202133124299315L;
 
-    private final JSONObject raw;
+    private String raw;
 
-    private final String id;
+    private String id;
 
-    private final String name;
+    private String name;
 
     private int version;
 
-    public Project(final JSONObject raw, final String id, final String name, final int version) {
-        this.raw = raw;
+    public Project() {
+    }
+
+    public Project(final String id, final String name, final int version) {
         this.id = id;
         this.name = name;
         this.version = version;
@@ -53,7 +52,7 @@ public class Project implements Serializable {
         if (!id.equals(previousProjectVersion.getId())) {
             throw new ValidationException(String.format("Performance Model '%s' already exists.", name));
         }
-        if (version != previousProjectVersion.getVersion()) {
+        if (version - 1 != previousProjectVersion.getVersion()) {
             throw new ValidationException(
                     String.format("Performance Model '%s' has already been changed by another user.", name)
             );
@@ -72,12 +71,11 @@ public class Project implements Serializable {
         return version;
     }
 
-    public void incVersion() {
-        version++;
+    public void setRaw(String raw) {
+        this.raw = raw;
     }
 
-    @XmlTransient
-    public JSONObject getRaw() {
+    public String asRaw() {
         return raw;
     }
 }

@@ -18,6 +18,7 @@ angular.module('pm.service', [])
             var alerts = [];
             function getMessageBy(errorcode) {
                 switch (parseFloat(errorcode)) {
+                    case 400: return "The request could not be understood by the server due to malformed syntax.";
                     case 403: return "The server is refusing to respond to request.";
                     case 404: return "The requested resource could not be found.";
                     case 409: return "The request could not be completed due to a conflict with the current state.";
@@ -88,7 +89,10 @@ angular.module('pm.service', [])
                                 projects = dto;
                             })
                             .error(function (data, status) {
-                                messageProvider.error(data || "Performance Model List is not loaded.", status);
+                                messageProvider.error(
+                                        data && data.message ?
+                                                data.message :
+                                                "Performance Model List is not loaded.", status);
                             });
                 },
                 load: function (name) {
@@ -99,7 +103,10 @@ angular.module('pm.service', [])
                                 messageProvider.info("Performance Model '" + dto.name +"' is loaded.");
                             })
                             .error(function (data, status) {
-                                messageProvider.error(data || "Performance Model is not loaded.", status);
+                                messageProvider.error(
+                                        data && data.message ?
+                                                data.message :
+                                                "Performance Model is not loaded.", status);
                             });
                 },
                 delete: function (name) {
@@ -110,7 +117,10 @@ angular.module('pm.service', [])
                                 remove(dto.name);
                             })
                             .error(function (data, status) {
-                                messageProvider.error(data || "Performance Model is not deleted.", status);
+                                messageProvider.error(
+                                        data && data.message ?
+                                                data.message :
+                                                "Performance Model is not deleted.", status);
                             });
                 },
                 save: function (name) {
@@ -120,7 +130,7 @@ angular.module('pm.service', [])
                     $http.post(url, JSON.stringify(dto))
                             .success(function (dto, status) {
                                 if (status && parseFloat(status) === 201) {
-                                    model.version = model.version + 1;
+                                    model.version = dto.version;
                                     remove(dto.name);
                                     projects.push({
                                         id: dto.id,
@@ -133,11 +143,12 @@ angular.module('pm.service', [])
                                 }
                             })
                             .error(function (data, status) {
-                                messageProvider.error(data || "Performance Model is not saved.", status);
+                                messageProvider.error(
+                                        data && data.message ?
+                                                data.message :
+                                                "Performance Model is not saved.", status);
                             });
-                },
-
-
+                }
             };
         });
 

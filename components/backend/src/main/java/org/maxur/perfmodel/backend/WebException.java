@@ -18,13 +18,13 @@ package org.maxur.perfmodel.backend;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.CONFLICT;
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
 /**
  * @author Maxim Yunusov
@@ -34,20 +34,20 @@ public class WebException extends WebApplicationException {
 
     private static final long serialVersionUID = -2826609919565709334L;
 
-    private final List<String> errors;
-
-    private WebException(final Response.Status status, final String... errors) {
+    private WebException(final Response.Status status, final String... messages) {
         super(Response
                 .status(status)
                 .type(APPLICATION_JSON)
-                .entity(new GenericEntity<List<String>>(Arrays.asList(errors)) {})
+                .entity(new GenericEntity<List<Incident>>(makeIncident(messages)) {})
                 .build());
-        this.errors = Arrays.asList(errors);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    public List<String> getErrors() {
-        return this.errors;
+    private static List<Incident> makeIncident(String[] messages) {
+        final List<Incident> result = new ArrayList<>();
+        for (String message : messages) {
+            result.add(new Incident(message));
+        }
+        return result;
     }
 
     public static WebException notFoundException(final String... errors) {
