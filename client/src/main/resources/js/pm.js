@@ -58,9 +58,9 @@ angular.module('pm.service', [])
                 }
             };
         })
-        .service('modelProvider', function ($http, messageProvider) {
-            var model = null;
+        .service('projectProvider', function ($http, messageProvider, qnmFactory) {
             var projects = [];
+            var project = null;
             var url = '../rest/services/projects';
 
             var remove = function(name) {
@@ -71,16 +71,18 @@ angular.module('pm.service', [])
                     }
                 }
             };
-
             return {
                 getProjects: function () {
                     return projects;
                 },
                 getModel: function () {
-                    return model;
+                    return project.models[0];
+                },
+                setProject: function (value) {
+                    project = value;
                 },
                 setModel: function (value) {
-                    model = value;
+                    project.models.push(value);
                 },
                 findAll: function () {
                     messageProvider.clear();
@@ -96,10 +98,11 @@ angular.module('pm.service', [])
                             });
                 },
                 load: function (name) {
+                    name = name || project.name;
                     messageProvider.clear();
                     $http.get(url + '/' + name)
                             .success(function (dto) {
-                                model.setDTO(dto);
+                                project.setDTO(dto);
                                 messageProvider.info("Performance Model '" + dto.name +"' is loaded.");
                             })
                             .error(function (data, status) {
@@ -109,12 +112,22 @@ angular.module('pm.service', [])
                                                 "Performance Model is not loaded.", status);
                             });
                 },
+                reset: function () {
+                   messageProvider.clear();
+                    project.reset();
+                    project.models.push(qnmFactory.qnm());
+                },
                 delete: function (name) {
+                    name = name || project.name;
                     messageProvider.clear();
                     $http.delete(url + '/' + name)
                             .success(function (dto) {
                                 messageProvider.info("Performance Model '" + dto.name +"' is deleted.");
                                 remove(dto.name);
+                                if (project.name === dto.name) {
+                                    project.reset();
+                                    project.models.push(qnmFactory.qnm());
+                                }
                             })
                             .error(function (data, status) {
                                 messageProvider.error(
@@ -123,14 +136,13 @@ angular.module('pm.service', [])
                                                 "Performance Model is not deleted.", status);
                             });
                 },
-                save: function (name) {
+                save: function () {
                     messageProvider.clear();
-                    model.name = name;
-                    var dto = model.createDTO();
+                    var dto = project.createDTO();
                     $http.post(url, JSON.stringify(dto))
                             .success(function (dto, status) {
                                 if (status && parseFloat(status) === 201) {
-                                    model.version = dto.version;
+                                    project.version = dto.version;
                                     remove(dto.name);
                                     projects.push({
                                         id: dto.id,
@@ -182,20 +194,51 @@ application.factory('qnmFactory', function() {
 });
 
 
-function QNMCtrl($scope, qnmFactory, modelProvider, messageProvider) {
+function ProjectCtrl($scope, projectProvider, qnmFactory) {
+
+    $scope.project = new Project("New Performance Models Project", uuid());
+
+    $scope.project.models.push(qnmFactory.qnm());
+
+    projectProvider.setProject($scope.project);
+
+    $scope.delete = function () {
+        projectProvider.delete();
+    };
+
+    $scope.reset = function () {
+        projectProvider.reset();
+    };
+
+
+    $scope.load = function () {
+        projectProvider.load();
+    };
+
+
+    $scope.save = function () {
+        projectProvider.save();
+    };
+
+}
+
+
+function MsgCtrl($scope, messageProvider) {
 
     $scope.alerts = [];
     messageProvider.setAlerts($scope.alerts);
-
-    $scope.model = qnmFactory.qnm();
-    modelProvider.setModel($scope.model);
 
     $scope.closeAlert = function(index) {
         messageProvider.close(index);
     };
 
+}
+
+
+function QNMCtrl($scope, projectProvider, messageProvider) {
+
     $scope.change = function (fieldName, center) {
-        var model =  modelProvider.getModel();
+        var model =  projectProvider.getModel();
         messageProvider.clear();
         model.init();
         var changedField = new Parameter(fieldName, center);
@@ -207,25 +250,13 @@ function QNMCtrl($scope, qnmFactory, modelProvider, messageProvider) {
         }
     };
 
-    $scope.delete = function () {
-        var model =  modelProvider.getModel();
-        modelProvider.delete(model.name);
-    };
-
-    $scope.load = function () {
-        var model =  modelProvider.getModel();
-        modelProvider.load(model.name);
-    };
-
-
-    $scope.save = function () {
-        var model =  modelProvider.getModel();
-        modelProvider.save(model.name);
+    $scope.getModel = function () {
+        return projectProvider.getModel();
     };
 
 }
 
-function MainCtrl($scope, $modal, modelProvider) {
+function MainMenuCtrl($scope, $modal, projectProvider) {
 
     $scope.about = function () {
         var modalInstance = $modal.open({
@@ -235,32 +266,31 @@ function MainCtrl($scope, $modal, modelProvider) {
     };
 
     $scope.save = function () {
-        var model =  modelProvider.getModel();
-        modelProvider.save(model.name);
+        projectProvider.save();
     };
 
 }
 
-function ProjectCtrl($scope, modelProvider) {
+function ProjectListCtrl($scope, projectProvider) {
 
     $scope.init = function () {
-        modelProvider.findAll();
+        projectProvider.findAll();
     };
 
     $scope.getProjects = function () {
-        return modelProvider.getProjects();
+        return projectProvider.getProjects();
     };
 
     $scope.findAll = function () {
-        modelProvider.findAll();
+        projectProvider.findAll();
     };
 
     $scope.load = function (project) {
-        modelProvider.load(project.name);
+        projectProvider.load(project.name);
     };
 
     $scope.delete = function (project) {
-        modelProvider.delete(project.name);
+        projectProvider.delete(project.name);
     };
 }
 

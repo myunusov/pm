@@ -465,7 +465,6 @@ function Expression(expression, center) {
 }
 
 function Memento() {
-
 }
 
 function QNM(name, id) {
