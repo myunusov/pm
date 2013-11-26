@@ -46,6 +46,10 @@ function Project(name, id) {
         this.name = name;
         this.version = 0;
         this.models = [];
+    };
+
+    this.removeModel = function (model) {
+        this.models.remove(model);
     }
 
 }

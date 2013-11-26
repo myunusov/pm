@@ -215,7 +215,6 @@ section {
     cursor: pointer;
     padding: 0;
     color: #000000;
-    float: right;
     font-weight: bold;
     line-height: 20px;
     opacity: 0.8;
@@ -275,6 +274,25 @@ td, th {
 }
 
 
+tab-heading  input {
+    outline: none;
+    border:none !important;
+    box-shadow:none !important;
+    margin-bottom: 0 !important;
+    opacity: 1.0;
+}
+
+tab-heading  button {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border: 0 none;
+    cursor: pointer;
+    padding: 0 0 0 5px;
+    color: #000000;
+    font-weight: bold;
+    line-height: 20px;
+    opacity: 0.8;
+    text-shadow: 0 1px 0 #FFFFFF;
+}
 
 .frame input {
     outline: none;

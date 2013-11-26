@@ -75,14 +75,8 @@ angular.module('pm.service', [])
                 getProjects: function () {
                     return projects;
                 },
-                getModel: function () {
-                    return project.models[0];
-                },
                 setProject: function (value) {
                     project = value;
-                },
-                setModel: function (value) {
-                    project.models.push(value);
                 },
                 findAll: function () {
                     messageProvider.clear();
@@ -184,8 +178,8 @@ var application = angular.module(
 
 application.factory('qnmFactory', function() {
     return {
-        qnm: function() {
-            var qnm = new QNM("New QN Model", uuid());
+        qnm: function(name) {
+            var qnm = new QNM(name || "QNM", uuid());
             qnm.addNode();
             qnm.addSource();
             return  qnm;
@@ -196,7 +190,7 @@ application.factory('qnmFactory', function() {
 
 function ProjectCtrl($scope, projectProvider, qnmFactory) {
 
-    $scope.project = new Project("New Performance Models Project", uuid());
+    $scope.project = new Project("New Performance Model", uuid());
 
     $scope.project.models.push(qnmFactory.qnm());
 
@@ -220,6 +214,10 @@ function ProjectCtrl($scope, projectProvider, qnmFactory) {
         projectProvider.save();
     };
 
+    $scope.addModel = function () {
+        $scope.project.models.push(qnmFactory.qnm("QNM " + $scope.project.models.length));
+    };
+
 }
 
 
@@ -238,7 +236,7 @@ function MsgCtrl($scope, messageProvider) {
 function QNMCtrl($scope, projectProvider, messageProvider) {
 
     $scope.change = function (fieldName, center) {
-        var model =  projectProvider.getModel();
+        var model =  $scope.model;
         messageProvider.clear();
         model.init();
         var changedField = new Parameter(fieldName, center);
@@ -249,11 +247,6 @@ function QNMCtrl($scope, projectProvider, messageProvider) {
             messageProvider.error("Performance Model is invalid");
         }
     };
-
-    $scope.getModel = function () {
-        return projectProvider.getModel();
-    };
-
 }
 
 function MainMenuCtrl($scope, $modal, projectProvider) {
@@ -264,11 +257,6 @@ function MainMenuCtrl($scope, $modal, projectProvider) {
             controller: ModalInstanceCtrl
         });
     };
-
-    $scope.save = function () {
-        projectProvider.save();
-    };
-
 }
 
 function ProjectListCtrl($scope, projectProvider) {

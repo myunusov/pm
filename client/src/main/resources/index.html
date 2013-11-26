@@ -87,14 +87,11 @@
 
             <div class="nav-collapse collapse">
                 <ul class="nav pull-right">
-                    <li class="active"><a href="#">QNM Model</a></li>
-                    <li><a href="#"
-                           onclick="snapper.state().state === 'closed' ?  snapper.open('left') : snapper.close();">Projects</a>
+                    <li><a href="#" onclick="snapper.state().state === 'closed' ?
+                                                snapper.open('left') : snapper.close();">Projects</a>
                     </li>
-                    <li><a href="#" ng-click="save()">Save</a></li>
                     <li><a href="#" ng-click="about()">About </a></li>
-                    <li><a href="https://github.com/myunusov/pm/"><strong><i class="icon-github"></i> Code on
-                        Github</strong></a></li>
+                    <li><a href="https://github.com/myunusov/pm/">Code on Github</a></li>
                 </ul>
             </div>
         </div>
@@ -137,6 +134,9 @@
                 <button class="hdrbutton" ng-click="reset()" tooltip-placement="left" tooltip="Reset Project">
                     <i class="icon-file icon-large"></i>
                 </button>
+                <button class="hdrbutton" ng-click="addModel()" tooltip-placement="left" tooltip="Add Model">
+                    <i class="icon-plus icon-large"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -145,7 +145,15 @@
 <div style="margin: 20px;"></div>
 
 <tabset>
-<tab ng-repeat="model in project.models" heading="{{project.models[0].name}}">
+<tab ng-repeat="model in project.models" >
+
+    <tab-heading>
+        <input type="text" class="input input-small simplebox" ng-model="model.name">
+        <button ng-click="project.removeModel(model)" tooltip-placement="right" tooltip="Remove Model">
+            <i class="icon-remove"></i>
+        </button>
+    </tab-heading>
+
 
 <div class="container-fluid" ng-controller="QNMCtrl">
 <div class="row-fluid">
@@ -153,7 +161,7 @@
         <div class="framehdr">
             <i class="icon icon-hdd"></i>
             Nodes
-            <button ng-click="getModel().addNode()" tooltip-placement="left" tooltip="Add new Node">
+            <button ng-click="model.addNode()" tooltip-placement="left" tooltip="Add new Node">
                 <i class="icon-plus"></i>
             </button>
             <!--                    <button ng-click="">
@@ -171,7 +179,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="node in getModel().nodes">
+                <tr ng-repeat="node in model.nodes">
                     <td nowrap="nowrap">
                         <input type="text" class="input input-small simplebox" ng-model="node.name">
                     </td>
@@ -207,7 +215,7 @@
                     </td>
                     <td nowrap="nowrap">
                                 <span style="height: 28px">
-                                <button class="hdrbutton" ng-click="getModel().removeNode(node)" tooltip-placement="left" tooltip="Remove Node">
+                                <button class="hdrbutton" ng-click="model.removeNode(node)" tooltip-placement="left" tooltip="Remove Node">
                                     <i class="icon-remove"></i>
                                 </button>
                                     </span>
@@ -221,7 +229,7 @@
         <div class="framehdr">
             <i class="icon icon-user"></i>
             Sources
-            <button class="hdrbutton" ng-click="getModel().addSource()" tooltip-placement="left" tooltip="Add new Source">
+            <button class="hdrbutton" ng-click="model.addSource()" tooltip-placement="left" tooltip="Add new Source">
                 <i class="icon-plus"></i>
             </button>
             <!--                    <button class="hdrbutton" ng-click="">
@@ -241,7 +249,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="source in getModel().sources">
+                <tr ng-repeat="source in model.sources">
                     <td nowrap="nowrap">
                         <input type="text" class="input input-small simplebox" ng-model="source.name">
                     </td>
@@ -307,7 +315,7 @@
                     </td>
                     <td nowrap="nowrap">
                                 <span style="height: 28px">
-                                <button class="hdrbutton" ng-click="getModel().removeSource(source)" tooltip-placement="left" tooltip="Remove Source">
+                                <button class="hdrbutton" ng-click="model.removeSource(source)" tooltip-placement="left" tooltip="Remove Source">
                                     <i class="icon-remove"></i>
                                 </button>
                                     </span>
@@ -344,7 +352,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="visit in getModel().visits">
+                    <tr ng-repeat="visit in model.visits">
                         <td>{{visit.source.name}}</td>
                         <td>{{visit.node.name}}</td>
                         <td nowrap="nowrap">
