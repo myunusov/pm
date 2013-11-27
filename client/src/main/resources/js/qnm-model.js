@@ -40,15 +40,24 @@ function Quantity() {
         }
     });
 
+    function equals(value1, value2) {
+        return parseFloat(value1).toPrecision(10) === parseFloat(value2).toPrecision(10);
+    }
+
+    function formatNumber(value, prec) {
+        return Math.round(value) == value ? Math.round(value) : parseFloat(value).toPrecision(prec);
+    }
+
     Object.defineProperty(this, 'text', {
         get: function () {
             return (this._text || this._text === 0) ?
                     this._text :
-                    (number(this.value) ? (this.value / this.unit.rate).toPrecision(5) : this.value);
+                    (number(this.value) ? formatNumber(this.value / this.unit.rate, 5) : this.value);
         },
         set: function (value) {
+            this.eval = false;
             this._text = value;
-            this.value = number(value) ? (value * this.unit.rate).toPrecision(10) : value;
+            this.value = number(value) ? formatNumber(value * this.unit.rate, 10) : value;
         }
     });
 
@@ -65,24 +74,18 @@ function Quantity() {
         return result;
     };
 
-    function equals(value1, value2) {
-        return parseFloat(value1).toPrecision(10) === parseFloat(value2).toPrecision(10);
-    }
-
     this.setValue = function (newValue) {
-        this.inconsistent = this.eval ? !equals(this.value, newValue) : false;
+//        this.inconsistent = this.eval ? !equals(this.value, newValue) : false;
         this.eval = true;
+/*
         if (this.inconsistent) {
             return;
         }
+*/
         if ((this._text || this._text === 0) && equals(this._text, newValue)) {
             this.value = this._text;
         } else {
-            if (Math.round(newValue) == newValue) {
-                this.value = Math.round(newValue);
-            } else {
-                this.value = parseFloat(newValue).toPrecision(10);
-            }
+            this.value = parseFloat(newValue).toPrecision(10);
         }
         this.coflicted = (this._text || this._text === 0) ? !equals(this._text, newValue) : false;
         this._text = null;
@@ -97,11 +100,17 @@ function Quantity() {
         return !this.value || (number(this.value) && this.value >= 0);
     };
 
+    this.setDTO = function (dto) {
+        this.value = dto[0];
+        this.setUnitByStr(dto[1]);
+        this.eval = false;
+    };
+
     this.setUnitByStr = function (unit) {
         if (unit) {
             for (var i = 0; i < this.units.length; i++) {
                 if (this.units[i].id === unit) {
-                    this.unit = this.units[1];
+                    this.unit = this.units[i];
                     return;
                 }
             }
@@ -109,12 +118,11 @@ function Quantity() {
     }
 }
 
-function Utilization(value, unit) {
+function Utilization(value) {
     this.units = [
         new QNMUnit('rate'),
         new QNMUnit('percent', '%', 0.01)
     ];
-    this.setUnitByStr(unit);
     this.unit = this.unit || this.units[1];
     this.value = value;
     this._text = value;
@@ -124,7 +132,7 @@ function Utilization(value, unit) {
 }
 Utilization.prototype = new Quantity();
 
-function QNMTime(value, unit) {
+function QNMTime(value) {
     this.value = value;
     this._text = value;
     this.units = [
@@ -133,21 +141,19 @@ function QNMTime(value, unit) {
         new QNMUnit('min', 'min', 60),
         new QNMUnit('hr', 'hr', 3600)
     ];
-    this.setUnitByStr(unit);
     this.unit = this.unit || this.units[1];
 }
 QNMTime.prototype = new Quantity();
 
-function QNMNumber(value, unit) {
+function QNMNumber(value) {
     this.value = value;
     this._text = value;
     this.units = [new QNMUnit('pcs', '')];
-    this.setUnitByStr(unit);
     this.unit = this.unit || this.units[0];
 }
 QNMNumber.prototype = new Quantity();
 
-function Throughput(value, unit) {
+function Throughput(value) {
     this.value = value;
     this._text = value;
     this.units = [
@@ -155,7 +161,6 @@ function Throughput(value, unit) {
         new QNMUnit('tpm', 'tpm', 1 / 60),
         new QNMUnit('tph', 'tph', 1 / 3600)
     ];
-    this.setUnitByStr(unit);
     this.unit = this.unit || this.units[0];
 }
 Throughput.prototype = new Quantity();
@@ -210,6 +215,36 @@ function QNMCenter() {
                 other.id === this.id;
     };
 
+    this.setDTO = function (dto) {
+        for (var name in this.all) {
+            if (this.all.hasOwnProperty(name)) {
+                var q = this.getByName(name);
+                q.setDTO(dto[name]);
+            }
+        }
+    };
+
+    this.createDTO = function() {
+        result = {
+            id: this.id,
+            name: this.name
+        };
+        for (var name in this.all) {
+            if (this.all.hasOwnProperty(name)) {
+                var q = this.getByName(name);
+                result[name] = [
+                    q.eval ? null : q.value,
+                    q.unit.id
+                ];
+            }
+        }
+        return this.doCreateDTO(result)
+    };
+
+    this.doCreateDTO = function(result) {
+        return result;
+    }
+
 }
 
 function QNMSource(id, name) {
@@ -236,24 +271,6 @@ function QNMSource(id, name) {
             [-1, 'M']
         ], this)
     ];
-
-    this.setDTO = function (dto) {
-        this.numberUsers = new QNMNumber(dto.m[0], dto.m[1]);
-        this.thinkTime = new QNMTime(dto.z[0], dto.z[1]);
-        this.throughput = new Throughput(dto.x[0], dto.x[1]);
-        this.responseTime = new QNMTime(dto.r[0], dto.r[1]);
-    };
-
-    this.createDTO = function() {
-        return {
-            id: this.id,
-            name: this.name,
-            m: [this.numberUsers._text, this.numberUsers.unit.id],
-            z: [this.thinkTime._text, this.thinkTime.unit.id],
-            x: [this.throughput._text, this.throughput.unit.id],
-            r: [this.responseTime._text, this.responseTime.unit.id]
-        };
-    };
 
     this.open = function () {
         this.isOpen = true;
@@ -285,17 +302,6 @@ function QNMNode(id, name) {
         'UEX': this.utilizationEx
     };
     this.expressions = [];
-
-    this.setDTO = function (dto) {
-        // TODO
-    };
-
-    this.createDTO = function() {
-        return {
-            id: this.id,
-            name: this.name
-        };
-    }
 
     this.equals = function (other) {
         if (!other) {
@@ -342,16 +348,11 @@ function QNMVisit(source, node) {
         ], this)
     ];
 
-    this.setDTO = function (dto) {
-        // TODO
+    this.doCreateDTO = function(result) {
+        result.source = this.source.id;
+        result.node = this.node.id;
+        return result;
     };
-
-    this.createDTO = function() {
-        return {
-            id: this.id,
-            name: this.name
-        };
-    }
 
     this.equals = function (other) {
         if (!other) {
@@ -574,12 +575,12 @@ function QNM(name, id) {
             this.nodes.push(node);
         }
         this.visits = [];
-        for (var i3= 0; i3 < this.sources.length; i3++) {
-            for (var i4= 0; i4 < this.nodes.length; i4++) {
-                var visit = new QNMVisit(this.sources[i3], this.nodes[i4]);
-                visit.setDTO(memento.sources[i3]);
-                this.visits.push(visit);
-            }
+        for (var i3= 0; i3 < memento.visits.length; i3++) {
+            var node1 = this.getNodeById(memento.visits[i3].node);
+            var source1 = this.getSourceById(memento.visits[i3].source);
+            var visit = new QNMVisit(source1, node1);
+            visit.setDTO(memento.visits[i3]);
+            this.visits.push(visit);
         }
 
         changedFields = [];
@@ -591,14 +592,9 @@ function QNM(name, id) {
             }
             var parameter = new Parameter(field.name, center);
             parameter.value = field.value;
-            if (!parameter.sync()) {
-                return false;
-            }
-            if (!this.calculate(parameter)) {
-                return false;
-            }
+            changedFields.push(parameter);
         }
-        return true;
+        return this.recalculate();
     };
 
     function getElementById(array, id) {
@@ -660,6 +656,24 @@ function QNM(name, id) {
         for (var i = 0; i < this.visits.length; i++) {
             if (this.visits[i].source === source && this.visits[i].node === node) {
                 return this.visits[i];
+            }
+        }
+        return null;
+    };
+
+    this.getSourceById = function(id) {
+        for (var i = 0; i < this.sources.length; i++) {
+            if (this.sources[i].id === id) {
+                return this.sources[i];
+            }
+        }
+        return null;
+    };
+
+    this.getNodeById = function(id) {
+        for (var i = 0; i < this.nodes.length; i++) {
+            if (this.nodes[i].id === id) {
+                return this.nodes[i];
             }
         }
         return null;
@@ -808,7 +822,8 @@ function QNM(name, id) {
                 function (u) {
                     var all = u.getAll();
                     for (var j = 0; j < all.length; j++) {
-                        all[j].eval = false;
+                        //all[j].eval = false;
+                        all[j].coflicted = false;
                         all[j].inconsistent = false;
                     }
                 }

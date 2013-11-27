@@ -100,7 +100,7 @@ public class ProjectResource {
             dataSource.put(project);
             return Response.status(Response.Status.CREATED).entity(project).build();
         } catch (ValidationException e) {
-            LOGGER.error("Performance Model is not saved", e);
+            LOGGER.info("Performance Model is not saved", e.getMessage());
             throw conflictException("Performance Model is not saved", e.getMessage());
         } catch (IOException | NumberFormatException e) {
             LOGGER.error("Performance Model is not saved", e);
