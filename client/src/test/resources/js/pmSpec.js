@@ -34,7 +34,7 @@ describe('pm', function() {
         };
 
         beforeEach(function() {
-            deps = module.value('QNMCtrl').requires;
+            deps = module.value('QNMCtrl').requires.concat(deps);
         });
 
         it("should have pm.service as a dependency", function() {

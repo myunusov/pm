@@ -18,6 +18,7 @@ function Quantity() {
     this.eval = false;
     this.inconsistent = false;
     this.coflicted = false;
+    this.unit;
     this._text;
 
     this.empty = function () {
@@ -64,14 +65,26 @@ function Quantity() {
         return result;
     };
 
+    function equals(value1, value2) {
+        return parseFloat(value1).toPrecision(10) === parseFloat(value2).toPrecision(10);
+    }
+
     this.setValue = function (newValue) {
-        this.inconsistent = this.eval ? this.value !== newValue : false;
+        this.inconsistent = this.eval ? !equals(this.value, newValue) : false;
         this.eval = true;
         if (this.inconsistent) {
             return;
         }
-        this.value = parseFloat(newValue).toPrecision(10);
-        this.coflicted = (this._text || this._text === 0) ? this._text !== newValue : false;
+        if ((this._text || this._text === 0) && equals(this._text, newValue)) {
+            this.value = this._text;
+        } else {
+            if (Math.round(newValue) == newValue) {
+                this.value = Math.round(newValue);
+            } else {
+                this.value = parseFloat(newValue).toPrecision(10);
+            }
+        }
+        this.coflicted = (this._text || this._text === 0) ? !equals(this._text, newValue) : false;
         this._text = null;
     };
 
@@ -84,14 +97,25 @@ function Quantity() {
         return !this.value || (number(this.value) && this.value >= 0);
     };
 
+    this.setUnitByStr = function (unit) {
+        if (unit) {
+            for (var i = 0; i < this.units.length; i++) {
+                if (this.units[i].id === unit) {
+                    this.unit = this.units[1];
+                    return;
+                }
+            }
+        }
+    }
 }
 
-function Utilization(value) {
+function Utilization(value, unit) {
     this.units = [
         new QNMUnit('rate'),
         new QNMUnit('percent', '%', 0.01)
     ];
-    this.unit = this.units[1];
+    this.setUnitByStr(unit);
+    this.unit = this.unit || this.units[1];
     this.value = value;
     this._text = value;
     this.valid = function () {
@@ -100,7 +124,7 @@ function Utilization(value) {
 }
 Utilization.prototype = new Quantity();
 
-function QNMTime(value) {
+function QNMTime(value, unit) {
     this.value = value;
     this._text = value;
     this.units = [
@@ -109,19 +133,21 @@ function QNMTime(value) {
         new QNMUnit('min', 'min', 60),
         new QNMUnit('hr', 'hr', 3600)
     ];
-    this.unit = this.units[1];
+    this.setUnitByStr(unit);
+    this.unit = this.unit || this.units[1];
 }
 QNMTime.prototype = new Quantity();
 
-function QNMNumber(value) {
+function QNMNumber(value, unit) {
     this.value = value;
     this._text = value;
     this.units = [new QNMUnit('pcs', '')];
-    this.unit = this.units[0];
+    this.setUnitByStr(unit);
+    this.unit = this.unit || this.units[0];
 }
 QNMNumber.prototype = new Quantity();
 
-function Throughput(value) {
+function Throughput(value, unit) {
     this.value = value;
     this._text = value;
     this.units = [
@@ -129,7 +155,8 @@ function Throughput(value) {
         new QNMUnit('tpm', 'tpm', 1 / 60),
         new QNMUnit('tph', 'tph', 1 / 3600)
     ];
-    this.unit = this.units[0];
+    this.setUnitByStr(unit);
+    this.unit = this.unit || this.units[0];
 }
 Throughput.prototype = new Quantity();
 
@@ -183,12 +210,6 @@ function QNMCenter() {
                 other.id === this.id;
     };
 
-    this.createDTO = function() {
-        return {
-            id: this.id,
-            name: this.name
-        };
-    }
 }
 
 function QNMSource(id, name) {
@@ -208,6 +229,32 @@ function QNMSource(id, name) {
         'R': this.responseTime
     };
 
+    this.expressions = [
+        new Expression([
+            ['R', 'X'],
+            ['Z', 'X'],
+            [-1, 'M']
+        ], this)
+    ];
+
+    this.setDTO = function (dto) {
+        this.numberUsers = new QNMNumber(dto.m[0], dto.m[1]);
+        this.thinkTime = new QNMTime(dto.z[0], dto.z[1]);
+        this.throughput = new Throughput(dto.x[0], dto.x[1]);
+        this.responseTime = new QNMTime(dto.r[0], dto.r[1]);
+    };
+
+    this.createDTO = function() {
+        return {
+            id: this.id,
+            name: this.name,
+            m: [this.numberUsers._text, this.numberUsers.unit.id],
+            z: [this.thinkTime._text, this.thinkTime.unit.id],
+            x: [this.throughput._text, this.throughput.unit.id],
+            r: [this.responseTime._text, this.responseTime.unit.id]
+        };
+    };
+
     this.open = function () {
         this.isOpen = true;
         this.thinkTime.value = null;
@@ -217,14 +264,6 @@ function QNMSource(id, name) {
     this.close = function () {
         this.isOpen = false;
     };
-
-    this.expressions = [
-        new Expression([
-            ['R', 'X'],
-            ['Z', 'X'],
-            [-1, 'M']
-        ], this)
-    ];
 
     this.equals = function (other) {
         if (!other) {
@@ -246,6 +285,18 @@ function QNMNode(id, name) {
         'UEX': this.utilizationEx
     };
     this.expressions = [];
+
+    this.setDTO = function (dto) {
+        // TODO
+    };
+
+    this.createDTO = function() {
+        return {
+            id: this.id,
+            name: this.name
+        };
+    }
+
     this.equals = function (other) {
         if (!other) {
             return null;
@@ -290,6 +341,17 @@ function QNMVisit(source, node) {
             ['N']
         ], this)
     ];
+
+    this.setDTO = function (dto) {
+        // TODO
+    };
+
+    this.createDTO = function() {
+        return {
+            id: this.id,
+            name: this.name
+        };
+    }
 
     this.equals = function (other) {
         if (!other) {
@@ -464,13 +526,9 @@ function Expression(expression, center) {
     };
 }
 
-function Memento() {
-}
-
 function QNM(name, id) {
     this.id = id;
     this.name = name;
-    this.version = 0;
     this.sources = [];
     this.nodes = [];
     this.visits = [];
@@ -479,19 +537,10 @@ function QNM(name, id) {
     var nodeNo = 0;
     var changedFields = [];
 
-    function createArrayDTO(array) {
-        var result = [];
-        for (var i = 0; i < array.length; i++) {
-            result.push(array[i].createDTO());
-        }
-        return result;
-    }
-
     this.createDTO = function () {
         var memento = new Memento();
         memento.id = this.id;
         memento.name = this.name;
-        memento.version = this.version;
         memento.sourcesNo = sourcesNo;
         memento.nodeNo = nodeNo;
         memento.changedFields = createArrayDTO(changedFields);
@@ -504,7 +553,6 @@ function QNM(name, id) {
     this.setDTO = function (memento) {
         this.id = memento.id;
         this.name = memento.name;
-        this.version = memento.version;
         sourcesNo = memento.sourcesNo;
         nodeNo = memento.nodeNo;
         this.sources = [];
@@ -513,6 +561,7 @@ function QNM(name, id) {
                     memento.sources[i1].id,
                     memento.sources[i1].name
             );
+            source.setDTO(memento.sources[i1]);
             this.sources.push(source);
         }
         this.nodes = [];
@@ -521,12 +570,14 @@ function QNM(name, id) {
                     memento.nodes[i2].id,
                     memento.nodes[i2].name
             );
+            node.setDTO(memento.nodes[i2]);
             this.nodes.push(node);
         }
         this.visits = [];
         for (var i3= 0; i3 < this.sources.length; i3++) {
             for (var i4= 0; i4 < this.nodes.length; i4++) {
                 var visit = new QNMVisit(this.sources[i3], this.nodes[i4]);
+                visit.setDTO(memento.sources[i3]);
                 this.visits.push(visit);
             }
         }
@@ -578,6 +629,7 @@ function QNM(name, id) {
             changedFields = changedFields.concat(visit.getSignificance());
         }
     };
+
     this.removeSource = function (source) {
         this.sources.remove(source);
         for (var i = 0; i < this.nodes.length; i++) {
@@ -585,6 +637,7 @@ function QNM(name, id) {
             this.visits.remove(visit);
         }
     };
+
     this.addNode = function () {
         var node = new QNMNode(++nodeNo);
         this.nodes.push(node);
@@ -595,6 +648,7 @@ function QNM(name, id) {
             changedFields = changedFields.concat(visit.getSignificance());
         }
     };
+
     this.removeNode = function (node) {
         this.nodes.remove(node);
         for (var i = 0; i < this.sources.length; i++) {
@@ -749,28 +803,6 @@ function QNM(name, id) {
         return expressions;
     };
 
-    this.makeCalculator = function (changedField) {
-
-        if (changedFields.contains(changedField)) {
-            changedFields.remove(changedField);
-        }
-        if (changedField.isUndefined()) {
-            return null;
-        }
-        changedFields.push(changedField);
-
-        var fields = this.getFieldsSeqBy(changedFields);
-        if (!fields) {
-            return null;
-        }
-
-        var expressions = this.getExpressions();
-        if (!expressions) {
-            return null;
-        }
-        return new Calculator(fields, expressions);
-    };
-
     this.init = function () {
         [this.sources, this.visits, this.nodes].each(
                 function (u) {
@@ -783,8 +815,20 @@ function QNM(name, id) {
         );
     };
 
-    this.calculate = function (changedField) {
-        var calculator  = this.makeCalculator(changedField);
+    this.makeCalculator = function () {
+        var fields = this.getFieldsSeqBy(changedFields);
+        if (!fields) {
+            return null;
+        }
+        var expressions = this.getExpressions();
+        if (!expressions) {
+            return null;
+        }
+        return new Calculator(fields, expressions);
+    };
+
+    this.recalculate = function () {
+        var calculator  = this.makeCalculator();
         if (!calculator) {
             return true;
         }
@@ -796,4 +840,24 @@ function QNM(name, id) {
         }
         return true;
     };
+
+
+    this.applyChangedField = function (changedField) {
+        if (changedFields.contains(changedField)) {
+            changedFields.remove(changedField);
+        }
+        if (changedField.isUndefined()) {
+            return false;
+        }
+        changedFields.push(changedField);
+        return true;
+    };
+
+    this.calculate = function (changedField) {
+        if (!this.applyChangedField(changedField)) {
+            return true;
+        }
+        return this.recalculate();
+    };
+
 }

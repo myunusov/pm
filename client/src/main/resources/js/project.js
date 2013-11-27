@@ -33,14 +33,6 @@ function Project(name, id) {
         }
     };
 
-    function createArrayDTO(array) {
-        var result = [];
-        for (var i = 0; i < array.length; i++) {
-            result.push(array[i].createDTO());
-        }
-        return result;
-    }
-
     this.reset = function() {
         this.id = id;
         this.name = name;
@@ -48,6 +40,7 @@ function Project(name, id) {
         this.models = [];
     };
 
+    //noinspection JSUnusedGlobalSymbols
     this.removeModel = function (model) {
         this.models.remove(model);
     }

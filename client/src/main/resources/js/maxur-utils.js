@@ -141,3 +141,14 @@ function uuid() {
         return v.toString(16);
     });
 }
+
+function Memento() {
+}
+
+function createArrayDTO(array) {
+    var result = [];
+    for (var i = 0; i < array.length; i++) {
+        result.push(array[i].createDTO());
+    }
+    return result;
+}

@@ -187,7 +187,7 @@ application.factory('qnmFactory', function() {
     };
 });
 
-
+//noinspection JSUnusedGlobalSymbols
 function ProjectCtrl($scope, projectProvider, qnmFactory) {
 
     $scope.project = new Project("New Performance Model", uuid());
@@ -209,7 +209,6 @@ function ProjectCtrl($scope, projectProvider, qnmFactory) {
         projectProvider.load();
     };
 
-
     $scope.save = function () {
         projectProvider.save();
     };
@@ -220,7 +219,7 @@ function ProjectCtrl($scope, projectProvider, qnmFactory) {
 
 }
 
-
+//noinspection JSUnusedGlobalSymbols
 function MsgCtrl($scope, messageProvider) {
 
     $scope.alerts = [];
@@ -232,8 +231,7 @@ function MsgCtrl($scope, messageProvider) {
 
 }
 
-
-function QNMCtrl($scope, projectProvider, messageProvider) {
+function QNMCtrl($scope, messageProvider) {
 
     $scope.change = function (fieldName, center) {
         var model =  $scope.model;
@@ -247,11 +245,34 @@ function QNMCtrl($scope, projectProvider, messageProvider) {
             messageProvider.error("Performance Model is invalid");
         }
     };
+
+    $scope.addNode = function () {
+        $scope.model.addNode();
+        $scope.model.recalculate();
+    };
+
+    $scope.removeNode = function (node) {
+        $scope.model.removeNode(node);
+        $scope.model.recalculate();
+    };
+
+    $scope.addSource = function () {
+        $scope.model.addSource();
+        $scope.model.recalculate();
+    };
+
+    $scope.removeSource = function (source) {
+        $scope.model.removeSource(source);
+        $scope.model.recalculate();
+    };
+
 }
 
-function MainMenuCtrl($scope, $modal, projectProvider) {
+//noinspection JSUnusedGlobalSymbols
+function MainMenuCtrl($scope, $modal) {
 
     $scope.about = function () {
+        //noinspection JSUnusedLocalSymbols
         var modalInstance = $modal.open({
             templateUrl: 'myModalContent.html',
             controller: ModalInstanceCtrl
@@ -259,6 +280,7 @@ function MainMenuCtrl($scope, $modal, projectProvider) {
     };
 }
 
+//noinspection JSUnusedGlobalSymbols
 function ProjectListCtrl($scope, projectProvider) {
 
     $scope.init = function () {
