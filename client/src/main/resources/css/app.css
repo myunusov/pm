@@ -254,6 +254,8 @@ Generic Styling, for Desktops/Laptops
 table {
     width: 100%;
     border-collapse: collapse;
+   /* word-break: break-all;*/
+    table-layout: fixed;
 }
 
 /* Zebra striping */
@@ -376,22 +378,22 @@ tr:nth-of-type(odd) .simplebox {
     }
 
     /* Force table to not be like tables anymore */
-    table, thead, tbody, th, td, tr {
+    .qnm table, thead, tbody, th, td, tr {
         display: block;
     }
 
     /* Hide table headers (but not display: none;, for accessibility) */
-    thead tr {
+    .qnm thead tr {
         position: absolute;
         top: -9999px;
         left: -9999px;
     }
 
-    tr {
+    .qnm tr {
         border: 1px solid #ccc;
     }
 
-    td {
+    .qnm td {
         /* Behave  like a "row" */
         border: 1px solid #eee;
         border-bottom: 1px solid #eee;
@@ -399,7 +401,7 @@ tr:nth-of-type(odd) .simplebox {
         padding-left: 50%;
     }
 
-    td:before {
+    .qnm td:before {
         /* Now like a table header */
         position: absolute;
         /* Top/left values mimic padding */
@@ -415,16 +417,6 @@ tr:nth-of-type(odd) .simplebox {
     Label the data
     */
 
-    .projects td:nth-of-type(1):before {
-    }
-    .projects td:nth-of-type(2):before {
-    }
-    .projects td:nth-of-type(3):before {
-    }
-    .projects td:nth-of-type(4):before {
-    }
-    .projects td:nth-of-type(5):before {
-    }
 
     .nodes td:nth-of-type(1):before {
         content: "Node Name";
