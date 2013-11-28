@@ -254,7 +254,7 @@ Generic Styling, for Desktops/Laptops
 table {
     width: 100%;
     border-collapse: collapse;
-   /* word-break: break-all;*/
+    word-break: break-all;
     table-layout: fixed;
 }
 
@@ -301,6 +301,7 @@ tab-heading  button {
     border:none !important;
     box-shadow:none !important;
     margin-bottom: 0 !important;
+    width: 65%;
 }
 
 .frame span {
