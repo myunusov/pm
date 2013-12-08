@@ -43,6 +43,6 @@ function Project(name, id) {
     //noinspection JSUnusedGlobalSymbols
     this.removeModel = function (model) {
         this.models.remove(model);
-    }
+    };
 
 }

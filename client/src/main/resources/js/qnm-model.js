@@ -45,7 +45,7 @@ function Quantity() {
     }
 
     function formatNumber(value, prec) {
-        return Math.round(value) == value ? Math.round(value) : parseFloat(value).toPrecision(prec);
+        return Math.round(value) === value ? Math.round(value) : parseFloat(value).toPrecision(prec);
     }
 
     Object.defineProperty(this, 'text', {
@@ -75,13 +75,7 @@ function Quantity() {
     };
 
     this.setValue = function (newValue) {
-//        this.inconsistent = this.eval ? !equals(this.value, newValue) : false;
         this.eval = true;
-/*
-        if (this.inconsistent) {
-            return;
-        }
-*/
         if ((this._text || this._text === 0) && equals(this._text, newValue)) {
             this.value = this._text;
         } else {
@@ -115,7 +109,7 @@ function Quantity() {
                 }
             }
         }
-    }
+    };
 }
 
 function Utilization(value) {
@@ -238,12 +232,12 @@ function QNMCenter() {
                 ];
             }
         }
-        return this.doCreateDTO(result)
+        return this.doCreateDTO(result);
     };
 
     this.doCreateDTO = function(result) {
         return result;
-    }
+    };
 
 }
 
@@ -822,7 +816,6 @@ function QNM(name, id) {
                 function (u) {
                     var all = u.getAll();
                     for (var j = 0; j < all.length; j++) {
-                        //all[j].eval = false;
                         all[j].coflicted = false;
                         all[j].inconsistent = false;
                     }

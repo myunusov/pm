@@ -25,6 +25,7 @@
 
     <modules>
         <module>zip</module>
+        <module>war</module>
     </modules>
 
     <build>

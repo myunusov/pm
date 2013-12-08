@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.maxur.perfmodel</groupId>
+        <artifactId>3rdparty</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>bootstrap</artifactId>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <version>2.3.2</version>
+    <description>Bootstrap</description>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>bootstrap</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>css/bootstrap.min.css</include>
+                    <include>css/bootstrap-responsive.min.css</include>
+                    <include>img/glyphicons-halflings.png</include>
+                    <include>img/glyphicons-halflings-white.png</include>
+                    <include>js/bootstrap-collapse.js</include>
+                    <include>js/bootstrap-transition.js</include>
+                    <include>js/jquery.js</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+
+    
+</project>

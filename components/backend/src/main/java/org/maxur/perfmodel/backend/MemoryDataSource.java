@@ -34,7 +34,7 @@ public class MemoryDataSource implements DataSource {
 
     public static final String FILE_NAME = "data/projects.ser";
 
-    private static Map<String, Project> MAP = new ConcurrentHashMap<>();
+    private static Map<String, Project> projectMap = new ConcurrentHashMap<>();
 
     static {
         read();
@@ -48,7 +48,7 @@ public class MemoryDataSource implements DataSource {
                     ObjectInputStream in = new ObjectInputStream(fileIn)
             ) {
                 //noinspection unchecked
-                MAP = (Map<String, Project>) in.readObject();
+                projectMap = (Map<String, Project>) in.readObject();
                 LOGGER.info("Persistent Data was be restored from file " + FILE_NAME);
             } catch (IOException | ClassNotFoundException e) {
                 LOGGER.error("Data file is not loaded", e);
@@ -61,7 +61,7 @@ public class MemoryDataSource implements DataSource {
                 FileOutputStream fileOut = new FileOutputStream(FILE_NAME);
                 ObjectOutputStream out = new ObjectOutputStream(fileOut)
         ) {
-            out.writeObject(MAP);
+            out.writeObject(projectMap);
             LOGGER.info("Persistent Data was be serialized to file " + FILE_NAME);
         } catch (IOException e) {
             LOGGER.error("Data file is not created", e);
@@ -70,25 +70,25 @@ public class MemoryDataSource implements DataSource {
 
     @Override
     public Project get(final String key) {
-        return MAP.get(key);
+        return projectMap.get(key);
     }
 
     @Override
     public Project remove(final String key) {
-        final Project result = MAP.remove(key);
+        final Project result = projectMap.remove(key);
         write();
         return result;
     }
 
     @Override
     public Project put(final Project project) {
-        final Project result = MAP.put(project.getName(), project);
+        final Project result = projectMap.put(project.getName(), project);
         write();
         return result;
     }
 
     @Override
     public Collection<Project> findAll() {
-        return MAP.values();
+        return projectMap.values();
     }
 }

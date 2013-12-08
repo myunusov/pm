@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.maxur.perfmodel</groupId>
+        <artifactId>assemblies</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>war</artifactId>
+    <packaging>war</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Assemblies POM for Performance Model Maxur Project (WAR Edition)</description>
+
+    <properties>
+        <project.root>${project.basedir}/../..</project.root>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.maxur.perfmodel</groupId>
+            <artifactId>backend</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>org.maxur.perfmodel</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>2.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.maxur.perfmodel</groupId>
+            <artifactId>ngbootstrap</artifactId>
+            <version>2.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.maxur.perfmodel</groupId>
+            <artifactId>angular</artifactId>
+            <version>1.1.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.maxur.perfmodel</groupId>
+            <artifactId>client</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <warName>pmc</warName>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                    </archive>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <overlays>
+                        <overlay>
+                            <groupId>org.maxur.perfmodel</groupId>
+                            <artifactId>backend</artifactId>
+                        </overlay>
+                        <overlay>
+                            <groupId>org.maxur.perfmodel</groupId>
+                            <artifactId>client</artifactId>
+                            <type>jar</type>
+                        </overlay>
+                        <overlay>
+                            <groupId>org.maxur.perfmodel</groupId>
+                            <artifactId>bootstrap</artifactId>
+                            <targetPath>bootstrap</targetPath>
+                            <type>jar</type>
+                        </overlay>
+                        <overlay>
+                            <groupId>org.maxur.perfmodel</groupId>
+                            <artifactId>ngbootstrap</artifactId>
+                            <targetPath>ng-bootstrap</targetPath>
+                            <type>jar</type>
+                        </overlay>
+                        <overlay>
+                            <groupId>org.maxur.perfmodel</groupId>
+                            <artifactId>angular</artifactId>
+                            <targetPath>angular</targetPath>
+                            <type>jar</type>
+                        </overlay>
+                    </overlays>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>exploded</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

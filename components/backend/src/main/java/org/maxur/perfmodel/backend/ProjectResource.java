@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.String.format;
 import static org.maxur.perfmodel.backend.WebException.badRequestException;
 import static org.maxur.perfmodel.backend.WebException.conflictException;
 import static org.maxur.perfmodel.backend.WebException.notFoundException;
@@ -35,14 +36,19 @@ public class ProjectResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProjectResource.class);
 
-    public static final String NAME = "name";
+    private static final String NAME = "name";
 
-    public static final String VERSION = "version";
+    private static final String VERSION = "version";
 
-    public static final String ID = "id";
+    private static final String ID = "id";
+
+    private static final String PERFORMANCE_MODEL_IS_NOT_FOUNDED = "Performance Model '%s' is not founded";
+
+    private static final String PERFORMANCE_MODEL_IS_NOT_SAVED = "Performance Model is not saved";
 
     @Inject
     private DataSource dataSource;
+
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -56,9 +62,8 @@ public class ProjectResource {
     public String load(@PathParam(NAME) String name) {
         final Project project = dataSource.get(name);
         if (project == null) {
-            final String message = String.format("Performance Model '%s' is not founded", name);
-            LOGGER.error(message);
-            throw notFoundException(message);
+            LOGGER.error(format(PERFORMANCE_MODEL_IS_NOT_FOUNDED, name));
+            throw notFoundException(format(PERFORMANCE_MODEL_IS_NOT_FOUNDED, name));
         }
         return project.asRaw();
     }
@@ -69,9 +74,8 @@ public class ProjectResource {
     public Project delete(@PathParam(NAME) String name) {
         final Project project = dataSource.remove(name);
         if (project == null) {
-            final String message = String.format("Performance Model '%s' is not founded", name);
-            LOGGER.error(message);
-            throw notFoundException(message);
+            LOGGER.error(format(PERFORMANCE_MODEL_IS_NOT_FOUNDED, name));
+            throw notFoundException(format(PERFORMANCE_MODEL_IS_NOT_FOUNDED, name));
         }
         return  project;
     }
@@ -100,11 +104,11 @@ public class ProjectResource {
             dataSource.put(project);
             return Response.status(Response.Status.CREATED).entity(project).build();
         } catch (ValidationException e) {
-            LOGGER.info("Performance Model is not saved", e.getMessage());
-            throw conflictException("Performance Model is not saved", e.getMessage());
+            LOGGER.info(PERFORMANCE_MODEL_IS_NOT_SAVED, e.getMessage());
+            throw conflictException(PERFORMANCE_MODEL_IS_NOT_SAVED, e.getMessage());
         } catch (IOException | NumberFormatException e) {
-            LOGGER.error("Performance Model is not saved", e);
-            throw badRequestException("Performance Model is not saved", e.getMessage());
+            LOGGER.error(PERFORMANCE_MODEL_IS_NOT_SAVED, e);
+            throw badRequestException(PERFORMANCE_MODEL_IS_NOT_SAVED, e.getMessage());
         }
     }
 

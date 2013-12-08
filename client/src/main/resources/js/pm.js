@@ -61,7 +61,7 @@ angular.module('pm.service', [])
         .service('projectProvider', function ($http, messageProvider, qnmFactory) {
             var projects = [];
             var project = null;
-            var url = '../rest/services/projects';
+            var url = 'services/projects';
 
             var remove = function(name) {
                 for (var i = 0; i < projects.length; i++) {

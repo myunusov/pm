@@ -53,9 +53,6 @@ public final class Launcher {
 
     public static final String CLIENT_DIR_NAME = "webapp";
 
-    public static final String REST_DIR_NAME = "rest";
-
-
     public static void main(final String[] args) {
         try {
             final Tomcat tomcat = new Tomcat();
@@ -86,7 +83,6 @@ public final class Launcher {
             tomcat.getHost().setAppBase(TOMCAT_DIR_NAME);
 
             addWebApp(tomcat, CLIENT_DIR_NAME);
-            addWebApp(tomcat, REST_DIR_NAME);
             tomcat.start();
             LOGGER.info(String.format("Go to http://%s:%d/ to check out your embedded web server!", HOST, PORT));
             tomcat.getServer().await();

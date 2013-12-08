@@ -133,16 +133,26 @@
                     <exclude>**/bootstrap/**</exclude>
                     <exclude>**/ng-bootstrap/**</exclude>
                     <exclude>**/font-awesome/**</exclude>
-                    <exclude>**/img/**</exclude>
                 </excludes>
             </resource>
         </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <nonFilteredFileExtensions>
+                        <nonFilteredFileExtension>ico</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <properties>
         <sonar.language>js</sonar.language>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-        <sonar.exclusions>**/angular/**,**/bootstrap/**,**/ng-bootstrap/**</sonar.exclusions>
+        <sonar.exclusions>**/angular/**,**/bootstrap/**,**/ng-bootstrap/**,**/snap/**</sonar.exclusions>
     </properties>
 
 </project>

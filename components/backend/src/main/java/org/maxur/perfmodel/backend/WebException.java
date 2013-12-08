@@ -30,7 +30,7 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
  * @author Maxim Yunusov
  * @version 1.0 06.11.13
  */
-public class WebException extends WebApplicationException {
+public final class WebException extends WebApplicationException {
 
     private static final long serialVersionUID = -2826609919565709334L;
 
