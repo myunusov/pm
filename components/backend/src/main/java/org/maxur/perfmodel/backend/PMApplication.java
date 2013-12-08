@@ -25,6 +25,7 @@ import javax.ws.rs.ApplicationPath;
  * @version 1.0
  * @since <pre>11/25/13</pre>
  */
+@SuppressWarnings("UnusedDeclaration")
 @ApplicationPath("services")
 public class PMApplication extends ResourceConfig {
 
