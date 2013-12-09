@@ -1,0 +1,137 @@
+<div class="container-fluid qnm" ng-controller="EGMCtrl">
+
+<div class="framehdr">
+    <i class="icon icon-hdd"></i>
+    Resources
+    <button ng-click="addResource()" tooltip-placement="left" tooltip="Add new Resource">
+        <i class="icon-plus"></i>
+    </button>
+</div>
+
+<div class="frame">
+    <table class="resources">
+        <thead>
+        <tr>
+            <th>Resource Name</th>
+            <th class="numeric">Utilization of other sources</th>
+            <th class="numeric">Aggregate Utilization</th>
+            <th style="width:15px;"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="resource in model.resources">
+            <td nowrap="nowrap">
+                <input type="text" class="input input-small simplebox" ng-model="resource.name">
+            </td>
+            <td nowrap="nowrap">
+                <input type="text"
+                       ng-change="change('UEX', node)"
+                       class="input input-small simplebox quantity {{node.utilizationEx.state}}"
+                       ng-model="node.utilizationEx.text"
+                       pattern="{{node.utilizationEx.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{node.utilizationEx.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in node.utilizationEx.availableUnits()">
+                                            <a ng-click="node.utilizationEx.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+            </td>
+            <td nowrap="nowrap">
+                <input type="text"
+                       ng-change="change('U', node)"
+                       class="input input-small simplebox quantity {{node.utilization.state}}"
+                       ng-model="node.utilization.text"
+                       pattern="{{node.utilization.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{node.utilization.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in node.utilization.availableUnits()">
+                                            <a ng-click="node.utilization.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+            </td>
+            <td nowrap="nowrap">
+                                <span style="height: 28px">
+                                <button ng-click="removeResource(resource)" tooltip-placement="left"
+                                        tooltip="Remove Resource">
+                                    <i class="icon-remove"></i>
+                                </button>
+                                 </span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div class="framehdr">
+    <i class="icon icon-hdd"></i>
+    Scenarios
+    <button ng-click="addScenario()" tooltip-placement="left" tooltip="Add new Scenario">
+        <i class="icon-plus"></i>
+    </button>
+</div>
+
+    <div class="tree frame">
+        <ul>
+            <li ng-repeat="scenario in model.scenarios" class="tree-li parent_li">
+            <div class="row-fluid">
+                <span class="span4" on-collapse><i class="icon-folder-open"></i>&NonBreakingSpace;{{scenario.name}}
+                    <button ng-click="removeScenario(scenario)" tooltip-placement="left"
+                            tooltip="Remove Scenario">
+                        <i class="icon-remove"></i>
+                    </button>
+                    <span class="dropdown" tooltip-placement="left" tooltip="Add Step">
+                        <a class="dropdown-toggle simpleank"><i class="icon-plus icon-large"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a ng-click="scenario.addStep()">Routine</a></li>
+                            <li><a ng-click="scenario.addStep()">Loop</a></li>
+                            <li><a ng-click="scenario.addStep()">Switch</a></li>
+                            <li><a ng-click="scenario.addStep()">Fork</a></li>
+                        </ul>
+                    </span>
+                </span>
+                <table class="span8">
+                    <td ng-repeat="resource in model.resources"> {{resource.name}} : 1 </td>
+                </table>
+            </div>
+            <ul>
+                <li ng-repeat="step in scenario.steps" ng-include="step.url" class="parent_li"></li>
+            </ul>
+            <li>
+        </ul>
+    </div>
+
+</div>
+
+<script type="text/ng-template" id="stepContent.html">
+    <div class="row-fluid">
+                <span class="span4" on-collapse>
+                    <i ng-show = "step.isParent" class="icon-minus-sign"></i>
+                    <i ng-hide = "step.isParent" class="icon-leaf"></i>
+                    &NonBreakingSpace;{{step.name}}
+                    <button ng-click="step.removeSelf()" tooltip-placement="left"
+                            tooltip="Remove Scenario">
+                        <i class="icon-remove"></i>
+                    </button>
+                    <span class="dropdown" tooltip-placement="left" tooltip="Add Step">
+                        <a class="dropdown-toggle simpleank"><i class="icon-plus icon-large"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a ng-click="step.addStep()">Routine</a></li>
+                            <li><a ng-click="step.addStep()">Loop</a></li>
+                            <li><a ng-click="step.addStep()">Switch</a></li>
+                            <li><a ng-click="step.addStep()">Fork</a></li>
+                        </ul>
+                    </span>
+                </span>
+        <table class="span8">
+            <td ng-repeat="resource in model.resources"> {{resource.name}} : 1 </td>
+        </table>
+    </div>
+    <ul>
+        <li ng-repeat="step in step.steps" ng-include="step.url" class="parent_li tree-li"></li>
+    </ul>
+</script>

@@ -524,6 +524,7 @@ function Expression(expression, center) {
 function QNM(name, id) {
     this.id = id;
     this.name = name;
+    this.url = "qnm.html";
     this.sources = [];
     this.nodes = [];
     this.visits = [];
@@ -536,6 +537,7 @@ function QNM(name, id) {
         var memento = new Memento();
         memento.id = this.id;
         memento.name = this.name;
+        memento.type = "qnm";
         memento.sourcesNo = sourcesNo;
         memento.nodeNo = nodeNo;
         memento.changedFields = createArrayDTO(changedFields);

@@ -111,7 +111,7 @@ angular.module('pm.service', [])
                     project.reset();
                     project.models.push(qnmFactory.qnm());
                 },
-                delete: function (name) {
+                remove: function (name) {
                     name = name || project.name;
                     messageProvider.clear();
                     $http.delete(url + '/' + name)
@@ -187,8 +187,38 @@ application.factory('qnmFactory', function() {
     };
 });
 
+application.factory('egmFactory', function() {
+    return {
+        qnm: function(name) {
+            var egm = new EGM(name || "EGM", uuid());
+            return  egm;
+        }
+    };
+});
+
+
+function clickingCallback(e) {
+    var children = $(this).closest('li.parent_li').find(' > ul > li');
+    if (children.is(":visible")) {
+        children.hide('fast');
+        $(this).closest('span').find(' > i.icon-minus-sign').addClass('icon-plus-sign').removeClass('icon-minus-sign');
+        $(this).closest('span').find(' > i.icon-folder-open').addClass('icon-folder-close').removeClass('icon-folder-open');
+    } else {
+        children.show('fast');
+        $(this).closest('span').find(' > i.icon-plus-sign').addClass('icon-minus-sign').removeClass('icon-plus-sign');
+        $(this).closest('span').find(' > i.icon-folder-close').addClass('icon-folder-open').removeClass('icon-folder-close');
+    }
+    e.stopPropagation();
+}
+
+application.directive('onCollapse', function() {
+    return function(scope, element, attrs) {
+        $(element).find(' > i').on('click', clickingCallback);
+    }
+});
+
 //noinspection JSUnusedGlobalSymbols
-function ProjectCtrl($scope, projectProvider, qnmFactory) {
+function ProjectCtrl($scope, projectProvider, qnmFactory, egmFactory) {
 
     $scope.project = new Project("New Performance Model", uuid());
 
@@ -196,8 +226,8 @@ function ProjectCtrl($scope, projectProvider, qnmFactory) {
 
     projectProvider.setProject($scope.project);
 
-    $scope.delete = function () {
-        projectProvider.delete();
+    $scope.remove = function () {
+        projectProvider.remove();
     };
 
     $scope.reset = function () {
@@ -213,8 +243,12 @@ function ProjectCtrl($scope, projectProvider, qnmFactory) {
         projectProvider.save();
     };
 
-    $scope.addModel = function () {
+    $scope.addQNM = function () {
         $scope.project.models.push(qnmFactory.qnm("QNM " + $scope.project.models.length));
+    };
+
+    $scope.addEGM = function () {
+        $scope.project.models.push(egmFactory.qnm("EGM " + $scope.project.models.length));
     };
 
 }
@@ -269,12 +303,33 @@ function QNMCtrl($scope, messageProvider) {
 }
 
 //noinspection JSUnusedGlobalSymbols
+function EGMCtrl($scope, messageProvider) {
+
+    $scope.addResource = function () {
+        $scope.model.addResource();
+    };
+
+    $scope.removeResource = function (resource) {
+        $scope.model.removeResource(resource);
+    };
+
+    $scope.addScenario = function () {
+        $scope.model.addScenario();
+    };
+
+    $scope.removeScenario = function (scenario) {
+        $scope.model.removeScenario(scenario);
+    };
+
+}
+
+//noinspection JSUnusedGlobalSymbols
 function MainMenuCtrl($scope, $modal) {
 
     $scope.about = function () {
         //noinspection JSUnusedLocalSymbols
         var modalInstance = $modal.open({
-            templateUrl: 'myModalContent.html',
+            templateUrl: 'aboutModalContent.html',
             controller: ModalInstanceCtrl
         });
     };
@@ -299,8 +354,8 @@ function ProjectListCtrl($scope, projectProvider) {
         projectProvider.load(project.name);
     };
 
-    $scope.delete = function (project) {
-        projectProvider.delete(project.name);
+    $scope.remove = function (project) {
+        projectProvider.remove(project.name);
     };
 }
 
