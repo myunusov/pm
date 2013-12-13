@@ -6,7 +6,7 @@ function EGMResource(id, name) {
 function EGMStep(id, name, parent) {
 
     this.id = id;
-    this.name = name || "Step " + id;
+    this.name = name;
     this.steps = [];
     this.url = "stepContent.html";
     this.parent = parent;
@@ -17,26 +17,51 @@ function EGMStep(id, name, parent) {
         var id2 = this.id + "." + ++this.stepNo;
         var step = new EGMStep(id2, "Step " + id2, this);
         this.steps.push(step);
-        this.isParent = this.steps.length > 0;
     };
 
     this.removeStep = function (step) {
         this.steps.remove(step);
-        this.isParent = this.steps.length > 0;
     };
 
     this.removeSelf = function () {
         this.parent.removeStep(this);
     };
 
+    this.isParent = function () {
+        return this.steps.length > 0;
+    };
+
+    this.isRoot = function () {
+        return !this.parent;
+    };
+
+    this.isNode = function () {
+        return this.isParent() && !this.isRoot();
+    };
+
+    this.isLeaf = function () {
+        return !this.isParent() && !this.isRoot();
+    };
+
+    this.getClass = function() {
+        return this.isParent() ? " parent-li" : "" + " last-child";    // TODO
+    }
+
+
 }
 
-
-function EGMScenario(id, name) {
+function EGMScenario(id, name, model) {
     this.id = id;
-    this.name = name || "Scenario " + id;
+    this.name = name;
+    this.model = model;
+    this.parent = null;
     this.steps = [];
     this.stepNo = 0;
+
+    this.removeSelf = function () {
+        this.model.removeScenario(this);
+    };
+
 }
 EGMScenario.prototype = new EGMStep();
 
@@ -77,7 +102,7 @@ function EGM(name, id) {
 
 
     this.addScenario = function () {
-        var scenario = new EGMScenario(++scenarioNo);
+        var scenario = new EGMScenario(++scenarioNo, "Scenario " + scenarioNo, this);
         this.scenarios.push(scenario);
     };
 

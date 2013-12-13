@@ -198,15 +198,23 @@ application.factory('egmFactory', function() {
 
 
 function clickingCallback(e) {
-    var children = $(this).closest('li.parent_li').find(' > ul > li');
+    var children = $(this).closest('li.parent-li').find(' > ul > li');
     if (children.is(":visible")) {
         children.hide('fast');
-        $(this).closest('span').find(' > i.icon-minus-sign').addClass('icon-plus-sign').removeClass('icon-minus-sign');
-        $(this).closest('span').find(' > i.icon-folder-open').addClass('icon-folder-close').removeClass('icon-folder-open');
+        if ($(this).hasClass("icon-minus-sign")) {
+            $(this).addClass('icon-plus-sign').removeClass('icon-minus-sign');
+        }
+        if ($(this).hasClass("icon-folder-open")) {
+            $(this).addClass('icon-folder-close').removeClass('icon-folder-open');
+        }
     } else {
         children.show('fast');
-        $(this).closest('span').find(' > i.icon-plus-sign').addClass('icon-minus-sign').removeClass('icon-plus-sign');
-        $(this).closest('span').find(' > i.icon-folder-close').addClass('icon-folder-open').removeClass('icon-folder-close');
+        if ($(this).hasClass("icon-plus-sign")) {
+            $(this).addClass('icon-minus-sign').removeClass('icon-plus-sign');
+        }
+        if ($(this).hasClass("icon-folder-close")) {
+            $(this).addClass('icon-folder-open').removeClass('icon-folder-close');
+        }
     }
     e.stopPropagation();
 }
