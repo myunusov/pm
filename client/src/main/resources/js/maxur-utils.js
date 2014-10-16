@@ -62,12 +62,12 @@ if (typeof Array.prototype.clone !=='function') {
     };
 }
 
-function findUnique(source, result) {
-    for (var i = 0; i < source.length; i++) {
-        if (source[i] instanceof Array) {
-            findUnique(source[i], result);
-        } else if (!result.contains(source[i])) {
-            result.push(source[i]);
+function findUnique(clazz, result) {
+    for (var i = 0; i < clazz.length; i++) {
+        if (clazz[i] instanceof Array) {
+            findUnique(clazz[i], result);
+        } else if (!result.contains(clazz[i])) {
+            result.push(clazz[i]);
         }
     }
 }

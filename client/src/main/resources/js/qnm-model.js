@@ -241,9 +241,9 @@ function QNMCenter() {
 
 }
 
-function QNMSource(id, name) {
+function QNMClass(id, name) {
     this.id = id;
-    this.name = name || "Source " + id;
+    this.name = name || "Class " + id;
     this.isOpen = true;
 
     this.throughput = new Throughput();
@@ -280,11 +280,11 @@ function QNMSource(id, name) {
         if (!other) {
             return null;
         }
-        return (other instanceof QNMSource) &&
+        return (other instanceof QNMClass) &&
                 other.id === this.id;
     };
 }
-QNMSource.prototype = new QNMCenter();
+QNMClass.prototype = new QNMCenter();
 
 function QNMNode(id, name) {
     this.id = id;
@@ -307,9 +307,9 @@ function QNMNode(id, name) {
 }
 QNMNode.prototype = new QNMCenter();
 
-function QNMVisit(source, node) {
-    this.id = source.id + "-" + node.id;
-    this.source = source;
+function QNMVisit(clazz, node) {
+    this.id = clazz.id + "-" + node.id;
+    this.clazz = clazz;
     this.node = node;
     this.number = new QNMNumber(1);
     this.serviceTime = new QNMTime();
@@ -329,7 +329,7 @@ function QNMVisit(source, node) {
 
     this.expressions = [
         new Expression([
-            ['V', new Parameter('X', this.source)],
+            ['V', new Parameter('X', this.clazz)],
             [-1, 'XI']
         ], this),
         new Expression([
@@ -343,7 +343,7 @@ function QNMVisit(source, node) {
     ];
 
     this.doCreateDTO = function(result) {
-        result.source = this.source.id;
+        result.clazz = this.clazz.id;
         result.node = this.node.id;
         return result;
     };
@@ -387,7 +387,7 @@ function Parameter(name, center) {
             name: this.name,
             value: this.value,
             centerId: this.center.id,
-            centerType: this.center instanceof QNMSource ? "source" :
+            centerType: this.center instanceof QNMClass ? "clazz" :
                     (this.center instanceof QNMNode ? "node" : "visit")
         };
     };
@@ -524,11 +524,11 @@ function Expression(expression, center) {
 function QNM(name, id) {
     this.id = id;
     this.name = name;
-    this.sources = [];
+    this.classes = [];
     this.nodes = [];
     this.visits = [];
 
-    var sourcesNo = 0;
+    var classNo = 0;
     var nodeNo = 0;
     var changedFields = [];
 
@@ -536,10 +536,10 @@ function QNM(name, id) {
         var memento = new Memento();
         memento.id = this.id;
         memento.name = this.name;
-        memento.sourcesNo = sourcesNo;
+        memento.classNo = classNo;
         memento.nodeNo = nodeNo;
         memento.changedFields = createArrayDTO(changedFields);
-        memento.sources = createArrayDTO(this.sources);
+        memento.classes = createArrayDTO(this.classes);
         memento.nodes = createArrayDTO(this.nodes);
         memento.visits = createArrayDTO(this.visits);
         return  memento;
@@ -548,16 +548,16 @@ function QNM(name, id) {
     this.setDTO = function (memento) {
         this.id = memento.id;
         this.name = memento.name;
-        sourcesNo = memento.sourcesNo;
+        classNo = memento.classNo;
         nodeNo = memento.nodeNo;
-        this.sources = [];
-        for (var i1= 0; i1 < memento.sources.length; i1++) {
-            var source = new QNMSource(
-                    memento.sources[i1].id,
-                    memento.sources[i1].name
+        this.classes = [];
+        for (var i1= 0; i1 < memento.classes.length; i1++) {
+            var clazz = new QNMClass(
+                    memento.classes[i1].id,
+                    memento.classes[i1].name
             );
-            source.setDTO(memento.sources[i1]);
-            this.sources.push(source);
+            clazz.setDTO(memento.classes[i1]);
+            this.classes.push(clazz);
         }
         this.nodes = [];
         for (var i2= 0; i2 < memento.nodes.length; i2++) {
@@ -571,8 +571,8 @@ function QNM(name, id) {
         this.visits = [];
         for (var i3= 0; i3 < memento.visits.length; i3++) {
             var node1 = this.getNodeById(memento.visits[i3].node);
-            var source1 = this.getSourceById(memento.visits[i3].source);
-            var visit = new QNMVisit(source1, node1);
+            var class1 = this.getClassById(memento.visits[i3].clazz);
+            var visit = new QNMVisit(class1, node1);
             visit.setDTO(memento.visits[i3]);
             this.visits.push(visit);
         }
@@ -602,28 +602,28 @@ function QNM(name, id) {
 
     this.getCenterBy = function (field) {
         switch (field.centerType) {
-            case "source": return getElementById(this.sources, field.centerId);
+            case "clazz": return getElementById(this.classes, field.centerId);
             case "node":   return getElementById(this.nodes, field.centerId);
             case "visit":  return getElementById(this.visits, field.centerId);
             default: return null;
         }
     };
 
-    this.addSource = function () {
-        var source = new QNMSource(++sourcesNo);
-        this.sources.push(source);
-        changedFields = changedFields.concat(source.getSignificance());
+    this.addClass = function () {
+        var clazz = new QNMClass(++classNo);
+        this.classes.push(clazz);
+        changedFields = changedFields.concat(clazz.getSignificance());
         for (var i = 0; i < this.nodes.length; i++) {
-            var visit = new QNMVisit(source, this.nodes[i]);
+            var visit = new QNMVisit(clazz, this.nodes[i]);
             this.visits.push(visit);
             changedFields = changedFields.concat(visit.getSignificance());
         }
     };
 
-    this.removeSource = function (source) {
-        this.sources.remove(source);
+    this.removeClass = function (clazz) {
+        this.classes.remove(clazz);
         for (var i = 0; i < this.nodes.length; i++) {
-            var visit = this.getVisitBy(source, this.nodes[i]);
+            var visit = this.getVisitBy(clazz, this.nodes[i]);
             this.visits.remove(visit);
         }
     };
@@ -632,8 +632,8 @@ function QNM(name, id) {
         var node = new QNMNode(++nodeNo);
         this.nodes.push(node);
         changedFields = changedFields.concat(node.getSignificance());
-        for (var i = 0; i < this.sources.length; i++) {
-            var visit = new QNMVisit(this.sources[i], node);
+        for (var i = 0; i < this.classes.length; i++) {
+            var visit = new QNMVisit(this.classes[i], node);
             this.visits.push(visit);
             changedFields = changedFields.concat(visit.getSignificance());
         }
@@ -641,24 +641,24 @@ function QNM(name, id) {
 
     this.removeNode = function (node) {
         this.nodes.remove(node);
-        for (var i = 0; i < this.sources.length; i++) {
-            this.visits.remove(this.getVisitBy(this.sources[i], node));
+        for (var i = 0; i < this.classes.length; i++) {
+            this.visits.remove(this.getVisitBy(this.classes[i], node));
         }
     };
 
-    this.getVisitBy = function (source, node) {
+    this.getVisitBy = function (clazz, node) {
         for (var i = 0; i < this.visits.length; i++) {
-            if (this.visits[i].source === source && this.visits[i].node === node) {
+            if (this.visits[i].clazz === clazz && this.visits[i].node === node) {
                 return this.visits[i];
             }
         }
         return null;
     };
 
-    this.getSourceById = function(id) {
-        for (var i = 0; i < this.sources.length; i++) {
-            if (this.sources[i].id === id) {
-                return this.sources[i];
+    this.getClassById = function(id) {
+        for (var i = 0; i < this.classes.length; i++) {
+            if (this.classes[i].id === id) {
+                return this.classes[i];
             }
         }
         return null;
@@ -673,10 +673,10 @@ function QNM(name, id) {
         return null;
     };
 
-    this.getVisitsBySource = function (source) {
+    this.getVisitsByClass = function (clazz) {
         var result = [];
         for (var i = 0; i < this.visits.length; i++) {
-            if (this.visits[i].source === source) {
+            if (this.visits[i].clazz === clazz) {
                 result.push(this.visits[i]);
             }
         }
@@ -696,7 +696,7 @@ function QNM(name, id) {
     this.getFieldsSeqBy = function (changedFields) {
         var fields = changedFields.clone().reverse();
 
-        [this.sources, this.nodes, this.visits].each(
+        [this.classes, this.nodes, this.visits].each(
                 function (u) {
                     var notEmpty = u.getSignificance();
                     for (var i = 0; i < notEmpty.length; i++) {
@@ -711,7 +711,7 @@ function QNM(name, id) {
 
     this.valid = function () {
         var result = true;
-        [this.sources, this.nodes, this.visits].each(
+        [this.classes, this.nodes, this.visits].each(
                 function (u) {
                     var fields = u.getAll();
                     for (var i = 0; i < fields.length; i++) {
@@ -725,11 +725,11 @@ function QNM(name, id) {
         return result;
     };
 
-    this.makeRXNExps = function (source) {
+    this.makeRXNExps = function (clazz) {
         var result = [
-            [new Parameter('R', source), new Parameter('X', source)]
+            [new Parameter('R', clazz), new Parameter('X', clazz)]
         ];
-        var visits = this.getVisitsBySource(source);
+        var visits = this.getVisitsByClass(clazz);
         for (var j = 0; j < visits.length; j++) {
             if (visits[j].number.value) {
                 result.push([-1, new Parameter('N', visits[j])]);
@@ -752,8 +752,8 @@ function QNM(name, id) {
         return new Expression(result);
     };
 
-    this.makeUUEXNExp = function (source, node) {
-        var visit = this.getVisitBy(source, node);
+    this.makeUUEXNExp = function (clazz, node) {
+        var visit = this.getVisitBy(clazz, node);
         var result = [
             [new Parameter('U', visit)],
             [-1, new Parameter('N', visit)],
@@ -766,8 +766,8 @@ function QNM(name, id) {
         return new Expression(result);
     };
 
-    this.makeRTUSExp = function (source, node) {
-        var visit = this.getVisitBy(source, node);
+    this.makeRTUSExp = function (clazz, node) {
+        var visit = this.getVisitBy(clazz, node);
         var result = [
             [-1, new Parameter('RT', visit)],
             [new Parameter('S', visit)],
@@ -785,16 +785,16 @@ function QNM(name, id) {
 
     this.makeExpressions = function () {
         var result = [];
-        for (var i = 0; i < this.sources.length; i++) {
-            result.push(this.makeRXNExps(this.sources[i]));
+        for (var i = 0; i < this.classes.length; i++) {
+            result.push(this.makeRXNExps(this.classes[i]));
         }
         for (var j = 0; j < this.nodes.length; j++) {
             result.push(this.makeUUEXExp(this.nodes[j]));
         }
-        for (var i1 = 0; i1 < this.sources.length; i1++) {
+        for (var i1 = 0; i1 < this.classes.length; i1++) {
             for (var j1 = 0; j1 < this.nodes.length; j1++) {
-                result.push(this.makeUUEXNExp(this.sources[i1], this.nodes[j1]));
-                result.push(this.makeRTUSExp(this.sources[i1], this.nodes[j1]));
+                result.push(this.makeUUEXNExp(this.classes[i1], this.nodes[j1]));
+                result.push(this.makeRTUSExp(this.classes[i1], this.nodes[j1]));
             }
         }
         return result;
@@ -802,7 +802,7 @@ function QNM(name, id) {
 
     this.getExpressions = function () {
         var expressions = [];
-        [this.sources, this.visits, this.nodes].each(
+        [this.classes, this.visits, this.nodes].each(
                 function (u) {
                     expressions = expressions.concat(u.expressions);
                 }
@@ -812,7 +812,7 @@ function QNM(name, id) {
     };
 
     this.init = function () {
-        [this.sources, this.visits, this.nodes].each(
+        [this.classes, this.visits, this.nodes].each(
                 function (u) {
                     var all = u.getAll();
                     for (var j = 0; j < all.length; j++) {

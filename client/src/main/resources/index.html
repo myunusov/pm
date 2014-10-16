@@ -54,7 +54,7 @@
                     <td>({{project.version}})</td>
                     <td>
                          <span style="height: 28px">
-                            <button class="hdrbutton" ng-click="delete(project)">
+                            <button class="hdrbutton" ng-click="remove(project)">
                                 <i class="icon-trash" tooltip-placement="left" tooltip="Delete Project"></i>
                             </button>
                         </span>
@@ -119,7 +119,7 @@
         <div class="span12">
             <div class="framehdr">
                 <input type="text" class="input input-large simplebox" style="width: 75%" ng-model="project.name">
-                <button class="hdrbutton" ng-click="delete()" tooltip-placement="left" tooltip="Delete Project">
+                <button class="hdrbutton" ng-click="remove()" tooltip-placement="left" tooltip="Delete Project">
                     <i class="icon-trash icon-large"></i>
                 </button>
                 <button class="hdrbutton" ng-click="save()" tooltip-placement="left" tooltip="Save Project">
@@ -170,7 +170,7 @@
                 <thead>
                 <tr>
                     <th>Node Name</th>
-                    <th class="numeric">Utilization of other sources</th>
+                    <th class="numeric">Third-party Utilization</th>
                     <th class="numeric">Aggregate Utilization</th>
                     <th style="width:15px;"></th>
                 </tr>
@@ -225,8 +225,8 @@
     <div class="span7">
         <div class="framehdr">
             <i class="icon icon-user"></i>
-            Sources
-            <button class="hdrbutton" ng-click="addSource()" tooltip-placement="left" tooltip="Add new Source">
+            Classes
+            <button class="hdrbutton" ng-click="addClass()" tooltip-placement="left" tooltip="Add new Class">
                 <i class="icon-plus"></i>
             </button>
             <!--                    <button class="hdrbutton" ng-click="">
@@ -234,10 +234,10 @@
                                 </button>-->
         </div>
         <div class="frame">
-            <table class="sources">
+            <table class="classes">
                 <thead>
                 <tr>
-                    <th>Source Name</th>
+                    <th>Class Name</th>
                     <th class="numeric">Number of Users</th>
                     <th class="numeric">Think Time</th>
                     <th class="numeric">Throughput</th>
@@ -246,73 +246,73 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="source in model.sources">
+                <tr ng-repeat="clazz in model.classes">
                     <td nowrap="nowrap">
-                        <input type="text" class="input input-small simplebox" ng-model="source.name">
+                        <input type="text" class="input input-small simplebox" ng-model="clazz.name">
                     </td>
                     <td nowrap="nowrap">
                         <input type="text"
-                               ng-change="change('M', source)"
-                               class="input input-small simplebox quantity {{source.numberUsers.state}}"
-                               ng-model="source.numberUsers.text"
-                               pattern="{{source.numberUsers.unit.pattern}}">
+                               ng-change="change('M', clazz)"
+                               class="input input-small simplebox quantity {{clazz.numberUsers.state}}"
+                               ng-model="clazz.numberUsers.text"
+                               pattern="{{clazz.numberUsers.unit.pattern}}">
                                 <span class="dropdown">
-                                    <a class="dropdown-toggle simpleank">{{source.numberUsers.unit.title}}</a>
+                                    <a class="dropdown-toggle simpleank">{{clazz.numberUsers.unit.title}}</a>
                                     <ul class="dropdown-menu">
-                                        <li ng-repeat="unit in source.numberUsers.availableUnits()">
-                                            <a ng-click="source.numberUsers.setUnit(unit)">{{unit.title}}</a>
+                                        <li ng-repeat="unit in clazz.numberUsers.availableUnits()">
+                                            <a ng-click="clazz.numberUsers.setUnit(unit)">{{unit.title}}</a>
                                         </li>
                                     </ul>
                                 </span>
                     </td>
                     <td nowrap="nowrap">
                         <input type="text"
-                               ng-change="change('Z', source)"
-                               class="input input-small simplebox quantity {{source.thinkTime.state}}"
-                               ng-model="source.thinkTime.text"
-                               pattern="{{source.thinkTime.unit.pattern}}">
+                               ng-change="change('Z', clazz)"
+                               class="input input-small simplebox quantity {{clazz.thinkTime.state}}"
+                               ng-model="clazz.thinkTime.text"
+                               pattern="{{clazz.thinkTime.unit.pattern}}">
                                 <span class="dropdown">
-                                    <a class="dropdown-toggle simpleank">{{source.thinkTime.unit.title}}</a>
+                                    <a class="dropdown-toggle simpleank">{{clazz.thinkTime.unit.title}}</a>
                                     <ul class="dropdown-menu">
-                                        <li ng-repeat="unit in source.thinkTime.availableUnits()">
-                                            <a ng-click="source.thinkTime.setUnit(unit)">{{unit.title}}</a>
+                                        <li ng-repeat="unit in clazz.thinkTime.availableUnits()">
+                                            <a ng-click="clazz.thinkTime.setUnit(unit)">{{unit.title}}</a>
                                         </li>
                                     </ul>
                                 </span>
                     </td>
                     <td nowrap="nowrap">
                         <input type="text"
-                               ng-change="change('X', source)"
-                               class="input input-small simplebox quantity {{source.throughput.state}}"
-                               ng-model="source.throughput.text"
-                               pattern="{{source.throughput.unit.pattern}}">
+                               ng-change="change('X', clazz)"
+                               class="input input-small simplebox quantity {{clazz.throughput.state}}"
+                               ng-model="clazz.throughput.text"
+                               pattern="{{clazz.throughput.unit.pattern}}">
                                 <span class="dropdown">
-                                    <a class="dropdown-toggle simpleank">{{source.throughput.unit.title}}</a>
+                                    <a class="dropdown-toggle simpleank">{{clazz.throughput.unit.title}}</a>
                                     <ul class="dropdown-menu">
-                                        <li ng-repeat="unit in source.throughput.availableUnits()">
-                                            <a ng-click="source.throughput.setUnit(unit)">{{unit.title}}</a>
+                                        <li ng-repeat="unit in clazz.throughput.availableUnits()">
+                                            <a ng-click="clazz.throughput.setUnit(unit)">{{unit.title}}</a>
                                         </li>
                                     </ul>
                                 </span>
                     </td>
                     <td nowrap="nowrap">
                         <input type="text"
-                               ng-change="change('R', source)"
-                               class="input input-small simplebox quantity {{source.responseTime.state}}"
-                               ng-model="source.responseTime.text"
-                               pattern="{{source.responseTime.unit.pattern}}">
+                               ng-change="change('R', clazz)"
+                               class="input input-small simplebox quantity {{clazz.responseTime.state}}"
+                               ng-model="clazz.responseTime.text"
+                               pattern="{{clazz.responseTime.unit.pattern}}">
                                 <span class="dropdown">
-                                    <a class="dropdown-toggle simpleank">{{source.responseTime.unit.title}}</a>
+                                    <a class="dropdown-toggle simpleank">{{clazz.responseTime.unit.title}}</a>
                                     <ul class="dropdown-menu">
-                                        <li ng-repeat="unit in source.responseTime.availableUnits()">
-                                            <a ng-click="source.responseTime.setUnit(unit)">{{unit.title}}</a>
+                                        <li ng-repeat="unit in clazz.responseTime.availableUnits()">
+                                            <a ng-click="clazz.responseTime.setUnit(unit)">{{unit.title}}</a>
                                         </li>
                                     </ul>
                                 </span>
                     </td>
                     <td nowrap="nowrap">
                                 <span style="height: 28px">
-                                <button class="hdrbutton" ng-click="removeSource(source)" tooltip-placement="left" tooltip="Remove Source">
+                                <button class="hdrbutton" ng-click="removeClass(clazz)" tooltip-placement="left" tooltip="Remove Class">
                                     <i class="icon-remove"></i>
                                 </button>
                                     </span>
@@ -338,7 +338,7 @@
                 <table class="visits">
                     <thead>
                     <tr>
-                        <th>Source</th>
+                        <th>Class</th>
                         <th>Node</th>
                         <th class="numeric">Number of Visits</th>
                         <th class="numeric">Throughput</th>
@@ -350,7 +350,7 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="visit in model.visits">
-                        <td>{{visit.source.name}}</td>
+                        <td>{{visit.clazz.name}}</td>
                         <td>{{visit.node.name}}</td>
                         <td nowrap="nowrap">
                             <input type="text"

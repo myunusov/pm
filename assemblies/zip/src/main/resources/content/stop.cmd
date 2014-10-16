@@ -1,1 +1,1 @@
-c:/usr/jdk1.8/bin/java -jar bin/telnetcli.jar 127.0.0.1 6666 shutdown
+java -jar bin/telnetcli.jar 127.0.0.1 6666 shutdown

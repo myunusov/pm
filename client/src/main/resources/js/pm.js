@@ -111,7 +111,7 @@ angular.module('pm.service', [])
                     project.reset();
                     project.models.push(qnmFactory.qnm());
                 },
-                delete: function (name) {
+                remove: function (name) {
                     name = name || project.name;
                     messageProvider.clear();
                     $http.delete(url + '/' + name)
@@ -181,7 +181,7 @@ application.factory('qnmFactory', function() {
         qnm: function(name) {
             var qnm = new QNM(name || "QNM", uuid());
             qnm.addNode();
-            qnm.addSource();
+            qnm.addClass();
             return  qnm;
         }
     };
@@ -196,8 +196,8 @@ function ProjectCtrl($scope, projectProvider, qnmFactory) {
 
     projectProvider.setProject($scope.project);
 
-    $scope.delete = function () {
-        projectProvider.delete();
+    $scope.remove = function () {
+        projectProvider.remove();
     };
 
     $scope.reset = function () {
@@ -256,13 +256,13 @@ function QNMCtrl($scope, messageProvider) {
         $scope.model.recalculate();
     };
 
-    $scope.addSource = function () {
-        $scope.model.addSource();
+    $scope.addClass = function () {
+        $scope.model.addClass();
         $scope.model.recalculate();
     };
 
-    $scope.removeSource = function (source) {
-        $scope.model.removeSource(source);
+    $scope.removeClass = function (clazz) {
+        $scope.model.removeClass(clazz);
         $scope.model.recalculate();
     };
 
@@ -299,8 +299,8 @@ function ProjectListCtrl($scope, projectProvider) {
         projectProvider.load(project.name);
     };
 
-    $scope.delete = function (project) {
-        projectProvider.delete(project.name);
+    $scope.remove = function (project) {
+        projectProvider.remove(project.name);
     };
 }
 
