@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.maxur.perfmodel</groupId>
-        <artifactId>super-pom</artifactId>
+        <groupId>org.maxur</groupId>
+        <artifactId>perfmodel-base</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>assemblies</artifactId>
+    <artifactId>perfmodel-assemblies</artifactId>
     <packaging>pom</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Assemblies POM for Maxur Project</description>
@@ -25,7 +25,6 @@
 
     <modules>
         <module>zip</module>
-        <module>war</module>
     </modules>
 
     <build>

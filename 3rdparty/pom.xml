@@ -6,15 +6,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.maxur.perfmodel</groupId>
-        <artifactId>super-pom</artifactId>
+        <groupId>org.maxur</groupId>
+        <artifactId>perfmodel-base</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>3rdparty</artifactId>
+    <artifactId>perfmodel-3rdparty</artifactId>
     <name>${project.groupId}:${project.artifactId}</name>
     <version>1.0-SNAPSHOT</version>
-    <description>3rd Party Components of Maxur Project</description>
+    <description>3rd Party Components of Performance Model Calculator Project</description>
     <packaging>pom</packaging>
 
     <properties>

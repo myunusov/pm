@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.maxur</groupId>
+        <artifactId>perfmodel-base</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>perfmodel-backend</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Backend of Performance Model Calculator System</description>
+    <packaging>jar</packaging>
+
+    <properties>
+        <project.root>${project.basedir}/..</project.root>
+
+        <sonar.language>java</sonar.language>
+        <sonar.sources>${project.basedir}/src/main/java/</sonar.sources>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.jacoco.itReportPath>${project.root}/target/jacoco-it.exec</sonar.jacoco.itReportPath>
+
+
+        <slf4j.version>1.7.5</slf4j.version>
+
+        <logback.version>1.0.13</logback.version>
+
+        <derby.version>10.11.1.1</derby.version>
+
+        <jersey.version>2.13</jersey.version>
+
+    </properties>
+
+
+    <profiles>
+        <profile>
+            <id>check</id>
+            <activation>
+                <property>
+                    <name>packaging</name>
+                    <value>jar</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>integration-test</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>verify</id>
+                                <goals>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <forkMode>pertest</forkMode>
+                            <encoding>${project.source.encoding}</encoding>
+                        </configuration>
+                    </plugin>
+
+                    <!-- CODE COVERAGE -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>cobertura-maven-plugin</artifactId>
+                        <version>2.6</version>
+                        <configuration>
+                            <check>
+                                <haltOnFailure>true</haltOnFailure>
+                                <branchRate>85</branchRate>
+                                <lineRate>65</lineRate>
+                                <totalBranchRate>85</totalBranchRate>
+                                <totalLineRate>80</totalLineRate>
+                                <packageLineRate>80</packageLineRate>
+                                <packageBranchRate>85</packageBranchRate>
+                                <regexes>
+                                    <regex>
+                                        <pattern>org.maxur.telnetcli.*</pattern>
+                                        <branchRate>0</branchRate>
+                                        <lineRate>0</lineRate>
+                                    </regex>
+                                </regexes>
+                            </check>
+                            <formats>
+                                <format>html</format>
+                                <format>xml</format>
+                            </formats>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>cobertura</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>clean</goal>
+                                    <goal>cobertura</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.9</version>
+                        <configuration>
+                            <skipTests>false</skipTests>
+                            <testFailureIgnore>true</testFailureIgnore>
+                            <systemProperties>
+                                <property>
+                                    <name>net.sourceforge.cobertura.datafile</name>
+                                    <value>${project.build.directory}/cobertura/cobertura.ser</value>
+                                </property>
+                            </systemProperties>
+                        </configuration>
+                    </plugin>
+
+                    <!-- CHECKSTYLE -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <version>2.10</version>
+                    </plugin>
+
+                    <!-- PMD -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-pmd-plugin</artifactId>
+                        <version>2.7.1</version>
+                    </plugin>
+
+                    <!-- FINDBUGS -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>findbugs-maven-plugin</artifactId>
+                        <version>2.5</version>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>javancss-maven-plugin</artifactId>
+                        <version>2.0</version>
+                        <configuration>
+                            <failOnViolation>true</failOnViolation>
+                            <ccnLimit>12</ccnLimit>
+                            <ncssLimit>90</ncssLimit>
+                        </configuration>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>tattletale</id>
+            <properties>
+                <tattletale.dist.groupId>${project.groupId}</tattletale.dist.groupId>
+                <tattletale.dist.artifactId>${project.artifactId}</tattletale.dist.artifactId>
+                <tattletale.dist.classifier>bundle</tattletale.dist.classifier>
+                <tattletale.dist.type>war</tattletale.dist.type>
+                <tattletale.dist.version>${project.version}</tattletale.dist.version>
+            </properties>
+            <build>
+                <plugins>
+
+                    <plugin>
+                        <groupId>org.jboss.tattletale</groupId>
+                        <artifactId>tattletale-maven</artifactId>
+                        <executions>
+                            <execution>
+                                <id>tattletale</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                                <configuration>
+                                    <source>${project.build.directory}/${project.build.finalName}/WEB-INF/lib</source>
+                                    <destination>${project.build.directory}/tattletale/report</destination>
+                                    <reports>
+                                        <report>classdependants</report>
+                                        <report>classdependson</report>
+                                        <report>dependants</report>
+                                        <report>dependson</report>
+                                        <report>graphviz</report>
+                                        <report>transitivedependants</report>
+                                        <report>transitivedependson</report>
+                                        <report>circulardependency</report>
+                                        <report>classlocation</report>
+                                        <report>osgi</report>
+                                        <report>sealed</report>
+                                        <report>sign</report>
+                                        <report>eliminatejars</report>
+                                        <report>invalidversion</report>
+                                        <report>multiplejars</report>
+                                        <report>multiplejarspackage</report>
+                                        <report>multiplelocations</report>
+                                        <report>unusedjar</report>
+                                        <report>blacklisted</report>
+                                        <report>noversion</report>
+                                        <report>jar</report>
+                                    </reports>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-common</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-grizzly2-http</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>${jersey.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jackson-annotations</artifactId>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+        <!-- Unit Testing -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.9.5</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>hamcrest-core</artifactId>
+                    <groupId>org.hamcrest</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ecyrd.speed4j</groupId>
+            <artifactId>speed4j</artifactId>
+            <version>0.12</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.2</version>
+                <executions>
+                    <execution>
+                        <id>enforce-property</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>[3.0,)</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>[1.7,)</version>
+                                </requireJavaVersion>
+                                <requireReleaseDeps>
+                                    <message>No Snapshots Allowed!</message>
+                                </requireReleaseDeps>
+                                <requireUpperBoundDeps/>
+                                <DependencyConvergence/>
+                            </rules>
+                            <fail>true</fail>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <configuration>
+                    <doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+                    <docletArtifact>
+                        <groupId>org.umlgraph</groupId>
+                        <artifactId>umlgraph</artifactId>
+                        <version>5.6.6</version>
+                    </docletArtifact>
+
+                    <useStandardDocletOptions>true</useStandardDocletOptions>
+
+                    <source>${project.source.compile}</source>
+                    <encoding>${project.source.encoding}</encoding>
+                    <charset>${project.source.encoding}</charset>
+                    <docencoding>${project.source.encoding}</docencoding>
+                    <breakiterator>true</breakiterator>
+                    <version>true</version>
+                    <author>true</author>
+                    <keywords>true</keywords>
+
+                    <linksource>true</linksource>
+                    <excludePackageNames>*.it,*.test</excludePackageNames>
+                    <aggregate>true</aggregate>
+
+                    <additionalparam>
+                        -inferrel -inferdep -quiet -hide java.*
+                        -collpackages java.util.* -qualify
+                        -postfixpackage -nodefontsize 9
+                        -nodefontpackagesize 7
+                        -edgefontname "Trebuchet MS"
+                        -nodefontabstractname "Trebuchet MS"
+                        -nodefontclassabstractname "Trebuchet MS"
+                        -nodefontclassname "Trebuchet MS"
+                        -nodefontname "Trebuchet MS"
+                        -nodefontpackagename "Trebuchet MS"
+                        -nodefonttagname "Trebuchet MS"
+                        -view
+                    </additionalparam>
+
+                    <links>
+                        <link>http://java.sun.com/javase/7/docs/api/</link>
+                        <link>http://netty.io/4.0/api/</link>
+                        <link>http://google-guice.googlecode.com/git/javadoc/</link>
+                        <link>http://www.slf4j.org/api/</link>
+                    </links>
+
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.5.2</version>
+                <configuration>
+                    <check>
+                        <haltOnFailure>true</haltOnFailure>
+                        <branchRate>0</branchRate>
+                        <lineRate>0</lineRate>
+                        <totalBranchRate>0</totalBranchRate>
+                        <totalLineRate>0</totalLineRate>
+                        <packageLineRate>0</packageLineRate>
+                        <packageBranchRate>0</packageBranchRate>
+                        <regexes>
+                            <regex>
+                                <pattern>org.maxur.perfmon.*</pattern>
+                                <branchRate>0</branchRate>
+                                <lineRate>0</lineRate>
+                            </regex>
+                        </regexes>
+                    </check>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>clean</goal>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+</project>

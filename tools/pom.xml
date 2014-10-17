@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.maxur.perfmodel</groupId>
-        <artifactId>super-pom</artifactId>
+        <groupId>org.maxur</groupId>
+        <artifactId>perfmodel-base</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>tools</artifactId>
+    <artifactId>perfmodel-tools</artifactId>
     <name>Build Tools</name>
     <description>Build Tools Configuration Files</description>
 

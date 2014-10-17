@@ -44,17 +44,7 @@
 
     <dependencySets>
         <dependencySet>
-            <outputDirectory>${project.build.finalName}/bin</outputDirectory>
-            <fileMode>0755</fileMode>
-            <directoryMode>0755</directoryMode>
-            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
-            <includes>
-                <include>org.maxur.perfmodel:telnetcli</include>
-                <include>org.maxur.perfmodel:server</include>
-            </includes>
-        </dependencySet>
-        <dependencySet>
-            <outputDirectory>${project.build.finalName}/tomcat/webapp</outputDirectory>
+            <outputDirectory>${project.build.finalName}/webapp</outputDirectory>
             <fileMode>0755</fileMode>
             <directoryMode>0755</directoryMode>
             <includes>
@@ -73,11 +63,11 @@
         </dependencySet>
 
         <dependencySet>
-            <outputDirectory>${project.build.finalName}/tomcat/webapp/bootstrap</outputDirectory>
+            <outputDirectory>${project.build.finalName}/webapp/bootstrap</outputDirectory>
             <fileMode>0755</fileMode>
             <directoryMode>0755</directoryMode>
             <includes>
-                <include>org.maxur.perfmodel:bootstrap</include>
+                <include>org.maxur:bootstrap</include>
             </includes>
             <unpack>true</unpack>
             <unpackOptions>
@@ -89,11 +79,11 @@
             </unpackOptions>
         </dependencySet>
         <dependencySet>
-            <outputDirectory>${project.build.finalName}/tomcat/webapp/ng-bootstrap</outputDirectory>
+            <outputDirectory>${project.build.finalName}/webapp/ng-bootstrap</outputDirectory>
             <fileMode>0755</fileMode>
             <directoryMode>0755</directoryMode>
             <includes>
-                <include>org.maxur.perfmodel:ngbootstrap</include>
+                <include>org.maxur:ngbootstrap</include>
             </includes>
             <unpack>true</unpack>
             <unpackOptions>
@@ -104,11 +94,11 @@
             </unpackOptions>
         </dependencySet>
         <dependencySet>
-            <outputDirectory>${project.build.finalName}/tomcat/webapp/angular</outputDirectory>
+            <outputDirectory>${project.build.finalName}/webapp/angular</outputDirectory>
             <fileMode>0755</fileMode>
             <directoryMode>0755</directoryMode>
             <includes>
-                <include>org.maxur.perfmodel:angular</include>
+                <include>org.maxur:angular</include>
             </includes>
             <unpack>true</unpack>
             <unpackOptions>
@@ -119,14 +109,37 @@
         </dependencySet>
 
         <dependencySet>
-            <outputDirectory>${project.build.finalName}/tomcat/webapp</outputDirectory>
+            <outputDirectory>${project.build.finalName}/webapp</outputDirectory>
             <fileMode>0755</fileMode>
             <directoryMode>0755</directoryMode>
             <includes>
-                <include>org.maxur.perfmodel:backend:war</include>
+                <include>org.maxur:fontawesome</include>
             </includes>
             <unpack>true</unpack>
         </dependencySet>
+
+        <dependencySet>
+            <outputDirectory>${project.build.finalName}/webapp</outputDirectory>
+            <fileMode>0755</fileMode>
+            <directoryMode>0755</directoryMode>
+            <includes>
+                <include>org.maxur:perfmodel-client</include>
+            </includes>
+            <unpack>true</unpack>
+        </dependencySet>
+
+        <dependencySet>
+            <outputDirectory>${project.build.finalName}/lib</outputDirectory>
+            <fileMode>0755</fileMode>
+            <directoryMode>0755</directoryMode>
+            <includes>
+                <include>org.maxur:perfmodel-backend:*:jar-with-dependencies</include>
+                <include>com.fasterxml.jackson.core:jackson-annotations</include>
+            </includes>
+        </dependencySet>
+
     </dependencySets>
+
+
 
 </assembly>

@@ -5,8 +5,8 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.maxur.perfmodel</groupId>
-    <artifactId>super-pom</artifactId>
+    <groupId>org.maxur</groupId>
+    <artifactId>perfmodel-base</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -63,19 +63,19 @@
         <project.build.sourceEncoding>${project.source.encoding}</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${project.source.encoding}</project.reporting.outputEncoding>
 
-        <project.source.compile>1.7</project.source.compile>
-        <project.target.compile>1.7</project.target.compile>
+        <project.source.compile>1.8</project.source.compile>
+        <project.target.compile>1.8</project.target.compile>
 
-        <sonar.host.url>http://127.0.0.1:8081/sonar</sonar.host.url>
+<!--        <sonar.host.url>http://127.0.0.1:8081/sonar</sonar.host.url>
         <sonar.forceAnalysis>true</sonar.forceAnalysis>
-        <sonar.artifact.path>assemblies/zip/target/zip-1.0-SNAPSHOT-bin.zip</sonar.artifact.path>
+        <sonar.artifact.path>assemblies/zip/target/zip-1.0-SNAPSHOT-bin.zip</sonar.artifact.path>-->
     </properties>
 
     <modules>
         <module>3rdparty</module>
         <module>client</module>
         <module>tools</module>
-        <module>components</module>
+        <module>backend</module>
         <module>assemblies</module>
     </modules>
 
@@ -84,7 +84,6 @@
             <id>DEV</id>
             <properties>
                 <env>DEV</env>
-
             </properties>
         </profile>
         <profile>
@@ -250,13 +249,13 @@
                                     <version>[3.0,)</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
-                                    <version>[1.7,)</version>
+                                    <version>[1.8,)</version>
                                 </requireJavaVersion>
                                 <requireReleaseDeps>
                                     <message>No Snapshots Allowed!</message>
                                     <failWhenParentIsSnapshot>false</failWhenParentIsSnapshot>
                                     <excludes>
-                                        <exclude>org.maxur.perfmodel:*</exclude>
+                                        <exclude>org.maxur:*</exclude>
                                     </excludes>
                                 </requireReleaseDeps>
                                 <requireUpperBoundDeps/>

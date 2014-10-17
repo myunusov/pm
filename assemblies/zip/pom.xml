@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.maxur.perfmodel</groupId>
-        <artifactId>assemblies</artifactId>
+        <groupId>org.maxur</groupId>
+        <artifactId>perfmodel-assemblies</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>zip</artifactId>
+    <artifactId>perfmodel-zip</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>${project.groupId}:${project.artifactId}</name>
@@ -22,41 +22,42 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.maxur.perfmodel</groupId>
-            <artifactId>telnetcli</artifactId>
-            <version>[1.0.0,2.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>org.maxur.perfmodel</groupId>
-            <artifactId>server</artifactId>
-            <version>[1.0.0,2.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>org.maxur.perfmodel</groupId>
-            <artifactId>backend</artifactId>
+            <groupId>org.maxur</groupId>
+            <artifactId>perfmodel-backend</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <type>war</type>
+            <classifier>jar-with-dependencies</classifier>
         </dependency>
         <dependency>
-            <groupId>org.maxur.perfmodel</groupId>
-            <artifactId>client</artifactId>
+            <groupId>org.maxur</groupId>
+            <artifactId>perfmodel-client</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>org.maxur.perfmodel</groupId>
+            <groupId>org.maxur</groupId>
             <artifactId>bootstrap</artifactId>
             <version>2.3.2</version>
         </dependency>
         <dependency>
-            <groupId>org.maxur.perfmodel</groupId>
+            <groupId>org.maxur</groupId>
             <artifactId>ngbootstrap</artifactId>
             <version>2.3.2</version>
         </dependency>
         <dependency>
-            <groupId>org.maxur.perfmodel</groupId>
+            <groupId>org.maxur</groupId>
             <artifactId>angular</artifactId>
             <version>1.1.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.maxur</groupId>
+            <artifactId>fontawesome</artifactId>
+            <version>4.0.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.3.2</version>
         </dependency>
 
     </dependencies>

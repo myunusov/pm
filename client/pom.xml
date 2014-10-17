@@ -4,23 +4,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.maxur.perfmodel</groupId>
-        <artifactId>super-pom</artifactId>
+        <groupId>org.maxur</groupId>
+        <artifactId>perfmodel-base</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>client</artifactId>
+    <artifactId>perfmodel-client</artifactId>
     <name>${project.groupId}:${project.artifactId}</name>
     <version>1.0-SNAPSHOT</version>
-    <description>Java Script Client of Performance Model Project</description>
+    <description>Java Script Client of Performance Model Calculator System</description>
 
     <profiles>
-        <profile>
-            <id>DEV</id>
-        </profile>
-        <profile>
-            <id>QA</id>
-        </profile>
         <profile>
             <id>PROD</id>
             <build>
