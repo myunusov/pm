@@ -134,7 +134,6 @@
             <directoryMode>0755</directoryMode>
             <includes>
                 <include>org.maxur:perfmodel-backend:*:jar-with-dependencies</include>
-                <include>com.fasterxml.jackson.core:jackson-annotations</include>
             </includes>
         </dependencySet>
 

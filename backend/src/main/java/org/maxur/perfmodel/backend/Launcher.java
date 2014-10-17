@@ -60,7 +60,7 @@ public class Launcher {
     private void init() {
         try {
             startWebServer();
-            LOGGER.info("Starting on " + BASE_URL + REST_APP_URL);
+            LOGGER.info("Starting on " + BASE_URL);
         } catch (RuntimeException e) {
             LOGGER.error("System don't initialising", e);
         }
