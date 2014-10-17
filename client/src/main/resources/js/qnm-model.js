@@ -852,7 +852,6 @@ function QNM(name, id) {
         return true;
     };
 
-
     this.applyChangedField = function (changedField) {
         if (changedFields.contains(changedField)) {
             changedFields.remove(changedField);
