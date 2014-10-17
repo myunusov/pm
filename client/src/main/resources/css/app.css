@@ -423,12 +423,15 @@ tr:nth-of-type(odd) .simplebox {
         content: "Node Name";
     }
     .nodes td:nth-of-type(2):before {
-        content: "U (ext)";
+        content: "N";
     }
     .nodes td:nth-of-type(3):before {
-        content: "U (full)";
+        content: "U (ext)";
     }
     .nodes td:nth-of-type(4):before {
+        content: "U (full)";
+    }
+    .nodes td:nth-of-type(5):before {
     }
 
 

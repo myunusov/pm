@@ -248,11 +248,11 @@ function QNMClass(id, name) {
 
     this.throughput = new Throughput();
     this.thinkTime = new QNMTime();
-    this.numberUsers = new QNMNumber();
+    this.userNumber = new QNMNumber();
     this.responseTime = new QNMTime();
 
     this.all = {
-        'M': this.numberUsers,
+        'M': this.userNumber,
         'Z': this.thinkTime,
         'X': this.throughput,
         'R': this.responseTime
@@ -269,7 +269,7 @@ function QNMClass(id, name) {
     this.open = function () {
         this.isOpen = true;
         this.thinkTime.value = null;
-        this.numberUsers.value = null;
+        this.userNumber.value = null;
     };
 
     this.close = function () {
@@ -289,9 +289,12 @@ QNMClass.prototype = new QNMCenter();
 function QNMNode(id, name) {
     this.id = id;
     this.name = name || "Node " + id;
+    this.nodeNumber = new QNMNumber(1);
     this.utilization = new Utilization();
     this.utilizationEx = new Utilization(0);
+
     this.all = {
+        'NN': this.nodeNumber,
         'U': this.utilization,
         'UEX': this.utilizationEx
     };
@@ -330,7 +333,7 @@ function QNMVisit(clazz, node) {
     this.expressions = [
         new Expression([
             ['V', new Parameter('X', this.clazz)],
-            [-1, 'XI']
+            [-1, 'XI', new Parameter('NN', this.node)]
         ], this),
         new Expression([
             ['U'],

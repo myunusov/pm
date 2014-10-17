@@ -170,6 +170,7 @@
                 <thead>
                 <tr>
                     <th>Node Name</th>
+                    <th class="numeric">Number</th>
                     <th class="numeric">Third-party Utilization</th>
                     <th class="numeric">Total Utilization</th>
                     <th style="width:15px;"></th>
@@ -179,6 +180,21 @@
                 <tr ng-repeat="node in model.nodes">
                     <td nowrap="nowrap">
                         <input type="text" class="input input-small simplebox" ng-model="node.name">
+                    </td>
+                    <td nowrap="nowrap">
+                        <input type="text"
+                               ng-change="change('NN', node)"
+                               class="input input-small simplebox quantity {{node.nodeNumber.state}}"
+                               ng-model="node.nodeNumber.text"
+                               pattern="{{node.nodeNumber.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{node.nodeNumber.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in node.nodeNumber.availableUnits()">
+                                            <a ng-click="node.nodeNumber.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
                     </td>
                     <td nowrap="nowrap">
                         <input type="text"
@@ -253,14 +269,14 @@
                     <td nowrap="nowrap">
                         <input type="text"
                                ng-change="change('M', clazz)"
-                               class="input input-small simplebox quantity {{clazz.numberUsers.state}}"
-                               ng-model="clazz.numberUsers.text"
-                               pattern="{{clazz.numberUsers.unit.pattern}}">
+                               class="input input-small simplebox quantity {{clazz.userNumber.state}}"
+                               ng-model="clazz.userNumber.text"
+                               pattern="{{clazz.userNumber.unit.pattern}}">
                                 <span class="dropdown">
-                                    <a class="dropdown-toggle simpleank">{{clazz.numberUsers.unit.title}}</a>
+                                    <a class="dropdown-toggle simpleank">{{clazz.userNumber.unit.title}}</a>
                                     <ul class="dropdown-menu">
-                                        <li ng-repeat="unit in clazz.numberUsers.availableUnits()">
-                                            <a ng-click="clazz.numberUsers.setUnit(unit)">{{unit.title}}</a>
+                                        <li ng-repeat="unit in clazz.userNumber.availableUnits()">
+                                            <a ng-click="clazz.userNumber.setUnit(unit)">{{unit.title}}</a>
                                         </li>
                                     </ul>
                                 </span>
