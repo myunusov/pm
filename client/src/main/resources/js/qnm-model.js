@@ -773,7 +773,7 @@ function QNM(name, id) {
         var visit = this.getVisitBy(clazz, node);
         var result = [
             [-1, new Parameter('RT', visit)],
-            [new Parameter('S', visit)],
+            [new Parameter('S', visit), new Parameter('V', visit)],
             [new Parameter('UEX', node), new Parameter('RT', visit)]
         ];
         var visits = this.getVisitsByNode(node);
