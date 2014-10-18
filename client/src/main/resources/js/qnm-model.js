@@ -530,12 +530,69 @@ function Expression(expression, center) {
     };
 }
 
+function ComparedItem(class1, class2) {
+
+    this.name = class1.name;
+
+    function formatNumber(value) {
+        return Math.round(value) === value ? Math.round(value) : parseFloat(value).toPrecision(5);
+    }
+
+    this.asString = function() {
+        var time1 = class1.responseTime;
+        var time2 = class2.responseTime;
+        if (time1.value && time2.value) {
+            var speedUp = time1.value / time2.value;
+            var boost;
+            if (speedUp < 1)
+                boost = -(1 - speedUp) * 100;
+            else
+                boost = (1 - 1/speedUp) * 100;
+            return formatNumber(speedUp) + "  (" + formatNumber(boost) + "%)";
+        }
+        return "Undefined";
+    };
+
+}
+
+function ComparedInfo(model1) {
+    this.model2 = model1;
+
+    this.items = [];
+
+    this.setModel = function(value) {
+        this.model2 = value;
+        this.findCommonsClasses();
+    };
+
+    this.findCommonsClasses = function() {
+        var model2 = this.model2;
+        var items = [];
+        [model1.classes].each(
+                function (c1) {
+                    [model2.classes].each(
+                            function (c2) {
+                                if (c2.name === c1.name) {
+                                    items.push(new ComparedItem(c1, c2));
+                                }
+                            }
+                    )
+                }
+        );
+        this.items = items;
+    };
+
+    this.findCommonsClasses();
+
+}
+
 function QNM(name, id) {
     this.id = id;
     this.name = name;
     this.classes = [];
     this.nodes = [];
     this.visits = [];
+    this.compared = new ComparedInfo(this);
 
     var classNo = 0;
     var nodeNo = 0;
