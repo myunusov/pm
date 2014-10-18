@@ -728,6 +728,7 @@ function QNM(name, id) {
         return result;
     };
 
+    // R*X = SUM(N)
     this.makeRXNExps = function (clazz) {
         var result = [
             [new Parameter('R', clazz), new Parameter('X', clazz)]
@@ -741,6 +742,7 @@ function QNM(name, id) {
         return new Expression(result);
     };
 
+    // U =  UEX + SUM(U)
     this.makeUUEXExp = function (node) {
         var result = [
             [-1, new Parameter('U', node)],
@@ -755,6 +757,7 @@ function QNM(name, id) {
         return new Expression(result);
     };
 
+    // U + UEX * N  + SUM(U * N) = N
     this.makeUUEXNExp = function (clazz, node) {
         var visit = this.getVisitBy(clazz, node);
         var result = [
@@ -769,6 +772,7 @@ function QNM(name, id) {
         return new Expression(result);
     };
 
+    // RT = SV/(1 - UEX - SUM(U)) ->  RT = S*V + UEX * RT + SUM(U * RT)
     this.makeRTUSExp = function (clazz, node) {
         var visit = this.getVisitBy(clazz, node);
         var result = [
