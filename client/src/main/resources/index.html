@@ -552,15 +552,23 @@
             </div>
             <div class="frame">
                 <table>
-                    <tr>
-                        <th>Max Throughput</th>
-                        <td>0</td>
-                    <tr>
-                    <tr>
-                        <th>Min Response Time</th>
-                        <td>Node</td>
+                    <tr ng-repeat="item in model.classes">
+                        <th>{{item.name}}</th>
+                        <td >
+                            <span tooltip="Min Response Time" tooltip-placement="right">
+                            R(min): {{model.calcMinRt(item)}}
+                            </span>
+
+                        </td>
+                        <td>
+                            <span tooltip="Max Throughput" tooltip-placement="right">
+                            X(max): {{model.calcMaxX(item)}}
+                            </span>
+                        </td>
                     </tr>
                 </table>
+
+
             </div>
         </div>
     </div>

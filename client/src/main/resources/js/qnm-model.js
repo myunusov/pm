@@ -95,6 +95,7 @@ function Quantity() {
     };
 
     this.setDTO = function (dto) {
+        this._text = null;
         this.value = dto[0];
         this.setUnitByStr(dto[1]);
         this.eval = false;
@@ -542,7 +543,7 @@ function ComparedItem(class1, class2) {
         var time1 = class1.responseTime;
         var time2 = class2.responseTime;
         if (time1.value && time2.value) {
-            var speedUp = time1.value / time2.value;
+            var speedUp = time2.value / time1.value;
             var boost;
             if (speedUp < 1)
                 boost = -(1 - speedUp) * 100;
@@ -807,7 +808,7 @@ function QNM(name, id) {
         return result;
     };
 
-    // R*X = SUM(N)
+    // R*X = SUM(N * NN)
     this.makeRXNExps = function (clazz) {
         var result = [
             [new Parameter('R', clazz), new Parameter('X', clazz)]
@@ -815,7 +816,7 @@ function QNM(name, id) {
         var visits = this.getVisitsByClass(clazz);
         for (var j = 0; j < visits.length; j++) {
             if (visits[j].number.value) {
-                result.push([-1, new Parameter('N', visits[j])]);
+                result.push([-1, new Parameter('N', visits[j]), new Parameter('NN', visits[j].node)]);
             }
         }
         return new Expression(result);
@@ -952,5 +953,67 @@ function QNM(name, id) {
         }
         return this.recalculate();
     };
+
+    this.calcMaxX = function(clazz) {
+        var visits = this.getVisitsByClass(clazz);
+        var sumN = 0;
+        var sumD = 0;
+        var maxD = 0;
+        for (var i = 0; i < visits.length; i++) {
+            var v = visits[i];
+            var d = v.serviceDemands.value;
+            if (!d || !number(d)) {
+                return "Undefined";
+            }
+            var n = v.meanNumberTasks.value;
+            if (!n || !number(n)) {
+                return "Undefined";
+            }
+            n = parseFloat(n);
+            d = parseFloat(d);
+            if (d > maxD) {
+                maxD = d;
+            }
+            sumD += d;
+            sumN += n;
+        }
+        var result1 = 1 / maxD;
+        var result2 = sumN / sumD;
+        // return formatNumber(result1 < result2 ? result1 : result2);
+        return formatNumber(result1);
+    };
+
+    this.calcMinRt = function(clazz) {
+        var visits = this.getVisitsByClass(clazz);
+        var sumN = 0;
+        var sumD = 0;
+        var maxD = 0;
+        for (var i = 0; i < visits.length; i++) {
+            var v = visits[i];
+            var d = v.serviceDemands.value;
+            if (!d || !number(d)) {
+                return "Undefined";
+            }
+            var n = v.meanNumberTasks.value;
+            if (!n || !number(n)) {
+                return "Undefined";
+            }
+            n = parseFloat(n);
+            d = parseFloat(d);
+            if (d > maxD) {
+                maxD = d;
+            }
+            sumD += d;
+            sumN += n;
+        }
+        var result1 = sumN * maxD;
+        var result2 = sumD;
+       // return formatNumber(result1 > result2 ? result1 : result2);
+        return formatNumber(result2);
+    };
+
+    function formatNumber(value) {
+        return Math.round(value) === value ? Math.round(value) : parseFloat(value).toPrecision(5);
+    }
 
 }
