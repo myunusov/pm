@@ -469,12 +469,15 @@ tr:nth-of-type(odd) .simplebox {
         content: "S(I)";
     }
     .visits td:nth-of-type(6):before {
-        content: "U(I)";
+        content: "D(I)";
     }
     .visits td:nth-of-type(7):before {
-        content: "N(I)";
+        content: "U(I)";
     }
     .visits td:nth-of-type(8):before {
+        content: "N(I)";
+    }
+    .visits td:nth-of-type(9):before {
         content: "RT(I)";
     }
 

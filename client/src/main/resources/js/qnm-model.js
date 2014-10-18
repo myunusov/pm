@@ -219,7 +219,7 @@ function QNMCenter() {
     };
 
     this.createDTO = function() {
-        result = {
+        var result = {
             id: this.id,
             name: this.name
         };
@@ -316,6 +316,7 @@ function QNMVisit(clazz, node) {
     this.node = node;
     this.number = new QNMNumber(1);
     this.serviceTime = new QNMTime();
+    this.serviceDemands  = new QNMTime();
     this.utilization = new Utilization();
     this.meanNumberTasks = new QNMNumber();
     this.residenceTime = new QNMTime();
@@ -323,6 +324,7 @@ function QNMVisit(clazz, node) {
 
     this.all = {
         'S': this.serviceTime,
+        'D': this.serviceDemands,
         'U': this.utilization,
         'N': this.meanNumberTasks,
         'RT': this.residenceTime,
@@ -342,6 +344,10 @@ function QNMVisit(clazz, node) {
         new Expression([
             [-1, 'RT', 'XI'],
             ['N']
+        ], this),
+        new Expression([
+            [-1, 'S', 'V'],
+            ['D']
         ], this)
     ];
 

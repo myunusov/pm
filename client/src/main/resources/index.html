@@ -356,12 +356,41 @@
                     <tr>
                         <th>Class</th>
                         <th>Node</th>
-                        <th class="numeric">Number of Visits</th>
-                        <th class="numeric">Throughput</th>
-                        <th class="numeric">Service Time</th>
-                        <th class="numeric">Utilization</th>
-                        <th class="numeric">Mean Number of Tasks</th>
-                        <th class="numeric">Residence Time</th>
+                        <th class="numeric">
+                            <span tooltip="Number of Visits per Request (Vi)" tooltip-placement="right">
+                            Number of Visits
+                            </span>
+                        </th>
+                        <th class="numeric">
+                            <span tooltip="Throughput per class (Xi)" tooltip-placement="right">
+                            Throughput
+                            </span>
+                        </th>
+                        <th class="numeric">
+                            <span tooltip="Service Time per class (Si)" tooltip-placement="right">
+                            Service Time
+                            </span>
+                        </th>
+                        <th class="numeric">
+                            <span tooltip="Service Demands per class (Di)" tooltip-placement="left">
+                                Service Demands
+                            </span>
+                        </th>
+                        <th class="numeric">
+                            <span tooltip="Utilization per class (Ui)" tooltip-placement="left">
+                            Utilization
+                            </span>
+                        </th>
+                        <th class="numeric">
+                            <span tooltip="Mean Number of Tasks per class (Ni)" tooltip-placement="left">
+                            Number of Tasks
+                            </span>
+                        </th>
+                        <th class="numeric">
+                            <span tooltip="Residence Time per class (RTi)" tooltip-placement="left">
+                            Residence Time
+                            </span>
+                        </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -409,6 +438,21 @@
                                     <ul class="dropdown-menu">
                                         <li ng-repeat="unit in visit.serviceTime.availableUnits()">
                                             <a ng-click="visit.serviceTime.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                        </td>
+                        <td nowrap="nowrap">
+                            <input type="text"
+                                   ng-change="change('D', visit)"
+                                   class="input input-small simplebox quantity {{visit.serviceDemands.state}}"
+                                   ng-model="visit.serviceDemands.text"
+                                   pattern="{{visit.serviceDemands.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{visit.serviceDemands.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in visit.serviceDemands.availableUnits()">
+                                            <a ng-click="visit.serviceDemands.setUnit(unit)">{{unit.title}}</a>
                                         </li>
                                     </ul>
                                 </span>
