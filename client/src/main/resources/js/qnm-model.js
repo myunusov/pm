@@ -538,7 +538,7 @@ function ComparedItem(class1, class2) {
         return Math.round(value) === value ? Math.round(value) : parseFloat(value).toPrecision(5);
     }
 
-    this.asString = function() {
+    this.rAsString = function() {
         var time1 = class1.responseTime;
         var time2 = class2.responseTime;
         if (time1.value && time2.value) {
@@ -552,6 +552,22 @@ function ComparedItem(class1, class2) {
         }
         return "Undefined";
     };
+
+    this.xAsString = function() {
+        var throughput1 = class1.throughput;
+        var throughput2 = class2.throughput;
+        if (throughput1.value && throughput2.value) {
+            var speedUp = throughput1.value / throughput2.value;
+            var boost;
+            if (speedUp < 1)
+                boost = -(1 - speedUp) * 100;
+            else
+                boost = (1 - 1/speedUp) * 100;
+            return formatNumber(speedUp) + "  (" + formatNumber(boost) + "%)";
+        }
+        return "Undefined";
+    };
+
 
 }
 
