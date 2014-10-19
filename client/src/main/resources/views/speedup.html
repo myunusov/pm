@@ -1,0 +1,28 @@
+<div class="row-fluid">
+    <div class="framehdr">
+        <i class="icon icon-fire"></i>
+        Speed-Up
+    </div>
+    <div class="frame">
+        <table>
+            <tr>
+                <th>Model</th>
+                <td colspan="2">
+                            <span class="dropdown">
+                                <a class="dropdown-toggle simpleank">{{model.compared.model2.name}}</a>
+                                <ul class="dropdown-menu">
+                                    <li ng-repeat="other_model in project.models">
+                                        <a ng-click="model.compared.setModel(other_model)">{{other_model.name}}</a>
+                                    </li>
+                                </ul>
+                             </span>
+                </td>
+            <tr>
+            <tr ng-repeat="item in model.compared.items">
+                <th>{{item.name}}</th>
+                <td>R: {{item.rAsString()}}</td>
+                <td>X: {{item.xAsString()}}</td>
+            </tr>
+        </table>
+    </div>
+</div>

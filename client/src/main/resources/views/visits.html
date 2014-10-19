@@ -1,0 +1,301 @@
+<div class="span12">
+    <div class="row-fluid">
+        <div class="framehdr">
+            <i class="icon icon-time"></i>
+            Visits
+            <!--                        <button class="hdrbutton" ng-click="">
+                                        <i class="icon-cog"></i>
+                                    </button>-->
+        </div>
+        <div class="frame">
+            <table class="visits">
+                <thead>
+                <tr>
+                    <th style="width:15px;"><i class="icon icon-leaf"></i></th>
+                    <th>Node</th>
+                    <th>Class</th>
+                    <th class="numeric">
+                            <span tooltip="Number of Visits per Request (Vi)" tooltip-placement="right">
+                            Number of Visits
+                            </span>
+                    </th>
+                    <th class="numeric">
+                            <span tooltip="Throughput per class (Xi)" tooltip-placement="right">
+                            Throughput
+                            </span>
+                    </th>
+                    <th class="numeric">
+                            <span tooltip="Service Time per class (Si)" tooltip-placement="right">
+                            Service Time
+                            </span>
+                    </th>
+                    <th class="numeric">
+                            <span tooltip="Service Demands per class (Di)" tooltip-placement="left">
+                                Service Demands
+                            </span>
+                    </th>
+                    <th class="numeric">
+                            <span tooltip="Utilization per class (Ui)" tooltip-placement="left">
+                            Utilization
+                            </span>
+                    </th>
+                    <th class="numeric">
+                            <span tooltip="Mean Number of Tasks per class (Ni)" tooltip-placement="left">
+                            Number of Tasks
+                            </span>
+                    </th>
+                    <th class="numeric">
+                            <span tooltip="Residence Time per class (RTi)" tooltip-placement="left">
+                            Residence Time
+                            </span>
+                    </th>
+                </tr>
+                </thead>
+                <tbody ng-repeat="visit in model.visits">
+
+                <tr>
+                    <td nowrap="nowrap" rowspan="{{visit.node.nodeNumber.value}}">
+                                <span style="height: 28px" ng-show="visit.hasDetails()">
+                                <button class="hdrbutton"
+                                        ng-click="visit.showDetails()"
+                                        ng-hide="visit.details"
+                                        tooltip-placement="right"
+                                        tooltip="Show Details">
+                                    <i class="icon-plus"></i>
+                                </button>
+                                <button class="hdrbutton"
+                                        ng-click="visit.hideDetails()"
+                                        ng-show="visit.details"
+                                        tooltip-placement="right"
+                                        tooltip="Hide Details">
+                                    <i class="icon-minus"></i>
+                                </button>
+                                </span>
+                    </td>
+
+                    <td>{{visit.node.name}}</td>
+                    <td>{{visit.clazz.name}}</td>
+
+                    <td nowrap="nowrap">
+                        <input type="text"
+                               ng-change="change('TV', visit)"
+                               class="input input-small simplebox quantity {{visit.totalNumber.state}}"
+                               ng-model="visit.totalNumber.text"
+                               pattern="{{visit.totalNumber.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{visit.totalNumber.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in visit.totalNumber.availableUnits()">
+                                            <a ng-click="visit.totalNumber.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                    </td>
+                    <td nowrap="nowrap">
+                        <input type="text"
+                               ng-change="change('XI', visit)"
+                               class="input input-small simplebox quantity {{visit.throughput.state}}"
+                               ng-model="visit.throughput.text"
+                               pattern="{{visit.throughput.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{visit.throughput.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in visit.throughput.availableUnits()">
+                                            <a ng-click="visit.throughput.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                    </td>
+                    <td nowrap="nowrap">
+                        <input type="text"
+                               ng-change="change('S', visit)"
+                               class="input input-small simplebox quantity {{visit.serviceTime.state}}"
+                               ng-model="visit.serviceTime.text"
+                               pattern="{{visit.serviceTime.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{visit.serviceTime.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in visit.serviceTime.availableUnits()">
+                                            <a ng-click="visit.serviceTime.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                    </td>
+                    <td nowrap="nowrap">
+                        <input type="text"
+                               ng-change="change('D', visit)"
+                               class="input input-small simplebox quantity {{visit.serviceDemands.state}}"
+                               ng-model="visit.serviceDemands.text"
+                               pattern="{{visit.serviceDemands.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{visit.serviceDemands.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in visit.serviceDemands.availableUnits()">
+                                            <a ng-click="visit.serviceDemands.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                    </td>
+                    <td nowrap="nowrap">
+                        <input type="text"
+                               ng-change="change('U', visit)"
+                               class="input input-small simplebox quantity {{visit.utilization.state}}"
+                               ng-model="visit.utilization.text"
+                               pattern="{{visit.utilization.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{visit.utilization.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in visit.utilization.availableUnits()">
+                                            <a ng-click="visit.utilization.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                    </td>
+                    <td nowrap="nowrap">
+                        <input type="text"
+                               ng-change="change('TN', visit)"
+                               class="input input-small simplebox quantity {{visit.totalMeanNumberTasks.state}}"
+                               ng-model="visit.totalMeanNumberTasks.text"
+                               pattern="{{visit.totalMeanNumberTasks.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{visit.totalMeanNumberTasks.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in visit.totalMeanNumberTasks.availableUnits()">
+                                            <a ng-click="visit.totalMeanNumberTasks.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                    </td>
+                    <td nowrap="nowrap">
+                        <input type="text"
+                               ng-change="change('RT', visit)"
+                               class="input input-small simplebox quantity {{visit.residenceTime.state}}"
+                               ng-model="visit.residenceTime.text"
+                               pattern="{{visit.residenceTime.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{visit.residenceTime.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in visit.residenceTime.availableUnits()">
+                                            <a ng-click="visit.residenceTime.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                    </td>
+                </tr>
+
+                <tr ng-show="visit.details">
+                    <td>{{visit.node.name}} (one)</td>
+                    <td>{{visit.clazz.name}}</td>
+                    <td nowrap="nowrap">
+                        <input type="text"
+                               ng-change="change('V', visit)"
+                               class="input input-small simplebox quantity {{visit.number.state}}"
+                               ng-model="visit.number.text"
+                               pattern="{{visit.number.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{visit.number.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in visit.number.availableUnits()">
+                                            <a ng-click="visit.number.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                    </td>
+                    <td nowrap="nowrap">
+                        <input type="text"
+                               ng-change="change('XI', visit)"
+                               class="input input-small simplebox quantity {{visit.throughput.state}}"
+                               ng-model="visit.throughput.text"
+                               pattern="{{visit.throughput.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{visit.throughput.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in visit.throughput.availableUnits()">
+                                            <a ng-click="visit.throughput.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                    </td>
+                    <td nowrap="nowrap">
+                        <input type="text"
+                               ng-change="change('S', visit)"
+                               class="input input-small simplebox quantity {{visit.serviceTime.state}}"
+                               ng-model="visit.serviceTime.text"
+                               pattern="{{visit.serviceTime.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{visit.serviceTime.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in visit.serviceTime.availableUnits()">
+                                            <a ng-click="visit.serviceTime.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                    </td>
+                    <td nowrap="nowrap">
+                        <input type="text"
+                               ng-change="change('D', visit)"
+                               class="input input-small simplebox quantity {{visit.serviceDemands.state}}"
+                               ng-model="visit.serviceDemands.text"
+                               pattern="{{visit.serviceDemands.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{visit.serviceDemands.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in visit.serviceDemands.availableUnits()">
+                                            <a ng-click="visit.serviceDemands.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                    </td>
+                    <td nowrap="nowrap">
+                        <input type="text"
+                               ng-change="change('U', visit)"
+                               class="input input-small simplebox quantity {{visit.utilization.state}}"
+                               ng-model="visit.utilization.text"
+                               pattern="{{visit.utilization.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{visit.utilization.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in visit.utilization.availableUnits()">
+                                            <a ng-click="visit.utilization.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                    </td>
+                    <td nowrap="nowrap">
+                        <input type="text"
+                               ng-change="change('N', visit)"
+                               class="input input-small simplebox quantity {{visit.meanNumberTasks.state}}"
+                               ng-model="visit.meanNumberTasks.text"
+                               pattern="{{visit.meanNumberTasks.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{visit.meanNumberTasks.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in visit.meanNumberTasks.availableUnits()">
+                                            <a ng-click="visit.meanNumberTasks.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                    </td>
+                    <td nowrap="nowrap">
+                        <input type="text"
+                               ng-change="change('RT', visit)"
+                               class="input input-small simplebox quantity {{visit.residenceTime.state}}"
+                               ng-model="visit.residenceTime.text"
+                               pattern="{{visit.residenceTime.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{visit.residenceTime.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in visit.residenceTime.availableUnits()">
+                                            <a ng-click="visit.residenceTime.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>

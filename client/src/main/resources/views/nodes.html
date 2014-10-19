@@ -1,0 +1,95 @@
+<div class="framehdr">
+    <i class="icon icon-hdd"></i>
+    Nodes
+    <button ng-click="addNode()" tooltip-placement="left" tooltip="Add new Node">
+        <i class="icon-plus"></i>
+    </button>
+    <!--                    <button ng-click="">
+                            <i class="icon-cog"></i>
+                        </button>-->
+</div>
+<div class="frame">
+    <table class="nodes">
+        <thead>
+        <tr>
+            <th>Node Name</th>
+            <th class="numeric">
+                            <span tooltip="Number of Node instances" tooltip-placement="left">
+                            Number
+                            </span>
+            </th>
+            <th class="numeric">
+                            <span tooltip="Third-party Utilization (Uex)" tooltip-placement="left">
+                            3d-Party <br/> Utilization
+                            </span>
+            </th>
+            <th class="numeric">
+                            <span tooltip="Total Utilization (U)" tooltip-placement="left">
+                            Total <br/> Utilization
+                            </span>
+            </th>
+            <th style="width:15px;"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="node in model.nodes">
+            <td nowrap="nowrap">
+                <input type="text" class="input input-small simplebox" ng-model="node.name">
+            </td>
+            <td nowrap="nowrap">
+                <input type="text"
+                       ng-change="change('NN', node)"
+                       class="input input-small simplebox quantity {{node.nodeNumber.state}}"
+                       ng-model="node.nodeNumber.text"
+                       pattern="{{node.nodeNumber.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{node.nodeNumber.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in node.nodeNumber.availableUnits()">
+                                            <a ng-click="node.nodeNumber.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+            </td>
+            <td nowrap="nowrap">
+                <input type="text"
+                       ng-change="change('UEX', node)"
+                       class="input input-small simplebox quantity {{node.utilizationEx.state}}"
+                       ng-model="node.utilizationEx.text"
+                       pattern="{{node.utilizationEx.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{node.utilizationEx.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in node.utilizationEx.availableUnits()">
+                                            <a ng-click="node.utilizationEx.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+            </td>
+            <td nowrap="nowrap">
+                <input type="text"
+                       ng-change="change('U', node)"
+                       class="input input-small simplebox quantity {{node.utilization.state}}"
+                       ng-model="node.utilization.text"
+                       pattern="{{node.utilization.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{node.utilization.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in node.utilization.availableUnits()">
+                                            <a ng-click="node.utilization.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+            </td>
+            <td nowrap="nowrap">
+                                <span style="height: 28px">
+                                <button class="hdrbutton" ng-click="removeNode(node)" tooltip-placement="left"
+                                        tooltip="Remove Node">
+                                    <i class="icon-remove"></i>
+                                </button>
+                                    </span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

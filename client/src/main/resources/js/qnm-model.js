@@ -315,28 +315,42 @@ function QNMVisit(clazz, node) {
     this.id = clazz.id + "-" + node.id;
     this.clazz = clazz;
     this.node = node;
-    this.number = new QNMNumber(1);
+    this.number = new QNMNumber();
+    this.totalNumber = new QNMNumber(1);
     this.serviceTime = new QNMTime();
     this.serviceDemands  = new QNMTime();
     this.utilization = new Utilization();
     this.meanNumberTasks = new QNMNumber();
+    this.totalMeanNumberTasks = new QNMNumber();
     this.residenceTime = new QNMTime();
     this.throughput = new Throughput();
+
+    this.details = false;
 
     this.all = {
         'S': this.serviceTime,
         'D': this.serviceDemands,
         'U': this.utilization,
         'N': this.meanNumberTasks,
+        'TN': this.totalMeanNumberTasks,
         'RT': this.residenceTime,
         'XI': this.throughput,
-        'V': this.number
+        'V': this.number,
+        'TV': this.totalNumber
     };
 
     this.expressions = [
         new Expression([
+            [-1, 'TV'],
+            ['V', new Parameter('NN', this.node)]
+        ], this),
+        new Expression([
+            [-1, 'TN'],
+            ['N', new Parameter('NN', this.node)]
+        ], this),
+        new Expression([
             ['V', new Parameter('X', this.clazz)],
-            [-1, 'XI', new Parameter('NN', this.node)]
+            [-1, 'XI']
         ], this),
         new Expression([
             ['U'],
@@ -365,6 +379,21 @@ function QNMVisit(clazz, node) {
         return (other instanceof QNMVisit) &&
                 other.id === this.id;
     };
+
+    this.hasDetails = function () {
+        return parseFloat(this.node.nodeNumber.value) > 1;
+    };
+
+    this.showDetails = function () {
+        this.details = true;
+    };
+
+    this.hideDetails = function () {
+        this.details = false;
+    };
+
+
+
 }
 QNMVisit.prototype = new QNMCenter();
 
@@ -965,21 +994,23 @@ function QNM(name, id) {
             if (!d || !number(d)) {
                 return "Undefined";
             }
-            var n = v.meanNumberTasks.value;
+            var n = v.totalMeanNumberTasks.value;
             if (!n || !number(n)) {
                 return "Undefined";
             }
+            var nn = v.node.nodeNumber.value;
             n = parseFloat(n);
             d = parseFloat(d);
+            nn = parseFloat(nn);
             if (d > maxD) {
                 maxD = d;
             }
-            sumD += d;
+            sumD += d * nn;
             sumN += n;
         }
         var result1 = 1 / maxD;
         var result2 = sumN / sumD;
-        // return formatNumber(result1 < result2 ? result1 : result2);
+       // return formatNumber(result1 < result2 ? result1 : result2);
         return formatNumber(result1);
     };
 
@@ -994,21 +1025,23 @@ function QNM(name, id) {
             if (!d || !number(d)) {
                 return "Undefined";
             }
-            var n = v.meanNumberTasks.value;
+            var n = v.totalMeanNumberTasks.value;
             if (!n || !number(n)) {
                 return "Undefined";
             }
+            var nn = v.node.nodeNumber.value;
             n = parseFloat(n);
             d = parseFloat(d);
+            nn = parseFloat(nn);
             if (d > maxD) {
                 maxD = d;
             }
-            sumD += d;
+            sumD += d * nn;
             sumN += n;
         }
         var result1 = sumN * maxD;
         var result2 = sumD;
-       // return formatNumber(result1 > result2 ? result1 : result2);
+    //    return formatNumber(result1 > result2 ? result1 : result2);
         return formatNumber(result2);
     };
 
