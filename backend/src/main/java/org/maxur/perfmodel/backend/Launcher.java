@@ -22,6 +22,7 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.maxur.perfmodel.backend.domain.ProjectRepository;
+import org.maxur.perfmodel.backend.infrastructure.PropertiesService;
 import org.maxur.perfmodel.backend.infrastructure.SimpleFileRepository;
 import org.maxur.perfmodel.backend.rest.PMObjectMapperProvider;
 import org.slf4j.Logger;
@@ -38,17 +39,17 @@ public class Launcher {
 
     private static final Logger LOGGER = getLogger(Launcher.class);
 
-    public static final String BASE_URL = "http://localhost:9090/";      // TODO
+    private static final String WEB_APP_URL = "/";
 
-    public static final String WEB_APP_FOLDER_NAME = "webapp/";           // TODO
+    private static final String REST_APP_URL = "api/";
 
-    public static final String WEB_APP_URL = "/";                         // TODO
+    private String baseUrl;
 
-    public static final String REST_APP_URL = "api/";                    // TODO
-
-    private static final URI BASE_URI = URI.create(BASE_URL + REST_APP_URL);
+    private String webappFolderName;
 
     private HttpServer httpServer;
+
+    private PropertiesService propertiesService;
 
     public static void main(String[] args) throws Exception {
         final Launcher client = new Launcher();
@@ -59,17 +60,21 @@ public class Launcher {
 
     private void init() {
         try {
+            propertiesService = PropertiesService.make("/pm.properties");
+            baseUrl = propertiesService.asString("webapp.url", "http://localhost:9090/");
+            webappFolderName =  propertiesService.asString("webapp.folderName", "webapp/");
             startWebServer();
-            LOGGER.info("Starting on " + BASE_URL);
+            LOGGER.info("Starting on " + baseUrl);
         } catch (RuntimeException e) {
             LOGGER.error("System don't initialising", e);
         }
     }
 
+
     private void startWebServer() {
         LOGGER.info("Start Web Server");
-        httpServer = GrizzlyHttpServerFactory.createHttpServer(BASE_URI, createApp());
-        httpServer.getServerConfiguration().addHttpHandler(new StaticHttpHandler(WEB_APP_FOLDER_NAME), WEB_APP_URL);
+        httpServer = GrizzlyHttpServerFactory.createHttpServer(URI.create(baseUrl + REST_APP_URL), createApp());
+        httpServer.getServerConfiguration().addHttpHandler(new StaticHttpHandler(webappFolderName), WEB_APP_URL);
     }
 
     public ResourceConfig createApp() {
@@ -83,7 +88,8 @@ public class Launcher {
                 register(new AbstractBinder() {
                     @Override
                     protected void configure() {
-                        bind(new SimpleFileRepository()).to(ProjectRepository.class);
+                        bind(propertiesService).to(PropertiesService.class);
+                        bind(SimpleFileRepository.class).to(ProjectRepository.class);
                     }
                 });
             }
@@ -93,8 +99,6 @@ public class Launcher {
     private void run() throws Exception {
         System.in.read();
     }
-
-
 
     private void done() {
         httpServer.shutdownNow();

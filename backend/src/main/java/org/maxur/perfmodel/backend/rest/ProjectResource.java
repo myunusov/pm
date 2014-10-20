@@ -6,13 +6,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.maxur.perfmodel.backend.domain.Project;
 import org.maxur.perfmodel.backend.domain.ProjectRepository;
-import org.maxur.perfmodel.backend.domain.Repository;
 import org.maxur.perfmodel.backend.domain.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;

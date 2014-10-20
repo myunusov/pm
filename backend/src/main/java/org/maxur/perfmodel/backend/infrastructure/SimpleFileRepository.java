@@ -20,6 +20,7 @@ import org.maxur.perfmodel.backend.domain.ProjectRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -32,13 +33,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SimpleFileRepository implements ProjectRepository {
 
-    public static final String FILE_NAME = "data/projects.ser";      // TODO
-
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleFileRepository.class);
 
     private static Map<String, Project> projectMap = new ConcurrentHashMap<>();
 
-    static {
+    private PropertiesService propertiesService;
+
+    @Inject
+    public void setPropertiesService(PropertiesService propertiesService) {
+        this.propertiesService = propertiesService;
         read();
     }
 
@@ -66,8 +69,8 @@ public class SimpleFileRepository implements ProjectRepository {
         return projectMap.values();
     }
 
-    private static void read() {
-        final File file = new File(FILE_NAME);
+    private void read() {
+        final File file = new File(getFileName());
         if (file.exists()) {
             try (
                     FileInputStream fileIn = new FileInputStream(file);
@@ -75,24 +78,27 @@ public class SimpleFileRepository implements ProjectRepository {
             ) {
                 //noinspection unchecked
                 projectMap = (Map<String, Project>) in.readObject();
-                LOGGER.info("Persistent Data was be restored from file " + FILE_NAME);
+                LOGGER.info("Persistent Data was be restored from file " + getFileName());
             } catch (IOException | ClassNotFoundException e) {
                 LOGGER.error("Data file is not loaded", e);
             }
         }
     }
 
-    private static void write() {
+    private void write() {
         try (
-                FileOutputStream fileOut = new FileOutputStream(FILE_NAME);
+                FileOutputStream fileOut = new FileOutputStream(getFileName());
                 ObjectOutputStream out = new ObjectOutputStream(fileOut)
         ) {
             out.writeObject(projectMap);
-            LOGGER.info("Persistent Data was be serialized to file " + FILE_NAME);
+            LOGGER.info("Persistent Data was be serialized to file " + getFileName());
         } catch (IOException e) {
             LOGGER.error("Data file is not created", e);
         }
     }
 
 
+    public String getFileName() {
+        return propertiesService.asString("db.fileName", "data/projects.ser");
+    }
 }
