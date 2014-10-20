@@ -6,6 +6,7 @@ function Project(name, id) {
     this.id = id;
     this.name = name;
     this.version = 0;
+    this.description = "";
     this.models = [];
 
 
@@ -14,6 +15,7 @@ function Project(name, id) {
         memento.id = this.id;
         memento.name = this.name;
         memento.version = this.version;
+        memento.description = this.description;
         memento.models = createArrayDTO(this.models);
         return  memento;
     };
@@ -22,6 +24,7 @@ function Project(name, id) {
         this.id = memento.id;
         this.name = memento.name;
         this.version = memento.version;
+        this.description = memento.description;
         this.models = [];
         for (var i= 0; i < memento.models.length; i++) {
             var model = new QNM(
@@ -36,6 +39,7 @@ function Project(name, id) {
     this.reset = function() {
         this.id = id;
         this.name = name;
+        this.description = "";
         this.version = 0;
         this.models = [];
     };
