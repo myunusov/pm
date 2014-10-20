@@ -318,7 +318,9 @@ function QNMVisit(clazz, node) {
     this.number = new QNMNumber();
     this.totalNumber = new QNMNumber(1);
     this.serviceTime = new QNMTime();
+    this.serviceTime.unit = this.serviceTime.units[0];
     this.serviceDemands  = new QNMTime();
+    this.serviceDemands.unit = this.serviceDemands.units[0];
     this.utilization = new Utilization();
     this.meanNumberTasks = new QNMNumber();
     this.totalMeanNumberTasks = new QNMNumber();
@@ -635,6 +637,7 @@ function ComparedInfo(model1) {
 function QNM(name, id) {
     this.id = id;
     this.name = name;
+    this.trunsactionsNumber = new QNMNumber(1);
     this.classes = [];
     this.nodes = [];
     this.visits = [];
@@ -985,7 +988,6 @@ function QNM(name, id) {
 
     this.calcMaxX = function(clazz) {
         var visits = this.getVisitsByClass(clazz);
-        var sumN = 0;
         var sumD = 0;
         var maxD = 0;
         for (var i = 0; i < visits.length; i++) {
@@ -994,29 +996,22 @@ function QNM(name, id) {
             if (!d || !number(d)) {
                 return "Undefined";
             }
-            var n = v.totalMeanNumberTasks.value;
-            if (!n || !number(n)) {
-                return "Undefined";
-            }
             var nn = v.node.nodeNumber.value;
-            n = parseFloat(n);
             d = parseFloat(d);
             nn = parseFloat(nn);
             if (d > maxD) {
                 maxD = d;
             }
             sumD += d * nn;
-            sumN += n;
         }
         var result1 = 1 / maxD;
-        var result2 = sumN / sumD;
-       // return formatNumber(result1 < result2 ? result1 : result2);
-        return formatNumber(result1);
+        var tn = parseFloat(this.trunsactionsNumber.value);
+        var result2 = tn / sumD;
+        return formatNumber(result1 < result2 ? result1 : result2);
     };
 
     this.calcMinRt = function(clazz) {
         var visits = this.getVisitsByClass(clazz);
-        var sumN = 0;
         var sumD = 0;
         var maxD = 0;
         for (var i = 0; i < visits.length; i++) {
@@ -1025,24 +1020,18 @@ function QNM(name, id) {
             if (!d || !number(d)) {
                 return "Undefined";
             }
-            var n = v.totalMeanNumberTasks.value;
-            if (!n || !number(n)) {
-                return "Undefined";
-            }
             var nn = v.node.nodeNumber.value;
-            n = parseFloat(n);
             d = parseFloat(d);
             nn = parseFloat(nn);
             if (d > maxD) {
                 maxD = d;
             }
             sumD += d * nn;
-            sumN += n;
         }
-        var result1 = sumN * maxD;
+        var tn = parseFloat(this.trunsactionsNumber.value);
+        var result1 = tn * maxD;
         var result2 = sumD;
-    //    return formatNumber(result1 > result2 ? result1 : result2);
-        return formatNumber(result2);
+        return formatNumber(result1 > result2 ? result1 : result2);
     };
 
     function formatNumber(value) {

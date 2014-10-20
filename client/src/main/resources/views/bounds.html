@@ -5,17 +5,30 @@
     </div>
     <div class="frame">
         <table>
+            <tr>
+                <th>
+                    <span tooltip="Number of concurrent Transactions in execution" tooltip-placement="right">
+                        Number of Transactions
+                    </span>
+                </th>
+                <td colspan="2">
+                    <input type="text"
+                           class="input input-small simplebox quantity {{model.trunsactionsNumber.state}}"
+                           ng-model="model.trunsactionsNumber.text"
+                           pattern="{{model.trunsactionsNumber.unit.pattern}}">
+                </td>
+            </tr>
             <tr ng-repeat="item in model.classes">
                 <th>{{item.name}}</th>
                 <td >
                             <span tooltip="Min Response Time" tooltip-placement="right">
-                            R(min): {{model.calcMinRt(item)}}
+                            <b>R(min):</b> {{model.calcMinRt(item)}}
                             </span>
 
                 </td>
                 <td>
                             <span tooltip="Max Throughput" tooltip-placement="right">
-                            X(max): {{model.calcMaxX(item)}}
+                            <b>X(max):</b> {{model.calcMaxX(item)}}
                             </span>
                 </td>
             </tr>
