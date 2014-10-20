@@ -15,7 +15,7 @@ function EGMStep(id, name, parent) {
 
     this.addStep = function () {
         var id2 = this.id + "." + ++this.stepNo;
-        var step = new EGMStep(id2, "Step " + id2, this);
+        var step = new EGMStep(id2, id2 + " Step", this);
         this.steps.push(step);
     };
 

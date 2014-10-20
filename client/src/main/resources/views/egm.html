@@ -71,11 +71,11 @@
                     <li><a ng-click="step.addStep()">Fork</a></li>
                 </ul>
             </span>
-            <table>
-                <td ng-repeat="resource in model.resources"> {{resource.name}} : 1 </td>
-            </table>
         </div>
     </div>
+    <table>
+        <td ng-repeat="resource in model.resources"> {{resource.name}} : 1 </td>
+    </table>
     <ul>
         <li ng-repeat="step in step.steps" ng-include="step.url" class="tree-li" ng-class="step.getClass()"></li>
     </ul>

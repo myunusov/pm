@@ -298,7 +298,8 @@ section {
 }
 
 .tree-li:last-child::before {
-    height:100%
+    top: 0;
+    height: 25px;
 }
 
 .tree-li .node {
