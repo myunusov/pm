@@ -54,28 +54,64 @@
 <script type="text/ng-template" id="stepContent.html">
     <div class="row-fluid" style="display:table;">
         <div class="span12 node" on-collapse style="display:table-cell;">
+            <i ng-show="step.isRoot()" class="icon-folder-open"></i>
+            <i ng-show="step.isNode()" class="icon-minus-sign"></i>
+            <i ng-show="step.isLeaf()" class="icon-leaf"></i>
+            <button ng-click="step.removeSelf()" tooltip-placement="left"
+                    tooltip="Remove Step">
+                <i class="icon-remove"></i>
+            </button>
+            <span class="dropdown" tooltip-placement="left" tooltip="Add Step"
+                  ng-show="step.availableChildren.length">
+                <a class="dropdown-toggle simpleank"><i class="icon-plus icon-large"></i></a>
+                <ul class="dropdown-menu">
+                    <li ng-repeat="child in step.availableChildren">
+                        <a ng-click="step.addStep('{{child.id}}')">{{child.title}}</a>
+                    </li>
+                </ul>
+            </span>
 
-                    <i ng-show="step.isRoot()" class="icon-folder-open"></i>
-                    <i ng-show="step.isNode()" class="icon-minus-sign"></i>
-                    <i ng-show="step.isLeaf()" class="icon-leaf"></i>
-                    &NonBreakingSpace;{{step.name}}
-                    <button ng-click="step.removeSelf()" tooltip-placement="left"
-                            tooltip="Remove Step">
-                        <i class="icon-remove"></i>
-                    </button>
-                    <span class="dropdown" tooltip-placement="left" tooltip="Add Step">
-                        <a class="dropdown-toggle simpleank"><i class="icon-plus icon-large"></i></a>
-                        <ul class="dropdown-menu">
-                            <li><a ng-click="step.addStep()">Routine</a></li>
-                            <li><a ng-click="step.addStep()">Loop</a></li>
-                            <li><a ng-click="step.addStep()">Switch</a></li>
-                            <li><a ng-click="step.addStep()">Fork</a></li>
-                        </ul>
-                    </span>
+            &NonBreakingSpace;{{step.id}}&NonBreakingSpace;
+            <input type="text"
+                   class="input input-mini simplebox quantity"
+                   ng-model="step.name">
+            <br/>
+            <span ng-show="step.isLoop()">
+                <b>Number of Iterations:</b>
+                &NonBreakingSpace;
+                <input type="text"
+                       ng-change="step.resolve()"
+                       class="input input-small simplebox quantity"
+                       ng-model="step.iterationNumber"
+                       pattern="\\d*[\\., \\,]?\\d*">
+            </span>
+            <br/>
+            <span ng-show="step.isCase()">
+                <b>Probability:</b>
+                &NonBreakingSpace;
+                <input type="text"
+                       ng-change="step.resolve()"
+                       class="input input-small simplebox quantity"
+                       ng-model="step.probability"
+                       pattern="\\d*[\\., \\,]?\\d*">
+            </span>
+
+
+
             <div class="row-fluid" style="display:table; text-align: right;">
                     <table style="float: right !important; max-width:900px">
                         <tr>
-                            <td ng-repeat="resource in model.resources"> {{resource.name}} : 1</td>
+                            <td ng-repeat="resource in model.resources"> <b>{{resource.name}}</b> :
+                                <input type="text"
+                                       ng-change="step.change()"
+                                       ng-show="step.isLeaf()"
+                                       class="input input-small simplebox quantity"
+                                       ng-model="step.values[resource.id]"
+                                       pattern="\\d*[\\., \\,]?\\d*">
+                                <span ng-hide="step.isLeaf()">
+                                    {{step.values[resource.id]}}
+                                </span>
+                            </td>
                         </tr>
                     </table>
             </div>
