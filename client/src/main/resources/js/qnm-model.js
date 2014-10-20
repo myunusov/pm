@@ -657,12 +657,18 @@ function QNM(name, id) {
         memento.classes = createArrayDTO(this.classes);
         memento.nodes = createArrayDTO(this.nodes);
         memento.visits = createArrayDTO(this.visits);
+        memento.trunsactionsNumber = [
+            this.trunsactionsNumber.value,
+            this.trunsactionsNumber.unit.id
+        ];
         return  memento;
     };
 
     this.setDTO = function (memento) {
         this.id = memento.id;
         this.name = memento.name;
+        this.trunsactionsNumber.setDTO(memento.trunsactionsNumber);
+
         classNo = memento.classNo;
         nodeNo = memento.nodeNo;
         this.classes = [];
