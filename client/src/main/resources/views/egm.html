@@ -54,28 +54,34 @@
 <script type="text/ng-template" id="stepContent.html">
     <div class="row-fluid" style="display:table;">
         <div class="span12 node" on-collapse style="display:table-cell;">
-            <i ng-show = "step.isRoot()"   class="icon-folder-open"></i>
-            <i ng-show = "step.isNode()"   class="icon-minus-sign"></i>
-            <i ng-show = "step.isLeaf()" class="icon-leaf"></i>
-            &NonBreakingSpace;{{step.name}}
-            <button ng-click="step.removeSelf()" tooltip-placement="left"
-                    tooltip="Remove Scenario">
-                <i class="icon-remove"></i>
-            </button>
-            <span class="dropdown" tooltip-placement="left" tooltip="Add Step">
-                <a class="dropdown-toggle simpleank"><i class="icon-plus icon-large"></i></a>
-                <ul class="dropdown-menu">
-                    <li><a ng-click="step.addStep()">Routine</a></li>
-                    <li><a ng-click="step.addStep()">Loop</a></li>
-                    <li><a ng-click="step.addStep()">Switch</a></li>
-                    <li><a ng-click="step.addStep()">Fork</a></li>
-                </ul>
-            </span>
+
+                    <i ng-show="step.isRoot()" class="icon-folder-open"></i>
+                    <i ng-show="step.isNode()" class="icon-minus-sign"></i>
+                    <i ng-show="step.isLeaf()" class="icon-leaf"></i>
+                    &NonBreakingSpace;{{step.name}}
+                    <button ng-click="step.removeSelf()" tooltip-placement="left"
+                            tooltip="Remove Step">
+                        <i class="icon-remove"></i>
+                    </button>
+                    <span class="dropdown" tooltip-placement="left" tooltip="Add Step">
+                        <a class="dropdown-toggle simpleank"><i class="icon-plus icon-large"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a ng-click="step.addStep()">Routine</a></li>
+                            <li><a ng-click="step.addStep()">Loop</a></li>
+                            <li><a ng-click="step.addStep()">Switch</a></li>
+                            <li><a ng-click="step.addStep()">Fork</a></li>
+                        </ul>
+                    </span>
+            <div class="row-fluid" style="display:table; text-align: right;">
+                    <table style="float: right !important; max-width:900px">
+                        <tr>
+                            <td ng-repeat="resource in model.resources"> {{resource.name}} : 1</td>
+                        </tr>
+                    </table>
+            </div>
         </div>
+
     </div>
-    <table>
-        <td ng-repeat="resource in model.resources"> {{resource.name}} : 1 </td>
-    </table>
     <ul>
         <li ng-repeat="step in step.steps" ng-include="step.url" class="tree-li" ng-class="step.getClass()"></li>
     </ul>
