@@ -94,8 +94,7 @@
     </button>
 </tab-heading>
 
-<div class="container-fluid qnm" ng-controller="QNMCtrl" ng-include="'views/qnm.html'">
-</div>
+<ng-include src="model.view"></ng-include>
 
 </tab>
 </tabset>
@@ -122,7 +121,8 @@
 <script src="snap/snap.min.js"></script>
 
 <script src="js/maxur-utils.js"></script>
-<script src="js/qnm-model.js"></script>
+<script src="js/qnm.js"></script>
+<script src="js/egm.js"></script>
 <script src="js/project.js"></script>
 <script src="js/pm.js"></script>
 
@@ -139,7 +139,7 @@
     menu.toggle(100);
 </script>
 
-<script type="text/ng-template" id="myModalContent.html">
+<script type="text/ng-template" id="aboutModalContent.html">
     <div ng-click="ok()">
         <div class="modal-header">
         </div>

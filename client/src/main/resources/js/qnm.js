@@ -637,6 +637,7 @@ function ComparedInfo(model1) {
 function QNM(name, id) {
     this.id = id;
     this.name = name;
+    this.view = "views/qnm.html";
     this.trunsactionsNumber = new QNMNumber(1);
     this.classes = [];
     this.nodes = [];
@@ -651,6 +652,7 @@ function QNM(name, id) {
         var memento = new Memento();
         memento.id = this.id;
         memento.name = this.name;
+        memento.type = "qnm";
         memento.classNo = classNo;
         memento.nodeNo = nodeNo;
         memento.changedFields = createArrayDTO(changedFields);

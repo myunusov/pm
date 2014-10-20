@@ -1,18 +1,3 @@
-/*
- * Copyright (c) 2013 Maxim Yunusov
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
-
 angular.module('pm.service', [])
         .service('messageProvider', function () {
             var alerts = [];
@@ -187,8 +172,46 @@ application.factory('qnmFactory', function() {
     };
 });
 
+application.factory('egmFactory', function() {
+    return {
+        qnm: function(name) {
+            var egm = new EGM(name || "EGM", uuid());
+            return  egm;
+        }
+    };
+});
+
+
+function clickingCallback(e) {
+    var children = $(this).closest('li.parent-li').find(' > ul > li');
+    if (children.is(":visible")) {
+        children.hide('fast');
+        if ($(this).hasClass("icon-minus-sign")) {
+            $(this).addClass('icon-plus-sign').removeClass('icon-minus-sign');
+        }
+        if ($(this).hasClass("icon-folder-open")) {
+            $(this).addClass('icon-folder-close').removeClass('icon-folder-open');
+        }
+    } else {
+        children.show('fast');
+        if ($(this).hasClass("icon-plus-sign")) {
+            $(this).addClass('icon-minus-sign').removeClass('icon-plus-sign');
+        }
+        if ($(this).hasClass("icon-folder-close")) {
+            $(this).addClass('icon-folder-open').removeClass('icon-folder-close');
+        }
+    }
+    e.stopPropagation();
+}
+
+application.directive('onCollapse', function() {
+    return function(scope, element, attrs) {
+        $(element).find(' > i').on('click', clickingCallback);
+    }
+});
+
 //noinspection JSUnusedGlobalSymbols
-function ProjectCtrl($scope, projectProvider, qnmFactory) {
+function ProjectCtrl($scope, projectProvider, qnmFactory, egmFactory) {
 
     $scope.project = new Project("New Performance Model", uuid());
 
@@ -213,8 +236,12 @@ function ProjectCtrl($scope, projectProvider, qnmFactory) {
         projectProvider.save();
     };
 
-    $scope.addModel = function () {
+    $scope.addQNM = function () {
         $scope.project.models.push(qnmFactory.qnm("QNM " + $scope.project.models.length));
+    };
+
+    $scope.addEGM = function () {
+        $scope.project.models.push(egmFactory.qnm("EGM " + $scope.project.models.length));
     };
 
 }
@@ -230,6 +257,28 @@ function MsgCtrl($scope, messageProvider) {
     };
 
 }
+
+//noinspection JSUnusedGlobalSymbols
+function EGMCtrl($scope, messageProvider) {
+
+    $scope.addResource = function () {
+        $scope.model.addResource();
+    };
+
+    $scope.removeResource = function (resource) {
+        $scope.model.removeResource(resource);
+    };
+
+    $scope.addScenario = function () {
+        $scope.model.addScenario();
+    };
+
+    $scope.removeScenario = function (scenario) {
+        $scope.model.removeScenario(scenario);
+    };
+
+}
+
 
 function QNMCtrl($scope, messageProvider) {
 
@@ -274,7 +323,7 @@ function MainMenuCtrl($scope, $modal) {
     $scope.about = function () {
         //noinspection JSUnusedLocalSymbols
         var modalInstance = $modal.open({
-            templateUrl: 'myModalContent.html',
+            templateUrl: 'aboutModalContent.html',
             controller: ModalInstanceCtrl
         });
     };

@@ -1,0 +1,82 @@
+<div class="container-fluid qnm" ng-controller="EGMCtrl">
+
+    <div class="framehdr">
+        <i class="icon icon-hdd"></i>
+        Resources
+        <button ng-click="addResource()" tooltip-placement="left" tooltip="Add new Resource">
+            <i class="icon-plus"></i>
+        </button>
+    </div>
+    <div class="frame">
+        <table class="resources">
+            <thead>
+            <tr>
+                <th>Resource Name</th>
+                <th style="width:15px;"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="resource in model.resources">
+                <td nowrap="nowrap">
+                    <input type="text" class="input input-small simplebox" ng-model="resource.name">
+                </td>
+                <td nowrap="nowrap">
+                    <span style="height: 28px">
+                        <button ng-click="removeResource(resource)" tooltip-placement="left"
+                                tooltip="Remove Resource">
+                            <i class="icon-remove"></i>
+                        </button>
+                     </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="framehdr">
+        <i class="icon icon-hdd"></i>
+        Scenarios
+        <button ng-click="addScenario()" tooltip-placement="left" tooltip="Add new Scenario">
+            <i class="icon-plus"></i>
+        </button>
+    </div>
+    <div class="tree frame">
+        <ul>
+            <li ng-repeat="step in model.scenarios" ng-include="step.url" class="tree-li parent-li"></li>
+        </ul>
+    </div>
+
+</div>
+
+<div style="margin: 64px;"></div>
+
+<script type="text/ng-template" id="stepContent.html">
+    <div class="row-fluid" style="display:table;">
+        <div class="span12 node" on-collapse style="display:table-cell;">
+            <i ng-show = "step.isRoot()"   class="icon-folder-open"></i>
+            <i ng-show = "step.isNode()"   class="icon-minus-sign"></i>
+            <i ng-show = "step.isLeaf()" class="icon-leaf"></i>
+            &NonBreakingSpace;{{step.name}}
+            <button ng-click="step.removeSelf()" tooltip-placement="left"
+                    tooltip="Remove Scenario">
+                <i class="icon-remove"></i>
+            </button>
+            <span class="dropdown" tooltip-placement="left" tooltip="Add Step">
+                <a class="dropdown-toggle simpleank"><i class="icon-plus icon-large"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a ng-click="step.addStep()">Routine</a></li>
+                    <li><a ng-click="step.addStep()">Loop</a></li>
+                    <li><a ng-click="step.addStep()">Switch</a></li>
+                    <li><a ng-click="step.addStep()">Fork</a></li>
+                </ul>
+            </span>
+            <table>
+                <td ng-repeat="resource in model.resources"> {{resource.name}} : 1 </td>
+            </table>
+        </div>
+    </div>
+    <ul>
+        <li ng-repeat="step in step.steps" ng-include="step.url" class="tree-li" ng-class="step.getClass()"></li>
+    </ul>
+</script>

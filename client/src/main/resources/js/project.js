@@ -27,10 +27,18 @@ function Project(name, id) {
         this.description = memento.description;
         this.models = [];
         for (var i= 0; i < memento.models.length; i++) {
-            var model = new QNM(
-                    memento.models[i].name,
-                    memento.models[i].id
-            );
+            var model;
+            if (memento.models[i].type === "qnm") {
+                model = new QNM(
+                        memento.models[i].name,
+                        memento.models[i].id
+                );
+            } else if (memento.models[i].type === "egm") {
+                model = new EGM(
+                        memento.models[i].name,
+                        memento.models[i].id
+                );
+            }
             model.setDTO(memento.models[i]);
             this.models.push(model);
         }
