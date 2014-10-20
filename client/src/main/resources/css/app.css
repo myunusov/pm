@@ -275,7 +275,7 @@ section {
 .tree-li {
     list-style-type:none;
     margin:0;
-    padding:10px 5px 0 5px;
+    padding:10px 0 0 5px;
     position:relative
 }
 .tree-li::before, .tree-li::after {
