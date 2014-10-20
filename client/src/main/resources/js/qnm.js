@@ -637,6 +637,7 @@ function ComparedInfo(model1) {
 function QNM(name, id) {
     this.id = id;
     this.name = name;
+    this.type = "qnm";
     this.view = "views/qnm.html";
     this.trunsactionsNumber = new QNMNumber(1);
     this.classes = [];

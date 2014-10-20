@@ -144,6 +144,7 @@ EGMRoutine.prototype = new EGMStep();
 function EGMLoop(id, parent) {
     this.id = id;
     this.name = "Loop";
+    this.type = "eqm";
     this.parent = parent;
     this.stepNo = 1;
     this.steps = [];
