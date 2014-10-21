@@ -206,7 +206,7 @@ function clickingCallback(e) {
 
 application.directive('onCollapse', function() {
     return function(scope, element, attrs) {
-        $(element).find(' > i').on('click', clickingCallback);
+        $(element).find(' > i').not(".icon-leaf").on('click', clickingCallback);
     }
 });
 

@@ -3,13 +3,12 @@ function EGMResource(id, name) {
     this.name = name || "Resource " + id;
 }
 
-function EGMStep(id, name, parent) {
+function EGMStep(type) {
 
-    this.id = id;
-    this.name = name;
+    this.type = type;
+
     this.steps = [];
     this.url = "stepContent.html";
-    this.parent = parent;
     this.isParent = false;
     this.stepNo = 0;
 
@@ -46,7 +45,7 @@ function EGMStep(id, name, parent) {
                 step = new EGMCase(id2, this);
                 break;
             default:
-                step = new EGMStep(id2, this);
+                step = new EGMRoutine(id2, this);
         }
         this.steps.push(step);
     };
@@ -97,19 +96,19 @@ function EGMStep(id, name, parent) {
     };
 
     this.isLeaf = function () {
-        return !this.isParent() && !this.isRoot();
+        return !this.isParent() && !this.isRoot() && this.type === "R";
     };
 
     this.isLoop = function(){
-        return false;
+        return this.type == "L";
     };
 
     this.isCase = function(){
-        return false;
+        return this.type == "C";
     };
 
     this.getClass = function() {
-        return this.isParent() ? " parent-li" : "" + " last-child";    // TODO
+        return this.isParent() ? " parent-li" : "" + " last-child";
     }
 
 }
@@ -129,7 +128,7 @@ function EGMScenario(id, model) {
 
 
 }
-EGMScenario.prototype = new EGMStep();
+EGMScenario.prototype = new EGMStep("ROOT");
 
 function EGMRoutine(id, parent, name) {
     this.id = id;
@@ -139,12 +138,11 @@ function EGMRoutine(id, parent, name) {
     this.stepNo = 0;
     this.values = {};
 }
-EGMRoutine.prototype = new EGMStep();
+EGMRoutine.prototype = new EGMStep("R");
 
 function EGMLoop(id, parent) {
     this.id = id;
     this.name = "Loop";
-    this.type = "eqm";
     this.parent = parent;
     this.stepNo = 1;
     this.steps = [];
@@ -172,13 +170,8 @@ function EGMLoop(id, parent) {
             this.parent.resolve();
         }
     };
-
-    this.isLoop = function(){
-        return true;
-    }
-
 }
-EGMLoop.prototype = new EGMStep();
+EGMLoop.prototype = new EGMStep("L");
 
 function EGMSwitch(id, parent) {
     this.id = id;
@@ -193,7 +186,7 @@ function EGMSwitch(id, parent) {
         {id: "C", title : "Case"}
     ]
 }
-EGMSwitch.prototype = new EGMStep();
+EGMSwitch.prototype = new EGMStep("S");
 
 function EGMCase(id, parent) {
     this.id = id;
@@ -223,13 +216,8 @@ function EGMCase(id, parent) {
             this.parent.resolve();
         }
     };
-
-    this.isCase = function(){
-        return true;
-    };
-
 }
-EGMCase.prototype = new EGMStep();
+EGMCase.prototype = new EGMStep("C");
 
 function EGMFork(id, parent) {
     this.id = id;
@@ -238,13 +226,6 @@ function EGMFork(id, parent) {
     this.stepNo = 0;
     this.steps = [];
     this.values = {};
-
-    this.availableChildren = [
-        {id: "R", title : "Routine"},
-        {id: "L", title : "Loop"},
-        {id: "S", title : "Switch"},
-        {id: "F", title : "Fork"}
-    ];
 
     this.resolve = function(){
         var result = {};
@@ -270,7 +251,7 @@ function EGMFork(id, parent) {
     };
 
 }
-EGMFork.prototype = new EGMStep();
+EGMFork.prototype = new EGMStep("F");
 
 
 function EGM(name, id) {
@@ -289,6 +270,8 @@ function EGM(name, id) {
         memento.id = this.id;
         memento.name = this.name;
         memento.type = "egm";
+        memento.resources = createArrayDTO(this.resources);
+        memento.scenarios = createArrayDTO(this.scenarios);
         return  memento;
     };
 
