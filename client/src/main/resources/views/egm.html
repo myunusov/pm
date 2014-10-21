@@ -108,7 +108,7 @@
                                pattern="\\d*[\\., \\,]?\\d*"
                                style="width:20%">
                                 <span ng-hide="step.isLeaf()">
-                                    {{step.values[resource.id]}}
+                                    {{step.values[resource.id]}} ({{step.best[resource.id]}} - {{step.worst[resource.id]}})
                                 </span>
                     </td>
                 </tr>

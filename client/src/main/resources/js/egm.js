@@ -23,6 +23,8 @@ function EGMStep(type) {
     this.url = "stepContent.html";
     this.type = type;
     this.values = {};
+    this.best = {};
+    this.worst = {};
 
     this.steps = [];
     this.stepNo = 0;
@@ -121,29 +123,58 @@ function EGMStep(type) {
     };
 
     this.change = function(){
+        this.worst = this.values;
+        this.best = this.values;
         if (this.parent) {
             this.parent.resolve();
         }
     };
 
     this.resolve = function(){
-        var result = {};
-        this.steps.each(
-                function(child) {
-                    for (var key in child.values) {
-                        if (child.values.hasOwnProperty(key) && child.values[key]) {
-                            result[key] = result[key] ?
-                                    format(parseFloat(result[key]) + parseFloat(child.values[key])) :
-                                    child.values[key];
-                        }
-                    }
-                }
-        );
-        this.values = result;
+        this.values = {};
+        this.worst = {};
+        this.best = {};
+        for (var i = 0; i < this.steps.length; i++) {
+            this.calcMin(this.steps[i]);
+            this.calcAvg(this.steps[i]);
+            this.calcMax(this.steps[i]);
+        }
         if (this.parent) {
             this.parent.resolve();
         }
     };
+
+    this.recalc  = function(){
+        if (this.steps.length > 0) {
+            for (var i = 0; i < this.steps.length; i++) {
+                this.steps[i].recalc();
+            }
+            this.resolve();
+        } else {
+            this.worst = this.values;
+            this.best = this.values;
+        }
+    };
+
+    this.calcMin = function(child)  {
+        sum(child.best, this.best);
+    };
+    this.calcMax = function(child)  {
+        sum(child.worst, this.worst);
+    };
+    this.calcAvg = function(child)  {
+        sum(child.values, this.values);
+    };
+
+    function sum (childValues, parentValues) {
+        for (var key in childValues) {
+            if (childValues.hasOwnProperty(key) && childValues[key]) {
+                parentValues[key] = parentValues[key] ?
+                        format(parseFloat(parentValues[key]) + parseFloat(childValues[key])) :
+                        childValues[key];
+            }
+        }
+    }
 
     this.removeStep = function (step) {
         this.steps.remove(step);
@@ -192,6 +223,9 @@ function EGMScenario(id, model) {
     this.steps = [];
     this.stepNo = 0;
     this.values = {};
+    this.best = {};
+    this.worst = {};
+
 
     this.removeSelf = function () {
         this.model.removeScenario(this);
@@ -208,6 +242,9 @@ function EGMRoutine(id, parent, name) {
     this.steps = [];
     this.stepNo = 0;
     this.values = {};
+    this.best = {};
+    this.worst = {};
+
 }
 EGMRoutine.prototype = new EGMStep("R");
 
@@ -219,6 +256,9 @@ function EGMLoop(id, parent) {
     this.steps = [];
     this.stepNo = 0;
     this.values = {};
+    this.best = {};
+    this.worst = {};
+
 
     this.iterationNumber = 2;
 
@@ -231,25 +271,26 @@ function EGMLoop(id, parent) {
         return result;
     };
 
-    this.resolve = function(){
-        var result = {};
-        var iterationNumber = parseFloat(this.iterationNumber);
-        this.steps.each(
-                function(child) {
-                    for (var key in child.values) {
-                        if (child.values.hasOwnProperty(key) && child.values[key]) {
-                            result[key] = result[key] ?
-                                    format(parseFloat(result[key]) + parseFloat(child.values[key]) * iterationNumber) :
-                                    format(child.values[key] * iterationNumber);
-                        }
-                    }
-                }
-        );
-        this.values = result;
-        if (this.parent) {
-            this.parent.resolve();
-        }
+    this.calcMin = function(child)  {
+        sumAndMult(child.best, this.best, this.iterationNumber);
     };
+    this.calcMax = function(child)  {
+        sumAndMult(child.worst, this.worst, this.iterationNumber);
+    };
+    this.calcAvg = function(child)  {
+        sumAndMult(child.values, this.values, this.iterationNumber);
+    };
+
+    function sumAndMult (childValues, parentValues, mult) {
+        for (var key in childValues) {
+            if (childValues.hasOwnProperty(key) && childValues[key]) {
+                parentValues[key] = parentValues[key] ?
+                        format(parseFloat(parentValues[key]) + parseFloat(childValues[key]) * mult) :
+                        format(childValues[key] * mult);
+            }
+        }
+    }
+
 }
 EGMLoop.prototype = new EGMStep("L");
 
@@ -261,10 +302,48 @@ function EGMSwitch(id, parent) {
     var id2 = this.id + "." + ++this.stepNo;
     this.steps = [new EGMCase(id2, this)];
     this.values = {};
+    this.best = {};
+    this.worst = {};
 
     this.availableChildren = [
         {id: "C", title : "Case"}
-    ]
+    ];
+
+    this.calcMin = function(child)  {
+        min(child.worst, this.best);
+    };
+    this.calcMax = function(child)  {
+        max(child.worst, this.worst);
+    };
+
+    function max (childValues, parentValues) {
+        for (var key in childValues) {
+            if (childValues.hasOwnProperty(key) && childValues[key]) {
+                parentValues[key] = parentValues[key] ?
+                        (
+                                parseFloat(parentValues[key]) > parseFloat(childValues[key]) ?
+                                        parseFloat(parentValues[key]) :
+                                        parseFloat(childValues[key])
+                        ) :
+                        childValues[key];
+            }
+        }
+    }
+
+    function min (childValues, parentValues) {
+        for (var key in childValues) {
+            if (childValues.hasOwnProperty(key) && childValues[key]) {
+                parentValues[key] = parentValues[key] ?
+                        (
+                                parseFloat(parentValues[key]) < parseFloat(childValues[key]) ?
+                                        parseFloat(parentValues[key]) :
+                                        parseFloat(childValues[key])
+                        ) :
+                        childValues[key];
+            }
+        }
+    }
+
 }
 EGMSwitch.prototype = new EGMStep("S");
 
@@ -275,6 +354,8 @@ function EGMCase(id, parent) {
     this.stepNo = 0;
     this.steps = [];
     this.values = {};
+    this.best = {};
+    this.worst = {};
     this.probability = 1;
 
     this.doSetDTO = function(memento) {
@@ -286,25 +367,32 @@ function EGMCase(id, parent) {
         return result;
     };
 
-    this.resolve = function(){
-        var result = {};
-        var probability = parseFloat(this.probability);
-        this.steps.each(
-                function(child) {
-                    for (var key in child.values) {
-                        if (child.values.hasOwnProperty(key) && child.values[key]) {
-                            result[key] = result[key] ?
-                                    format(parseFloat(result[key]) + parseFloat(child.values[key]) * probability) :
-                                    format(child.values[key] * probability);
-                        }
-                    }
-                }
-        );
-        this.values = result;
-        if (this.parent) {
-            this.parent.resolve();
-        }
+    this.calcMin = function(child)  {
+        setValue(child.best, this.best, 0);
     };
+
+    this.calcAvg = function(child)  {
+        sumAndMult(child.values, this.values, this.probability);
+    };
+
+    function sumAndMult (childValues, parentValues, mult) {
+        for (var key in childValues) {
+            if (childValues.hasOwnProperty(key) && childValues[key]) {
+                parentValues[key] = parentValues[key] ?
+                        format(parseFloat(parentValues[key]) + parseFloat(childValues[key]) * mult) :
+                        format(childValues[key] * mult);
+            }
+        }
+    }
+
+    function setValue (childValues, parentValues, value) {
+        for (var key in childValues) {
+            if (childValues.hasOwnProperty(key) && childValues[key]) {
+                parentValues[key] = value;
+            }
+        }
+    }
+
 }
 EGMCase.prototype = new EGMStep("C");
 
@@ -315,29 +403,30 @@ function EGMFork(id, parent) {
     this.stepNo = 0;
     this.steps = [];
     this.values = {};
+    this.best = {};
+    this.worst = {};
 
-    this.resolve = function(){
-        var result = {};
-        this.steps.each(
-                function(child) {
-                    for (var key in child.values) {
-                        if (child.values.hasOwnProperty(key) && child.values[key]) {
-                            result[key] = result[key] ?
-                                    (
-                                            parseFloat(result[key]) > parseFloat(child.values[key]) ?
-                                                    parseFloat(result[key]) :
-                                                    parseFloat(child.values[key])
-                                    ) :
-                            child.values[key];
-                        }
-                    }
-                }
-        );
-        this.values = result;
-        if (this.parent) {
-            this.parent.resolve();
-        }
+    this.calcMin = function(child)  {
+        min(child.best, this.best);
     };
+
+    this.calcAvg = function(child)  {
+        min(child.values, this.values);
+    };
+
+    function min (childValues, parentValues) {
+        for (var key in childValues) {
+            if (childValues.hasOwnProperty(key) && childValues[key]) {
+                parentValues[key] = parentValues[key] ?
+                        (
+                                parseFloat(parentValues[key]) < parseFloat(childValues[key]) ?
+                                        parseFloat(parentValues[key]) :
+                                        parseFloat(childValues[key])
+                        ) :
+                        childValues[key];
+            }
+        }
+    }
 
 }
 EGMFork.prototype = new EGMStep("F");
@@ -397,7 +486,7 @@ function EGM(name, id) {
 
     this.init = function () {
         for (var i= 0; i < this.scenarios.length; i++) {
-            this.scenarios[i].resolve();
+            this.scenarios[i].recalc();
         }
     };
 
