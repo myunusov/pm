@@ -116,6 +116,10 @@ public class TrayIconApplication {
             }
             final String label = webServer.isStarted() ? "Stop Service" : "Start Service";
             manageServiceItem.setLabel(label);
+            final String message = webServer.isStarted() ? "Web Service was started" : "Web Service was stopped";
+            trayIcon.displayMessage("Performance Model Calculator",
+                    message,
+                    TrayIcon.MessageType.INFO);
             startClientItem.setEnabled(webServer.isStarted());
         });
 
