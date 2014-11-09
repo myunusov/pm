@@ -343,14 +343,6 @@ function QNMVisit(clazz, node) {
 
     this.expressions = [
         new Expression([
-            [-1, 'TV'],
-            ['V', new Parameter('NN', this.node)]
-        ], this),
-        new Expression([
-            [-1, 'TN'],
-            ['N', new Parameter('NN', this.node)]
-        ], this),
-        new Expression([
             ['V', new Parameter('X', this.clazz)],
             [-1, 'XI']
         ], this),
@@ -365,6 +357,14 @@ function QNMVisit(clazz, node) {
         new Expression([
             [-1, 'S', 'V'],
             ['D']
+        ], this),
+        new Expression([
+            [-1, 'TV'],
+            ['V', new Parameter('NN', this.node)]
+        ], this),
+        new Expression([
+            [-1, 'TN'],
+            ['N', new Parameter('NN', this.node)]
         ], this)
     ];
 
@@ -755,12 +755,12 @@ function QNM(name, id) {
     this.addNode = function () {
         var node = new QNMNode(++nodeNo);
         this.nodes.push(node);
-        changedFields = changedFields.concat(node.getSignificance());
         for (var i = 0; i < this.classes.length; i++) {
             var visit = new QNMVisit(this.classes[i], node);
             this.visits.push(visit);
             changedFields = changedFields.concat(visit.getSignificance());
         }
+        changedFields = changedFields.concat(node.getSignificance());
     };
 
     this.removeNode = function (node) {

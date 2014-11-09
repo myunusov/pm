@@ -165,8 +165,8 @@ application.factory('qnmFactory', function() {
     return {
         qnm: function(name) {
             var qnm = new QNM(name || "QNM", uuid());
-            qnm.addNode();
             qnm.addClass();
+            qnm.addNode();
             return  qnm;
         }
     };
