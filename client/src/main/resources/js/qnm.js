@@ -386,6 +386,10 @@ function QNMVisit(clazz, node) {
         return parseFloat(this.node.nodeNumber.value) > 1;
     };
 
+    this.isDetails = function () {
+        return this.hasDetails() && this.details;
+    };
+
     this.showDetails = function () {
         this.details = true;
     };
