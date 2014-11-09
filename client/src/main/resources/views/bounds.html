@@ -1,39 +1,13 @@
 <div class="row-fluid">
     <div class="framehdr">
         <i class="icon icon-flag"></i>
-        Bounds
+        Asymptotic Bounds
+        <button class="hdrbutton" ng-click="refreshCharts()" tooltip-placement="left" tooltip="Refresh Charts">
+            <i class="icon-refresh"></i>
+        </button>
     </div>
     <div class="frame">
-        <table>
-            <tr>
-                <th>
-                    <span tooltip="Number of concurrent Transactions in execution" tooltip-placement="right">
-                        Number of Transactions
-                    </span>
-                </th>
-                <td colspan="2">
-                    <input type="text"
-                           class="input input-small simplebox quantity {{model.trunsactionsNumber.state}}"
-                           ng-model="model.trunsactionsNumber.text"
-                           pattern="{{model.trunsactionsNumber.unit.pattern}}">
-                </td>
-            </tr>
-            <tr ng-repeat="item in model.classes">
-                <th>{{item.name}}</th>
-                <td >
-                            <span tooltip="Min Response Time" tooltip-placement="right">
-                            <b>R(min):</b> {{model.calcMinRt(item)}}
-                            </span>
-
-                </td>
-                <td>
-                            <span tooltip="Max Throughput" tooltip-placement="right">
-                            <b>X(max):</b> {{model.calcMaxX(item)}}
-                            </span>
-                </td>
-            </tr>
-        </table>
-
-
+        <div id="rmin{{model.id}}" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        <div id="xmax{{model.id}}" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
     </div>
 </div>

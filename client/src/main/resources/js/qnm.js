@@ -639,7 +639,6 @@ function QNM(name, id) {
     this.name = name;
     this.type = "qnm";
     this.view = "views/qnm.html";
-    this.trunsactionsNumber = new QNMNumber(1);
     this.classes = [];
     this.nodes = [];
     this.visits = [];
@@ -660,18 +659,12 @@ function QNM(name, id) {
         memento.classes = createArrayDTO(this.classes);
         memento.nodes = createArrayDTO(this.nodes);
         memento.visits = createArrayDTO(this.visits);
-        memento.trunsactionsNumber = [
-            this.trunsactionsNumber.value,
-            this.trunsactionsNumber.unit.id
-        ];
         return  memento;
     };
 
     this.setDTO = function (memento) {
         this.id = memento.id;
         this.name = memento.name;
-        this.trunsactionsNumber.setDTO(memento.trunsactionsNumber);
-
         classNo = memento.classNo;
         nodeNo = memento.nodeNo;
         this.classes = [];
@@ -871,7 +864,7 @@ function QNM(name, id) {
         ];
         var visits = this.getVisitsByNode(node);
         for (var j = 0; j < visits.length; j++) {
-            if (visits[j].number.value) {
+            if (visits[j].totalNumber.value) {
                 result.push([new Parameter('U', visits[j])]);
             }
         }
@@ -995,7 +988,140 @@ function QNM(name, id) {
         return this.recalculate();
     };
 
-    this.calcMaxX = function(clazz) {
+    var pointsNumber = 10;
+
+    this.refreshCharts = function() {
+
+        var id = this.id;
+
+        var sum = 0;
+        for (var i = 0; i < this.nodes.length; i++) {
+            var n = this.nodes[i];
+            var nn = n.nodeNumber.value;
+            nn = parseFloat(nn);
+            sum += nn;
+        }
+        pointsNumber = sum > 8 ? sum + 2 : 10;
+
+        var minRChart = this.calcMinRChart();
+        var maxXChart = this.calcMaxXChart();
+
+        $(function () {
+            $('#rmin' + id).highcharts(minRChart);
+            $('#xmax' + id).highcharts(maxXChart);
+        });
+
+    };
+
+    this.calcMaxXChart = function() {
+
+        return {
+            title: {
+                text: 'Maximum Throughput',
+                x: -20 //center
+            },
+            subtitle: {
+                text: 'X(N)',
+                x: -20
+            },
+            xAxis: {
+                categories: this.calcCategories()
+            },
+            yAxis: {
+                title: {
+                    text: 'X (tps)'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                valueSuffix: 'tps'
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            series: this.calcChartSeries("maxX")
+        }
+    };
+
+    this.calcMinRChart = function() {
+
+        return {
+            title: {
+                text: 'Minimum Response Time',
+                x: -20 //center
+            },
+            subtitle: {
+                text: 'R(N)',
+                x: -20
+            },
+            xAxis: {
+                 categories: this.calcCategories()
+            },
+            yAxis: {
+                title: {
+                    text: 'R (sec.)'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                valueSuffix: 'sec.'
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            series: this.calcChartSeries("minR")
+        }
+    };
+
+    this.calcCategories = function() {
+        var result = [];
+        for (var i = 0; i < pointsNumber; i++) {
+            result.push(i + 1);
+        }
+        return result;
+    };
+
+    this.calcChartSeries = function (type) {
+        var result = [];
+        for (var i = 0; i < this.classes.length; i++) {
+            result.push(
+                {
+                    name: this.classes[i].name,
+                    data: this.calcDataFor(this.classes[i], type)
+                }
+            );
+        }
+        return result;
+    };
+
+    this.calcDataFor = function(clazz, type) {
+        var result = [];
+        for (var i = 0; i < pointsNumber; i++) {
+            if (type === "minR") {
+                result.push(this.calcMinR(clazz, i + 1));
+            } else {
+                result.push(this.calcMaxX(clazz, i + 1));
+            }
+        }
+        return result;
+    };
+
+
+    this.calcMaxX = function(clazz, tn) {
         var visits = this.getVisitsByClass(clazz);
         var sumD = 0;
         var maxD = 0;
@@ -1014,12 +1140,13 @@ function QNM(name, id) {
             sumD += d * nn;
         }
         var result1 = 1 / maxD;
-        var tn = parseFloat(this.trunsactionsNumber.value);
         var result2 = tn / sumD;
-        return formatNumber(result1 < result2 ? result1 : result2);
+        var result = result1 < result2 ? result1 : result2;
+        return parseFloat(result.toPrecision(5));
     };
 
-    this.calcMinRt = function(clazz) {
+
+    this.calcMinR = function(clazz, tn) {
         var visits = this.getVisitsByClass(clazz);
         var sumD = 0;
         var maxD = 0;
@@ -1037,14 +1164,10 @@ function QNM(name, id) {
             }
             sumD += d * nn;
         }
-        var tn = parseFloat(this.trunsactionsNumber.value);
         var result1 = tn * maxD;
         var result2 = sumD;
-        return formatNumber(result1 > result2 ? result1 : result2);
+        var result = result1 > result2 ? result1 : result2;
+        return parseFloat(result.toPrecision(5));
     };
-
-    function formatNumber(value) {
-        return Math.round(value) === value ? Math.round(value) : parseFloat(value).toPrecision(5);
-    }
 
 }

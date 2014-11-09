@@ -43,7 +43,7 @@ angular.module('pm.service', [])
                 }
             };
         })
-        .service('projectProvider', function ($http, messageProvider, qnmFactory) {
+        .service('projectProvider', function ($http, messageProvider, modelFactory) {
             var projects = [];
             var project = null;
             var url = 'api/projects';
@@ -94,7 +94,7 @@ angular.module('pm.service', [])
                 reset: function () {
                    messageProvider.clear();
                     project.reset();
-                    project.models.push(qnmFactory.qnm());
+                    project.models.push(modelFactory.qnm());
                 },
                 remove: function (name) {
                     name = name || project.name;
@@ -105,7 +105,7 @@ angular.module('pm.service', [])
                                 remove(dto.name);
                                 if (project.name === dto.name) {
                                     project.reset();
-                                    project.models.push(qnmFactory.qnm());
+                                    project.models.push(modelFactory.qnm());
                                 }
                             })
                             .error(function (data, status) {
@@ -161,26 +161,19 @@ var application = angular.module(
         }
 );
 
-application.factory('qnmFactory', function() {
+application.factory('modelFactory', function() {
     return {
         qnm: function(name) {
             var qnm = new QNM(name || "QNM", uuid());
             qnm.addClass();
             qnm.addNode();
             return  qnm;
+        },
+        egm: function(name) {
+            return  new EGM(name || "EGM", uuid());
         }
     };
 });
-
-application.factory('egmFactory', function() {
-    return {
-        qnm: function(name) {
-            var egm = new EGM(name || "EGM", uuid());
-            return  egm;
-        }
-    };
-});
-
 
 function clickingCallback(e) {
     var children = $(this).closest('li.parent-li').find(' > ul > li');
@@ -211,11 +204,11 @@ application.directive('onCollapse', function() {
 });
 
 //noinspection JSUnusedGlobalSymbols
-function ProjectCtrl($scope, projectProvider, qnmFactory, egmFactory) {
+function ProjectCtrl($scope, projectProvider, modelFactory) {
 
     $scope.project = new Project("New Performance Model", uuid());
 
-    $scope.project.models.push(qnmFactory.qnm());
+    $scope.project.models.push(modelFactory.qnm());
 
     projectProvider.setProject($scope.project);
 
@@ -227,7 +220,6 @@ function ProjectCtrl($scope, projectProvider, qnmFactory, egmFactory) {
         projectProvider.reset();
     };
 
-
     $scope.load = function () {
         projectProvider.load();
     };
@@ -237,11 +229,11 @@ function ProjectCtrl($scope, projectProvider, qnmFactory, egmFactory) {
     };
 
     $scope.addQNM = function () {
-        $scope.project.models.push(qnmFactory.qnm("QNM " + $scope.project.models.length));
+        $scope.project.models.push(modelFactory.qnm("QNM " + $scope.project.models.length));
     };
 
     $scope.addEGM = function () {
-        $scope.project.models.push(egmFactory.qnm("EGM " + $scope.project.models.length));
+        $scope.project.models.push(modelFactory.egm("EGM " + $scope.project.models.length));
     };
 
 }
@@ -308,6 +300,10 @@ function QNMCtrl($scope, messageProvider) {
     $scope.addClass = function () {
         $scope.model.addClass();
         $scope.model.recalculate();
+    };
+
+    $scope.refreshCharts = function () {
+        $scope.model.refreshCharts();
     };
 
     $scope.removeClass = function (clazz) {
