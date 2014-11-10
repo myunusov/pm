@@ -403,6 +403,12 @@ tab-heading  button {
     text-shadow: 0 1px 0 #FFFFFF;
 }
 
+.bounds-chart {
+    min-width: 310px;
+    height: 400px;
+    margin: 0 auto;
+}
+
 .frame input {
     outline: none;
     border:none !important;
@@ -504,7 +510,6 @@ tr:nth-of-type(odd) .simplebox {
     .qnm td {
         /* Behave  like a "row" */
         border: 1px solid #eee;
-        border-bottom: 1px solid #eee;
         position: relative;
         padding-left: 50%;
     }

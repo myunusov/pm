@@ -208,8 +208,6 @@ function ProjectCtrl($scope, projectProvider, modelFactory) {
 
     $scope.project = new Project("New Performance Model", uuid());
 
-    $scope.project.models.push(modelFactory.qnm());
-
     projectProvider.setProject($scope.project);
 
     $scope.remove = function () {
@@ -235,6 +233,8 @@ function ProjectCtrl($scope, projectProvider, modelFactory) {
     $scope.addEGM = function () {
         $scope.project.models.push(modelFactory.egm("EGM " + $scope.project.models.length));
     };
+
+    $scope.addQNM();
 
 }
 
