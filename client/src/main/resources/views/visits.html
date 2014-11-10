@@ -73,7 +73,7 @@
                                 </span>
                     </td>
 
-                    <td>{{visit.node.name}}</td>
+                    <td>{{visit.node.name}}<span ng-show="visit.node.nodeNumber.value > 1">({{visit.node.nodeNumber.value}})</span></td>
                     <td>{{visit.clazz.name}}</td>
 
                     <td nowrap="nowrap">
@@ -184,7 +184,7 @@
                 </tr>
 
                 <tr ng-show="visit.isDetails()">
-                    <td>{{visit.node.name}} (one)</td>
+                    <td>{{visit.node.name}} (1)</td>
                     <td>{{visit.clazz.name}}</td>
                     <td nowrap="nowrap">
                         <input type="text"
