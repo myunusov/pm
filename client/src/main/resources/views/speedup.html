@@ -1,4 +1,4 @@
-<div class="row-fluid">
+<div class="row-fluid" ng-show="(qnms = (project.models | qnmWithout:model)).length">
     <div class="framehdr">
         <i class="icon icon-fire"></i>
         Speed-Up
@@ -6,8 +6,8 @@
                 <a class="dropdown-toggle simpleank">
                     <i class="icon-list"></i>
                 </a>
-                <ul class="dropdown-menu">
-                    <li ng-repeat="other_model in project.models | qnmWithout:model">
+                <ul class="dropdown-menu pull-right">
+                    <li ng-repeat="other_model in qnms">
                         <a ng-click="model.compared.setModel(other_model)">{{other_model.name}}</a>
                     </li>
                 </ul>
