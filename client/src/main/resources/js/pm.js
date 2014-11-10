@@ -146,7 +146,17 @@ angular.module('pm.service', [])
 angular.module('pm.directive', []);
 
 
-angular.module('pm.filter', []);
+angular.module('pm.filter', [])
+        .filter('qnmWithout', function () {
+            return function (input, model) {
+                var out = [];
+                for (var i = 0; i < input.length; i++) {
+                    if (input[i].type === "qnm" && input[i] !== model)
+                        out.push(input[i]);
+                }
+                return out;
+            };
+        });
 
 var application = angular.module(
         'pm',
@@ -160,6 +170,8 @@ var application = angular.module(
             delete $httpProvider.defaults.headers.common['X-Requested-With'];
         }
 );
+
+
 
 application.factory('modelFactory', function() {
     return {

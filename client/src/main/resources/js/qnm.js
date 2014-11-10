@@ -608,33 +608,29 @@ function ComparedItem(class1, class2) {
 }
 
 function ComparedInfo(model1) {
-    this.model2 = model1;
-
+    this.models = [];
     this.items = [];
 
-    this.setModel = function(value) {
-        this.model2 = value;
-        this.findCommonsClasses();
-    };
-
-    this.findCommonsClasses = function() {
-        var model2 = this.model2;
+    this.itemsBy = function(model2) {
         var items = [];
-        [model1.classes].each(
-                function (c1) {
-                    [model2.classes].each(
-                            function (c2) {
-                                if (c2.name === c1.name) {
-                                    items.push(new ComparedItem(c1, c2));
-                                }
-                            }
-                    )
-                }
+        model1.classes.each(
+            function (c1) {
+                model2.classes.each(
+                    function (c2) {
+                        if (c2.name === c1.name) {
+                            items.push(new ComparedItem(c1, c2));
+                        }
+                    }
+                )
+            }
         );
-        this.items = items;
+        return items;
     };
 
-    this.findCommonsClasses();
+    this.setModel = function(value) {
+        this.models[0] = value;
+        this.items = this.itemsBy(value);
+    };
 
 }
 
