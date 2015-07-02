@@ -63,11 +63,21 @@
         </dependencySet>
 
         <dependencySet>
+            <outputDirectory>${project.build.finalName}/webapp</outputDirectory>
+            <fileMode>0755</fileMode>
+            <directoryMode>0755</directoryMode>
+            <includes>
+                <include>org.maxur.perfmodel:client</include>
+            </includes>
+            <unpack>true</unpack>
+        </dependencySet>
+
+        <dependencySet>
             <outputDirectory>${project.build.finalName}/webapp/bootstrap</outputDirectory>
             <fileMode>0755</fileMode>
             <directoryMode>0755</directoryMode>
             <includes>
-                <include>org.maxur:bootstrap</include>
+                <include>org.maxur.perfmodel:bootstrap</include>
             </includes>
             <unpack>true</unpack>
             <unpackOptions>
@@ -83,7 +93,7 @@
             <fileMode>0755</fileMode>
             <directoryMode>0755</directoryMode>
             <includes>
-                <include>org.maxur:ngbootstrap</include>
+                <include>org.maxur.perfmodel:ngbootstrap</include>
             </includes>
             <unpack>true</unpack>
             <unpackOptions>
@@ -98,7 +108,7 @@
             <fileMode>0755</fileMode>
             <directoryMode>0755</directoryMode>
             <includes>
-                <include>org.maxur:angular</include>
+                <include>org.maxur.perfmodel:angular</include>
             </includes>
             <unpack>true</unpack>
             <unpackOptions>
@@ -113,17 +123,7 @@
             <fileMode>0755</fileMode>
             <directoryMode>0755</directoryMode>
             <includes>
-                <include>org.maxur:fontawesome</include>
-            </includes>
-            <unpack>true</unpack>
-        </dependencySet>
-
-        <dependencySet>
-            <outputDirectory>${project.build.finalName}/webapp</outputDirectory>
-            <fileMode>0755</fileMode>
-            <directoryMode>0755</directoryMode>
-            <includes>
-                <include>org.maxur:perfmodel-client</include>
+                <include>org.maxur.perfmodel:fontawesome</include>
             </includes>
             <unpack>true</unpack>
         </dependencySet>
@@ -133,7 +133,7 @@
             <fileMode>0755</fileMode>
             <directoryMode>0755</directoryMode>
             <includes>
-                <include>org.maxur:perfmodel-backend:*:jar-with-dependencies</include>
+                <include>org.maxur.perfmodel:backend:*:jar-with-dependencies</include>
             </includes>
         </dependencySet>
 

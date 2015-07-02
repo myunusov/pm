@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.maxur</groupId>
-        <artifactId>perfmodel-3rdparty</artifactId>
+        <groupId>org.maxur.perfmodel</groupId>
+        <artifactId>3rdparty</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>ngbootstrap</artifactId>
-    <name>${project.groupId}:${project.artifactId}</name>
+    <name>PMC: AngularJS for Twitter Bootstrap</name>
     <version>2.3.2</version>
     <description>AngularJS (Angular) native directives for Twitter Bootstrap</description>
 

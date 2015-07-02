@@ -5,18 +5,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.maxur</groupId>
-        <artifactId>perfmodel-base</artifactId>
+        <groupId>org.maxur.perfmodel</groupId>
+        <artifactId>base</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>perfmodel-assemblies</artifactId>
+    <artifactId>assemblies</artifactId>
     <packaging>pom</packaging>
-    <name>${project.groupId}:${project.artifactId}</name>
+    <name>PMC: Assemblers</name>
     <description>Assemblies POM for Maxur Project</description>
 
     <properties>
-        <project.root>${project.basedir}/..</project.root>
+        <project.root>./..</project.root>
         <tattletale.failOnInfo>false</tattletale.failOnInfo>
         <tattletale.failOnWarn>false</tattletale.failOnWarn>
         <tattletale.failOnError>false</tattletale.failOnError>

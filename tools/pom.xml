@@ -5,17 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.maxur</groupId>
-        <artifactId>perfmodel-base</artifactId>
+        <groupId>org.maxur.perfmodel</groupId>
+        <artifactId>base</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>perfmodel-tools</artifactId>
+    <artifactId>tools</artifactId>
     <name>Build Tools</name>
     <description>Build Tools Configuration Files</description>
 
     <properties>
-        <project.root>${project.basedir}/../</project.root>
+        <project.root>./../</project.root>
     </properties>
 
 </project>

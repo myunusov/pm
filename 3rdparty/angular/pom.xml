@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.maxur</groupId>
-        <artifactId>perfmodel-3rdparty</artifactId>
+        <groupId>org.maxur.perfmodel</groupId>
+        <artifactId>3rdparty</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>angular</artifactId>
-    <name>${project.groupId}:${project.artifactId}</name>
+    <name>PMC: Angular</name>
     <version>1.1.5</version>
     <description>AngularJS</description>
 
