@@ -273,6 +273,12 @@
                 </plugin>
 
                 <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>cobertura-maven-plugin</artifactId>
+                    <version>2.7</version>
+                </plugin>
+
+                <plugin>
                     <groupId>org.jboss.tattletale</groupId>
                     <artifactId>tattletale-maven</artifactId>
                     <version>1.1.2.Final</version>
@@ -408,6 +414,33 @@
                 </dependencies>
             </plugin>
 
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <configuration>
+                    <check>
+                        <haltOnFailure>false</haltOnFailure>
+                        <branchRate>85</branchRate>
+                        <lineRate>85</lineRate>
+                        <totalBranchRate>85</totalBranchRate>
+                        <totalLineRate>85</totalLineRate>
+                        <packageLineRate>85</packageLineRate>
+                        <packageBranchRate>85</packageBranchRate>
+                        <regexes>
+                            <regex>
+                                <pattern>com.org.maxur.telnetcli.*</pattern>
+                                <branchRate>0</branchRate>
+                                <lineRate>0</lineRate>
+                            </regex>
+                        </regexes>
+                    </check>
+                    <formats>
+                        <format>html</format>
+                        <format>xml</format>
+                    </formats>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
@@ -436,8 +469,8 @@
                         <reports>
                             <report>index</report>
                             <report>modules</report>
-<!--                            <report>dependencies</report>
-                            <report>dependency-convergence</report>-->
+                            <report>dependencies</report>
+                            <report>dependency-convergence</report>
                             <report>plugin-management</report>
                             <report>license</report>
                             <report>project-team</report>
@@ -483,7 +516,6 @@
                     <configLocation>maxur-check-style.xml</configLocation>
                     <encoding>${project.source.encoding}</encoding>
                     <linkXRef>true</linkXRef>
-                    <!--TODO is not valid result path-->
                     <xrefLocation>${project.reporting.outputDirectory}/xref</xrefLocation>
                 </configuration>
             </plugin>
@@ -514,6 +546,7 @@
             </plugin>
 
             <!-- todo Must be aggregated-->
+            <!-- see http://stackoverflow.com/questions/16428098/groovy-shell-warning-could-not-open-create-prefs-root-node -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
@@ -525,11 +558,13 @@
                 </configuration>
             </plugin>
 
-            <!-- todo INVALID uml DIAGRAMS-->
             <plugin>
                 <!--
                 You must have the Graphviz binary in your PATH, or the images will not be generated.
                 For more information about Graphviz, please refer to http://www.graphviz.org/
+                Update Settings.ini
+                [Settings]
+                    binPath=C:\graphviz-2.30.1\release\bin
                 -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -588,18 +623,46 @@
                 <version>2.18.1</version>
                 <reportSets>
                     <reportSet>
-                        <id>integration-tests</id>
+                        <!-- defines unit test reports in the modules -->
+                        <id>unit-tests</id>
                         <reports>
-                            <report>report-only</report>
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+
+                    <reportSet>
+                        <!-- defines aggregate unit test report -->
+                        <id>unit-tests-aggregate</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>report</report>
                         </reports>
                         <configuration>
-                            <outputName>failsafe-report</outputName>
-                            <reportsDirectories>
-                                <reportsDirectory>${project.build.directory}/failsafe-reports</reportsDirectory>
-                            </reportsDirectories>
+                            <aggregate>true</aggregate>
+                        </configuration>
+                    </reportSet>
+
+                    <reportSet>
+                        <!-- defines integration test reports in the modules -->
+                        <id>integration-tests</id>
+                        <reports>
+                            <report>failsafe-report-only</report>
+                        </reports>
+                    </reportSet>
+
+                    <reportSet>
+                        <!-- defines aggregate integration test report -->
+                        <id>integration-tests-aggregate</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>failsafe-report-only</report>
+                        </reports>
+                        <configuration>
+                            <aggregate>true</aggregate>
                         </configuration>
                     </reportSet>
                 </reportSets>
+
                 <configuration>
                     <showSuccess>false</showSuccess>
                 </configuration>
@@ -611,60 +674,54 @@
                 <version>2.0</version>
             </plugin>
 
-            <!--
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>cobertura-maven-plugin</artifactId>
-                            <version>2.5.2</version>
-                            <configuration>
-                                <check>
-                                    <haltOnFailure>false</haltOnFailure>
-                                    <branchRate>85</branchRate>
-                                    <lineRate>85</lineRate>
-                                    <totalBranchRate>85</totalBranchRate>
-                                    <totalLineRate>85</totalLineRate>
-                                    <packageLineRate>85</packageLineRate>
-                                    <packageBranchRate>85</packageBranchRate>
-                                    <regexes>
-                                        <regex>
-                                            <pattern>com.org.maxur.telnetcli.*</pattern>
-                                            <branchRate>0</branchRate>
-                                            <lineRate>0</lineRate>
-                                        </regex>
-                                    </regexes>
-                                </check>
-                                <formats>
-                                    <format>html</format>
-                                    <format>xml</format>
-                                </formats>
-                            </configuration>
-                        </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>taglist-maven-plugin</artifactId>
+                <version>2.4</version>
+                <reportSets>
+                    <reportSet>
+                        <!-- defines taglist reports in the modules -->
+                        <id>taglist-report</id>
+                        <reports>
+                            <report>taglist</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <!-- defines taglist aggregate report -->
+                        <id>taglist-aggregate</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>taglist</report>
+                        </reports>
+                        <configuration>
+                            <aggregate>true</aggregate>
+                        </configuration>
+                    </reportSet>
+                </reportSets>
+                <configuration>
+                    <tags>
+                        <tag>fixme</tag>
+                        <tag>FixMe</tag>
+                        <tag>FIXME</tag>
+                        <tag>@todo</tag>
+                        <tag>todo</tag>
+                        <tag>TODO</tag>
+                        <tag>xxx</tag>
+                        <tag>@deprecated</tag>
+                    </tags>
+                </configuration>
+            </plugin>
 
 
+            <!--  Not supported Java 8-->
 
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>taglist-maven-plugin</artifactId>
-                            <version>2.4</version>
-                            <configuration>
-                                <tags>
-                                    <tag>fixme</tag>
-                                    <tag>FixMe</tag>
-                                    <tag>FIXME</tag>
-                                    <tag>@todo</tag>
-                                    <tag>todo</tag>
-                                    <tag>TODO</tag>
-                                    <tag>xxx</tag>
-                                    <tag>@deprecated</tag>
-                                </tags>
-                            </configuration>
-                        </plugin>
+<!--
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>javancss-maven-plugin</artifactId>
+                <version>2.1</version>
+            </plugin>-->
 
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>javancss-maven-plugin</artifactId>
-                            <version>2.0</version>
-                        </plugin>-->
 
         </plugins>
     </reporting>
