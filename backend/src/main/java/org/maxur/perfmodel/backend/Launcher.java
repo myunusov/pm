@@ -15,10 +15,12 @@
 
 package org.maxur.perfmodel.backend;
 
+import org.glassfish.hk2.api.TypeLiteral;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.maxur.perfmodel.backend.domain.ProjectRepository;
+import org.maxur.perfmodel.backend.domain.Project;
+import org.maxur.perfmodel.backend.domain.Repository;
 import org.maxur.perfmodel.backend.infrastructure.PropertiesService;
 import org.maxur.perfmodel.backend.infrastructure.SimpleFileRepository;
 import org.maxur.perfmodel.backend.infrastructure.WebServer;
@@ -65,7 +67,8 @@ public class Launcher {
                     @Override
                     protected void configure() {
                         bind(propertiesService).to(PropertiesService.class);
-                        bind(SimpleFileRepository.class).to(ProjectRepository.class);
+                        bindAsContract(new TypeLiteral<SimpleFileRepository>(){})
+                                .to(new TypeLiteral<Repository<Project>>(){});
                     }
                 });
             }
