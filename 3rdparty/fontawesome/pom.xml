@@ -12,7 +12,7 @@
 
     <artifactId>fontawesome</artifactId>
     <name>PMC: Font Awesome</name>
-    <version>4.0.3</version>
+    <!--<version>4.0.3</version>-->
     <description>Font Awesome</description>
 
     <build>

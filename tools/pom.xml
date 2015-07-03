@@ -14,4 +14,12 @@
         <project.root>./../</project.root>
     </properties>
 
+    <distributionManagement>
+        <site>
+            <!-- TODO -->
+            <id>www.yourcompany.com</id>
+            <url>scp://www.yourcompany.com/www/docs/project/</url>
+        </site>
+    </distributionManagement>
+
 </project>

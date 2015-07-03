@@ -12,9 +12,9 @@
 
     <url>http://www.maxur.org</url>
 
-    <name>Super POM</name>
+    <name>Performance Model Calculator</name>
 
-    <description>Top-level POM for Maxur Performance Model Project</description>
+    <description>Maxur Performance Model Calculator</description>
 
     <organization>
         <name>Maxim Yunusov</name>
@@ -47,13 +47,13 @@
     </licenses>
 
     <scm>
-        <connection>scm:https://github.com/myunusov/pm.git</connection>
+        <connection>scm:git:https://github.com/myunusov/pm.git</connection>
         <developerConnection>scm:git:git@github.com:myunusov/pm.git</developerConnection>
         <url>https://github.com/myunusov/pm/tree/master/</url>
     </scm>
 
     <issueManagement>
-        <system>GitHub Social Coding</system>
+        <system>GitHub</system>
         <url>https://github.com/myunusov/pm/issues</url>
     </issueManagement>
 
@@ -240,12 +240,6 @@
                 </plugin>
 
                 <plugin>
-                    <groupId>org.pitest</groupId>
-                    <artifactId>pitest-maven</artifactId>
-                    <version>1.0.0</version>
-                </plugin>
-
-                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-project-info-reports-plugin</artifactId>
                     <version>2.8</version>
@@ -381,6 +375,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.2</version>
             </plugin>
 
             <plugin>
@@ -530,9 +530,9 @@
                     <ignoreIdentifiers>true</ignoreIdentifiers>
                     <sourceEncoding>${project.source.encoding}</sourceEncoding>
                     <!--TODO is not valid -->
-<!--                    <rulesets>
-                        <ruleset>maxur-pmd.xml</ruleset>
-                    </rulesets>-->
+                    <!--                    <rulesets>
+                                            <ruleset>maxur-pmd.xml</ruleset>
+                                        </rulesets>-->
                     <excludes>
                         <exclude>**/*Advice.java</exclude>
                         <exclude>**/generated/*.java</exclude>
@@ -707,15 +707,47 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changelog-plugin</artifactId>
+                <version>2.3</version>
+                <reportSets>
+                    <reportSet>
+                        <id>dual-report</id>
+                        <configuration>
+                            <type>range</type>
+                            <range>30</range>
+                        </configuration>
+                        <reports>
+                            <report>changelog</report>
+                            <report>file-activity</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changes-plugin</artifactId>
+                <version>2.11</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>github-report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
             <!--  Not supported Java 8-->
 
-<!--
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>javancss-maven-plugin</artifactId>
-                <version>2.1</version>
-            </plugin>
-            -->
+            <!--
+                        <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>javancss-maven-plugin</artifactId>
+                            <version>2.1</version>
+                        </plugin>
+                        -->
 
 
         </plugins>
