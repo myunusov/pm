@@ -281,6 +281,12 @@
                     <version>1.1.2.Final</version>
                 </plugin>
 
+                <plugin>
+                    <groupId>org.pitest</groupId>
+                    <artifactId>pitest-maven</artifactId>
+                    <version>1.0.0</version>
+                </plugin>
+
             </plugins>
         </pluginManagement>
 
@@ -410,6 +416,26 @@
                     </dependency>
                 </dependencies>
             </plugin>
+            <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <configuration>
+                    <targetClasses>
+                        <param>org.maxur.perfmodel.*</param>
+                    </targetClasses>
+                    <targetTests>
+                        <param>org.maxur.perfmodel.*</param>
+                    </targetTests>
+                    <mutators>
+                        <mutator>ALL</mutator>
+                    </mutators>
+                    <outputFormats>
+                        <outputFormat>HTML</outputFormat>
+                        <outputFormat>XML</outputFormat>
+                    </outputFormats>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
