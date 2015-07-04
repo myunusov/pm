@@ -124,26 +124,6 @@
             <artifactId>client</artifactId>
             <version>1.2-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>org.maxur.perfmodel</groupId>
-            <artifactId>bootstrap</artifactId>
-            <version>1.2-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.maxur.perfmodel</groupId>
-            <artifactId>ngbootstrap</artifactId>
-            <version>1.2-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.maxur.perfmodel</groupId>
-            <artifactId>angular</artifactId>
-            <version>1.2-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.maxur.perfmodel</groupId>
-            <artifactId>fontawesome</artifactId>
-            <version>1.2-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
     <build>

@@ -121,12 +121,6 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
-                <excludes>
-                    <exclude>**/angular/**</exclude>
-                    <exclude>**/bootstrap/**</exclude>
-                    <exclude>**/ng-bootstrap/**</exclude>
-                    <exclude>**/font-awesome/**</exclude>
-                </excludes>
             </resource>
         </resources>
         <plugins>
