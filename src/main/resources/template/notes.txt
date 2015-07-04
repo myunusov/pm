@@ -1,4 +1,0 @@
-This announcement.vm file is duplicate of same in zip module.
-It's workaround for maven-changes-plugin bug.
-
-see http://maven.40175.n5.nabble.com/Problem-using-custom-announcement-with-changes-plugin-td86070.html

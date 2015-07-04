@@ -1,0 +1,8 @@
+<map id="G" name="G">
+<area shape="rect" id="node1_0" href="./WebServer.html" title="org.maxur.perfmodel.backend.infrastructure.WebServer" alt="" coords="16,17,96,41"/>
+<area shape="rect" id="node1" href="./WebServer.html" title="&lt;TABLE&gt;" alt="" coords="5,5,107,53"/>
+<area shape="rect" id="node2_1" href="./SimpleFileRepository.html" title="org.maxur.perfmodel.backend.infrastructure.SimpleFileRepository" alt="" coords="141,17,275,41"/>
+<area shape="rect" id="node2" href="./SimpleFileRepository.html" title="&lt;TABLE&gt;" alt="" coords="131,5,285,53"/>
+<area shape="rect" id="node3_2" href="./PropertiesService.html" title="org.maxur.perfmodel.backend.infrastructure.PropertiesService" alt="" coords="149,113,267,137"/>
+<area shape="rect" id="node3" href="./PropertiesService.html" title="&lt;TABLE&gt;" alt="" coords="138,101,278,149"/>
+</map>

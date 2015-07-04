@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<rss version="0.91">
+  <channel>
+    <title>Performance Model Calculator - Checkstyle report</title>
+    <link>http://www.maxur.org</link>
+    <description>Performance Model Calculator - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2015 Maxim Yunusov</copyright>
+    <item>
+      <title>File: 16,
+             Errors: 0,
+             Warnings: 2,
+             Infos: 2
+      </title>
+            <link>http://www.maxur.org/checkstyle.html</link>
+      <description>
+        <p>Click <a href="http://www.maxur.org/checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.TrayIconApplication.java">org/maxur/perfmodel/backend/TrayIconApplication.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.utils.OsUtils.java">org/maxur/perfmodel/backend/utils/OsUtils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.domain.Repository.java">org/maxur/perfmodel/backend/domain/Repository.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.rest.WebException.java">org/maxur/perfmodel/backend/rest/WebException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.domain.Project.java">org/maxur/perfmodel/backend/domain/Project.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.domain.ValidationException.java">org/maxur/perfmodel/backend/domain/ValidationException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.infrastructure.SimpleFileRepository.java">org/maxur/perfmodel/backend/infrastructure/SimpleFileRepository.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.rest.PMObjectMapperProvider.java">org/maxur/perfmodel/backend/rest/PMObjectMapperProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.Launcher.java">org/maxur/perfmodel/backend/Launcher.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.rest.ApplicationResource.java">org/maxur/perfmodel/backend/rest/ApplicationResource.java</a>
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.domain.Incident.java">org/maxur/perfmodel/backend/domain/Incident.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/checkstyle.html#content.conf.speed4j.properties">content/conf/speed4j.properties</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.infrastructure.PropertiesService.java">org/maxur/perfmodel/backend/infrastructure/PropertiesService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/checkstyle.html#content.conf.pm.properties">content/conf/pm.properties</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.infrastructure.WebServer.java">org/maxur/perfmodel/backend/infrastructure/WebServer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.rest.ProjectResource.java">org/maxur/perfmodel/backend/rest/ProjectResource.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+
