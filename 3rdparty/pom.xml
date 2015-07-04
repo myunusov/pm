@@ -6,12 +6,12 @@
     <parent>
         <groupId>org.maxur.perfmodel</groupId>
         <artifactId>base</artifactId>
-        <version>1.1</version>
+        <version>1.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>3rdparty</artifactId>
     <name>PMC: 3rd Party</name>
-    <version>1.1</version>
+    <version>1.2-SNAPSHOT</version>
     <description>3rd Party Components of Performance Model Calculator Project</description>
     <packaging>pom</packaging>
 

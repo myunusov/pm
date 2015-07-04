@@ -5,12 +5,12 @@
     <parent>
         <groupId>org.maxur.perfmodel</groupId>
         <artifactId>assemblies</artifactId>
-        <version>1.1</version>
+        <version>1.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>zip</artifactId>
     <packaging>pom</packaging>
-    <version>1.1</version>
+    <version>1.2-SNAPSHOT</version>
     <name>PMC: Zip Assembler</name>
     <description>Assemblies POM for Performance Model Maxur Project</description>
 
@@ -22,34 +22,34 @@
         <dependency>
             <groupId>org.maxur.perfmodel</groupId>
             <artifactId>backend</artifactId>
-            <version>1.1</version>
+            <version>1.2-SNAPSHOT</version>
             <classifier>jar-with-dependencies</classifier>
         </dependency>
         <dependency>
             <groupId>org.maxur.perfmodel</groupId>
             <artifactId>client</artifactId>
-            <version>1.1</version>
+            <version>1.2-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.maxur.perfmodel</groupId>
             <artifactId>bootstrap</artifactId>
-            <version>1.1</version>
+            <version>1.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.maxur.perfmodel</groupId>
             <artifactId>ngbootstrap</artifactId>
-            <version>1.1</version>
+            <version>1.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.maxur.perfmodel</groupId>
             <artifactId>angular</artifactId>
-            <version>1.1</version>
+            <version>1.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.maxur.perfmodel</groupId>
             <artifactId>fontawesome</artifactId>
-            <version>1.1</version>
+            <version>1.2-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
