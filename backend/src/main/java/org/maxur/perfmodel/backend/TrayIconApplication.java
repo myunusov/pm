@@ -22,10 +22,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.net.URL;
+import java.util.Optional;
 import javax.swing.*;
 
+import static java.lang.String.format;
+import static java.util.Optional.empty;
 import static org.maxur.perfmodel.backend.utils.OsUtils.isWindows;
 
 /**
@@ -38,6 +42,8 @@ import static org.maxur.perfmodel.backend.utils.OsUtils.isWindows;
 public class TrayIconApplication {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TrayIconApplication.class);
+
+    public static final String IMG_FAVICON_PATH = "/img/favicon.png";
 
     private final WebServer webServer;
     private final PropertiesService propertiesService;
@@ -75,10 +81,16 @@ public class TrayIconApplication {
     }
 
     private void run() {
-
         final PopupMenu popup = new PopupMenu();
-        final TrayIcon trayIcon =
-                new TrayIcon(createImage("/img/favicon.png", "tray icon"));
+        final Optional<Image> image = createImage(IMG_FAVICON_PATH, "tray icon");
+        final Image img;
+        if (image.isPresent()) {
+            img = image.get();
+        } else {
+            img  = createImageFrom("PMC");
+            LOGGER.error(format("Resource '%s' is not found", IMG_FAVICON_PATH));
+        }
+        final TrayIcon trayIcon = new TrayIcon(img);
         final SystemTray tray = SystemTray.getSystemTray();
         trayIcon.setToolTip("Performance Model Calculator");
         trayIcon.setImageAutoSize(true);
@@ -136,15 +148,21 @@ public class TrayIconApplication {
         });
     }
 
+    private static Image createImageFrom(final String text) {
+        BufferedImage bufferedImage = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
+        Graphics graphics = bufferedImage.getGraphics();
+        graphics.setColor(Color.RED);
+        graphics.fillRect(0, 0, 100, 100);
+        graphics.setColor(Color.WHITE);
+        graphics.setFont(new Font("Arial Black", Font.BOLD, 30));
+        graphics.drawString(text, 0, 15);
+        return bufferedImage;
+    }
+
     //Obtain the image URL
-    protected static Image createImage(String path, String description) {
-        URL imageURL = TrayIconApplication.class.getResource(path);
-        if (imageURL == null) {
-            LOGGER.error("Resource not found: " + path);
-            return null;
-        } else {
-            return (new ImageIcon(imageURL, description)).getImage();
-        }
+    protected static Optional<Image> createImage(String path, String description) {
+        final URL imageURL = TrayIconApplication.class.getResource(path);
+        return imageURL == null ? empty() : Optional.of((new ImageIcon(imageURL, description)).getImage());
     }
 
     public void openBrowser() {

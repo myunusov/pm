@@ -42,8 +42,12 @@ public class PropertiesService {
     }
 
     private static Properties loadProperties(final String name) {
-        Properties prop = new Properties();
-        InputStream in = PropertiesService.class.getResourceAsStream(name);
+        final InputStream in = PropertiesService.class.getResourceAsStream(name);
+        if (in == null) {
+            LOGGER.error("Property file is not founded");
+            throw new IllegalStateException("Property file is not founded");
+        }
+        final Properties prop = new Properties();
         try {
             prop.load(in);
         } catch (IOException e) {
