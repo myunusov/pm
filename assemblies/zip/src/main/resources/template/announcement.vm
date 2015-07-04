@@ -1,26 +1,27 @@
-Maxur Performance Model Calculator v.${version}
-========================
+${esc.h} Release notes
 
-The Maxur Team is pleased to announce the Performance Model Calculator v.${version} release!
+The Maxur Team is pleased to announce the Performance Model Calculator $release.getVersion() release!
 
-Overview
---------
-Performance Model Calculator is a tool designed to support high performance software system development. Use performance models to provide data for the quantitative assessment of the performance characteristics of software systems as they are developed.
+The history of Performance Model Calculator releases is documented below. For details of changes refer to the [project's GitHub issues][reflow-issues].
 
-Using a small amount of data about envisioned software processing, this tool solves performance models, and presents results.
+[reflow-issues]: http://github.com/myunusov/pm/issues?state=closed
 
-It provides performance data for requirements and design choices and facilitates comparison of software and hardware alternatives for solving performance problems.
+#if ($releases.size() == 0)
+No releases of this product.
+#else
+#foreach($releaseItem in $sorter.sort($releases, "version:desc"))
+${esc.h}${esc.h} $releaseItem.getVersion() #if($releaseItem.getDateRelease())/ $releaseItem.getDateRelease()#end
 
-Changelog
----------
-#if ($release.getActions().size() == 0)
+#if($actionItem.getDescription())$releaseItem.getDescription()#end
+
+#if ($releaseItem.getActions().size() == 0)
 No changes defined in this version.
 #else
 Changes in this version include:
 
-#if ($release.getActions('add').size() !=0)
-* New features:
-#foreach($actionItem in $release.getActions('add'))
+#if ($releaseItem.getActions('add').size() !=0)
+${esc.h}${esc.h}${esc.h} New features:
+#foreach($actionItem in $releaseItem.getActions('add'))
 #set($action=$actionItem.getAction())
 #if ($actionItem.getIssue())
 #set($issue=$actionItem.getIssue())
@@ -32,16 +33,16 @@ Changes in this version include:
 #else
 #set($dueto="")
 #end
-    * ${action} #if($!issue != "") Issue: $issue. #end#if($!dueto != "")Thanks to $dueto. #end
+- ${action} #if($!issue != "") Issue: $issue. #end#if($!dueto != "")Thanks to $dueto. #end
 
 #set($issue="")
 #set($dueto="")
 #end
 #end
 
-#if ($release.getActions('fix').size() !=0)
-* Fixed Bugs:
-#foreach($actionItem in $release.getActions('fix'))
+#if ($releaseItem.getActions('fix').size() !=0)
+${esc.h}${esc.h}${esc.h} Fixed Bugs:
+#foreach($actionItem in $releaseItem.getActions('fix'))
 #set($action=$actionItem.getAction())
 #if ($actionItem.getIssue())
 #set($issue=$actionItem.getIssue())
@@ -53,16 +54,16 @@ Changes in this version include:
 #else
 #set($dueto="")
 #end
-    * ${action} #if($!issue != "") Issue: $issue. #end#if($!dueto != "")Thanks to $dueto. #end
+- ${action} #if($!issue != "") Issue: $issue. #end#if($!dueto != "")Thanks to $dueto. #end
 
 #set($issue="")
 #set($dueto="")
 #end
 #end
 
-#if ($release.getActions('update').size() !=0)
-* Changes:
-#foreach($actionItem in $release.getActions('update'))
+#if ($releaseItem.getActions('update').size() !=0)
+${esc.h}${esc.h}${esc.h} Changes:
+#foreach($actionItem in $releaseItem.getActions('update'))
 #set($action=$actionItem.getAction())
 #if ($actionItem.getIssue())
 #set($issue=$actionItem.getIssue())
@@ -74,16 +75,16 @@ Changes in this version include:
 #else
 #set($dueto="")
 #end
-    * ${action} #if($!issue != "") Issue: $issue. #end#if($!dueto != "")Thanks to $dueto. #end
+- ${action} #if($!issue != "") Issue: $issue. #end#if($!dueto != "")Thanks to $dueto. #end
 
 #set($issue="")
 #set($dueto="")
 #end
 #end
 
-#if ($release.getActions('remove').size() !=0)
-* Removed:
-#foreach($actionItem in $release.getActions('remove'))
+#if ($releaseItem.getActions('remove').size() !=0)
+${esc.h}${esc.h}${esc.h} Removed:
+#foreach($actionItem in $releaseItem.getActions('remove'))
 #set($action=$actionItem.getAction())
 #if ($actionItem.getIssue())
 #set($issue=$actionItem.getIssue())
@@ -95,7 +96,7 @@ Changes in this version include:
 #else
 #set($dueto="")
 #end
-    * ${action} #if($!issue != "") Issue: $issue. #end#if($!dueto != "")Thanks to $dueto. #end
+- ${action} #if($!issue != "") Issue: $issue. #end#if($!dueto != "")Thanks to $dueto. #end
 
 #set($issue="")
 #set($dueto="")
@@ -103,6 +104,11 @@ Changes in this version include:
 #end
 ## End of main loop
 #end
+
+#end
+#end
+
+
 
 
 For a manual installation, you can download the Performance Model Calculator here:

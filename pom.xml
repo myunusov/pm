@@ -14,7 +14,10 @@
 
     <name>Performance Model Calculator</name>
 
-    <description>Maxur Performance Model Calculator</description>
+    <description>
+        Performance Model Calculator is a tool designed to support high performance software system development.
+        It provides performance data for requirements and design choices and facilitates comparison of software and hardware alternatives for solving performance problems.
+    </description>
 
     <organization>
         <name>Maxim Yunusov</name>
@@ -74,6 +77,7 @@
         <project.source.compile>1.8</project.source.compile>
         <project.target.compile>1.8</project.target.compile>
 
+        <site.deploy.url />
     </properties>
 
     <modules>
@@ -433,6 +437,32 @@
                         <outputFormat>HTML</outputFormat>
                         <outputFormat>XML</outputFormat>
                     </outputFormats>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.4</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>lt.velykis.maven.skins</groupId>
+                        <artifactId>reflow-velocity-tools</artifactId>
+                        <version>1.1.1</version>
+                    </dependency>
+                    <dependency>
+                        <!-- Reflow skin requires velocity 1.7 -->
+                        <groupId>org.apache.velocity</groupId>
+                        <artifactId>velocity</artifactId>
+                        <version>1.7</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <generateReports>true</generateReports>
+                    <inputEncoding>UTF-8</inputEncoding>
+                    <outputEncoding>UTF-8</outputEncoding>
+                    <!-- Site deployment done using GitHub site plugin -->
+                    <skipDeploy>true</skipDeploy>
                 </configuration>
             </plugin>
 
