@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,7 +15,8 @@
 
     <description>
         Performance Model Calculator is a tool designed to support high performance software system development.
-        It provides performance data for requirements and design choices and facilitates comparison of software and hardware alternatives for solving performance problems.
+        It provides performance data for requirements and design choices and facilitates comparison of software and
+        hardware alternatives for solving performance problems.
     </description>
 
     <organization>
@@ -51,8 +53,8 @@
         <connection>scm:git:https://github.com/myunusov/pm.git</connection>
         <developerConnection>scm:git:git@github.com:myunusov/pm.git</developerConnection>
         <url>https://github.com/myunusov/pm/tree/master/</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <issueManagement>
         <system>GitHub</system>
@@ -76,7 +78,7 @@
         <project.source.compile>1.8</project.source.compile>
         <project.target.compile>1.8</project.target.compile>
 
-        <site.deploy.url />
+        <site.deploy.url/>
     </properties>
 
     <modules>
@@ -320,8 +322,8 @@
                                         <exclude>org.maxur.perfmodel:*</exclude>
                                     </excludes>
                                 </requireReleaseDeps>
-                                <requireUpperBoundDeps />
-                                <DependencyConvergence />
+                                <requireUpperBoundDeps/>
+                                <DependencyConvergence/>
                             </rules>
                             <fail>true</fail>
                         </configuration>

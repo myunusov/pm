@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -20,29 +21,39 @@
         <tattletale.failOnError>false</tattletale.failOnError>
     </properties>
 
-
-    <modules>
-        <module>zip</module>
-    </modules>
-
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.jboss.tattletale</groupId>
-                    <artifactId>tattletale-maven</artifactId>
-                    <version>1.1.2.Final</version>
-                    <configuration>
-                        <failOnInfo>${tattletale.failOnInfo}</failOnInfo>
-                        <failOnWarn>${tattletale.failOnWarn}</failOnWarn>
-                        <failOnError>${tattletale.failOnError}</failOnError>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
-
     <profiles>
+        <profile>
+            <id>PROD</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-changes-plugin</artifactId>
+                        <version>2.11</version>
+                        <executions>
+                            <execution>
+                                <id>include-announcement-file</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>announcement-generate</goal>
+                                </goals>
+                                <configuration>
+                                    <issueManagementSystems>
+                                        <issueManagementSystem>GitHub</issueManagementSystem>
+                                    </issueManagementSystems>
+                                    <template>announcement.vm</template>
+                                    <templateDirectory>template</templateDirectory>
+                                    <announcementFile>RELEASE-NOTES.md</announcementFile>
+                                    <announcementDirectory>
+                                        ${project.basedir}/target/${project.build.finalName}-bin/${project.build.finalName}
+                                    </announcementDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>tattletale</id>
             <properties>
@@ -65,7 +76,9 @@
                                     <goal>report</goal>
                                 </goals>
                                 <configuration>
-                                    <source>${project.build.directory}/${project.build.finalName}-bin/${project.build.finalName}/felix/bundle</source>
+                                    <source>
+                                        ${project.build.directory}/${project.build.finalName}-bin/${project.build.finalName}/felix/bundle
+                                    </source>
                                     <destination>${project.build.directory}/tattletale/report</destination>
                                     <reports>
                                         <report>classdependants</report>
@@ -98,5 +111,77 @@
             </build>
         </profile>
     </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.maxur.perfmodel</groupId>
+            <artifactId>backend</artifactId>
+            <version>1.2-SNAPSHOT</version>
+            <classifier>jar-with-dependencies</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.maxur.perfmodel</groupId>
+            <artifactId>client</artifactId>
+            <version>1.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.maxur.perfmodel</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>1.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.maxur.perfmodel</groupId>
+            <artifactId>ngbootstrap</artifactId>
+            <version>1.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.maxur.perfmodel</groupId>
+            <artifactId>angular</artifactId>
+            <version>1.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.maxur.perfmodel</groupId>
+            <artifactId>fontawesome</artifactId>
+            <version>1.2-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.jboss.tattletale</groupId>
+                    <artifactId>tattletale-maven</artifactId>
+                    <version>1.1.2.Final</version>
+                    <configuration>
+                        <failOnInfo>${tattletale.failOnInfo}</failOnInfo>
+                        <failOnWarn>${tattletale.failOnWarn}</failOnWarn>
+                        <failOnError>${tattletale.failOnError}</failOnError>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>bin</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>${project.basedir}/src/main/assembly/build.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
