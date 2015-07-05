@@ -99,7 +99,7 @@ angular.module('pm.service', [])
                 remove: function (name) {
                     name = name || project.name;
                     messageProvider.clear();
-                    $http.delete(url + '/' + name)
+                    $http['delete'](url + '/' + name)
                             .success(function (dto) {
                                 messageProvider.info("Performance Model '" + dto.name +"' is deleted.");
                                 remove(dto.name);
