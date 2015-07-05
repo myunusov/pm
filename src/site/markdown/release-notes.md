@@ -1,12 +1,20 @@
 # Release notes
 
-The Maxur Team is pleased to announce the Performance Model Calculator 1.0 release!
+The Maxur Team is pleased to announce the Performance Model Calculator 1.2 release!
 
 The history of Performance Model Calculator releases is documented below. For details of changes refer to the [project's GitHub issues][reflow-issues].
 
 [reflow-issues]: http://github.com/myunusov/pm/issues?state=closed
 
-## 1.0 
+## 1.2 
+
+Changes in this version include:
+
+
+
+
+
+## 1.1 
 
 Changes in this version include:
 
@@ -36,4 +44,4 @@ For a manual installation, you can download the Performance Model Calculator her
 
 
 Have fun!
-Maxim Yunusov
+ Maxim Yunusov
