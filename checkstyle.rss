@@ -28,7 +28,7 @@ under the License.
       <title>File: 16,
              Errors: 0,
              Warnings: 2,
-             Infos: 2
+             Infos: 6
       </title>
             <link>http://www.maxur.org/checkstyle.html</link>
       <description>
@@ -49,7 +49,7 @@ under the License.
                   <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.TrayIconApplication.java">org/maxur/perfmodel/backend/TrayIconApplication.java</a>
                 </td>
                 <td>
-                  0
+                  4
                 </td>
                 <td>
                   0
