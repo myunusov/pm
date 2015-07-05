@@ -62,11 +62,26 @@
     </issueManagement>
 
     <distributionManagement>
+        <!-- Deploy site -->
         <site>
-            <!-- TODO -->
-            <id>www.yourcompany.com</id>
-            <url>scp://www.yourcompany.com/www/docs/project/</url>
+            <id>github-pages-site</id>
+            <name>Deployment through GitHub's site deployment plugin</name>
+            <url>scp://files//site/${project.version}</url>
         </site>
+
+        <!-- Deploy releases -->
+        <repository>
+            <id>${releases.id}</id>
+            <url>${releases.url}</url>
+        </repository>
+
+        <!-- Deploy snapshots -->
+        <snapshotRepository>
+            <id>${snapshots.id}</id>
+            <url>${snapshots.url}</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+
     </distributionManagement>
 
     <properties>
@@ -77,8 +92,9 @@
 
         <project.source.compile>1.8</project.source.compile>
         <project.target.compile>1.8</project.target.compile>
-
         <site.deploy.url/>
+
+        <github.global.server>github</github.global.server>
     </properties>
 
     <modules>
@@ -466,6 +482,98 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.maxur.perfmodel</groupId>
+                                    <artifactId>assemblies</artifactId>
+                                    <version>1.2-SNAPSHOT</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <includes>**/webapp/**/*.*</includes>
+                                    <excludes>**/META-INF/**/*.*</excludes>
+                                    <outputDirectory>${project.build.directory}/site</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.maxur.perfmodel</groupId>
+                                    <artifactId>assemblies</artifactId>
+                                    <version>1.2-SNAPSHOT</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <includes>RELEASE-NOTES.md</includes>
+                                    <outputDirectory>${project.basedir}/src/site/markdown</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.5</version>
+                <executions>
+                    <execution>
+                        <id>default-deploy</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <serverId>releases</serverId>
+                    <nexusUrl>http://localhost:8081/nexus/</nexusUrl>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.github</groupId>
+                <artifactId>site-maven-plugin</artifactId>
+                <version>0.12</version>
+                <inherited>false</inherited>
+                <configuration>
+                    <server>github</server>
+                    <message>Creating site for ${project.version}</message>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
+                        <phase>site-deploy</phase>
+                        <configuration>
+                            <server>github</server>
+                            <path>${project.version}</path>
+                            <merge>true</merge>
+                            <message>Creating site for ${project.version}</message>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
@@ -482,6 +590,8 @@
                     <locales>en</locales>
                     <generateSitemap>true</generateSitemap>
                     <outputEncoding>${project.source.encoding}</outputEncoding>
+                    <!-- Site deployment done using GitHub site plugin -->
+                    <skipDeploy>true</skipDeploy>
                 </configuration>
             </plugin>
 
