@@ -87,7 +87,7 @@ public class TrayIconApplication {
         if (image.isPresent()) {
             img = image.get();
         } else {
-            img  = createImageFrom("PMC");
+            img  = createImageFrom();
             LOGGER.error(format("Resource '%s' is not found", IMG_FAVICON_PATH));
         }
         final TrayIcon trayIcon = new TrayIcon(img);
@@ -148,14 +148,11 @@ public class TrayIconApplication {
         });
     }
 
-    private static Image createImageFrom(final String text) {
+    private static Image createImageFrom() {
         BufferedImage bufferedImage = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
         Graphics graphics = bufferedImage.getGraphics();
         graphics.setColor(Color.RED);
         graphics.fillRect(0, 0, 100, 100);
-        graphics.setColor(Color.WHITE);
-        graphics.setFont(new Font("Arial Black", Font.BOLD, 30));
-        graphics.drawString(text, 0, 15);
         return bufferedImage;
     }
 
