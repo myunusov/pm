@@ -35,71 +35,73 @@
 <span class="sourceLineNo">027</span>import org.maxur.perfmodel.backend.rest.PMObjectMapperProvider;<a name="line.27"></a>
 <span class="sourceLineNo">028</span>import org.slf4j.Logger;<a name="line.28"></a>
 <span class="sourceLineNo">029</span><a name="line.29"></a>
-<span class="sourceLineNo">030</span>import static org.slf4j.LoggerFactory.getLogger;<a name="line.30"></a>
+<span class="sourceLineNo">030</span>import java.io.IOException;<a name="line.30"></a>
 <span class="sourceLineNo">031</span><a name="line.31"></a>
-<span class="sourceLineNo">032</span>/**<a name="line.32"></a>
-<span class="sourceLineNo">033</span> * @author Maxim Yunusov<a name="line.33"></a>
-<span class="sourceLineNo">034</span> * @version 1.0 14.09.2014<a name="line.34"></a>
-<span class="sourceLineNo">035</span> */<a name="line.35"></a>
-<span class="sourceLineNo">036</span>public class Launcher {<a name="line.36"></a>
-<span class="sourceLineNo">037</span><a name="line.37"></a>
-<span class="sourceLineNo">038</span>    private static final Logger LOGGER = getLogger(Launcher.class);<a name="line.38"></a>
+<span class="sourceLineNo">032</span>import static org.slf4j.LoggerFactory.getLogger;<a name="line.32"></a>
+<span class="sourceLineNo">033</span><a name="line.33"></a>
+<span class="sourceLineNo">034</span>/**<a name="line.34"></a>
+<span class="sourceLineNo">035</span> * @author Maxim Yunusov<a name="line.35"></a>
+<span class="sourceLineNo">036</span> * @version 1.0 14.09.2014<a name="line.36"></a>
+<span class="sourceLineNo">037</span> */<a name="line.37"></a>
+<span class="sourceLineNo">038</span>public class Launcher {<a name="line.38"></a>
 <span class="sourceLineNo">039</span><a name="line.39"></a>
-<span class="sourceLineNo">040</span>    private WebServer webServer;<a name="line.40"></a>
+<span class="sourceLineNo">040</span>    private static final Logger LOGGER = getLogger(Launcher.class);<a name="line.40"></a>
 <span class="sourceLineNo">041</span><a name="line.41"></a>
-<span class="sourceLineNo">042</span>    private PropertiesService propertiesService;<a name="line.42"></a>
+<span class="sourceLineNo">042</span>    private WebServer webServer;<a name="line.42"></a>
 <span class="sourceLineNo">043</span><a name="line.43"></a>
-<span class="sourceLineNo">044</span>    public static void main(String[] args) throws Exception {<a name="line.44"></a>
-<span class="sourceLineNo">045</span>        final Launcher client = new Launcher();<a name="line.45"></a>
-<span class="sourceLineNo">046</span>        client.init();<a name="line.46"></a>
-<span class="sourceLineNo">047</span>        client.run();<a name="line.47"></a>
-<span class="sourceLineNo">048</span>    }<a name="line.48"></a>
-<span class="sourceLineNo">049</span><a name="line.49"></a>
-<span class="sourceLineNo">050</span>    private void init() {<a name="line.50"></a>
-<span class="sourceLineNo">051</span>        try {<a name="line.51"></a>
-<span class="sourceLineNo">052</span>            propertiesService = PropertiesService.make("/pm.properties");<a name="line.52"></a>
-<span class="sourceLineNo">053</span>            webServer = new WebServer(propertiesService);<a name="line.53"></a>
-<span class="sourceLineNo">054</span>            webServer.start(createApp());<a name="line.54"></a>
-<span class="sourceLineNo">055</span>        } catch (RuntimeException e) {<a name="line.55"></a>
-<span class="sourceLineNo">056</span>            LOGGER.error("System don't initialising", e);<a name="line.56"></a>
-<span class="sourceLineNo">057</span>        }<a name="line.57"></a>
-<span class="sourceLineNo">058</span>    }<a name="line.58"></a>
-<span class="sourceLineNo">059</span><a name="line.59"></a>
-<span class="sourceLineNo">060</span>    public ResourceConfig createApp() {<a name="line.60"></a>
-<span class="sourceLineNo">061</span>        return new ResourceConfig() {<a name="line.61"></a>
-<span class="sourceLineNo">062</span>            {<a name="line.62"></a>
-<span class="sourceLineNo">063</span>                packages("org.maxur.perfmodel.backend.rest");<a name="line.63"></a>
-<span class="sourceLineNo">064</span>                register(JacksonFeature.class);<a name="line.64"></a>
-<span class="sourceLineNo">065</span>                register(PMObjectMapperProvider.class);<a name="line.65"></a>
-<span class="sourceLineNo">066</span>                register(new AbstractBinder() {<a name="line.66"></a>
-<span class="sourceLineNo">067</span>                    @Override<a name="line.67"></a>
-<span class="sourceLineNo">068</span>                    protected void configure() {<a name="line.68"></a>
-<span class="sourceLineNo">069</span>                        bind(propertiesService).to(PropertiesService.class);<a name="line.69"></a>
-<span class="sourceLineNo">070</span>                        bindAsContract(new TypeLiteral&lt;SimpleFileRepository&gt;(){})<a name="line.70"></a>
-<span class="sourceLineNo">071</span>                                .to(new TypeLiteral&lt;Repository&lt;Project&gt;&gt;(){});<a name="line.71"></a>
-<span class="sourceLineNo">072</span>                    }<a name="line.72"></a>
-<span class="sourceLineNo">073</span>                });<a name="line.73"></a>
-<span class="sourceLineNo">074</span>            }<a name="line.74"></a>
-<span class="sourceLineNo">075</span>        };<a name="line.75"></a>
-<span class="sourceLineNo">076</span>    }<a name="line.76"></a>
-<span class="sourceLineNo">077</span><a name="line.77"></a>
-<span class="sourceLineNo">078</span>    private void run() throws Exception {<a name="line.78"></a>
-<span class="sourceLineNo">079</span>        final TrayIconApplication trayIconApplication = new TrayIconApplication(webServer, propertiesService);<a name="line.79"></a>
-<span class="sourceLineNo">080</span>        if (trayIconApplication.isReady()) {<a name="line.80"></a>
-<span class="sourceLineNo">081</span>            trayIconApplication.start();<a name="line.81"></a>
-<span class="sourceLineNo">082</span>        } else {<a name="line.82"></a>
-<span class="sourceLineNo">083</span>            System.out.println("Press Enter to stop\n");<a name="line.83"></a>
-<span class="sourceLineNo">084</span>            //noinspection ResultOfMethodCallIgnored<a name="line.84"></a>
-<span class="sourceLineNo">085</span>            System.in.read();<a name="line.85"></a>
-<span class="sourceLineNo">086</span>            done();<a name="line.86"></a>
-<span class="sourceLineNo">087</span>        }<a name="line.87"></a>
-<span class="sourceLineNo">088</span>    }<a name="line.88"></a>
-<span class="sourceLineNo">089</span><a name="line.89"></a>
-<span class="sourceLineNo">090</span>    private void done() {<a name="line.90"></a>
-<span class="sourceLineNo">091</span>        webServer.stop();<a name="line.91"></a>
-<span class="sourceLineNo">092</span>    }<a name="line.92"></a>
-<span class="sourceLineNo">093</span><a name="line.93"></a>
-<span class="sourceLineNo">094</span>}<a name="line.94"></a>
+<span class="sourceLineNo">044</span>    private PropertiesService propertiesService;<a name="line.44"></a>
+<span class="sourceLineNo">045</span><a name="line.45"></a>
+<span class="sourceLineNo">046</span>    public static void main(String[] args) throws Exception {<a name="line.46"></a>
+<span class="sourceLineNo">047</span>        final Launcher client = new Launcher();<a name="line.47"></a>
+<span class="sourceLineNo">048</span>        client.init();<a name="line.48"></a>
+<span class="sourceLineNo">049</span>        client.run();<a name="line.49"></a>
+<span class="sourceLineNo">050</span>    }<a name="line.50"></a>
+<span class="sourceLineNo">051</span><a name="line.51"></a>
+<span class="sourceLineNo">052</span>    private void init() {<a name="line.52"></a>
+<span class="sourceLineNo">053</span>        try {<a name="line.53"></a>
+<span class="sourceLineNo">054</span>            propertiesService = PropertiesService.make("/pm.properties");<a name="line.54"></a>
+<span class="sourceLineNo">055</span>            webServer = new WebServer(propertiesService);<a name="line.55"></a>
+<span class="sourceLineNo">056</span>            webServer.start(createApp());<a name="line.56"></a>
+<span class="sourceLineNo">057</span>        } catch (RuntimeException e) {<a name="line.57"></a>
+<span class="sourceLineNo">058</span>            LOGGER.error("System don't initialising", e);<a name="line.58"></a>
+<span class="sourceLineNo">059</span>        }<a name="line.59"></a>
+<span class="sourceLineNo">060</span>    }<a name="line.60"></a>
+<span class="sourceLineNo">061</span><a name="line.61"></a>
+<span class="sourceLineNo">062</span>    public ResourceConfig createApp() {<a name="line.62"></a>
+<span class="sourceLineNo">063</span>        return new ResourceConfig() {<a name="line.63"></a>
+<span class="sourceLineNo">064</span>            {<a name="line.64"></a>
+<span class="sourceLineNo">065</span>                packages("org.maxur.perfmodel.backend.rest");<a name="line.65"></a>
+<span class="sourceLineNo">066</span>                register(JacksonFeature.class);<a name="line.66"></a>
+<span class="sourceLineNo">067</span>                register(PMObjectMapperProvider.class);<a name="line.67"></a>
+<span class="sourceLineNo">068</span>                register(new AbstractBinder() {<a name="line.68"></a>
+<span class="sourceLineNo">069</span>                    @Override<a name="line.69"></a>
+<span class="sourceLineNo">070</span>                    protected void configure() {<a name="line.70"></a>
+<span class="sourceLineNo">071</span>                        bind(propertiesService).to(PropertiesService.class);<a name="line.71"></a>
+<span class="sourceLineNo">072</span>                        bindAsContract(new TypeLiteral&lt;SimpleFileRepository&gt;(){})<a name="line.72"></a>
+<span class="sourceLineNo">073</span>                                .to(new TypeLiteral&lt;Repository&lt;Project&gt;&gt;(){});<a name="line.73"></a>
+<span class="sourceLineNo">074</span>                    }<a name="line.74"></a>
+<span class="sourceLineNo">075</span>                });<a name="line.75"></a>
+<span class="sourceLineNo">076</span>            }<a name="line.76"></a>
+<span class="sourceLineNo">077</span>        };<a name="line.77"></a>
+<span class="sourceLineNo">078</span>    }<a name="line.78"></a>
+<span class="sourceLineNo">079</span><a name="line.79"></a>
+<span class="sourceLineNo">080</span>    private void run() throws IOException {<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        final TrayIconApplication trayIconApplication = new TrayIconApplication(webServer, propertiesService);<a name="line.81"></a>
+<span class="sourceLineNo">082</span>        if (trayIconApplication.isReady()) {<a name="line.82"></a>
+<span class="sourceLineNo">083</span>            trayIconApplication.start();<a name="line.83"></a>
+<span class="sourceLineNo">084</span>        } else {<a name="line.84"></a>
+<span class="sourceLineNo">085</span>            System.out.println("Press Enter to stop\n");<a name="line.85"></a>
+<span class="sourceLineNo">086</span>            //noinspection ResultOfMethodCallIgnored<a name="line.86"></a>
+<span class="sourceLineNo">087</span>            System.in.read();<a name="line.87"></a>
+<span class="sourceLineNo">088</span>            done();<a name="line.88"></a>
+<span class="sourceLineNo">089</span>        }<a name="line.89"></a>
+<span class="sourceLineNo">090</span>    }<a name="line.90"></a>
+<span class="sourceLineNo">091</span><a name="line.91"></a>
+<span class="sourceLineNo">092</span>    private void done() {<a name="line.92"></a>
+<span class="sourceLineNo">093</span>        webServer.stop();<a name="line.93"></a>
+<span class="sourceLineNo">094</span>    }<a name="line.94"></a>
+<span class="sourceLineNo">095</span><a name="line.95"></a>
+<span class="sourceLineNo">096</span>}<a name="line.96"></a>
 
 
 

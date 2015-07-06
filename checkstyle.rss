@@ -19,20 +19,20 @@ under the License.
 -->
 <rss version="0.91">
   <channel>
-    <title>Performance Model Calculator - Checkstyle report</title>
-    <link>http://www.maxur.org</link>
-    <description>Performance Model Calculator - Checkstyle report</description>
+    <title>PMC: Components - Checkstyle report</title>
+    <link>http://www.maxur.org/components</link>
+    <description>PMC: Components - Checkstyle report</description>
     <language>en-us</language>
     <copyright>&#169;2015 Maxim Yunusov</copyright>
     <item>
-      <title>File: 16,
+      <title>File: 14,
              Errors: 0,
-             Warnings: 2,
-             Infos: 6
+             Warnings: 1,
+             Infos: 7
       </title>
-            <link>http://www.maxur.org/checkstyle.html</link>
+            <link>http://www.maxur.org/components/checkstyle.html</link>
       <description>
-        <p>Click <a href="http://www.maxur.org/checkstyle.html">here</a> for the full Checkstyle report.</p>
+        <p>Click <a href="http://www.maxur.org/components/checkstyle.html">here</a> for the full Checkstyle report.</p>
 
         <table summary="Files" boder="1">
           <thead>
@@ -46,7 +46,7 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.TrayIconApplication.java">org/maxur/perfmodel/backend/TrayIconApplication.java</a>
+                  <a href="http://www.maxur.org/components/checkstyle.html#org.maxur.perfmodel.backend.TrayIconApplication.java">org/maxur/perfmodel/backend/TrayIconApplication.java</a>
                 </td>
                 <td>
                   4
@@ -60,10 +60,119 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.utils.OsUtils.java">org/maxur/perfmodel/backend/utils/OsUtils.java</a>
+                  <a href="http://www.maxur.org/components/checkstyle.html#org.maxur.perfmodel.backend.utils.OsUtils.java">org/maxur/perfmodel/backend/utils/OsUtils.java</a>
                 </td>
                 <td>
                   0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/components/checkstyle.html#org.maxur.perfmodel.backend.domain.Repository.java">org/maxur/perfmodel/backend/domain/Repository.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/components/checkstyle.html#org.maxur.perfmodel.backend.rest.WebException.java">org/maxur/perfmodel/backend/rest/WebException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/components/checkstyle.html#org.maxur.perfmodel.backend.domain.Project.java">org/maxur/perfmodel/backend/domain/Project.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/components/checkstyle.html#org.maxur.perfmodel.backend.domain.ValidationException.java">org/maxur/perfmodel/backend/domain/ValidationException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/components/checkstyle.html#org.maxur.perfmodel.backend.infrastructure.SimpleFileRepository.java">org/maxur/perfmodel/backend/infrastructure/SimpleFileRepository.java</a>
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/components/checkstyle.html#org.maxur.perfmodel.backend.rest.PMObjectMapperProvider.java">org/maxur/perfmodel/backend/rest/PMObjectMapperProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/components/checkstyle.html#org.maxur.perfmodel.backend.Launcher.java">org/maxur/perfmodel/backend/Launcher.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.maxur.org/components/checkstyle.html#org.maxur.perfmodel.backend.rest.ApplicationResource.java">org/maxur/perfmodel/backend/rest/ApplicationResource.java</a>
                 </td>
                 <td>
                   2
@@ -71,24 +180,13 @@ under the License.
                 <td>
                   0
                 </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.domain.Repository.java">org/maxur/perfmodel/backend/domain/Repository.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
                 <td>
                   0
                 </td>
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.rest.WebException.java">org/maxur/perfmodel/backend/rest/WebException.java</a>
+                  <a href="http://www.maxur.org/components/checkstyle.html#org.maxur.perfmodel.backend.domain.Incident.java">org/maxur/perfmodel/backend/domain/Incident.java</a>
                 </td>
                 <td>
                   0
@@ -102,7 +200,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.domain.Project.java">org/maxur/perfmodel/backend/domain/Project.java</a>
+                  <a href="http://www.maxur.org/components/checkstyle.html#org.maxur.perfmodel.backend.infrastructure.PropertiesService.java">org/maxur/perfmodel/backend/infrastructure/PropertiesService.java</a>
                 </td>
                 <td>
                   0
@@ -116,7 +214,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.domain.ValidationException.java">org/maxur/perfmodel/backend/domain/ValidationException.java</a>
+                  <a href="http://www.maxur.org/components/checkstyle.html#org.maxur.perfmodel.backend.infrastructure.WebServer.java">org/maxur/perfmodel/backend/infrastructure/WebServer.java</a>
                 </td>
                 <td>
                   0
@@ -130,133 +228,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.infrastructure.SimpleFileRepository.java">org/maxur/perfmodel/backend/infrastructure/SimpleFileRepository.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.rest.PMObjectMapperProvider.java">org/maxur/perfmodel/backend/rest/PMObjectMapperProvider.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.Launcher.java">org/maxur/perfmodel/backend/Launcher.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.rest.ApplicationResource.java">org/maxur/perfmodel/backend/rest/ApplicationResource.java</a>
-                </td>
-                <td>
-                  2
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.domain.Incident.java">org/maxur/perfmodel/backend/domain/Incident.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.maxur.org/checkstyle.html#content.conf.speed4j.properties">content/conf/speed4j.properties</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.infrastructure.PropertiesService.java">org/maxur/perfmodel/backend/infrastructure/PropertiesService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.maxur.org/checkstyle.html#content.conf.pm.properties">content/conf/pm.properties</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.infrastructure.WebServer.java">org/maxur/perfmodel/backend/infrastructure/WebServer.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.maxur.org/checkstyle.html#org.maxur.perfmodel.backend.rest.ProjectResource.java">org/maxur/perfmodel/backend/rest/ProjectResource.java</a>
+                  <a href="http://www.maxur.org/components/checkstyle.html#org.maxur.perfmodel.backend.rest.ProjectResource.java">org/maxur/perfmodel/backend/rest/ProjectResource.java</a>
                 </td>
                 <td>
                   0

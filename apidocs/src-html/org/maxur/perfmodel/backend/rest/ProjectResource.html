@@ -116,16 +116,18 @@
 <span class="sourceLineNo">108</span>            repository.put(project);<a name="line.108"></a>
 <span class="sourceLineNo">109</span>            return Response.status(Response.Status.CREATED).entity(project).build();<a name="line.109"></a>
 <span class="sourceLineNo">110</span>        } catch (ValidationException e) {<a name="line.110"></a>
-<span class="sourceLineNo">111</span>            LOGGER.info(PERFORMANCE_MODEL_IS_NOT_SAVED, e.getMessage());<a name="line.111"></a>
-<span class="sourceLineNo">112</span>            throw conflictException(PERFORMANCE_MODEL_IS_NOT_SAVED, e.getMessage());<a name="line.112"></a>
-<span class="sourceLineNo">113</span>        } catch (IOException | NumberFormatException e) {<a name="line.113"></a>
-<span class="sourceLineNo">114</span>            LOGGER.error(PERFORMANCE_MODEL_IS_NOT_SAVED, e);<a name="line.114"></a>
-<span class="sourceLineNo">115</span>            throw badRequestException(PERFORMANCE_MODEL_IS_NOT_SAVED, e.getMessage());<a name="line.115"></a>
-<span class="sourceLineNo">116</span>        }<a name="line.116"></a>
-<span class="sourceLineNo">117</span>    }<a name="line.117"></a>
-<span class="sourceLineNo">118</span><a name="line.118"></a>
-<span class="sourceLineNo">119</span><a name="line.119"></a>
-<span class="sourceLineNo">120</span>}<a name="line.120"></a>
+<span class="sourceLineNo">111</span>            LOGGER.debug(PERFORMANCE_MODEL_IS_NOT_SAVED, e);<a name="line.111"></a>
+<span class="sourceLineNo">112</span>            LOGGER.info(PERFORMANCE_MODEL_IS_NOT_SAVED, e.getMessage());<a name="line.112"></a>
+<span class="sourceLineNo">113</span>            throw conflictException(PERFORMANCE_MODEL_IS_NOT_SAVED, e.getMessage());<a name="line.113"></a>
+<span class="sourceLineNo">114</span>        } catch (IOException | NumberFormatException e) {<a name="line.114"></a>
+<span class="sourceLineNo">115</span>            LOGGER.debug(PERFORMANCE_MODEL_IS_NOT_SAVED, e);<a name="line.115"></a>
+<span class="sourceLineNo">116</span>            LOGGER.error(PERFORMANCE_MODEL_IS_NOT_SAVED, e);<a name="line.116"></a>
+<span class="sourceLineNo">117</span>            throw badRequestException(PERFORMANCE_MODEL_IS_NOT_SAVED, e.getMessage());<a name="line.117"></a>
+<span class="sourceLineNo">118</span>        }<a name="line.118"></a>
+<span class="sourceLineNo">119</span>    }<a name="line.119"></a>
+<span class="sourceLineNo">120</span><a name="line.120"></a>
+<span class="sourceLineNo">121</span><a name="line.121"></a>
+<span class="sourceLineNo">122</span>}<a name="line.122"></a>
 
 
 

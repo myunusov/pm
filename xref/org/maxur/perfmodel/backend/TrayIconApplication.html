@@ -122,73 +122,74 @@
 <a class="jxr_linenumber" name="112" href="#112">112</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="113" href="#113">113</a>             tray.add(trayIcon);
 <a class="jxr_linenumber" name="114" href="#114">114</a>         } <strong class="jxr_keyword">catch</strong> (AWTException e) {
-<a class="jxr_linenumber" name="115" href="#115">115</a>             LOGGER.error(<span class="jxr_string">"TrayIcon could not be added."</span>);
-<a class="jxr_linenumber" name="116" href="#116">116</a>             <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="117" href="#117">117</a>         }
-<a class="jxr_linenumber" name="118" href="#118">118</a> 
-<a class="jxr_linenumber" name="119" href="#119">119</a>         trayIcon.addActionListener(e -&gt; openBrowser());
-<a class="jxr_linenumber" name="120" href="#120">120</a> 
-<a class="jxr_linenumber" name="121" href="#121">121</a>         startClientItem.addActionListener(e -&gt; openBrowser());
-<a class="jxr_linenumber" name="122" href="#122">122</a> 
-<a class="jxr_linenumber" name="123" href="#123">123</a>         manageServiceItem.addActionListener(e -&gt; {
-<a class="jxr_linenumber" name="124" href="#124">124</a>             <strong class="jxr_keyword">if</strong> (webServer.isStarted()) {
-<a class="jxr_linenumber" name="125" href="#125">125</a>                 webServer.stop();
-<a class="jxr_linenumber" name="126" href="#126">126</a>             } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="127" href="#127">127</a>                 webServer.restart();
-<a class="jxr_linenumber" name="128" href="#128">128</a>             }
-<a class="jxr_linenumber" name="129" href="#129">129</a>             <strong class="jxr_keyword">final</strong> String label = webServer.isStarted() ? <span class="jxr_string">"Stop Service"</span> : <span class="jxr_string">"Start Service"</span>;
-<a class="jxr_linenumber" name="130" href="#130">130</a>             manageServiceItem.setLabel(label);
-<a class="jxr_linenumber" name="131" href="#131">131</a>             <strong class="jxr_keyword">final</strong> String message = webServer.isStarted() ? <span class="jxr_string">"Web Service was started"</span> : <span class="jxr_string">"Web Service was stopped"</span>;
-<a class="jxr_linenumber" name="132" href="#132">132</a>             trayIcon.displayMessage(<span class="jxr_string">"Performance Model Calculator"</span>,
-<a class="jxr_linenumber" name="133" href="#133">133</a>                     message,
-<a class="jxr_linenumber" name="134" href="#134">134</a>                     TrayIcon.MessageType.INFO);
-<a class="jxr_linenumber" name="135" href="#135">135</a>             startClientItem.setEnabled(webServer.isStarted());
-<a class="jxr_linenumber" name="136" href="#136">136</a>         });
-<a class="jxr_linenumber" name="137" href="#137">137</a> 
-<a class="jxr_linenumber" name="138" href="#138">138</a>         aboutItem.addActionListener(e -&gt; JOptionPane.showMessageDialog(<strong class="jxr_keyword">null</strong>,
-<a class="jxr_linenumber" name="139" href="#139">139</a>                 <span class="jxr_string">"Performance Model Calculator. Version: "</span> + ApplicationResource.VERSION));
-<a class="jxr_linenumber" name="140" href="#140">140</a> 
+<a class="jxr_linenumber" name="115" href="#115">115</a>             LOGGER.debug(<span class="jxr_string">"TrayIcon could not be added."</span>, e);
+<a class="jxr_linenumber" name="116" href="#116">116</a>             LOGGER.error(<span class="jxr_string">"TrayIcon could not be added."</span>);
+<a class="jxr_linenumber" name="117" href="#117">117</a>             <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="118" href="#118">118</a>         }
+<a class="jxr_linenumber" name="119" href="#119">119</a> 
+<a class="jxr_linenumber" name="120" href="#120">120</a>         trayIcon.addActionListener(e -&gt; openBrowser());
+<a class="jxr_linenumber" name="121" href="#121">121</a> 
+<a class="jxr_linenumber" name="122" href="#122">122</a>         startClientItem.addActionListener(e -&gt; openBrowser());
+<a class="jxr_linenumber" name="123" href="#123">123</a> 
+<a class="jxr_linenumber" name="124" href="#124">124</a>         manageServiceItem.addActionListener(e -&gt; {
+<a class="jxr_linenumber" name="125" href="#125">125</a>             <strong class="jxr_keyword">if</strong> (webServer.isStarted()) {
+<a class="jxr_linenumber" name="126" href="#126">126</a>                 webServer.stop();
+<a class="jxr_linenumber" name="127" href="#127">127</a>             } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="128" href="#128">128</a>                 webServer.restart();
+<a class="jxr_linenumber" name="129" href="#129">129</a>             }
+<a class="jxr_linenumber" name="130" href="#130">130</a>             <strong class="jxr_keyword">final</strong> String label = webServer.isStarted() ? <span class="jxr_string">"Stop Service"</span> : <span class="jxr_string">"Start Service"</span>;
+<a class="jxr_linenumber" name="131" href="#131">131</a>             manageServiceItem.setLabel(label);
+<a class="jxr_linenumber" name="132" href="#132">132</a>             <strong class="jxr_keyword">final</strong> String message = webServer.isStarted() ? <span class="jxr_string">"Web Service was started"</span> : <span class="jxr_string">"Web Service was stopped"</span>;
+<a class="jxr_linenumber" name="133" href="#133">133</a>             trayIcon.displayMessage(<span class="jxr_string">"Performance Model Calculator"</span>,
+<a class="jxr_linenumber" name="134" href="#134">134</a>                     message,
+<a class="jxr_linenumber" name="135" href="#135">135</a>                     TrayIcon.MessageType.INFO);
+<a class="jxr_linenumber" name="136" href="#136">136</a>             startClientItem.setEnabled(webServer.isStarted());
+<a class="jxr_linenumber" name="137" href="#137">137</a>         });
+<a class="jxr_linenumber" name="138" href="#138">138</a> 
+<a class="jxr_linenumber" name="139" href="#139">139</a>         aboutItem.addActionListener(e -&gt; JOptionPane.showMessageDialog(<strong class="jxr_keyword">null</strong>,
+<a class="jxr_linenumber" name="140" href="#140">140</a>                 <span class="jxr_string">"Performance Model Calculator. Version: "</span> + ApplicationResource.VERSION));
 <a class="jxr_linenumber" name="141" href="#141">141</a> 
-<a class="jxr_linenumber" name="142" href="#142">142</a>         exitItem.addActionListener(e -&gt; {
-<a class="jxr_linenumber" name="143" href="#143">143</a>             tray.remove(trayIcon);
-<a class="jxr_linenumber" name="144" href="#144">144</a>             webServer.stop();
-<a class="jxr_linenumber" name="145" href="#145">145</a>             SystemTray.getSystemTray().remove(trayIcon);
-<a class="jxr_linenumber" name="146" href="#146">146</a>             System.exit(0);
-<a class="jxr_linenumber" name="147" href="#147">147</a> 
-<a class="jxr_linenumber" name="148" href="#148">148</a>         });
-<a class="jxr_linenumber" name="149" href="#149">149</a>     }
-<a class="jxr_linenumber" name="150" href="#150">150</a> 
-<a class="jxr_linenumber" name="151" href="#151">151</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Image createImageFrom() {
-<a class="jxr_linenumber" name="152" href="#152">152</a>         BufferedImage bufferedImage = <strong class="jxr_keyword">new</strong> BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
-<a class="jxr_linenumber" name="153" href="#153">153</a>         Graphics graphics = bufferedImage.getGraphics();
-<a class="jxr_linenumber" name="154" href="#154">154</a>         graphics.setColor(Color.RED);
-<a class="jxr_linenumber" name="155" href="#155">155</a>         graphics.fillRect(0, 0, 100, 100);
-<a class="jxr_linenumber" name="156" href="#156">156</a>         <strong class="jxr_keyword">return</strong> bufferedImage;
-<a class="jxr_linenumber" name="157" href="#157">157</a>     }
-<a class="jxr_linenumber" name="158" href="#158">158</a> 
-<a class="jxr_linenumber" name="159" href="#159">159</a>     <em class="jxr_comment">//Obtain the image URL</em>
-<a class="jxr_linenumber" name="160" href="#160">160</a>     <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">static</strong> Optional&lt;Image&gt; createImage(String path, String description) {
-<a class="jxr_linenumber" name="161" href="#161">161</a>         <strong class="jxr_keyword">final</strong> URL imageURL = TrayIconApplication.<strong class="jxr_keyword">class</strong>.getResource(path);
-<a class="jxr_linenumber" name="162" href="#162">162</a>         <strong class="jxr_keyword">return</strong> imageURL == <strong class="jxr_keyword">null</strong> ? empty() : Optional.of((<strong class="jxr_keyword">new</strong> ImageIcon(imageURL, description)).getImage());
-<a class="jxr_linenumber" name="163" href="#163">163</a>     }
-<a class="jxr_linenumber" name="164" href="#164">164</a> 
-<a class="jxr_linenumber" name="165" href="#165">165</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> openBrowser() {
-<a class="jxr_linenumber" name="166" href="#166">166</a>         String baseUrl = propertiesService.asString(<span class="jxr_string">"webapp.url"</span>, <span class="jxr_string">"http://localhost:9090/"</span>);
-<a class="jxr_linenumber" name="167" href="#167">167</a>         URI uri = URI.create(baseUrl);
-<a class="jxr_linenumber" name="168" href="#168">168</a>         Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="169" href="#169">169</a>         <strong class="jxr_keyword">if</strong> (desktop != <strong class="jxr_keyword">null</strong> &amp;&amp; desktop.isSupported(Desktop.Action.BROWSE)) {
-<a class="jxr_linenumber" name="170" href="#170">170</a>             <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="171" href="#171">171</a>                 desktop.browse(uri);
-<a class="jxr_linenumber" name="172" href="#172">172</a>             } <strong class="jxr_keyword">catch</strong> (Exception e) {
-<a class="jxr_linenumber" name="173" href="#173">173</a>                 e.printStackTrace();
-<a class="jxr_linenumber" name="174" href="#174">174</a>             }
-<a class="jxr_linenumber" name="175" href="#175">175</a>         }
-<a class="jxr_linenumber" name="176" href="#176">176</a>     }
-<a class="jxr_linenumber" name="177" href="#177">177</a> 
+<a class="jxr_linenumber" name="142" href="#142">142</a> 
+<a class="jxr_linenumber" name="143" href="#143">143</a>         exitItem.addActionListener(e -&gt; {
+<a class="jxr_linenumber" name="144" href="#144">144</a>             tray.remove(trayIcon);
+<a class="jxr_linenumber" name="145" href="#145">145</a>             webServer.stop();
+<a class="jxr_linenumber" name="146" href="#146">146</a>             SystemTray.getSystemTray().remove(trayIcon);
+<a class="jxr_linenumber" name="147" href="#147">147</a>             System.exit(0);
+<a class="jxr_linenumber" name="148" href="#148">148</a> 
+<a class="jxr_linenumber" name="149" href="#149">149</a>         });
+<a class="jxr_linenumber" name="150" href="#150">150</a>     }
+<a class="jxr_linenumber" name="151" href="#151">151</a> 
+<a class="jxr_linenumber" name="152" href="#152">152</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Image createImageFrom() {
+<a class="jxr_linenumber" name="153" href="#153">153</a>         BufferedImage bufferedImage = <strong class="jxr_keyword">new</strong> BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
+<a class="jxr_linenumber" name="154" href="#154">154</a>         Graphics graphics = bufferedImage.getGraphics();
+<a class="jxr_linenumber" name="155" href="#155">155</a>         graphics.setColor(Color.RED);
+<a class="jxr_linenumber" name="156" href="#156">156</a>         graphics.fillRect(0, 0, 100, 100);
+<a class="jxr_linenumber" name="157" href="#157">157</a>         <strong class="jxr_keyword">return</strong> bufferedImage;
+<a class="jxr_linenumber" name="158" href="#158">158</a>     }
+<a class="jxr_linenumber" name="159" href="#159">159</a> 
+<a class="jxr_linenumber" name="160" href="#160">160</a>     <em class="jxr_comment">//Obtain the image URL</em>
+<a class="jxr_linenumber" name="161" href="#161">161</a>     <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">static</strong> Optional&lt;Image&gt; createImage(String path, String description) {
+<a class="jxr_linenumber" name="162" href="#162">162</a>         <strong class="jxr_keyword">final</strong> URL imageURL = TrayIconApplication.<strong class="jxr_keyword">class</strong>.getResource(path);
+<a class="jxr_linenumber" name="163" href="#163">163</a>         <strong class="jxr_keyword">return</strong> imageURL == <strong class="jxr_keyword">null</strong> ? empty() : Optional.of((<strong class="jxr_keyword">new</strong> ImageIcon(imageURL, description)).getImage());
+<a class="jxr_linenumber" name="164" href="#164">164</a>     }
+<a class="jxr_linenumber" name="165" href="#165">165</a> 
+<a class="jxr_linenumber" name="166" href="#166">166</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> openBrowser() {
+<a class="jxr_linenumber" name="167" href="#167">167</a>         String baseUrl = propertiesService.asString(<span class="jxr_string">"webapp.url"</span>, <span class="jxr_string">"http://localhost:9090/"</span>);
+<a class="jxr_linenumber" name="168" href="#168">168</a>         URI uri = URI.create(baseUrl);
+<a class="jxr_linenumber" name="169" href="#169">169</a>         Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="170" href="#170">170</a>         <strong class="jxr_keyword">if</strong> (desktop != <strong class="jxr_keyword">null</strong> &amp;&amp; desktop.isSupported(Desktop.Action.BROWSE)) {
+<a class="jxr_linenumber" name="171" href="#171">171</a>             <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="172" href="#172">172</a>                 desktop.browse(uri);
+<a class="jxr_linenumber" name="173" href="#173">173</a>             } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a class="jxr_linenumber" name="174" href="#174">174</a>                 e.printStackTrace();
+<a class="jxr_linenumber" name="175" href="#175">175</a>             }
+<a class="jxr_linenumber" name="176" href="#176">176</a>         }
+<a class="jxr_linenumber" name="177" href="#177">177</a>     }
 <a class="jxr_linenumber" name="178" href="#178">178</a> 
-<a class="jxr_linenumber" name="179" href="#179">179</a> }
-<a class="jxr_linenumber" name="180" href="#180">180</a> 
+<a class="jxr_linenumber" name="179" href="#179">179</a> 
+<a class="jxr_linenumber" name="180" href="#180">180</a> }
 <a class="jxr_linenumber" name="181" href="#181">181</a> 
+<a class="jxr_linenumber" name="182" href="#182">182</a> 
 </pre>
 <hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
 </html>
