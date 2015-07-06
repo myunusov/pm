@@ -3,61 +3,20 @@
 [![About](images/screen.png)][pmc]
 
 Performance Model Calculator is a tool designed to support high performance software system development.
-It provides performance data for requirements and design choices and facilitates comparison of software and hardware alternatives for solving performance problems.
 
-#### [A1][pmc]
+#### [Execution Graph][pmc]
 
-[![A1](images/screen1.png)][pmc]
+[![Execution Graph](images/screen1.png)][pmc]
 
-www
+Execution Graph represents Software Model of System
 
-#### [A2][pmc]
+#### [Queuing networks model][pmc]
 
-[![A2](images/screen2.png)][pmc]
+[![Queuing networks model](images/screen2.png)][pmc]
 
-www
-
-#### [A3][pmc]
-
-[![A3](images/screen3.png)][pmc]
-
-www
-
-#### [A4][pmc]
-
-[![A4](images/screen4.png)][pmc]
-
-www
-
-#### [A5][pmc]
-
-[![A5](images/screen5.png)][pmc]
-
-www
-
-#### [A6][pmc]
-
-[![A6](images/screen6.png)][pmc]
-
-www
+Queuing networks model represents System Execution Models
 
 [pmc]: https://github.com/myunusov/pm/
-
----
-
-## Get it now
-
-For a manual installation, you can download the Performance Model Calculator here:
-
-* [GitHub](https://github/myunusov/pm)
-
----
-
-## Get it now
-
-For a manual installation, you can download the Performance Model Calculator here:
-
-* [GitHub](https://github/myunusov/pm)
 
 ---
 
@@ -65,3 +24,34 @@ For a manual installation, you can download the Performance Model Calculator her
 
 Performance Model Calculator is a tool designed to support high performance software system development.
 It provides performance data for requirements and design choices and facilitates comparison of software and hardware alternatives for solving performance problems.
+
+## Execution Graph
+
+Software Model is represented as an Execution Graph. Each block in the Execution Graph represents an action that is
+quantitatively described by its annotation.
+Software Model be used as a target 
+ - to evaluate upper and lower bound in the system performance,
+ - to identify software performance bottleneck in the business logic  
+
+## Queuing networks model
+
+Queueing network modelling is a particular approach to computer system modelling in which the computer system 
+is represented as a network of queues which is evaluated analytically.
+A network of queues is a collection of service centers, which represent system resources, 
+and customers, which represent users or transactions.
+Analytic evaluation involves using software to solve efficiently a
+set of equations induced by the network of queues and its parameters. 
+
+---
+
+## QA
+
+Performance, Responsive, Usability
+
+---
+
+## Get it now
+
+For a manual installation, you can download the Performance Model Calculator here:
+
+* [GitHub](https://github/myunusov/pm)

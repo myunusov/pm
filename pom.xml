@@ -453,6 +453,7 @@
                         <outputFormat>HTML</outputFormat>
                         <outputFormat>XML</outputFormat>
                     </outputFormats>
+                    <threads>4</threads>
                 </configuration>
             </plugin>
 
