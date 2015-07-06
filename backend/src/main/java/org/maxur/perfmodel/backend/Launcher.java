@@ -27,6 +27,8 @@ import org.maxur.perfmodel.backend.infrastructure.WebServer;
 import org.maxur.perfmodel.backend.rest.PMObjectMapperProvider;
 import org.slf4j.Logger;
 
+import java.io.IOException;
+
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -75,7 +77,7 @@ public class Launcher {
         };
     }
 
-    private void run() throws Exception {
+    private void run() throws IOException {
         final TrayIconApplication trayIconApplication = new TrayIconApplication(webServer, propertiesService);
         if (trayIconApplication.isReady()) {
             trayIconApplication.start();

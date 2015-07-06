@@ -1,62 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.maxur.perfmodel</groupId>
+    <parent>
+        <groupId>org.maxur.perfmodel</groupId>
+        <artifactId>base</artifactId>
+        <version>1.2-SNAPSHOT</version>
+    </parent>
+
     <artifactId>tools</artifactId>
     <version>1.2-SNAPSHOT</version>
-    <name>Build Tools</name>
+    <name>PMC: Build Tools</name>
     <description>Build Tools Configuration Files</description>
 
     <properties>
         <project.root>./../</project.root>
-        <github.global.server>github</github.global.server>
     </properties>
-
-
-
-    <distributionManagement>
-        <site>
-            <!-- TODO -->
-            <id>www.yourcompany.com</id>
-            <url>scp://www.yourcompany.com/www/docs/project/</url>
-        </site>
-
-        <!-- Deploy releases -->
-        <repository>
-            <id>${releases.id}</id>
-            <url>${releases.url}</url>
-        </repository>
-
-        <!-- Deploy snapshots -->
-        <snapshotRepository>
-            <id>${snapshots.id}</id>
-            <url>${snapshots.url}</url>
-            <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
-
-    </distributionManagement>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.8.2</version>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>3.4</version>
-                <configuration>
-                    <skipDeploy>true</skipDeploy>
-                </configuration>
-            </plugin>
-        </plugins>
-
-    </build>
 
 </project>

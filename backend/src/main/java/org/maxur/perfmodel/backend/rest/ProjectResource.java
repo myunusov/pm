@@ -108,9 +108,11 @@ public class ProjectResource {
             repository.put(project);
             return Response.status(Response.Status.CREATED).entity(project).build();
         } catch (ValidationException e) {
+            LOGGER.debug(PERFORMANCE_MODEL_IS_NOT_SAVED, e);
             LOGGER.info(PERFORMANCE_MODEL_IS_NOT_SAVED, e.getMessage());
             throw conflictException(PERFORMANCE_MODEL_IS_NOT_SAVED, e.getMessage());
         } catch (IOException | NumberFormatException e) {
+            LOGGER.debug(PERFORMANCE_MODEL_IS_NOT_SAVED, e);
             LOGGER.error(PERFORMANCE_MODEL_IS_NOT_SAVED, e);
             throw badRequestException(PERFORMANCE_MODEL_IS_NOT_SAVED, e.getMessage());
         }
