@@ -35,7 +35,7 @@ public class SimpleFileRepository implements Repository<Project> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleFileRepository.class);
 
-    private static Map<String, Project> projectMap = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, Project> projectMap = new ConcurrentHashMap<>();
 
     private PropertiesService propertiesService;
 
@@ -77,7 +77,7 @@ public class SimpleFileRepository implements Repository<Project> {
                     ObjectInputStream in = new ObjectInputStream(fileIn)
             ) {
                 //noinspection unchecked
-                projectMap = (Map<String, Project>) in.readObject();
+                projectMap = (ConcurrentHashMap<String, Project>) in.readObject();
                 LOGGER.info("Persistent Data was be restored from file " + getFileName());
             } catch (IOException | ClassNotFoundException e) {
                 LOGGER.error("Data file is not loaded", e);

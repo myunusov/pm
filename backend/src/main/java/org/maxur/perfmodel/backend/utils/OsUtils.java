@@ -24,6 +24,12 @@ public final class OsUtils {
 
     private static String OS = null;
 
+    /**
+     * Util's class.
+     */
+    private OsUtils() {
+    }
+
     public static String getOsName() {
         if(OS == null) { OS = System.getProperty("os.name"); }
         return OS;

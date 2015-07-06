@@ -112,6 +112,7 @@ public class TrayIconApplication {
         try {
             tray.add(trayIcon);
         } catch (AWTException e) {
+            LOGGER.debug("TrayIcon could not be added.", e);
             LOGGER.error("TrayIcon could not be added.");
             return;
         }
