@@ -62,7 +62,7 @@
 
       <pages>
         <!-- artifact id-->
-        <index project="base">
+        <index project="components">
           <!-- Override the title -->
           <titleTemplate>Performance Model Calculator</titleTemplate>
           <!-- no breadcrumbs on the main index page -->

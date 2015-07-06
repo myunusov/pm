@@ -4,7 +4,7 @@
 
     <parent>
         <groupId>org.maxur.perfmodel</groupId>
-        <artifactId>base</artifactId>
+        <artifactId>components</artifactId>
         <version>1.2-SNAPSHOT</version>
     </parent>
 
@@ -15,14 +15,12 @@
     <packaging>jar</packaging>
 
     <properties>
-        <project.root>./..</project.root>
+        <project.root>./../..</project.root>
 
         <sonar.language>java</sonar.language>
         <sonar.sources>${project.basedir}/src/main/java/</sonar.sources>
-        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.java.coveragePlugin>clover</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-        <sonar.jacoco.itReportPath>${project.root}/target/jacoco-it.exec</sonar.jacoco.itReportPath>
-
 
         <slf4j.version>1.7.5</slf4j.version>
 
