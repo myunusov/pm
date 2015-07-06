@@ -116,7 +116,7 @@
     </breadcrumbs>
     <menu name="Documentation" ref="reports" inherit="bottom"/>
     <menu name="Download" inherit="top">
-      <item name="Download" href="https://github.com/myunusov/pm/releases/download/v1.01/perfmodel-zip-1.0-SNAPSHOT-bin.zip" />
+      <item name="Download" href="https://github.com/myunusov/pm/releases/download/v.1.2/assemblies-1.2-SNAPSHOT.zip" />
       <item name="License" href="license.html" />
     </menu>
     <menu name="Links" inherit="top">
