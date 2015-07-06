@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>base</artifactId>
+        <groupId>org.maxur.perfmodel</groupId>
+        <version>1.2-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>components</artifactId>
+    <version>1.2-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>PMC: Components</name>
+    <description>PMC Components</description>
+
+    <properties>
+        <project.root>./../</project.root>
+    </properties>
+
+    <modules>
+        <module>client</module>
+        <module>backend</module>
+    </modules>
+
+    <profiles>
+        <profile>
+            <id>javadoc</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.9.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.8</version>
+                <!--https://github.com/RichardWarburton/lambda-behave/issues/31-->
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.shared</groupId>
+                        <artifactId>maven-shared-jar</artifactId>
+                        <version>1.1</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>org.apache.bcel</groupId>
+                                <artifactId>bcel</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.google.code.findbugs</groupId>
+                        <artifactId>bcel-findbugs</artifactId>
+                        <version>6.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <encoding>${project.source.encoding}</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.maxur.perfmodel</groupId>
+                        <artifactId>tools</artifactId>
+                        <version>1.2-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.maxur.perfmodel</groupId>
+                        <artifactId>tools</artifactId>
+                        <version>1.2-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.maxur.perfmodel</groupId>
+                        <artifactId>tools</artifactId>
+                        <version>1.2-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.4</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>lt.velykis.maven.skins</groupId>
+                        <artifactId>reflow-velocity-tools</artifactId>
+                        <version>1.1.1</version>
+                    </dependency>
+                    <dependency>
+                        <!-- Reflow skin requires velocity 1.7 -->
+                        <groupId>org.apache.velocity</groupId>
+                        <artifactId>velocity</artifactId>
+                        <version>1.7</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <generateReports>true</generateReports>
+                    <inputEncoding>UTF-8</inputEncoding>
+                    <outputEncoding>UTF-8</outputEncoding>
+                    <!-- Site deployment done using GitHub site plugin -->
+                    <skipDeploy>true</skipDeploy>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.maxur.perfmodel</groupId>
+                                    <artifactId>assemblies</artifactId>
+                                    <version>1.2-SNAPSHOT</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <includes>**/webapp/**/*.*</includes>
+                                    <excludes>**/META-INF/**/*.*</excludes>
+                                    <outputDirectory>${project.build.directory}/site</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.maxur.perfmodel</groupId>
+                                    <artifactId>assemblies</artifactId>
+                                    <version>1.2-SNAPSHOT</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <includes>RELEASE-NOTES.md</includes>
+                                    <outputDirectory>${project.basedir}/src/site/markdown</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.github</groupId>
+                <artifactId>site-maven-plugin</artifactId>
+                <version>0.12</version>
+                <configuration>
+                    <server>github</server>
+                    <message>Creating site for ${project.artifactId}, ${project.version}</message>
+                    <!-- this does the trick to place every module in the correct subfolder -->
+                    <path>${project.distributionManagement.site.url}</path>
+                    <merge>true</merge>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>github-site</id>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
+                        <phase>site-deploy</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+
+        </plugins>
+    </build>
+
+    <reporting>
+        <excludeDefaults>true</excludeDefaults>
+        <outputDirectory>${project.build.directory}/site</outputDirectory>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.4</version>
+                <configuration>
+                    <locales>en</locales>
+                    <generateSitemap>true</generateSitemap>
+                    <outputEncoding>${project.source.encoding}</outputEncoding>
+                    <!-- Site deployment done using GitHub site plugin -->
+                    <skipDeploy>true</skipDeploy>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.8</version>
+                <configuration>
+                    <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>summary</report>
+                            <report>license</report>
+                            <report>modules</report>
+                            <report>project-team</report>
+                            <report>scm</report>
+                            <report>cim</report>
+                            <report>issue-tracking</report>
+                            <report>dependencies</report>
+                            <report>dependency-convergence</report>
+                            <report>plugins</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <plugin>
+                <!--
+                You must have the Graphviz binary in your PATH, or the images will not be generated.
+                For more information about Graphviz, please refer to http://www.graphviz.org/
+                Update Settings.ini
+                [Settings]
+                    binPath=C:\graphviz-2.30.1\release\bin
+                -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <configuration>
+                    <doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+                    <docletArtifact>
+                        <groupId>org.umlgraph</groupId>
+                        <artifactId>umlgraph</artifactId>
+                        <version>5.6.6</version>
+                    </docletArtifact>
+
+                    <useStandardDocletOptions>true</useStandardDocletOptions>
+
+                    <source>${project.source.compile}</source>
+                    <encoding>${project.source.encoding}</encoding>
+                    <charset>${project.source.encoding}</charset>
+                    <docencoding>${project.source.encoding}</docencoding>
+                    <breakiterator>true</breakiterator>
+                    <version>true</version>
+                    <author>true</author>
+                    <keywords>true</keywords>
+
+                    <linksource>true</linksource>
+                    <excludePackageNames>*.it,*.test</excludePackageNames>
+                    <aggregate>true</aggregate>
+
+                    <additionalparam>
+                        -inferrel -inferdep -quiet -hide java.*
+                        -collpackages java.util.* -qualify
+                        -postfixpackage -nodefontsize 9
+                        -nodefontpackagesize 7
+                        -edgefontname "Trebuchet MS"
+                        -nodefontabstractname "Trebuchet MS"
+                        -nodefontclassabstractname "Trebuchet MS"
+                        -nodefontclassname "Trebuchet MS"
+                        -nodefontname "Trebuchet MS"
+                        -nodefontpackagename "Trebuchet MS"
+                        -nodefonttagname "Trebuchet MS"
+                        -view
+                    </additionalparam>
+
+                    <links>
+                        <link>http://java.sun.com/javase/7/docs/api/</link>
+                        <link>http://netty.io/4.0/api/</link>
+                        <link>http://google-guice.googlecode.com/git/javadoc/</link>
+                        <link>http://www.slf4j.org/api/</link>
+                    </links>
+
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.3</version>
+                <reportSets>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <reports>
+                            <report>aggregate</report>
+                            <report>test-aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+                <configuration>
+                    <aggregate>true</aggregate>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.15</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>checkstyle-aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+                <configuration>
+                    <configLocation>maxur-check-style.xml</configLocation>
+                    <encoding>${project.source.encoding}</encoding>
+                    <linkXRef>true</linkXRef>
+                    <xrefLocation>${project.reporting.outputDirectory}/xref</xrefLocation>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.4</version>
+                <configuration>
+                    <linkXRef>true</linkXRef>
+                    <xrefLocation>${project.reporting.outputDirectory}/xref</xrefLocation>
+                    <targetJdk>${project.target.compile}</targetJdk>
+                    <aggregate>true</aggregate>
+                    <format>xml</format>
+                    <!-- CPD options -->
+                    <minimumTokens>20</minimumTokens>
+                    <ignoreIdentifiers>true</ignoreIdentifiers>
+                    <sourceEncoding>${project.source.encoding}</sourceEncoding>
+                    <!--TODO is not valid -->
+                    <!--                    <rulesets>
+                                            <ruleset>maxur-pmd.xml</ruleset>
+                                        </rulesets>-->
+                    <excludes>
+                        <exclude>**/*Advice.java</exclude>
+                        <exclude>**/generated/*.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.18.1</version>
+                <reportSets>
+                    <reportSet>
+                        <!-- defines unit test reports in the modules -->
+                        <id>unit-tests</id>
+                        <reports>
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+
+                    <reportSet>
+                        <!-- defines aggregate unit test report -->
+                        <id>unit-tests-aggregate</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>report</report>
+                        </reports>
+                        <configuration>
+                            <aggregate>true</aggregate>
+                        </configuration>
+                    </reportSet>
+
+                    <reportSet>
+                        <!-- defines integration test reports in the modules -->
+                        <id>integration-tests</id>
+                        <reports>
+                            <report>failsafe-report-only</report>
+                        </reports>
+                    </reportSet>
+
+                    <reportSet>
+                        <!-- defines aggregate integration test report -->
+                        <id>integration-tests-aggregate</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>failsafe-report-only</report>
+                        </reports>
+                        <configuration>
+                            <aggregate>true</aggregate>
+                        </configuration>
+                    </reportSet>
+                </reportSets>
+
+                <configuration>
+                    <showSuccess>false</showSuccess>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>taglist-maven-plugin</artifactId>
+                <version>2.4</version>
+                <reportSets>
+                    <reportSet>
+                        <!-- defines taglist reports in the modules -->
+                        <id>taglist-report</id>
+                        <reports>
+                            <report>taglist</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <!-- defines taglist aggregate report -->
+                        <id>taglist-aggregate</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>taglist</report>
+                        </reports>
+                        <configuration>
+                            <aggregate>true</aggregate>
+                        </configuration>
+                    </reportSet>
+                </reportSets>
+                <configuration>
+                    <tags>
+                        <tag>fixme</tag>
+                        <tag>FixMe</tag>
+                        <tag>FIXME</tag>
+                        <tag>@todo</tag>
+                        <tag>todo</tag>
+                        <tag>TODO</tag>
+                        <tag>xxx</tag>
+                        <tag>@deprecated</tag>
+                    </tags>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changelog-plugin</artifactId>
+                <version>2.3</version>
+                <reportSets>
+                    <reportSet>
+                        <id>dual-report</id>
+                        <configuration>
+                            <type>range</type>
+                            <range>30</range>
+                        </configuration>
+                        <reports>
+                            <report>changelog</report>
+                            <report>file-activity</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changes-plugin</artifactId>
+                <version>2.11</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>github-report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <!--  Starting with version 1.1.6, the pit maven plugin has a maven report goal. -->
+            <!--
+                        <plugin>
+                            <groupId>org.pitest</groupId>
+                            <artifactId>pitest-maven</artifactId>
+                            <reportSets>
+                                <reportSet>
+                                    <reports>
+                                        <report>report</report>
+                                    </reports>
+                                </reportSet>
+                            </reportSets>
+                        </plugin>
+            -->
+
+            <!--  Not supported Java 8-->
+
+            <!--
+                        <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>javancss-maven-plugin</artifactId>
+                            <version>2.1</version>
+                        </plugin>
+                        -->
+
+
+        </plugins>
+    </reporting>
+</project>

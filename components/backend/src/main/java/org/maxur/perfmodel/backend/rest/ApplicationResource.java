@@ -14,7 +14,7 @@ import javax.ws.rs.core.MediaType;
 public class ApplicationResource {
 
 
-    public final static String VERSION = "1.0-SNAPSHOT";    // TODO
+    public final static String VERSION = "1.2-SNAPSHOT";    // TODO
 
     @GET
     @Path("/version")
