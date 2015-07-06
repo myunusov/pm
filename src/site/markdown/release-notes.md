@@ -19,7 +19,7 @@ Changes in this version include:
 Changes in this version include:
 
 
-### Fixed Bugs:
+#### Fixed Bugs:
 - Incorrect Residence Time calculation for V != 1 
 
 
@@ -28,20 +28,12 @@ Changes in this version include:
 
 Changes in this version include:
 
-### New features:
+#### New features:
 - CM: Compress javascripts 
 
 
 
 
 
-
-
-
-For a manual installation, you can download the Performance Model Calculator here:
-
-* [GitHub](https://github/myunusov/pm)
-
-
 Have fun!
- Maxim Yunusov
+Maxim Yunusov

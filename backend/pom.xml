@@ -301,4 +301,85 @@
 
     </build>
 
+    <reporting>
+        <plugins>
+            <plugin>
+                <!--
+                You must have the Graphviz binary in your PATH, or the images will not be generated.
+                For more information about Graphviz, please refer to http://www.graphviz.org/
+                Update Settings.ini
+                [Settings]
+                    binPath=C:\graphviz-2.30.1\release\bin
+                -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <configuration>
+                    <doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+                    <docletArtifact>
+                        <groupId>org.umlgraph</groupId>
+                        <artifactId>umlgraph</artifactId>
+                        <version>5.6.6</version>
+                    </docletArtifact>
+
+                    <useStandardDocletOptions>true</useStandardDocletOptions>
+
+                    <source>${project.source.compile}</source>
+                    <encoding>${project.source.encoding}</encoding>
+                    <charset>${project.source.encoding}</charset>
+                    <docencoding>${project.source.encoding}</docencoding>
+                    <breakiterator>true</breakiterator>
+                    <version>true</version>
+                    <author>true</author>
+                    <keywords>true</keywords>
+
+                    <linksource>true</linksource>
+                    <excludePackageNames>*.it,*.test</excludePackageNames>
+                    <aggregate>true</aggregate>
+
+                    <additionalparam>
+                        -inferrel -inferdep -quiet -hide java.*
+                        -collpackages java.util.* -qualify
+                        -postfixpackage -nodefontsize 9
+                        -nodefontpackagesize 7
+                        -edgefontname "Trebuchet MS"
+                        -nodefontabstractname "Trebuchet MS"
+                        -nodefontclassabstractname "Trebuchet MS"
+                        -nodefontclassname "Trebuchet MS"
+                        -nodefontname "Trebuchet MS"
+                        -nodefontpackagename "Trebuchet MS"
+                        -nodefonttagname "Trebuchet MS"
+                        -view
+                    </additionalparam>
+
+                    <links>
+                        <link>http://java.sun.com/javase/7/docs/api/</link>
+                        <link>http://netty.io/4.0/api/</link>
+                        <link>http://google-guice.googlecode.com/git/javadoc/</link>
+                        <link>http://www.slf4j.org/api/</link>
+                    </links>
+
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jdepend-maven-plugin</artifactId>
+                <version>2.0</version>
+            </plugin>
+
+            <!-- see http://stackoverflow.com/questions/16428098/groovy-shell-warning-could-not-open-create-prefs-root-node -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>3.0.1</version>
+                <configuration>
+                    <includeFilterFile>maxur-findbugs.xml</includeFilterFile>
+                    <effort>Max</effort>
+                    <xmlOutput>true</xmlOutput>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
 </project>
