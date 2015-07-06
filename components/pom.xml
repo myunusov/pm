@@ -46,6 +46,30 @@
                 </plugins>
             </build>
         </profile>
+
+        <profile>
+            <id>stage</id>
+            <build>
+                <plugins>
+                    <!-- Configure Maven site plugin to perform stage -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-site-plugin</artifactId>
+                        <version>3.3</version>
+                        <executions>
+                            <execution>
+                                <id>stage</id>
+                                <goals>
+                                    <goal>stage</goal>
+                                </goals>
+                                <phase>site</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+
+        </profile>
     </profiles>
 
     <build>
@@ -204,21 +228,12 @@
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.8.2</version>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-
-            <plugin>
                 <groupId>com.github.github</groupId>
                 <artifactId>site-maven-plugin</artifactId>
                 <version>0.12</version>
                 <configuration>
                     <server>github</server>
-                    <message>Creating site for ${project.artifactId}, ${project.version}</message>
+                    <message>Creating site for Performance Model Calculator v.${project.version}</message>
                     <!-- this does the trick to place every module in the correct subfolder -->
                     <path>${project.distributionManagement.site.url}</path>
                     <merge>true</merge>
@@ -233,8 +248,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-
 
         </plugins>
     </build>
@@ -516,8 +529,19 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-changes-plugin</artifactId>
                 <version>2.11</version>
+                <configuration>
+                    <includeOpenIssues>false</includeOpenIssues>
+                    <columnNames>Id,Type,Summary,Fix Version</columnNames>
+                </configuration>
                 <reportSets>
                     <reportSet>
+                        <!-- Empty report set as default -->
+                        <reports>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <id>release-notes</id>
+                        <inherited>false</inherited>
                         <reports>
                             <report>github-report</report>
                         </reports>
