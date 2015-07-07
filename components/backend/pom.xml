@@ -33,6 +33,11 @@
         <jackson.version>2.3.2</jackson.version>
     </properties>
 
+    <scm>
+        <connection>scm:git:https://github.com/myunusov/pm.git</connection>
+        <developerConnection>scm:git:git@github.com:myunusov/pm.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
 
     <profiles>
         <profile>
@@ -331,6 +336,8 @@
                         <outputFormat>XML</outputFormat>
                     </outputFormats>
                     <threads>4</threads>
+                    <reportsDirectory>${project.build.directory}/site/pitest</reportsDirectory>
+                    <timestampedReports>false</timestampedReports>
                 </configuration>
                 <executions>
                     <execution>
@@ -350,6 +357,7 @@
     <reporting>
         <plugins>
 
+            <!-- Bug on Java 8  see https://github.com/clarkware/jdepend/issues/7 -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jdepend-maven-plugin</artifactId>

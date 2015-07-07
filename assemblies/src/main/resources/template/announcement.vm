@@ -2,25 +2,40 @@ ${esc.h} Release notes
 
 The Maxur Team is pleased to announce the Performance Model Calculator $release.getVersion() release!
 
-The history of Performance Model Calculator releases is documented below. For details of changes refer to the [project's GitHub issues][reflow-issues].
+The history of Performance Model Calculator releases is documented below. For details of changes refer to the [project's GitHub issues][pmc-issues].
 
-[reflow-issues]: http://github.com/myunusov/pm/issues?state=closed
+[pmc-issues]: http://github.com/myunusov/pm/issues?state=closed
 
 #if ($releases.size() == 0)
 No releases of this product.
 #else
 #foreach($releaseItem in $sorter.sort($releases, "version:desc"))
-${esc.h}${esc.h} $releaseItem.getVersion() #if($releaseItem.getDateRelease())/ $releaseItem.getDateRelease()#end
 
-#if($actionItem.getDescription())$releaseItem.getDescription()#end
+${esc.h}${esc.h} $releaseItem.getVersion() #if($releaseItem.get("dateRelease"))/ $releaseItem.get("dateRelease")#end
+
+ #if($releaseItem.get("description"))$releaseItem.get("description")#end
+
 
 #if ($releaseItem.getActions().size() == 0)
 No changes defined in this version.
 #else
 Changes in this version include:
 
-#if ($releaseItem.getActions('add').size() !=0)
 ${esc.h}${esc.h}${esc.h}${esc.h} New features:
+#foreach($actionItem in $releaseItem.getActions(""))
+#set($action=$actionItem.getAction())
+#if ($actionItem.getIssue())
+#set($issue=$actionItem.getIssue())
+#else
+#set($issue="")
+#end
+- ${action} #if($!issue != "") Issue: $issue #end
+
+#set($issue="")
+#end
+
+#if ($releaseItem.getActions('add').size() !=0)
+${esc.h}${esc.h}${esc.h}${esc.h} Enhancements:
 #foreach($actionItem in $releaseItem.getActions('add'))
 #set($action=$actionItem.getAction())
 #if ($actionItem.getIssue())
@@ -28,16 +43,10 @@ ${esc.h}${esc.h}${esc.h}${esc.h} New features:
 #else
 #set($issue="")
 #end
-#if ($actionItem.getDueTo())
-#set($dueto=$actionItem.getDueTo())
-#else
-#set($dueto="")
 #end
-- ${action} #if($!issue != "") Issue: $issue. #end#if($!dueto != "")Thanks to $dueto. #end
+- ${action} #if($!issue != "") Issue: $issue. #end
 
 #set($issue="")
-#set($dueto="")
-#end
 #end
 
 #if ($releaseItem.getActions('fix').size() !=0)
@@ -49,16 +58,10 @@ ${esc.h}${esc.h}${esc.h}${esc.h} Fixed Bugs:
 #else
 #set($issue="")
 #end
-#if ($actionItem.getDueTo())
-#set($dueto=$actionItem.getDueTo())
-#else
-#set($dueto="")
 #end
-- ${action} #if($!issue != "") Issue: $issue. #end#if($!dueto != "")Thanks to $dueto. #end
+- ${action} #if($!issue != "") Issue: $issue. #end
 
 #set($issue="")
-#set($dueto="")
-#end
 #end
 
 #if ($releaseItem.getActions('update').size() !=0)
@@ -70,16 +73,10 @@ ${esc.h}${esc.h}${esc.h}${esc.h} Changes:
 #else
 #set($issue="")
 #end
-#if ($actionItem.getDueTo())
-#set($dueto=$actionItem.getDueTo())
-#else
-#set($dueto="")
 #end
-- ${action} #if($!issue != "") Issue: $issue. #end#if($!dueto != "")Thanks to $dueto. #end
+- ${action} #if($!issue != "") Issue: $issue. #end
 
 #set($issue="")
-#set($dueto="")
-#end
 #end
 
 #if ($releaseItem.getActions('remove').size() !=0)
@@ -91,20 +88,14 @@ ${esc.h}${esc.h}${esc.h}${esc.h} Removed:
 #else
 #set($issue="")
 #end
-#if ($actionItem.getDueTo())
-#set($dueto=$actionItem.getDueTo())
-#else
-#set($dueto="")
 #end
-- ${action} #if($!issue != "") Issue: $issue. #end#if($!dueto != "")Thanks to $dueto. #end
+- ${action} #if($!issue != "") Issue: $issue. #end
 
 #set($issue="")
-#set($dueto="")
-#end
-#end
-## End of main loop
 #end
 
+#end
+## End of main loop
 #end
 #end
 

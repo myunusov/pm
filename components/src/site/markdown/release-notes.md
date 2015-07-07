@@ -2,21 +2,40 @@
 
 The Maxur Team is pleased to announce the Performance Model Calculator 1.2 release!
 
-The history of Performance Model Calculator releases is documented below. For details of changes refer to the [project's GitHub issues][reflow-issues].
+The history of Performance Model Calculator releases is documented below. For details of changes refer to the [project's GitHub issues][pmc-issues].
 
-[reflow-issues]: http://github.com/myunusov/pm/issues?state=closed
+[pmc-issues]: http://github.com/myunusov/pm/issues?state=closed
+
 
 ## 1.2 
 
+
 Changes in this version include:
 
+#### New features:
+- Re-structure project 
+- Update project's envirenment (plugins and tools)  
+- Tray client  
+- Add editor and calculator for Execute Graph Model 
+
+
+#### Fixed Bugs:
+- Wrong node and source table size  
 
 
 
 
 ## 1.1 
 
+
 Changes in this version include:
+
+#### New features:
+- Extract web-server properties to separated properties file  
+- Bounds on Performance 
+- Speed-Up Calculator 
+- Project Description Maintenance 
+- Composite Node 
 
 
 #### Fixed Bugs:
@@ -24,12 +43,20 @@ Changes in this version include:
 
 
 
+
 ## 0.1 
+
 
 Changes in this version include:
 
 #### New features:
-- CM: Compress javascripts 
+- Version wo Locks 
+- Add  information about project 
+- war package 
+- Model Managment 
+- Compress javascripts 
+- Error Handler 
+
 
 
 

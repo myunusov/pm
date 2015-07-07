@@ -223,18 +223,6 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>3.4</version>
-                <configuration>
-                    <generateReports>false</generateReports>
-                    <!-- Site deployment done using GitHub site plugin -->
-                    <skipDeploy>true</skipDeploy>
-                </configuration>
-            </plugin>
-        </plugins>
 
     </build>
 
