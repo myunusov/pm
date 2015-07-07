@@ -159,10 +159,30 @@
             </build>
         </profile>
         <profile>
-        <id>stage</id>
+            <id>stage</id>
             <properties>
                 <site.deploy.url>http://github.com/myunusov/pm/tree/gh-pages/</site.deploy.url>
             </properties>
+            <build>
+                <plugins>
+                    <!-- Configure Maven site plugin to perform stage -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-site-plugin</artifactId>
+                        <version>3.3</version>
+                        <executions>
+                            <execution>
+                                <id>stage</id>
+                                <goals>
+                                    <goal>stage</goal>
+                                </goals>
+                                <phase>site</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+
         </profile>
     </profiles>
 
@@ -287,6 +307,18 @@
                     <version>1.1.5</version>
                 </plugin>
 
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.4</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>com.github.github</groupId>
+                    <artifactId>site-maven-plugin</artifactId>
+                    <version>0.12</version>
+                </plugin>
+
             </plugins>
         </pluginManagement>
 
@@ -376,6 +408,39 @@
                         <version>1.8.1</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <configuration>
+                    <skipDeploy>true</skipDeploy>
+                    <skip>true</skip>
+                    <generateReports>false</generateReports>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.github</groupId>
+                <artifactId>site-maven-plugin</artifactId>
+                <version>0.12</version>
+                <configuration>
+                    <server>github</server>
+                    <message>Creating site for Performance Model Calculator v.${project.version}</message>
+                    <!-- this does the trick to place every module in the correct subfolder -->
+                    <path>${project.distributionManagement.site.url}</path>
+                    <merge>true</merge>
+                    <skip>true</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>site-deploy</phase>
+                        <id>github-site</id>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
         </plugins>
