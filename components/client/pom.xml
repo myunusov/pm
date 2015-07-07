@@ -21,6 +21,12 @@
         <sonar.exclusions>**/angular/**,**/bootstrap/**,**/ng-bootstrap/**,**/snap/**</sonar.exclusions>
     </properties>
 
+    <scm>
+        <connection>scm:git:https://github.com/myunusov/pm.git</connection>
+        <developerConnection>scm:git:git@github.com:myunusov/pm.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
     <profiles>
         <profile>
             <id>PROD</id>

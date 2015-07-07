@@ -24,5 +24,9 @@
       <item name="Backend" href="/" />
     </breadcrumbs>
 
+    <menu name="Documentation">
+      <item name="Coverage" href="pitest/index.html" />
+    </menu>
+
   </body>
 </project>

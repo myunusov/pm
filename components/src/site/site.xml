@@ -50,7 +50,7 @@
       <!-- Split menus in the bottom navigation -->
       <bottomNav maxSpan="9" >
         <column>Documentation</column>
-        <column>Links|Download</column>
+        <column>Modules|Links|Download</column>
       </bottomNav>
 
       <bottomDescription>
@@ -114,7 +114,8 @@
     <breadcrumbs>
       <item name="Home" href="/" />
     </breadcrumbs>
-    <menu name="Documentation" ref="reports" inherit="bottom"/>
+    <menu name="Documentation" ref="reports" inherit="bottom" />
+    <menu name="Modules" ref="modules"/>
     <menu name="Download" inherit="top">
       <item name="Download" href="https://github.com/myunusov/pm/releases/download/v.1.2/assemblies-1.2-SNAPSHOT.zip" />
       <item name="License" href="license.html" />

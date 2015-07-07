@@ -11,6 +11,10 @@ The history of Performance Model Calculator releases is documented below. For de
 Changes in this version include:
 
 
+#### Fixed Bugs:
+- Error on compress pm.js  
+- Project panel changed on resize 
+- Wrong node and source table size  
 
 
 
