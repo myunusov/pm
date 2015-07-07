@@ -1,8 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node1_0" href="../domain/Repository.html" title="org.maxur.perfmodel.backend.domain.Repository" alt="" coords="15,107,198,157"/>
-<area shape="rect" id="node1" href="../domain/Repository.html" title="&lt;TABLE&gt;" alt="" coords="5,101,209,163"/>
-<area shape="rect" id="node2_1" href="../domain/Project.html" title="org.maxur.perfmodel.backend.domain.Project" alt="" coords="243,114,426,150"/>
-<area shape="rect" id="node2" href="../domain/Project.html" title="&lt;TABLE&gt;" alt="" coords="233,108,437,156"/>
-<area shape="rect" id="node3_2" href="./ProjectResource.html" title="org.maxur.perfmodel.backend.rest.ProjectResource" alt="" coords="163,17,277,41"/>
-<area shape="rect" id="node3" href="./ProjectResource.html" title="&lt;TABLE&gt;" alt="" coords="152,5,288,53"/>
-</map>
