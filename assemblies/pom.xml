@@ -96,6 +96,7 @@
                                         <descriptor>src/main/assembly/dir.xml</descriptor>
                                     </descriptors>
                                     <appendAssemblyId>false</appendAssemblyId>
+                                    <attach>false</attach>
                                 </configuration>
                             </execution>
                         </executions>
