@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright (c) 2013 Maxim Yunusov
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  -->
+
+<html lang="en" ng-app="pm" id="top">
+<head>
+    <title>Performance Model Calculator</title>
+
+    <meta charset="utf-8">
+    <meta name="description" content="Performance Model Calculator">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+
+    <link rel="shortcut icon" href="img/favicon.ico"/>
+
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="css/app.css"/>
+
+</head>
+
+<body class="ng-cloak">
+
+<div class="snap-drawers" ng-controller="ProjectListCtrl" ng-init="init()" ng-include="'views/projects.html'">
+</div>
+
+<div id="content" class="snap-content">
+
+<div id="menu" class="navbar navbar-inverse navbar-fixed-top" ng-controller="MainMenuCtrl">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-th-list"></span></a>
+            <a href="#" class="brand" id="brand">Performance Model</a>
+
+            <div class="nav-collapse collapse">
+                <ul class="nav pull-right">
+                    <li><a href="#" onclick="snapper.state().state === 'closed' ?
+                                                snapper.open('left') : snapper.close();">Projects</a>
+                    </li>
+                    <li><a href="#" ng-click="about()">About </a></li>
+                    <li><a href="https://github.com/myunusov/pm/">Code on Github</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="margin: 32px;"></div>
+
+<header id="overview" class="hero-unit">
+    <div class="container">
+        <div class="container-fluid">
+            <h1>Performance Model Calculator</h1>
+
+            <p>Computer System Analysis Using <strong>Performance Models</strong> by the
+                <strong><a href="http://www.maxur.org">Maxim Yunusov</a></strong></p>
+        </div>
+    </div>
+</header>
+
+<div role="main" ng-controller="ProjectCtrl">
+
+<div class="container-fluid" ng-controller="MsgCtrl">
+    <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+</div>
+
+<div class="container-fluid" ng-include="'views/project-header.html'">
+
+</div>
+
+<div style="margin: 20px;"></div>
+
+<tabset>
+<tab ng-repeat="model in project.models">
+
+<tab-heading>
+    <input type="text" class="input input-small simplebox" ng-model="model.name">
+    <button ng-click="project.removeModel(model)" tooltip-placement="right" tooltip="Remove Model">
+        <i class="icon-remove"></i>
+    </button>
+</tab-heading>
+
+<ng-include src="model.view"></ng-include>
+
+</tab>
+</tabset>
+
+<footer class="footer">
+    <div class="container-fluid">
+        <p>Designed and built by <a href="http://www.maxur.org">Maxim Yunusov</a></p>
+
+        <p>Code licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License, Version
+            2.0</a>.
+        </p>
+    </div>
+</footer>
+
+</div>
+
+</div>
+
+<script src="angular/angular.min.js"></script>
+<script src="ng-bootstrap/ui-bootstrap-tpls-0.6.0.min.js"></script>
+<script src="bootstrap/js/jquery.js"></script>
+<script src="bootstrap/js/bootstrap-transition.js"></script>
+<script src="bootstrap/js/bootstrap-collapse.js"></script>
+<script src="snap/snap.min.js"></script>
+
+<script src="highcharts/highcharts.js"></script>
+<script src="highcharts/modules/exporting.js"></script>
+
+<script src="js/maxur-utils.js"></script>
+<script src="js/qnm.js"></script>
+<script src="js/egm.js"></script>
+<script src="js/project.js"></script>
+<script src="js/pm.js"></script>
+
+<script type="text/javascript">
+    var menu = $('#menu');
+    menu.hide();
+
+    var snapper = new Snap({
+        element: document.getElementById('content'),
+        disable: 'right'
+    });
+    snapper.settings({maxPosition: 400, minPosition: -400});
+
+    menu.toggle(100);
+</script>
+
+
+
+<script type="text/ng-template" id="aboutModalContent.html">
+    <div ng-click="ok()">
+        <div class="modal-header">
+        </div>
+        <div class="modal-body hero-unit">
+            <div class="container-fluid">
+                <h3>Performance Model Calculator</h3>
+                <h4><strong>1.2-SNAPSHOT</strong></h4>
+
+                <p>Computer System Analysis Using <strong>Performance Models</strong> by the
+                    <strong><a href="http://www.maxur.org">Maxim Yunusov</a></strong></p>
+            </div>
+        </div>
+    </div>
+</script>
+
+</body>
+</html>
