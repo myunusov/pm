@@ -98,7 +98,7 @@ body {
 }
 
 #brand {
-    display: none;
+    display: block;
 }
 
 .ng-cloak {
@@ -454,16 +454,13 @@ tr:nth-of-type(odd) .simplebox {
 /* Large desktop */
 @media (min-width: 979px) {
     #brand {
-        display: none;
+        display: block;
     }
     #label1 {
         display: block;
     }
     #label2 {
         display: none;
-    }
-    #overview {
-        display: block;
     }
 }
 
@@ -479,15 +476,12 @@ tr:nth-of-type(odd) .simplebox {
     }
 
     #brand {
-        display: block;
+        display: c;
     }
     #label1 {
         display: block;
     }
     #label2 {
-        display: none;
-    }
-    #overview {
         display: none;
     }
 

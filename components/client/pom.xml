@@ -53,6 +53,7 @@
                                 <exclude>**/bootstrap/**</exclude>
                                 <exclude>**/ng-bootstrap/**</exclude>
                                 <exclude>**/font-awesome/**</exclude>
+                                <exclude>**/font-awesome/**</exclude>
                                 <exclude>**/img/**</exclude>
                             </excludes>
                         </configuration>
@@ -134,7 +135,7 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <filtering>true</filtering>
+                <filtering>false</filtering>
             </resource>
         </resources>
         <plugins>
