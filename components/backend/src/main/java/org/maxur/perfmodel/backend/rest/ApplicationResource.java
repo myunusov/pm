@@ -13,14 +13,11 @@ import javax.ws.rs.core.MediaType;
 @Path("/{a:application}")
 public class ApplicationResource {
 
-
-    public final static String VERSION = "1.2-SNAPSHOT";    // TODO
-
     @GET
     @Path("/version")
     @Produces(MediaType.APPLICATION_JSON)
     public String getVersion() {
-        return VERSION;
+        return this.getClass().getPackage().getImplementationVersion();
     }
 
 }
