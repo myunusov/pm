@@ -17,16 +17,15 @@ package org.maxur.perfmodel.backend;
 
 import org.maxur.perfmodel.backend.infrastructure.PropertiesService;
 import org.maxur.perfmodel.backend.infrastructure.WebServer;
-import org.maxur.perfmodel.backend.rest.ApplicationResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.net.URL;
 import java.util.Optional;
-import javax.swing.*;
 
 import static java.lang.String.format;
 import static java.util.Optional.empty;
@@ -137,7 +136,7 @@ public class TrayIconApplication {
         });
 
         aboutItem.addActionListener(e -> JOptionPane.showMessageDialog(null,
-                "Performance Model Calculator. Version: " + ApplicationResource.VERSION));
+                "Performance Model Calculator. Version: " + this.getClass().getPackage().getImplementationVersion()));
 
 
         exitItem.addActionListener(e -> {
