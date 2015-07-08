@@ -114,61 +114,6 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>tattletale</id>
-            <properties>
-                <tattletale.dist.groupId>${project.groupId}</tattletale.dist.groupId>
-                <tattletale.dist.artifactId>${project.artifactId}</tattletale.dist.artifactId>
-                <tattletale.dist.classifier>bundle</tattletale.dist.classifier>
-                <tattletale.dist.type>war</tattletale.dist.type>
-                <tattletale.dist.version>${project.version}</tattletale.dist.version>
-            </properties>
-            <build>
-                <plugins>
-
-                    <plugin>
-                        <groupId>org.jboss.tattletale</groupId>
-                        <artifactId>tattletale-maven</artifactId>
-                        <executions>
-                            <execution>
-                                <id>tattletale</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>report</goal>
-                                </goals>
-                                <configuration>
-                                    <source>${project.build.directory}/${project.build.finalName}/WEB-INF/lib</source>
-                                    <destination>${project.build.directory}/tattletale/report</destination>
-                                    <reports>
-                                        <report>classdependants</report>
-                                        <report>classdependson</report>
-                                        <report>dependants</report>
-                                        <report>dependson</report>
-                                        <report>graphviz</report>
-                                        <report>transitivedependants</report>
-                                        <report>transitivedependson</report>
-                                        <report>circulardependency</report>
-                                        <report>classlocation</report>
-                                        <report>osgi</report>
-                                        <report>sealed</report>
-                                        <report>sign</report>
-                                        <report>eliminatejars</report>
-                                        <report>invalidversion</report>
-                                        <report>multiplejars</report>
-                                        <report>multiplejarspackage</report>
-                                        <report>multiplelocations</report>
-                                        <report>unusedjar</report>
-                                        <report>blacklisted</report>
-                                        <report>noversion</report>
-                                        <report>jar</report>
-                                    </reports>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
     </profiles>
 
 
