@@ -128,7 +128,6 @@
         </profile>
     </profiles>
 
-
     <build>
         <sourceDirectory>src/main/resources</sourceDirectory>
         <testSourceDirectory>src/test/resources</testSourceDirectory>
@@ -145,6 +144,12 @@
                 <configuration>
                     <nonFilteredFileExtensions>
                         <nonFilteredFileExtension>ico</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>otf</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>eot</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>svg</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>woff</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>woff2</nonFilteredFileExtension>
                     </nonFilteredFileExtensions>
                 </configuration>
             </plugin>
