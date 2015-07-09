@@ -90,7 +90,9 @@
 </div>
 
 <div ng-hide="project.models.length != 1">
-    <ng-include data-snap-ignore="true" src="project.models[0].view"></ng-include>
+    <div ng-repeat="model in project.models">
+        <ng-include data-snap-ignore="true" src="model.view"></ng-include>
+    </div>
 </div>
 
 
