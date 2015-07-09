@@ -74,20 +74,25 @@
 
 <div style="margin: 20px;"></div>
 
-<tabset>
-<tab ng-repeat="model in project.models">
+<div ng-hide="project.models.length < 2">
+    <tabset>
+        <tab ng-repeat="model in project.models">
 
-<tab-heading>
-    <input type="text" class="input input-small simplebox" ng-model="model.name">
-    <button ng-click="project.removeModel(model)" tooltip-placement="right" tooltip="Remove Model">
-        <i class="icon-remove"></i>
-    </button>
-</tab-heading>
+            <tab-heading>
+                <input type="text" class="input input-small simplebox" ng-model="model.name">
+                <button ng-click="project.removeModel(model)" tooltip-placement="right" tooltip="Remove Model">
+                    <i class="icon-remove"></i>
+                </button>
+            </tab-heading>
+            <ng-include data-snap-ignore="true" src="model.view"></ng-include>
+        </tab>
+    </tabset>
+</div>
 
-<ng-include src="model.view"></ng-include>
+<div ng-hide="project.models.length != 1">
+    <ng-include data-snap-ignore="true" src="project.models[0].view"></ng-include>
+</div>
 
-</tab>
-</tabset>
 
 <footer class="footer">
     <div class="container-fluid">
