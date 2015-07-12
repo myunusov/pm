@@ -1,0 +1,32 @@
+<div class="row-fluid" ng-show="(qnms = (project.models | qnmWithout:model)).length">
+    <div class="framehdr">
+        <i class="icon icon-fire"></i>
+        Speed-Up
+            <span class="dropdown" tooltip-placement="left" tooltip="Add Model To Compare" style="float: right">
+                <a class="dropdown-toggle simpleank">
+                    <i class="icon-list"></i>
+                </a>
+                <ul class="dropdown-menu pull-right">
+                    <li ng-repeat="other_model in qnms">
+                        <a ng-click="model.compared.setModel(other_model)">{{other_model.name}}</a>
+                    </li>
+                </ul>
+            </span>
+    </div>
+    <div class="frame">
+        <table>
+            <tbody ng-repeat="model2 in model.compared.models">
+            <tr>
+                <th colspan="3">
+                    {{model2.name}}
+                </th>
+            <tr>
+            <tr ng-repeat="item in model.compared.items">
+                <th>{{item.name}}</th>
+                <td>R: {{item.rAsString()}}</td>
+                <td>X: {{item.xAsString()}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

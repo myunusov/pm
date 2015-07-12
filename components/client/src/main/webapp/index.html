@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="pm">
+<head>
+    <title>Performance Model Calculator</title>
+
+    <meta charset="utf-8">
+    <meta name="description" content="Performance Model Calculator">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+
+    <link rel="shortcut icon" href="img/favicon.ico"/>
+
+    <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="libs/bootswatch/yeti/bootstrap.css" media="screen">
+    <link rel="stylesheet" href="libs/bootswatch/css/bootswatch.min.css">
+
+    <link href="libs/jquery.mb.extruder/css/mbExtruder.css" media="all" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="css/app.css"/>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="libs/html5shiv/dist/html5shiv.js"></script>
+    <script src="libs/respond/dest/respond.min.js"></script>
+    <![endif]-->
+
+    <style type="text/css">
+
+        /*custom style for extruder*/
+
+        .extruder.left.a .flap{
+            font-size:18px;
+            color:white;
+            top:0;
+            padding:10px 0 10px 10px;
+            background:#772B14;
+            width:30px;
+            position:absolute;
+            right:0;
+            -moz-border-radius:0 10px 10px 0;
+            -webkit-border-top-right-radius:10px;
+            -webkit-border-bottom-right-radius:10px;
+            -moz-box-shadow:#666 2px 0px 3px;
+            -webkit-box-shadow:#666 2px 0px 3px;
+        }
+
+        .extruder.left.a .content{
+            border-right:3px solid #772B14;
+            background:rgba(255,255,255,.95);
+        }
+
+        .extruder.left.a .flap .flapLabel{
+            background:#772B14;
+        }
+    </style>
+
+</head>
+<body class="ng-cloak">
+
+
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="bootswatch" class="navbar-brand">Performance Model Calculator</a>
+        </div>
+    </div>
+</div>
+
+<div style="margin-top: 64px; margin-right: 20px">
+
+<div role="main" ng-controller="ProjectCtrl">
+
+    <div class="container-fluid" ng-controller="MsgCtrl">
+        <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+    </div>
+
+    <div class="container-fluid" ng-include="'views/project-header.html'">
+
+    </div>
+
+    <div style="margin: 20px;"></div>
+
+    <div ng-hide="project.models.length < 2">
+        <tabset>
+            <tab ng-repeat="model in project.models">
+
+                <tab-heading>
+                    <input type="text" class="input input-small simplebox" ng-model="model.name">
+                    <button ng-click="project.removeModel(model)" tooltip-placement="right" tooltip="Remove Model">
+                        <i class="icon-remove"></i>
+                    </button>
+                </tab-heading>
+                <ng-include data-snap-ignore="true" src="model.view"></ng-include>
+            </tab>
+        </tabset>
+    </div>
+
+    <div ng-hide="project.models.length != 1">
+        <div ng-repeat="model in project.models">
+            <ng-include data-snap-ignore="true" src="model.view"></ng-include>
+        </div>
+    </div>
+
+
+    <footer class="footer">
+        <div class="container-fluid">
+            <p>Designed and built by <a href="http://www.maxur.org">Maxim Yunusov</a></p>
+
+            <p>Code licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License, Version
+                2.0</a>.
+            </p>
+        </div>
+    </footer>
+</div>
+
+    <div id="extruderLeft" class="a {title:'Repository', url:'views/projects.html'}"></div>
+
+</div>
+
+
+
+
+<script src="libs/jquery/jquery.min.js"></script>
+<script src="libs/angular/angular.min.js"></script>
+<script src="libs/bootstrap/js/bootstrap.min.js"></script>
+<script src="libs/ui-bootstrap/ui-bootstrap-tpls-0.13.0.min.js"></script>
+<script src="libs/bootswatch/js/bootswatch.js"></script>
+
+<script type="text/javascript" src="libs/jquery.mb.extruder/inc/jquery.hoverIntent.min.js"></script>
+<script type="text/javascript" src="libs/jquery.mb.extruder/inc/jquery.mb.flipText.js"></script>
+<script type="text/javascript" src="libs/jquery.mb.extruder/inc/mbExtruder.js"></script>
+
+<!--    <script src="libs/highcharts/highcharts.js"></script>
+    <script src="libs/highcharts/modules/exporting.js"></script>-->
+
+    <script src="js/maxur-utils.js"></script>
+    <script src="js/qnm.js"></script>
+    <script src="js/egm.js"></script>
+    <script src="js/project.js"></script>
+    <script src="js/pm.js"></script>
+
+
+<script type="text/javascript">
+
+    $(function(){
+
+        $("#extruderLeft").buildMbExtruder({
+            position:"right",
+            width:400,
+            extruderOpacity:.8,
+
+            hidePanelsOnClose:false,
+            accordionPanels:false,
+            onExtOpen:function(){},
+            onExtContentLoad:function(){$("#extruderLeft").openPanel();},
+            onExtClose:function(){}
+        });
+
+
+    });
+</script>
+
+
+
+
+</body>
+</html>

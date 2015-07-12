@@ -1,0 +1,36 @@
+<div class="snap-drawer snap-drawer-left">
+    <div class="framehdr">
+        <i class="icon fa fa-server"></i>
+        Projects
+        <button class="hdrbutton" onclick="snapper.close();">
+            <i class="icon-remove" tooltip-placement="left" tooltip="Close Panel"></i>
+        </button>
+        <button class="hdrbutton" ng-click="findAll()" tooltip-placement="left" tooltip="Refresh">
+            <i class="icon-refresh"></i>
+        </button>
+    </div>
+    <div class="frame">
+        <table class="projects">
+            <tr ng-repeat="project in getProjects()">
+                <td><i class="fa fa-file-o"></i></td>
+                <td>{{project.name}}</td>
+                <td>({{project.version}})</td>
+                <td>
+                         <span style="height: 28px">
+                            <button class="hdrbutton" ng-click="remove(project)">
+                                <i class="fa fa-trash-o" tooltip-placement="left" tooltip="Delete Project"></i>
+                            </button>
+                        </span>
+                </td>
+                <td>
+                         <span style="height: 28px">
+                            <button class="hdrbutton" ng-click="load(project)">
+                                <i class="fa fa-download" tooltip-placement="left" tooltip="Load Project"></i>
+                            </button>
+                         </span>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="snap-drawer snap-drawer-right"></div>
+</div>

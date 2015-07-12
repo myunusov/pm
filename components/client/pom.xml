@@ -129,11 +129,11 @@
     </profiles>
 
     <build>
-        <sourceDirectory>src/main/resources</sourceDirectory>
+        <sourceDirectory>src/main/old</sourceDirectory>
         <testSourceDirectory>src/test/resources</testSourceDirectory>
         <resources>
             <resource>
-                <directory>src/main/resources</directory>
+                <directory>src/main/webapp</directory>
                 <filtering>false</filtering>
             </resource>
         </resources>
