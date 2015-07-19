@@ -1,18 +1,40 @@
 {
   "name": "perf-model-calc",
   "description": "Performance Model Calculator",
-  "version": "0.0.1",
+  "version": "1.2.0",
   "homepage": "https://github.com/myunusov/pm.git",
   "license": "APACHE2_0",
   "private": true,
   "dependencies": {
     "angular": "1.4.x",
     "angular-mocks": "1.4.x",
-    "jquery": "~2.1.4",
     "angular-route": "1.4.x",
     "angular-resource": "1.4.x",
     "angular-animate": "1.4.x",
+    "jquery": "~2.1.4",
     "materialize": "~0.97.0",
-    "material-design-icons": "*"
+    "material-design-icons": "~2.0.0"
+  },
+  "install" : {
+    "base":  "src/main/webapp/libs",
+    "path" : {
+      "js": "{name}/js",
+      "scss": "{name}/styles",
+      "css": "{name}/css",
+      "eot": "{name}/fonts",
+      "svg": "{name}/fonts",
+      "ttf": "{name}/fonts",
+      "woff": "{name}/fonts",
+      "woff2": "{name}/fonts",
+      "Roboto": "{name}/fonts/roboto"
+    },
+    "sources" : {
+      "material-design-icons" : [
+         "src/main/webapp/bower_components/material-design-icons/iconfont/MaterialIcons-Regular.eot",
+         "src/main/webapp/bower_components/material-design-icons/iconfont/MaterialIcons-Regular.ttf",
+         "src/main/webapp/bower_components/material-design-icons/iconfont/MaterialIcons-Regular.woff",
+         "src/main/webapp/bower_components/material-design-icons/iconfont/MaterialIcons-Regular.woff2"
+      ]
+    }
   }
 }

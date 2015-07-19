@@ -1,13 +1,49 @@
 @font-face {
+    font-family: "Roboto";
+    src: url("../libs/Materialize/fonts/Roboto-Thin.woff2") format("woff2"),
+    url("../libs/Materialize/fonts/Roboto-Thin.woff") format("woff"),
+    url("../libs/Materialize/fonts/Roboto-Thin.ttf") format("truetype");
+    font-weight: 200; }
+
+@font-face {
+    font-family: "Roboto";
+    src: url("../libs/Materialize/fonts/Roboto-Light.woff2") format("woff2"),
+    url("../libs/Materialize/fonts/Roboto-Light.woff") format("woff"),
+    url("../libs/Materialize/fonts/Roboto-Light.ttf") format("truetype");
+    font-weight: 300; }
+
+@font-face {
+    font-family: "Roboto";
+    src: url("../libs/Materialize/fonts/Roboto-Regular.woff2") format("woff2"),
+    url("../libs/Materialize/fonts/Roboto-Regular.woff") format("woff"),
+    url("../libs/Materialize/fonts/Roboto-Regular.ttf") format("truetype");
+    font-weight: 400; }
+
+@font-face {
+    font-family: "Roboto";
+    src: url("../libs/Materialize/fonts/Roboto-Medium.woff2") format("woff2"),
+    url("../libs/Materialize/fonts/Roboto-Medium.woff") format("woff"),
+    url("../libs/Materialize/fonts/Roboto-Medium.ttf") format("truetype");
+    font-weight: 500; }
+
+@font-face {
+    font-family: "Roboto";
+    src: url("../libs/Materialize/fonts/Roboto-Bold.woff2") format("woff2"),
+    url("../libs/Materialize/fonts/Roboto-Bold.woff") format("woff"),
+    url("../libs/Materialize/fonts/Roboto-Bold.ttf") format("truetype");
+    font-weight: 700; }
+
+
+@font-face {
     font-family: 'Material Icons';
     font-style: normal;
     font-weight: 400;
-    src: url(../bower_components/material-design-icons/iconfont/MaterialIcons-Regular.eot); /* For IE6-8 */
+    src: url(../libs/material-design-icons/fonts/MaterialIcons-Regular.eot); /* For IE6-8 */
     src: local('Material Icons'),
     local('MaterialIcons-Regular'),
-    url(../bower_components/material-design-icons/iconfont/MaterialIcons-Regular.woff2) format('woff2'),
-    url(../bower_components/material-design-icons/iconfont/MaterialIcons-Regular.woff) format('woff'),
-    url(../bower_components/material-design-icons/siconfont/MaterialIcons-Regular.ttf) format('truetype');
+    url(../libs/material-design-icons/fonts/MaterialIcons-Regular.woff2) format('woff2'),
+    url(../libs/material-design-icons/fonts/MaterialIcons-Regular.woff) format('woff'),
+    url(../libs/material-design-icons/fonts/MaterialIcons-Regular.ttf) format('truetype');
 }
 
 .material-icons {

@@ -50,6 +50,7 @@
                             <jswarn>false</jswarn>
                             <excludes>
                                 <exclude>**/bower_components/**</exclude>
+                                <exclude>**/libs/**</exclude>
                                 <exclude>**/img/**</exclude>
                             </excludes>
                         </configuration>
@@ -99,22 +100,8 @@
                 <directory>src/main/webapp</directory>
                 <filtering>false</filtering>
                 <excludes>
-                    <exclude>bower_components</exclude>
+                    <exclude>**/bower_components/**</exclude>
                 </excludes>
-                <includes>
-                    <include>css/**</include>
-                    <include>img/**</include>
-                    <include>js/**</include>
-                    <include>index.html</include>
-                    <include>bower_components/angular/*.min.js</include>
-                    <include>bower_components/angular-route/*.min.js</include>
-                    <include>bower_components/jquery/dist/*.min.js</include>
-                    <include>bower_components/materialize/dist/**</include>
-                    <include>**/*.eot></include>
-                    <include>**/*.ttf></include>
-                    <include>**/*.woff></include>
-                    <include>**/*.woff2></include>
-                </includes>
             </resource>
         </resources>
         <plugins>
@@ -123,6 +110,7 @@
                 <configuration>
                     <excludes>
                         <exclude>**/bower_components/**</exclude>
+                        <exclude>**/libs/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>

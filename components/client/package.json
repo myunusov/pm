@@ -1,5 +1,5 @@
 {
-  "version": "0.0.1",
+  "version": "1.2.0",
   "private": true,
   "name": "perf-model-calc",
   "description": "Performance Model Calculator",
@@ -21,10 +21,11 @@
     "http-server": "^0.6.1",
     "tmp": "0.0.23",
     "bower": "^1.3.1",
+    "bower-installer": "^1.2.0",
     "shelljs": "^0.2.6"
   },
   "scripts": {
-    "postinstall": "bower install",
+    "postinstall": "bower-installer",
 
     "prestart": "npm install",
     "start": "http-server src/main/webapp -a 0.0.0.0 -p 8000",
