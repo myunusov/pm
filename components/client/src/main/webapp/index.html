@@ -1,17 +1,13 @@
 <!DOCTYPE html>
 
-<!--
-  http://materializecss.com/
--->
-
-<html lang="en" ng-app="pm">
+<html lang="en" ng-app="pmc">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
     <title>Performance Model Calculator</title>
-    <!-- CSS  -->
-    <link type="text/css" rel="stylesheet" href="libs/materialize/css/materialize.min.css" media="screen,projection"/>
-    <link type="text/css" rel="stylesheet" href="libs/materialize/css/materialize.css" media="screen,projection"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="shortcut icon" href="img/favicon.ico"/>
+    <!-- CSS -->
+    <link type="text/css" rel="stylesheet" href="bower_components/materialize/dist/css/materialize.min.css"  media="screen,projection"/>
     <link type="text/css" rel="stylesheet" href="css/style.css" media="screen,projection"/>
 </head>
 
@@ -19,7 +15,7 @@
 
 <!-- Dropdown Structure -->
 <ul id="alerts" class="dropdown-content" ng-controller="MsgCtrl">
-<!--    <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>-->
+    <!--    <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>-->
     <li ng-repeat="alert in alerts">{{alert.msg}}</li>
 </ul>
 <ul id="dropdown1" class="dropdown-content">
@@ -55,55 +51,8 @@
     </nav>
 </div>
 
-<div class="container">
-    <div class="section">
+<div class="container" ng-view>
 
-        <div  ng-include="'views/project-header.html'">
-        </div>
-
-        <!--   Icon Section   -->
-        <div class="row">
-            <div class="col s12 m4">
-                <div class="icon-block">
-                    <h2 class="center light-blue-text"><i class="material-icons">flash_on</i></h2>
-                    <h5 class="center">Speeds up development</h5>
-
-                    <p class="light">We did most of the heavy lifting for you to provide a default stylings that
-                        incorporate our custom components. Additionally, we refined animations and transitions to
-                        provide a smoother experience for developers.</p>
-                </div>
-            </div>
-
-            <div class="col s12 m4">
-                <div class="icon-block">
-                    <h2 class="center light-blue-text"><i class="material-icons">group</i></h2>
-                    <h5 class="center">User Experience Focused</h5>
-
-                    <p class="light">By utilizing elements and principles of Material Design, we were able to create a
-                        framework that incorporates components and animations that provide more feedback to users.
-                        Additionally, a single underlying responsive system across all platforms allow for a more
-                        unified user experience.</p>
-                </div>
-            </div>
-
-            <div class="col s12 m4">
-                <div class="icon-block">
-                    <h2 class="center light-blue-text"><i class="material-icons">settings</i></h2>
-                    <h5 class="center">Easy to work with</h5>
-
-                    <p class="light">We have provided detailed documentation as well as specific code examples to help
-                        new users get started. We are also always open to feedback and can answer any questions a user
-                        may have about Materialize.</p>
-                </div>
-            </div>
-        </div>
-
-    </div>
-    <br><br>
-
-    <div class="section">
-
-    </div>
 </div>
 
 <footer class="page-footer teal lighten-2">
@@ -124,19 +73,21 @@
     </div>
 </footer>
 
-<script type="text/javascript" src="libs/jquery/jquery.min.js"></script>
-<script type="text/javascript" src="libs/materialize/js/materialize.min.js"></script>
-<script src="libs/angular/angular.js"></script>
+<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="bower_components/materialize/dist//js/materialize.min.js"></script>
+<script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+<script type="text/javascript" src="bower_components/angular-route/angular-route.min.js"></script>
 
-<script src="js/maxur-utils.js"></script>
-<script src="js/qnm.js"></script>
-<script src="js/egm.js"></script>
-<script src="js/project.js"></script>
-<script src="js/pm.js"></script>
+<script type="text/javascript" src="js/utils/maxur-utils.js"></script>
 
-<script type="text/javascript">
-    $(".button-collapse").sideNav();
-</script>
+<script type="text/javascript" src="js/domain/project.js"></script>
+<script type="text/javascript" src="js/domain/qnm.js"></script>
+<script type="text/javascript" src="js/domain/egm.js"></script>
 
+<script type="text/javascript" src="js/pmc/pmc.ctrl.js"></script>
+<script type="text/javascript" src="js/pmc/pmc.dir.js"></script>
+<script type="text/javascript" src="js/pmc/pmc.fltr.js"></script>
+<script type="text/javascript" src="js/pmc/pmc.svc.js"></script>
+<script type="text/javascript" src="js/pmc.js"></script>
 </body>
 </html>
