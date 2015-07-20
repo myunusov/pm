@@ -33,25 +33,21 @@ angular.module('pmc.services', [])
                 alerts.splice(index, 1);
             },
             error: function (message, errorcode) {
-                if (alerts.length === 0) {
-                    var result = "Error!";
-                    if (message instanceof Array) {
-                        for (var i = 0; i < message.length; i++) {
-                            result += " " + message[i];
-                        }
-                    } else {
-                        result += " " + message;
+                var result = "Error!";
+                if (message instanceof Array) {
+                    for (var i = 0; i < message.length; i++) {
+                        result += " " + message[i];
                     }
-                    if (errorcode) {
-                        result += " " + getMessageBy(errorcode);
-                    }
-                    alerts.push({type: 'error', msg: result});
+                } else {
+                    result += " " + message;
                 }
+                if (errorcode) {
+                    result += " " + getMessageBy(errorcode);
+                }
+                alerts.push({type: 'error', msg: result});
             },
             info: function (message) {
-                if (alerts.length === 0) {
-                    alerts.push({type: 'success', msg: message});
-                }
+                alerts.push({type: 'success', msg: message});
             }
         };
     })

@@ -36,8 +36,6 @@ angular.module('pmc.controllers', [])
 
         $scope.addQNM();
 
-        messageProvider.error("error sample --------------------");
-
     })
 
     .controller('MsgCtrl', function ($scope, messageProvider) {
