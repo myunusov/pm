@@ -4,8 +4,22 @@
 
 angular.module('pmc.services', [])
 
-    .service('messageProvider', function () {
+    .service('messageProvider', function ($mdToast, $animate) {
+
+        var toastPosition = {
+            bottom: false,
+            top: true,
+            left: false,
+            right: true
+        };
+
         var alerts = [];
+
+        function getToastPosition() {
+            return Object.keys(toastPosition)
+                .filter(function(pos) { return toastPosition[pos]; })
+                .join(' ');
+        };
 
         function getMessageBy(errorcode) {
             switch (parseFloat(errorcode)) {
@@ -45,16 +59,30 @@ angular.module('pmc.services', [])
                     result += " " + getMessageBy(errorcode);
                 }
                 alerts.push({type: 'error', msg: result});
+                $mdToast.show(
+                    $mdToast.simple()
+                        .content(result)
+                        .position(getToastPosition())
+                        .hideDelay(3000)
+                );
             },
             info: function (message) {
                 alerts.push({type: 'success', msg: message});
+                $mdToast.show(
+                    $mdToast.simple()
+                        .content(message)
+                        .position(getToastPosition())
+                        .hideDelay(3000)
+                );
             }
         };
     })
 
     .service('projectProvider', function ($http, messageProvider, modelFactory) {
+
         var projects = [];
-        var project = null;
+        var project = new Project("New Performance Model", uuid());
+        project.models.push(modelFactory.qnm("QNM " + project.models.length));
         var url = 'api/projects';
 
         var remove = function (name) {
@@ -66,11 +94,11 @@ angular.module('pmc.services', [])
             }
         };
         return {
+            getProject: function () {
+                return project;
+            },
             getProjects: function () {
                 return projects;
-            },
-            setProject: function (value) {
-                project = value;
             },
             findAll: function () {
                 messageProvider.clear();
@@ -148,7 +176,15 @@ angular.module('pmc.services', [])
                                 data.message :
                                 "Performance Model is not saved.", status);
                     });
+            },
+            addQNM: function () {
+                project.models.push(modelFactory.qnm("QNM " + project.models.length));
+            },
+
+            addEGM: function () {
+                project.models.push(modelFactory.egm("EGM " + project.models.length));
             }
+
         };
     })
 

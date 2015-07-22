@@ -8,7 +8,8 @@ angular.module('pmc.directives', [])
         return function(scope, element, attrs) {
             $(element).find(' > i').not(".icon-leaf").on('click', clickingCallback);
         }
-    });
+    })
+
 
 function clickingCallback(e) {
     var children = $(this).closest('li.parent-li').find(' > ul > li');

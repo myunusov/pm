@@ -4,85 +4,102 @@
 <head>
     <title>Performance Model Calculator</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"/>
     <link rel="shortcut icon" href="img/favicon.ico"/>
     <!-- CSS -->
-    <link type="text/css" rel="stylesheet" href="libs/Materialize/css/materialize.css"  media="screen,projection"/>
+    <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
     <link type="text/css" rel="stylesheet" href="css/style.css" media="screen,projection"/>
 </head>
 
 <body>
 
-<div class="navbar-fixed">
-    <nav>
-        <div class="nav-wrapper teal lighten-2">
-            <a href="#about" class="brand-logo right hide-on-med-and-down waves-effect waves-light modal-trigger">Performance Model Calculator</a>
-            <a href="#about" class="brand-logo center hide-on-large-only waves-effect waves-light modal-trigger">PMC</a>
-            <a href="#" data-activates="sidebar-menu" class="button-collapse"><i class="material-icons">menu</i></a>
-            <ul class="left hide-on-med-and-down">
-                <li><a href="#projects" class="waves-effect waves-light tooltipped"
-                       data-position="right" data-delay="50" data-tooltip="Projects Repository"><i
-                        class="material-icons">storage</i></a></li>
-                <li><a href="javascript:void(0);"
-                       class="waves-effect waves-block waves-light toggle-fullscreen tooltipped"
-                       data-position="right" data-delay="50" data-tooltip="Full Screen Mode"><i
-                        class="material-icons">settings_overscan</i></a>
-                </li>
-            </ul>
-            <ul class="side-nav" id="sidebar-menu">
-                <li><a href="#projects">Repository</a></li>
-                <li><a href="badges.html">About</a></li>
-            </ul>
-        </div>
-    </nav>
-</div>
 
-<div ng-controller="MsgCtrl">
-    <nav ng-repeat="alert in alerts" class="ng-class: alert.type;">
-        <div class="nav-wrapper ng-class: alert.type;">
-            <b>{{alert.msg}}</b>
-            <ul class="right"><li><a href ng-click="closeAlert($index)"><i class="material-icons">clear</i></a></li>
-            </ul>
-        </div>
-    </nav>
-</div>
+<div layout="column" layout-fill>
 
+    <!--MAIN MENU-->
+<md-toolbar class="md-whiteframe-glow-z1 site-content-toolbar md-default-theme" ng-controller="MainMenuCtrl">
+    <div class="md-toolbar-tools">
+        <md-button ng-click="showAbout($event)">
+            <h2><span>Performance Model Calculator</span></h2>
+        </md-button>
 
-<!--<a class="btn light-blue" onclick="Materialize.toast('I am a toast', 4000,'')">Toast!</a>
+        <span flex></span>
 
-<a class="btn tooltipped col s4 l2 " data-position="bottom" data-delay="50" data-tooltip="I am tooltip"> Bottom</a>-->
+        <md-button class="md-icon-button" aria-label="Repository" ng-click="toggleLeft()">
+            <md-icon class="mdi mdi-server"></md-icon>
+            <md-tooltip>
+                Repository
+            </md-tooltip>
+        </md-button>
 
-
-<div class="container" ng-view>
-</div>
-
-<div id="about" class="modal">
-    <div class="modal-content teal white-text">
-        <h3>Performance Model Calculator</h3>
-        <h4><strong>1.2-SNAPSHOT</strong></h4>
-        <p>Computer System Performance Analysis Using <strong>Performance Models</strong> by the
-            <strong>Maxim Yunusov</strong></p>
+        <md-button hide-sm class="md-icon-button" aria-label="Full Screen">
+            <md-icon class="mdi" ng-click="toggleFullScreen();" ng-class="fullScreenClass()"></md-icon>
+            <md-tooltip>
+                Toggle Full Screen
+            </md-tooltip>
+        </md-button>
     </div>
-    <div class="modal-footer teal lighten-4">
-        <a href="javascript:void(0);" class="waves-effect waves-green btn-flat modal-action modal-close ">OK</a>
+</md-toolbar>
+
+<md-content style="height: 600px;">
+
+    <div layout="column">
+        <section layout="row" flex>
+            <!-- LEFT SIDEBAR -->
+            <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left">
+                <md-toolbar>
+                    <div class="md-toolbar-tools" ng-controller="LeftSidebarCtrl">
+                        <md-icon class="mdi mdi-server"></md-icon>
+                        <h3 class="md-toolbar-tools">Project Repository</h3>
+                        <span flex></span>
+                        <md-button class="md-icon-button" aria-label="Close" ng-click="close()">
+                            <md-icon class="mdi mdi-close"></md-icon>
+                        </md-button>
+                    </div>
+                </md-toolbar>
+
+                <md-content layout-padding>
+
+                </md-content>
+            </md-sidenav>
+
+            <!-- CONTEXT -->
+            <md-content flex layout-padding>
+
+                <div class="container" ng-view>
+                </div>
+
+            </md-content>
+
+        </section>
     </div>
+
+</md-content>
+
 </div>
 
+<!--FOOTER
 <footer class="page-footer teal lighten-2">
     <div class="footer-copyright">
         <div class="container">
-            <span>Code licensed under <a class="grey-text text-lighten-4" href="http://www.apache.org/licenses/LICENSE-2.0.html" target="_blank">Apache License</a>, Version
+            <span>Code licensed under <a class="grey-text text-lighten-4"
+                                         href="http://www.apache.org/licenses/LICENSE-2.0.html" target="_blank">Apache
+                License</a>, Version
                     2.0.</span>
-            <span class="right"> Design and Developed by <a class="grey-text text-lighten-4" href="http://www.maxur.org">Maxim Yunusov</a></span>
+            <span class="right"> Design and Developed by <a class="grey-text text-lighten-4"
+                                                            href="http://www.maxur.org">Maxim Yunusov</a></span>
         </div>
     </div>
-</footer>
+</footer>-->
 
 
-<script type="text/javascript" src="libs/jquery/js/jquery.js"></script>
-<script type="text/javascript" src="libs/Materialize/js/materialize.js"></script>
-<script type="text/javascript" src="libs/angular/js/angular.js"></script>
-<script type="text/javascript" src="libs/angular-route/js/angular-route.js"></script>
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-route/angular-route.js"></script>
+
+<script src="bower_components/angular-aria/angular-aria.js"></script>
+<script src="bower_components/angular-animate/angular-animate.js"></script>
+<script src="bower_components/angular-material/angular-material.js"></script>
 
 <script type="text/javascript" src="js/utils/maxur-utils.js"></script>
 
@@ -95,18 +112,6 @@
 <script type="text/javascript" src="js/pmc/pmc.fltr.js"></script>
 <script type="text/javascript" src="js/pmc/pmc.svc.js"></script>
 <script type="text/javascript" src="js/pmc.js"></script>
-
-<script type="text/javascript">
-    $(document).ready(function(){
-        $(".button-collapse").sideNav();
-        $('.tooltipped').tooltip({delay: 50});
-        $('.toggle-fullscreen').click(function() {
-            toggleFullScreen();
-        });
-        $('.modal-trigger').leanModal();
-    });
-</script>
-
 
 </body>
 </html>

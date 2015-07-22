@@ -11,9 +11,11 @@
     "angular-route": "1.4.x",
     "angular-resource": "1.4.x",
     "angular-animate": "1.4.x",
+    "angular-material": "~0.10.0",
     "jquery": "~2.1.4",
     "materialize": "~0.97.0",
-    "material-design-icons": "~2.0.0"
+    "material-design-icons": "~2.0.0",
+    "mdi": "~1.1.70"
   },
   "install" : {
     "base":  "src/main/webapp/libs",

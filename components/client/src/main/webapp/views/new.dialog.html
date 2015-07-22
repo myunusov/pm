@@ -1,0 +1,39 @@
+<md-dialog aria-label="Performance Models">
+    <form>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Available Performance Models</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="answer()">
+                    <md-icon class="mdi mdi-close" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+
+            <div layout="row" layout-margin>
+                <div flex flex-order="1">
+                    <md-whiteframe class="md-whiteframe-z5" layout="column" layout-align="center center" layout-margin>
+                        <img style="margin: 5px;" alt="QNM" src="img/QNM.png" ng-click="answer('QNM')">
+                        <span>Queue Network Model</span>
+                    </md-whiteframe>
+                </div>
+
+                <div flex flex-order="2">
+                    <md-whiteframe class="md-whiteframe-z5" layout="column" layout-align="center center" layout-margin>
+                        <img style="margin: 5px;" alt="SEM" src="img/EGM.png" ng-click="answer('EGM')">
+                        <span>Software Execution Model</span>
+                    </md-whiteframe>
+                </div>
+            </div>
+
+
+        </md-dialog-content>
+        <div class="md-actions" layout="row">
+            <md-button ng-click="answer()" class="md-primary">
+                Cancel
+            </md-button>
+        </div>
+    </form>
+</md-dialog>
+

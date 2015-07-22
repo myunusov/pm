@@ -1,0 +1,26 @@
+<md-dialog aria-label="About Performance Model Calculator">
+    <form>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>About</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="answer('not applicable')">
+                    <md-icon class="mdi mdi-close" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <div>
+                <h3>Performance Model Calculator</h3>
+                <h4><strong>1.2-SNAPSHOT</strong></h4>
+                <p>Computer System Performance Analysis Using <strong>Performance Models</strong> by the
+                    <strong>Maxim Yunusov</strong></p>
+            </div>
+        </md-dialog-content>
+        <div class="md-actions" layout="row">
+            <md-button ng-click="answer('not useful')" class="md-primary">
+                OK
+            </md-button>
+        </div>
+    </form>
+</md-dialog>

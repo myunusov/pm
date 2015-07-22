@@ -1,72 +1,88 @@
-@font-face {
-    font-family: "Roboto";
-    src: url("../libs/Materialize/fonts/Roboto-Thin.woff2") format("woff2"),
-    url("../libs/Materialize/fonts/Roboto-Thin.woff") format("woff"),
-    url("../libs/Materialize/fonts/Roboto-Thin.ttf") format("truetype");
-    font-weight: 200; }
+@import "../libs/mdi/css/materialdesignicons.min.css";
 
-@font-face {
-    font-family: "Roboto";
-    src: url("../libs/Materialize/fonts/Roboto-Light.woff2") format("woff2"),
-    url("../libs/Materialize/fonts/Roboto-Light.woff") format("woff"),
-    url("../libs/Materialize/fonts/Roboto-Light.ttf") format("truetype");
-    font-weight: 300; }
-
-@font-face {
-    font-family: "Roboto";
-    src: url("../libs/Materialize/fonts/Roboto-Regular.woff2") format("woff2"),
-    url("../libs/Materialize/fonts/Roboto-Regular.woff") format("woff"),
-    url("../libs/Materialize/fonts/Roboto-Regular.ttf") format("truetype");
-    font-weight: 400; }
-
-@font-face {
-    font-family: "Roboto";
-    src: url("../libs/Materialize/fonts/Roboto-Medium.woff2") format("woff2"),
-    url("../libs/Materialize/fonts/Roboto-Medium.woff") format("woff"),
-    url("../libs/Materialize/fonts/Roboto-Medium.ttf") format("truetype");
-    font-weight: 500; }
-
-@font-face {
-    font-family: "Roboto";
-    src: url("../libs/Materialize/fonts/Roboto-Bold.woff2") format("woff2"),
-    url("../libs/Materialize/fonts/Roboto-Bold.woff") format("woff"),
-    url("../libs/Materialize/fonts/Roboto-Bold.ttf") format("truetype");
-    font-weight: 700; }
-
-
-@font-face {
-    font-family: 'Material Icons';
-    font-style: normal;
-    font-weight: 400;
-    src: url(../libs/material-design-icons/fonts/MaterialIcons-Regular.eot); /* For IE6-8 */
-    src: local('Material Icons'),
-    local('MaterialIcons-Regular'),
-    url(../libs/material-design-icons/fonts/MaterialIcons-Regular.woff2) format('woff2'),
-    url(../libs/material-design-icons/fonts/MaterialIcons-Regular.woff) format('woff'),
-    url(../libs/material-design-icons/fonts/MaterialIcons-Regular.ttf) format('truetype');
-}
-
-.material-icons {
-    font-family: 'Material Icons';
+.icondemoFontIconsWithClassnames {
+    /* Bootstrap Overrides */
+    /* OLD STYLES */ }
+.icondemoFontIconsWithClassnames .appDemoFontIconsWithClassnames {
+    padding: 25px;
+    width: 100%; }
+.icondemoFontIconsWithClassnames .appDemoFontIconsWithClassnames, .icondemoFontIconsWithClassnames .appDemoFontIconsWithClassnames *:before, .icondemoFontIconsWithClassnames .appDemoFontIconsWithClassnames *:after {
+    box-sizing: border-box; }
+.icondemoFontIconsWithClassnames [class^="icon-"]:before, .icondemoFontIconsWithClassnames [class*=" icon-"]:before {
+    font-family: "icomoon";
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1;
     font-weight: normal;
     font-style: normal;
-    font-size: 24px;  /* Preferred icon size */
-    display: inline-block;
-    width: 1em;
-    height: 1em;
-    line-height: 1;
+    text-decoration: inherit;
     text-transform: none;
-    letter-spacing: normal;
-    word-wrap: normal;
-
-    /* Support for all WebKit browsers. */
-    -webkit-font-smoothing: antialiased;
-    /* Support for Safari and Chrome. */
     text-rendering: optimizeLegibility;
-
-    /* Support for Firefox. */
-    -moz-osx-font-smoothing: grayscale;
-
-    /* Support for IE. */
-    font-feature-settings: 'liga';
-}
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale; }
+.icondemoFontIconsWithClassnames .icon-home:before {
+    content: "\e900"; }
+.icondemoFontIconsWithClassnames .icon-clock:before {
+    content: "\e94e"; }
+.icondemoFontIconsWithClassnames .icon-user-plus:before {
+    content: "\e973"; }
+.icondemoFontIconsWithClassnames .icon-google-plus2:before {
+    content: "\ea89"; }
+.icondemoFontIconsWithClassnames .icon-youtube4:before {
+    content: "\ea9a"; }
+.icondemoFontIconsWithClassnames .icon-settings:before {
+    content: "\e600"; }
+.icondemoFontIconsWithClassnames md-progress-circular {
+    margin-bottom: 20px; }
+.icondemoFontIconsWithClassnames header {
+    overflow: hidden; }
+.icondemoFontIconsWithClassnames header h1 {
+    color: #888;
+    font-size: 36px;
+    font-weight: 300; }
+.icondemoFontIconsWithClassnames .container {
+    margin: 0 auto;
+    max-width: 1200px;
+    min-width: 960px;
+    padding: 40px 40px;
+    font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif; }
+.icondemoFontIconsWithClassnames .glyph {
+    border-bottom: 1px dotted #ccc;
+    padding: 10px 0 20px;
+    margin-bottom: 20px; }
+.icondemoFontIconsWithClassnames .preview-scale, .icondemoFontIconsWithClassnames .preview-glyphs {
+    display: flex;
+    flex-direction: row; }
+.icondemoFontIconsWithClassnames .preview-scale {
+    color: #888;
+    font-size: 12px;
+    margin-top: 24px; }
+.icondemoFontIconsWithClassnames .step {
+    flex-grow: 1;
+    line-height: 0.5; }
+.icondemoFontIconsWithClassnames .usage {
+    margin-top: 10px; }
+.icondemoFontIconsWithClassnames .usage input {
+    font-family: monospace;
+    text-align: center; }
+.icondemoFontIconsWithClassnames .usage .point {
+    width: 150px; }
+.icondemoFontIconsWithClassnames .usage .class {
+    width: 250px; }
+.icondemoFontIconsWithClassnames md-radio-button {
+    display: inline-block; }
+.icondemoFontIconsWithClassnames .loading {
+    background-color: black;
+    filter: alpha(opacity=40);
+    height: 100%;
+    left: 0;
+    opacity: .40;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 90; }
+.icondemoFontIconsWithClassnames .loading md-progress-circular {
+    left: 50%;
+    position: fixed;
+    top: 48%;
+    z-index: 100; }

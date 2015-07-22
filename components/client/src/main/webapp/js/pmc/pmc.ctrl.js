@@ -4,11 +4,10 @@
 
 angular.module('pmc.controllers', [])
 
-    .controller('ProjectCtrl', function ($scope, projectProvider, modelFactory, messageProvider) {
 
-        $scope.project = new Project("New Performance Model", uuid());
+    .controller('ProjectCtrl', function ($scope, $mdDialog, projectProvider) {
 
-        projectProvider.setProject($scope.project);
+        $scope.project = projectProvider.getProject();
 
         $scope.remove = function () {
             projectProvider.remove();
@@ -26,15 +25,45 @@ angular.module('pmc.controllers', [])
             projectProvider.save();
         };
 
+        $scope.newModel = function (ev) {
+            $mdDialog.show({
+                clickOutsideToClose: true,
+                controller: NewModelDialogController,
+                templateUrl: 'views/new.dialog.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+            })
+                .then(function (answer) {
+                    if (answer === "QNM") {
+                        projectProvider.addQNM();
+                    }
+                    if (answer === "EGM") {
+                        projectProvider.addEGM();
+                    }
+                }, function () {
+                    return
+                });
+        };
+
+        function NewModelDialogController($scope, $mdDialog) {
+            $scope.hide = function () {
+                $mdDialog.hide();
+            };
+            $scope.cancel = function () {
+                $mdDialog.cancel();
+            };
+            $scope.answer = function (answer) {
+                $mdDialog.hide(answer);
+            };
+        }
+
         $scope.addQNM = function () {
-            $scope.project.models.push(modelFactory.qnm("QNM " + $scope.project.models.length));
+            projectProvider.addQNM();
         };
 
         $scope.addEGM = function () {
-            $scope.project.models.push(modelFactory.egm("EGM " + $scope.project.models.length));
+            projectProvider.addEGM();
         };
-
-        $scope.addQNM();
 
     })
 
@@ -110,14 +139,86 @@ angular.module('pmc.controllers', [])
 
     })
 
-    .controller('MainMenuCtrl', function ($scope, $modal) {
-        $scope.about = function () {
-            //noinspection JSUnusedLocalSymbols
-            var modalInstance = $modal.open({
-                templateUrl: 'aboutModalContent.html',
-                controller: ModalInstanceCtrl
-            });
+    .controller('MainMenuCtrl', function ($scope, $timeout, $mdSidenav, $mdUtil, $mdDialog, $log) {
+
+        $scope.triger = false;
+
+        $scope.toggleLeft = buildToggler('left');
+
+        $scope.toggleRight = buildToggler('right');
+        /**
+         * Build handler to open/close a SideNav; when animation finishes
+         * report completion in console
+         */
+        function buildToggler(navID) {
+            return $mdUtil.debounce(function () {
+                $mdSidenav(navID)
+                    .toggle()
+                    .then(function () {
+                        $log.debug("toggle " + navID + " is done");
+                    });
+            }, 300);
+        }
+
+        $scope.toggleFullScreen = function () {
+            $scope.triger = window.screenTop || window.screenY;
+            if (window.screenTop || window.screenY) {
+                if (document.documentElement.requestFullScreen) {
+                    document.documentElement.requestFullScreen();
+                }
+                else if (document.documentElement.mozRequestFullScreen) {
+                    document.documentElement.mozRequestFullScreen();
+                }
+                else if (document.documentElement.webkitRequestFullScreen) {
+                    document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+                }
+            } else {
+                if (document.cancelFullScreen) {
+                    document.cancelFullScreen();
+                }
+                else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                }
+                else if (document.webkitCancelFullScreen) {
+                    document.webkitCancelFullScreen();
+                }
+            }
+
         };
+
+        $scope.fullScreenClass = function () {
+            return $scope.triger ? "mdi-arrow-collapse" : "mdi-arrow-expand";
+        };
+
+        $scope.showAbout = function (ev) {
+            $mdDialog.show({
+                clickOutsideToClose: true,
+                controller: AboutDialogController,
+                templateUrl: 'views/about.dialog.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+            })
+                .then(function (answer) {
+                    $scope.alert = 'You said the information was "' + answer + '".';
+                }, function () {
+                    $scope.alert = 'You cancelled the dialog.';
+                });
+        }
+
+
+        function AboutDialogController($scope, $mdDialog) {
+            $scope.hide = function () {
+                $mdDialog.hide();
+            };
+            $scope.cancel = function () {
+                $mdDialog.cancel();
+            };
+            $scope.answer = function (answer) {
+                $mdDialog.hide(answer);
+            };
+        }
+
+
     })
 
     .controller('ProjectListCtrl', function ($scope, projectProvider) {
@@ -143,13 +244,28 @@ angular.module('pmc.controllers', [])
         };
     })
 
-    .controller('ModalInstanceCtrl', function ($scope, $modalInstance) {
+    .controller('ModalCtrl', function ($scope, projectProvider) {
 
-        $scope.ok = function () {
-            $modalInstance.close();
+        $scope.addQNM = function () {
+            projectProvider.addQNM();
         };
 
-        $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
+        $scope.addEGM = function () {
+            projectProvider.addEGM();
+        };
+
+
+    })
+
+    .controller('LeftSidebarCtrl', function ($scope, $timeout, $mdSidenav, $log) {
+        $scope.close = function () {
+            $mdSidenav('left').close()
+                .then(function () {
+                    $log.debug("close LEFT is done");
+                });
         };
     });
+
+
+
+

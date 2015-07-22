@@ -1,8 +1,21 @@
 @import "font.css";
 
-nav .btn,nav .btn-large {
-    margin-top: 12px
+/*main menu*/
+md-toolbar .mdi {
+    font-size: 24px;
+    height: 24px
 }
+
+
+/*tooltip*/
+md-toolbar .md-toolbar-tools .md-button, md-toolbar .md-toolbar-tools .md-button:hover {
+    box-shadow: none;
+    border: none;
+    transform: none;
+    -webkit-transform: none;
+}
+
+
 
 /*alerts*/
 
@@ -17,6 +30,10 @@ nav .btn,nav .btn-large {
 }
 
 footer.page-footer {
-    padding-top: 0px;
+    padding-top: 0;
 }
 
+
+nav .btn,nav .btn-large {
+    margin-top: 12px
+}
