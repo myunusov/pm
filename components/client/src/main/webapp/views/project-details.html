@@ -1,34 +1,51 @@
 <section>
+<form name="projectForm" class="">
+    <md-content md-theme="docs-dark" layout-padding layout="row" layout-sm="column">
+        <md-input-container flex-sm="100" flex="40">
+            <label>Project</label>
+            <input ng-model="project.name" md-maxlength="50" required name="name">
+        </md-input-container>
+        <md-input-container flex-sm="100" flex="55">
+            <label>Description</label>
+            <input ng-model="project.description">
+        </md-input-container>
+    </md-content>
 
-    <form name="projectForm" class="">
-        <md-content md-theme="docs-dark" layout-padding layout="row" layout-sm="column">
-            <md-input-container flex-sm="100" flex="40">
-                <label>Project</label>
-                <input ng-model="project.name" md-maxlength="50" required name="name">
-            </md-input-container>
-            <md-input-container flex-sm="100" flex="55">
-                <label>Description</label>
-                <input ng-model="project.description">
-            </md-input-container>
-        </md-content>
-    </form>
+    <md-button class="md-fab md-primary"
+               ng-click="newModel($event)"
+               aria-label="New Model" style="position: absolute; right: 24px; margin-top: -30px">
+        <md-icon class="mdi mdi-plus"
+                 style="font-size: 36px; height: 36px; width: 36px;"
+                ></md-icon>
+    </md-button>
 
-    <div class="section">
+</form>
+</section>
 
-        <md-content class="md-padding" ng-hide="project.models.length <= 1">
-            <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect>
-                <md-tab ng-repeat="model in project.models"
-                          label="{{model.name}}">
-                    <div class="demo-tab tab{{$index%4}}" style="padding: 25px; text-align: center;">
-                        <ng-include data-snap-ignore="true" src="model.view"></ng-include>
-                        <br/>
-                        <md-button class="md-primary md-raised"
-                                   ng-click="project.removeModel(model)"
-                                   ng-disabled="project.models.length <= 1">Remove Tab</md-button>
-                    </div>
-                </md-tab>
-            </md-tabs>
-        </md-content>
+<section flex>
+
+<div flex class="md-padding" ng-hide="project.models.length < 2">
+    <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect>
+        <md-tab ng-repeat="model in project.models" label="{{model.name}}">       &lt;!&ndash; TODO Rename and Delete&ndash;&gt;
+            <div style="padding: 25px; text-align: center;">
+                <ng-include data-snap-ignore="true" src="model.view"></ng-include>
+                <br/>
+                <md-button class="md-primary md-raised"
+                           ng-click="project.removeModel(model)"
+                           ng-disabled="project.models.length <= 1">Remove Tab
+                </md-button>
+            </div>
+        </md-tab>
+    </md-tabs>
+</div>
+
+<div ng-hide="project.models.length != 1">
+    <div ng-repeat="model in project.models">
+        <ng-include data-snap-ignore="true" src="model.view"></ng-include>
+    </div>
+</div>
+</section>
+
 
 
 <!--        <div ng-hide="project.models.length < 2">
@@ -46,23 +63,6 @@
             </tabset>
         </div>-->
 
-        <div ng-hide="project.models.length != 1">
-            <div ng-repeat="model in project.models">
-                <ng-include data-snap-ignore="true" src="model.view"></ng-include>
-            </div>
-        </div>
-
-    </div>
-
-</section>
-
-<md-button class="md-fab md-primary"
-           ng-click="newModel($event)"
-           aria-label="New Model" style="position: absolute; top: 55px; right: 24px;">
-    <md-icon class="mdi mdi-plus"
-             style="font-size: 36px; height: 36px; width: 36px;"
-            ></md-icon>
-</md-button>
 
 <md-fab-speed-dial md-direction="up" class="md-fling" style="position: fixed; bottom: 45px; right: 24px;">
     <md-fab-trigger>

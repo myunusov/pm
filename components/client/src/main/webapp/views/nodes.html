@@ -1,12 +1,26 @@
+<md-toolbar class="md-theme-light">
+    <h2 class="md-toolbar-tools">
+        <span>Inset</span>
+    </h2>
+</md-toolbar>
+<md-content>
+    <md-list>
+        <md-list-item class="md-3-line" ng-repeat="node in model.nodes">
+            <md-input ng-model="node.name"></md-input>
+        </md-list-item>
+    </md-list>
+</md-content>
+
+<!--
 <div class="framehdr">
     <i class="icon icon-hdd"></i>
     Nodes
     <button ng-click="addNode()" tooltip-placement="left" tooltip="Add new Node">
         <i class="icon-plus"></i>
     </button>
-    <!--                    <button ng-click="">
+    &lt;!&ndash;                    <button ng-click="">
                             <i class="icon-cog"></i>
-                        </button>-->
+                        </button>&ndash;&gt;
 </div>
 <div class="frame">
     <table class="nodes">
@@ -93,3 +107,4 @@
         </tbody>
     </table>
 </div>
+-->

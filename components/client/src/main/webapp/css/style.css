@@ -16,6 +16,14 @@ md-toolbar .md-toolbar-tools .md-button, md-toolbar .md-toolbar-tools .md-button
 }
 
 
+ md-grid-list {
+    margin: 8px;
+ }
+
+ md-grid-tile {
+    transition: all 400ms ease-out 50ms;
+ }
+
 
 /*alerts*/
 

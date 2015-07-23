@@ -7,7 +7,7 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"/>
     <link rel="shortcut icon" href="img/favicon.ico"/>
     <!-- CSS -->
-    <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
+    <link rel="stylesheet" href="libs/angular-material/css/angular-material.css">
     <link type="text/css" rel="stylesheet" href="css/style.css" media="screen,projection"/>
 </head>
 
@@ -41,7 +41,7 @@
     </div>
 </md-toolbar>
 
-<md-content style="height: 600px;">
+<md-content layout-padding flex>
 
     <div layout="column">
         <section layout="row" flex>
@@ -64,19 +64,14 @@
             </md-sidenav>
 
             <!-- CONTEXT -->
-            <md-content flex layout-padding>
-
-                <div class="container" ng-view>
-                </div>
-
-            </md-content>
+            <div flex ng-view>
+            </div>
 
         </section>
     </div>
 
 </md-content>
 
-</div>
 
 <!--FOOTER
 <footer class="page-footer teal lighten-2">
@@ -93,13 +88,13 @@
 </footer>-->
 
 
-<script src="bower_components/jquery/dist/jquery.js"></script>
-<script src="bower_components/angular/angular.js"></script>
-<script src="bower_components/angular-route/angular-route.js"></script>
+<script src="libs/jquery/js/jquery.js"></script>
+<script src="libs/angular/js/angular.js"></script>
+<script src="libs/angular-route/js/angular-route.js"></script>
 
-<script src="bower_components/angular-aria/angular-aria.js"></script>
-<script src="bower_components/angular-animate/angular-animate.js"></script>
-<script src="bower_components/angular-material/angular-material.js"></script>
+<script src="libs/angular-aria/js/angular-aria.js"></script>
+<script src="libs/angular-animate/js/angular-animate.js"></script>
+<script src="libs/angular-material/js/angular-material.js"></script>
 
 <script type="text/javascript" src="js/utils/maxur-utils.js"></script>
 
