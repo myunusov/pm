@@ -26,7 +26,7 @@
 
 <div flex class="md-padding" ng-hide="project.models.length < 2">
     <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect>
-        <md-tab ng-repeat="model in project.models" label="{{model.name}}">       &lt;!&ndash; TODO Rename and Delete&ndash;&gt;
+        <md-tab ng-repeat="model in project.models" label="{{model.name}}">      <!--  TODO Rename and Delete -->
             <div style="padding: 25px; text-align: center;">
                 <ng-include data-snap-ignore="true" src="model.view"></ng-include>
                 <br/>
@@ -44,6 +44,7 @@
         <ng-include data-snap-ignore="true" src="model.view"></ng-include>
     </div>
 </div>
+
 </section>
 
 

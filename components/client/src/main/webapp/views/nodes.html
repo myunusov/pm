@@ -1,4 +1,23 @@
-<md-toolbar class="md-theme-light">
+    <md-grid-tile md-rowspan="1" md-colspan="3" md-colspan-sm="1">
+            <md-icon class="mdi mdi-harddisk"></md-icon>
+            Nodes
+            <md-button ng-click="addNode()" tooltip-placement="left" tooltip="Add new Node">
+                <i class="mdi  mdi-plus"></i>
+            </md-button>
+            <md-button ng-click="">
+                <md-icon class="mdi mdi-settings"></md-icon>
+            </md-button>
+    </md-grid-tile>
+    <md-grid-tile md-rowspan="1" md-colspan="3" md-colspan-sm="1">
+        Nodes
+    </md-grid-tile>
+    <md-grid-tile md-rowspan="1" md-colspan="3" md-colspan-sm="1" ng-repeat="node in model.nodes">
+        <md-input ng-model="node.name"></md-input>
+    </md-grid-tile>
+
+
+
+<!--    <md-toolbar class="md-theme-light">
     <h2 class="md-toolbar-tools">
         <span>Inset</span>
     </h2>
@@ -9,7 +28,7 @@
             <md-input ng-model="node.name"></md-input>
         </md-list-item>
     </md-list>
-</md-content>
+</md-content>-->
 
 <!--
 <div class="framehdr">
