@@ -25,9 +25,15 @@ function Quantity() {
         return empty(this.value);
     };
 
+    Object.defineProperty(this, 'pattern', {
+        get: function () {
+            return this.unit.pattern;
+        }
+    });
+
     Object.defineProperty(this, 'state', {
         get: function () {
-            if (!this.valid() || this.inconsistent) {
+            if (!this.valid() || this.inconsistent || this._text === undefined) {
                 return "invalid";
             }
             if (this.coflicted) {
@@ -40,6 +46,18 @@ function Quantity() {
         }
     });
 
+    Object.defineProperty(this, 'text', {
+        get: function () {
+            return (this._text || this._text === 0) ?
+                this._text :
+                (number(this.value) ? formatNumber(this.value / this.unit.rate, 5) : this.value);
+        },
+        set: function (value) {
+            this.eval = false;
+            this._text = value;
+            this.value = number(value) ? formatNumber(value * this.unit.rate, 10) : value;
+        }
+    });
     function equals(value1, value2) {
         return parseFloat(value1).toPrecision(10) === parseFloat(value2).toPrecision(10);
     }
@@ -48,18 +66,6 @@ function Quantity() {
         return Math.round(value) === value ? Math.round(value) : parseFloat(value).toPrecision(prec);
     }
 
-    Object.defineProperty(this, 'text', {
-        get: function () {
-            return (this._text || this._text === 0) ?
-                    this._text :
-                    (number(this.value) ? formatNumber(this.value / this.unit.rate, 5) : this.value);
-        },
-        set: function (value) {
-            this.eval = false;
-            this._text = value;
-            this.value = number(value) ? formatNumber(value * this.unit.rate, 10) : value;
-        }
-    });
 
     this.availableUnits = function () {
         var result = [];
@@ -147,6 +153,36 @@ function QNMNumber(value) {
     this.unit = this.unit || this.units[0];
 }
 QNMNumber.prototype = new Quantity();
+
+function QNMName(value) {
+    this.value = value;
+    this.valid = function () {
+        return this.value !== '';
+    };
+    Object.defineProperty(this, 'text', {
+        get: function () {
+            return this.value;
+        },
+        set: function (value) {
+            this.value = value;
+        }
+    });
+
+/*    Object.defineProperty(this, 'pattern', {
+        get: function () {
+            return "[\s\S]*";
+        }
+    });*/
+
+    Object.defineProperty(this, 'state', {
+        get: function () {
+            if (!this.valid()) {
+                return "invalid";
+            }
+            return "";
+        }
+    });
+}
 
 function Throughput(value) {
     this.value = value;
@@ -244,7 +280,7 @@ function QNMCenter() {
 
 function QNMClass(id, name) {
     this.id = id;
-    this.name = name || "Class " + id;
+    this.name = new QNMName(name || "Class " + id);
     this.isOpen = true;
 
     this.throughput = new Throughput();
@@ -253,6 +289,7 @@ function QNMClass(id, name) {
     this.responseTime = new QNMTime();
 
     this.all = {
+        'NAME': this.name,
         'M': this.userNumber,
         'Z': this.thinkTime,
         'X': this.throughput,
@@ -289,15 +326,15 @@ QNMClass.prototype = new QNMCenter();
 
 function QNMNode(id, name) {
     this.id = id;
-    this.name = name || "Node " + id;
+    this.name = new QNMName(name || "Node " + id);
     this.nodeNumber = new QNMNumber(1);
     this.utilization = new Utilization();
     this.utilizationEx = new Utilization(0);
 
     this.all = {
+        'NAME': this.name,
         'NN': this.nodeNumber,
         'U': this.utilization,
-        'UEX': this.utilizationEx
     };
     this.expressions = [];
 
@@ -856,12 +893,9 @@ function QNM(name, id) {
         return new Expression(result);
     };
 
-    // U =  UEX + SUM(U)
-    this.makeUUEXExp = function (node) {
-        var result = [
-            [-1, new Parameter('U', node)],
-            [new Parameter('UEX', node)]
-        ];
+    // U =  SUM(U)
+    this.makeUExp = function (node) {
+        var result = [[-1, new Parameter('U', node)]];
         var visits = this.getVisitsByNode(node);
         for (var j = 0; j < visits.length; j++) {
             if (visits[j].totalNumber.value) {
@@ -871,13 +905,12 @@ function QNM(name, id) {
         return new Expression(result);
     };
 
-    // U + UEX * N  + SUM(U * N) = N
-    this.makeUUEXNExp = function (clazz, node) {
+    // U + SUM(U * N) = N
+    this.makeUNExp = function (clazz, node) {
         var visit = this.getVisitBy(clazz, node);
         var result = [
             [new Parameter('U', visit)],
-            [-1, new Parameter('N', visit)],
-            [new Parameter('UEX', node), new Parameter('N', visit)]
+            [-1, new Parameter('N', visit)]
         ];
         var visits = this.getVisitsByNode(node);
         for (var j = 0; j < visits.length; j++) {
@@ -886,13 +919,12 @@ function QNM(name, id) {
         return new Expression(result);
     };
 
-    // RT = SV/(1 - UEX - SUM(U)) ->  RT = S*V + UEX * RT + SUM(U * RT)
+    // RT = SV/(1 - SUM(U)) ->  RT = S*V + SUM(U * RT)
     this.makeRTUSExp = function (clazz, node) {
         var visit = this.getVisitBy(clazz, node);
         var result = [
             [-1, new Parameter('RT', visit)],
-            [new Parameter('S', visit), new Parameter('V', visit)],
-            [new Parameter('UEX', node), new Parameter('RT', visit)]
+            [new Parameter('S', visit), new Parameter('V', visit)]
         ];
         var visits = this.getVisitsByNode(node);
         for (var j = 0; j < visits.length; j++) {
@@ -910,11 +942,11 @@ function QNM(name, id) {
             result.push(this.makeRXNExps(this.classes[i]));
         }
         for (var j = 0; j < this.nodes.length; j++) {
-            result.push(this.makeUUEXExp(this.nodes[j]));
+            result.push(this.makeUExp(this.nodes[j]));
         }
         for (var i1 = 0; i1 < this.classes.length; i1++) {
             for (var j1 = 0; j1 < this.nodes.length; j1++) {
-                result.push(this.makeUUEXNExp(this.classes[i1], this.nodes[j1]));
+                result.push(this.makeUNExp(this.classes[i1], this.nodes[j1]));
                 result.push(this.makeRTUSExp(this.classes[i1], this.nodes[j1]));
             }
         }

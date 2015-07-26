@@ -4,8 +4,18 @@
 
 angular.module('pmc.directives', [])
 
-    .directive('onCollapse', function() {
-        return function(scope, element, attrs) {
+    .directive('includeReplace', function () {
+        return {
+            require: 'ngInclude',
+            restrict: 'A', /* optional */
+            link: function (scope, el, attrs) {
+                el.replaceWith(el.children());
+            }
+        };
+    })
+
+    .directive('onCollapse', function () {
+        return function (scope, element, attrs) {
             $(element).find(' > i').not(".icon-leaf").on('click', clickingCallback);
         }
     })

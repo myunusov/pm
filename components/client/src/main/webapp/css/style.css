@@ -6,6 +6,15 @@ md-toolbar .mdi {
     height: 24px
 }
 
+md-grid-tile .mdi {
+    font-size: 24px;
+    height: 24px
+}
+
+.framehdr .mdi {
+    font-size: 24px;
+    height: 24px
+}
 
 /*tooltip*/
 md-toolbar .md-toolbar-tools .md-button, md-toolbar .md-toolbar-tools .md-button:hover {
@@ -25,10 +34,6 @@ md-toolbar .md-toolbar-tools .md-button, md-toolbar .md-toolbar-tools .md-button
  }
 
 
-md-grid-list {
-    margin: 8px;
-}
-
 .gray {
     background: #f5f5f5; }
 
@@ -47,10 +52,6 @@ md-grid-list {
 .red {
     background: #ff8a80; }
 
-md-grid-tile {
-    transition: all 400ms ease-out 50ms;
-}
-
 
 /*alerts*/
 
@@ -64,6 +65,10 @@ md-grid-tile {
     margin: 5px;
 }
 
+
+/*OLD*/
+
+
 footer.page-footer {
     padding-top: 0;
 }
@@ -71,4 +76,336 @@ footer.page-footer {
 
 nav .btn,nav .btn-large {
     margin-top: 12px
+}
+
+
+.ng-cloak {
+    opacity: 0;
+    background-color: white;
+}
+
+.ng-invalid {
+    border: 1px solid red !important;
+}
+
+section {
+    padding-top: 30px;
+}
+
+.page-header h1 > small > a {
+    color: #999;
+}
+.page-header h1 > small > a:hover {
+    text-decoration: none;
+}
+
+.framehdr button {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border: 0 none;
+    cursor: pointer;
+    padding: 0 0 0 5px;
+    color: #000000;
+    float: right;
+    font-weight: bold;
+    line-height: 20px;
+    opacity: 0.8;
+    text-shadow: 0 1px 0 #FFFFFF;
+}
+
+.framehdr .simplebox {
+    background-color: #f5f5f5;
+}
+
+.framehdr span {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border: 0 none;
+    cursor: pointer;
+    padding: 0 0 0 5px;
+    color: #000000;
+    float: right;
+    font-weight: bold;
+    line-height: 20px;
+    opacity: 0.8;
+    text-shadow: 0 1px 0 #FFFFFF;
+}
+
+.framehdr input {
+    border: medium none !important;
+    box-shadow: none !important;
+    margin-bottom: 0 !important;
+    outline: medium none;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.frame button{
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border: 0 none;
+    cursor: pointer;
+    padding: 0;
+    color: #000000;
+    font-weight: bold;
+    line-height: 20px;
+    opacity: 0.8;
+    text-shadow: 0 1px 0 #FFFFFF;
+}
+
+.frame {
+    min-height: 20px;
+    margin-bottom: 20px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.framehdr {
+    min-height: 20px;
+    padding: 9px;
+    background-color: #f5f5f5;
+    font-weight: bold;
+    border: 1px solid #e3e3e3;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+/*
+Generic Styling, for Desktops/Laptops
+*/
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    word-break: break-all;
+    table-layout: fixed;
+}
+
+/* Zebra striping */
+
+tr:nth-of-type(odd) {
+    background: #eee;
+}
+th {
+    background: #e3e3e3;
+    color: #333;
+    font-weight: bold;
+}
+
+td, th {
+    padding: 6px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+
+tab-heading  input {
+    outline: none;
+    border:none !important;
+    box-shadow:none !important;
+    margin-bottom: 0 !important;
+    opacity: 1.0;
+}
+
+tab-heading  button {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border: 0 none;
+    cursor: pointer;
+    padding: 0 0 0 5px;
+    color: #000000;
+    font-weight: bold;
+    line-height: 20px;
+    opacity: 0.8;
+    text-shadow: 0 1px 0 #FFFFFF;
+}
+
+.bounds-chart {
+    min-width: 310px;
+    height: 400px;
+    margin: 0 auto;
+}
+
+.frame input {
+    outline: none;
+    border:none !important;
+    box-shadow:none !important;
+    margin-bottom: 0 !important;
+    width: 65%;
+}
+
+.frame span {
+    height: 20px;
+    margin-top: 2px;
+    padding: 6px 4px;
+}
+
+.frame a {
+    color: #555555;
+    text-decoration: none;
+}
+
+
+.frame a:hover {
+    color: #555555;
+    text-decoration: none;
+}
+
+tr:nth-of-type(odd) .simplebox {
+    background-color: #eee;
+}
+
+.eval {
+    color: green !important;
+}
+
+.conflict {
+    color: orange !important;
+}
+
+.invalid {
+    color: red !important;
+}
+
+
+/* Large desktop */
+@media (min-width: 600px) {
+    #brand {
+        display: block;
+    }
+    #label1 {
+        display: block;
+    }
+    #label2 {
+        display: none;
+    }
+}
+
+/* Landscape phone to portrait tablet */
+@media (max-width: 600px) {
+
+    .navbar-fixed-top {
+        margin: 0;
+    }
+
+    .container {
+        margin: 0;
+    }
+
+    #brand {
+        display: c;
+    }
+    #label1 {
+        display: block;
+    }
+    #label2 {
+        display: none;
+    }
+
+    /* Force table to not be like tables anymore */
+    .qnm table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    /* Hide table headers (but not display: none;, for accessibility) */
+    .qnm thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    .qnm tr {
+        border: 1px solid #ccc;
+    }
+
+    .qnm td {
+        /* Behave  like a "row" */
+        border: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+    }
+
+    .qnm td:before {
+        /* Now like a table header */
+        position: absolute;
+        /* Top/left values mimic padding */
+        top: 6px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+
+    /*
+    Label the data
+    */
+
+
+    .nodes td:nth-of-type(1):before {
+        content: "Node Name";
+    }
+    .nodes td:nth-of-type(2):before {
+        content: "N";
+    }
+    .nodes td:nth-of-type(3):before {
+        content: "U (full)";
+    }
+    .nodes td:nth-of-type(4):before {
+    }
+
+
+    .classes td:nth-of-type(1):before {
+        content: "Class Name";
+    }
+    .classes td:nth-of-type(2):before {
+        content: "M";
+    }
+    .classes td:nth-of-type(3):before {
+        content: "Z";
+    }
+    .classes td:nth-of-type(4):before {
+        content: "X";
+    }
+    .classes td:nth-of-type(5):before {
+        content: "R";
+    }
+    .classes td:nth-of-type(6):before {
+    }
+
+    .visits td:nth-of-type(1):before {
+        content: "Details";
+    }
+    .visits td:nth-of-type(2):before {
+        content: "Node";
+    }
+    .visits td:nth-of-type(3):before {
+        content: "Class";
+    }
+    .visits td:nth-of-type(4):before {
+        content: "V(I)";
+    }
+    .visits td:nth-of-type(5):before {
+        content: "X(I)";
+    }
+    .visits td:nth-of-type(6):before {
+        content: "S(I)";
+    }
+    .visits td:nth-of-type(7):before {
+        content: "D(I)";
+    }
+    .visits td:nth-of-type(8):before {
+        content: "U(I)";
+    }
+    .visits td:nth-of-type(9):before {
+        content: "N(I)";
+    }
+    .visits td:nth-of-type(10):before {
+        content: "RT(I)";
+    }
+
 }

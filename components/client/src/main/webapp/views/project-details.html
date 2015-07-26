@@ -1,4 +1,4 @@
-<section>
+<section style="padding: 0">
 <form name="projectForm" class="">
     <md-content md-theme="docs-dark" layout-padding layout="row" layout-sm="column">
         <md-input-container flex-sm="100" flex="40">
@@ -27,7 +27,7 @@
 <div flex class="md-padding" ng-hide="project.models.length < 2">
     <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect>
         <md-tab ng-repeat="model in project.models" label="{{model.name}}">      <!--  TODO Rename and Delete -->
-            <div style="padding: 25px; text-align: center;">
+            <div style="padding: 25px;">
                 <ng-include data-snap-ignore="true" src="model.view"></ng-include>
                 <br/>
                 <md-button class="md-primary md-raised"
@@ -40,7 +40,7 @@
 </div>
 
 <div ng-hide="project.models.length != 1">
-    <div ng-repeat="model in project.models">
+    <div ng-init="model=project.models[0]" style="padding: 25px;">
         <ng-include data-snap-ignore="true" src="model.view"></ng-include>
     </div>
 </div>

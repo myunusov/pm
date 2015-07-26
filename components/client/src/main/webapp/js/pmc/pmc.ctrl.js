@@ -100,6 +100,128 @@ angular.module('pmc.controllers', [])
 
     .controller('QNMCtrl', function ($scope, messageProvider) {
 
+        $scope.nodeTypes = [
+            {
+                id: "NAME",
+                title: "Name",
+                tooltip: "Node Name",
+            },
+            {
+                id: "NN",
+                title: "Number",
+                tooltip: "Number of Node instances",
+            },
+            {
+                id: "U",
+                title: "Total Utilization",
+                tooltip: "Total Utilization (U)",
+            }
+        ];
+
+        $scope.classTypes = [
+            {
+                id: "NAME",
+                title: "Name",
+                tooltip: "Class Name",
+            },
+            {
+                id: "M",
+                title: "No.user",
+                tooltip: "Number of Users (Terminals)(M)",
+            },
+            {
+                id: "Z",
+                title: "Think Time",
+                tooltip: "Think Time (Z)",
+            },
+            {
+                id: "X",
+                title: "Throughput",
+                tooltip: "Throughput per Class (X0)",
+            },
+            {
+                id: "R",
+                title: "Latency",
+                tooltip: "Response Time per Class (R)",
+            }
+        ];
+
+        $scope.totalVisitTypes = [
+            {
+                id: "TV",
+                title: "No. Visit",
+                tooltip: "Number of Visits per Request (Vi)",
+            },
+            {
+                id: "XI",
+                title: "Throughput",
+                tooltip: "Throughput per class (Xi)",
+            },
+            {
+                id: "S",
+                title: "Service Time",
+                tooltip: "Service Time per class (Si)",
+            },
+            {
+                id: "D",
+                title: "Demands",
+                tooltip: "Service Demands per class (Di)",
+            },
+            {
+                id: "U",
+                title: "Utilization",
+                tooltip: "Utilization per class (Ui)",
+            },
+            {
+                id: "TN",
+                title: "No. Task",
+                tooltip: "Mean Number of Tasks per class (Ni)",
+            },
+            {
+                id: "RT",
+                title: "RT",
+                tooltip: "Residence Time per class (RTi)"
+            }
+        ];
+        $scope.visitTypes = [
+            {
+                id: "V",
+                title: "Number of Visits",
+                tooltip: "Number of Visits per Request (Vi)",
+            },
+            {
+                id: "XI",
+                title: "Throughput",
+                tooltip: "Throughput per class (Xi)",
+            },
+            {
+                id: "S",
+                title: "Service Time",
+                tooltip: "Service Time per class (Si)",
+            },
+            {
+                id: "D",
+                title: "Service Demands",
+                tooltip: "Service Demands per class (Di)",
+            },
+            {
+                id: "U",
+                title: "Utilization",
+                tooltip: "Utilization per class (Ui)",
+            },
+            {
+                id: "N",
+                title: "No.task",
+                tooltip: "Mean Number of Tasks per class (Ni)",
+            },
+            {
+                id: "RT",
+                title: "Residence Time",
+                tooltip: "Residence Time per class (RTi)"
+            }
+
+        ];
+
         $scope.change = function (fieldName, center) {
             var model = $scope.model;
             messageProvider.clear();
@@ -118,11 +240,6 @@ angular.module('pmc.controllers', [])
             $scope.model.recalculate();
         };
 
-        $scope.removeNode = function (node) {
-            $scope.model.removeNode(node);
-            $scope.model.recalculate();
-        };
-
         $scope.addClass = function () {
             $scope.model.addClass();
             $scope.model.recalculate();
@@ -130,6 +247,23 @@ angular.module('pmc.controllers', [])
 
         $scope.refreshCharts = function () {
             $scope.model.refreshCharts();
+        };
+
+        $scope.remove = function (center) {
+            if (center instanceof QNMNode) {
+                $scope.model.removeNode(center);
+            } else
+            if (center instanceof QNMNode) {
+                $scope.model.removeClass(center);
+            } else {
+                return;
+            }
+            $scope.model.recalculate();
+        };
+
+        $scope.removeNode = function (node) {
+            $scope.model.removeNode(node);
+            $scope.model.recalculate();
         };
 
         $scope.removeClass = function (clazz) {

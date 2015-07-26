@@ -19,7 +19,7 @@
     <!--MAIN MENU-->
 <md-toolbar class="md-whiteframe-glow-z1 site-content-toolbar md-default-theme" ng-controller="MainMenuCtrl">
     <div class="md-toolbar-tools">
-        <md-button ng-click="showAbout($event)">
+        <md-button aria-label="About" ng-click="showAbout($event)">
             <h2><span>Performance Model Calculator</span></h2>
         </md-button>
 
@@ -44,7 +44,7 @@
 <md-content layout-padding flex>
 
     <div layout="column">
-        <section layout="row" flex>
+        <section layout="row" flex style="padding: 0">
             <!-- LEFT SIDEBAR -->
             <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left">
                 <md-toolbar>
