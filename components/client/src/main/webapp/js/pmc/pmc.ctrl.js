@@ -256,7 +256,7 @@ angular.module('pmc.controllers', [])
             $scope.remove = function (center) {
                 if (center instanceof QNMNode) {
                     $scope.model.removeNode(center);
-                } else if (center instanceof QNMNode) {
+                } else if (center instanceof QNMClass) {
                     $scope.model.removeClass(center);
                 } else {
                     return;
@@ -377,7 +377,6 @@ angular.module('pmc.controllers', [])
 
             function ComparatorController($scope, $mdDialog, compareProvider) {
 
-
                 $scope.hide = function () {
                     $mdDialog.hide();
                 };
@@ -393,6 +392,115 @@ angular.module('pmc.controllers', [])
                 $scope.models = function () {
                     return compareProvider.models();
                 };
+
+                $scope.classes = function (index) {
+                    var models = compareProvider.models();
+                    var result = [];
+                    models.each(
+                        function (m) {
+                            m.classes.each(
+                                function (c) {
+                                    result.push(c.name.value);
+                                }
+                            )
+                        }
+                    )
+                    return result.unique();
+                };
+
+                $scope.info = function (model1, model2, cname) {
+                    var c1, c2;
+                    model1.classes.each(
+                        function (c) {
+                            if (c.name.value === cname) {
+                                c1 = c;
+                            }
+                        });
+                    model2.classes.each(
+                        function (c) {
+                            if (c.name.value === cname) {
+
+                                c2 = c;
+                            }
+                        });
+                    if (c1 && c2)
+                        return  new ComparedItem(c1, c2);
+                    else return new function(){
+                        this.rAsString = function() {
+                            return "X";
+                        }
+                        this.xAsString = function() {
+                            return "X";
+                        }
+                        this.rClass = function() {
+                            return "non";
+                        };
+                        this.xClass = function() {
+                             return "non";
+                        };
+                    };
+                };
+
+
+                function ComparedItem(class1, class2) {
+
+                    this.r = rSpeedUp(class1, class2);
+                    this.x = xSpeedUp(class1, class2);
+
+                    function rSpeedUp(class1, class2) {
+                        var time1 = class1.responseTime;
+                        var time2 = class2.responseTime;
+                        if (time1.value && time2.value) {
+                            return time2.value / time1.value;
+                        }
+                        return null;
+                    }
+                    function xSpeedUp(class1, class2) {
+                        var throughput1 = class1.throughput;
+                        var throughput2 = class2.throughput;
+                        if (throughput1.value && throughput2.value) {
+                            return throughput1.value / throughput2.value;
+                        }
+                        return null;
+                    }
+
+                    function boost(speedUp) {
+                         return speedUp < 1 ? -(1 - speedUp) * 100 : (1 - 1 / speedUp) * 100;
+                    }
+
+                    function formatNumber(value) {
+                        return Math.round(value) === value ? Math.round(value) : parseFloat(value).toPrecision(3);
+                    }
+
+                    this.rAsString = function() {
+                        if (!this.r) {
+                            return "X";
+                        }
+                        return "R:" + formatNumber(this.r) + "  (" + formatNumber(boost(this.r)) + "%)";
+                    };
+
+                    this.xAsString = function() {
+                        if (!this.x) {
+                            return "X";
+                        }
+                        return "X:" + formatNumber(this.x) + "  (" + formatNumber(boost(this.x)) + "%)";
+
+                    };
+
+                    this.rClass = function() {
+                        if (!this.r || this.r == 1) {
+                            return "non";
+                        }
+                        return this.r < 1 ? "down" : "up";
+                    };
+
+                    this.xClass = function() {
+                        if (!this.x || this.x == 1) {
+                            return "non";
+                        }
+                        return this.x < 1 ? "down" : "up";
+                    };
+                }
 
             }
 

@@ -603,74 +603,6 @@ function Expression(expression, center) {
     };
 }
 
-function ComparedItem(class1, class2) {
-
-    this.name = class1.name;
-
-    function formatNumber(value) {
-        return Math.round(value) === value ? Math.round(value) : parseFloat(value).toPrecision(5);
-    }
-
-    this.rAsString = function() {
-        var time1 = class1.responseTime;
-        var time2 = class2.responseTime;
-        if (time1.value && time2.value) {
-            var speedUp = time2.value / time1.value;
-            var boost;
-            if (speedUp < 1)
-                boost = -(1 - speedUp) * 100;
-            else
-                boost = (1 - 1/speedUp) * 100;
-            return formatNumber(speedUp) + "  (" + formatNumber(boost) + "%)";
-        }
-        return "Undefined";
-    };
-
-    this.xAsString = function() {
-        var throughput1 = class1.throughput;
-        var throughput2 = class2.throughput;
-        if (throughput1.value && throughput2.value) {
-            var speedUp = throughput1.value / throughput2.value;
-            var boost;
-            if (speedUp < 1)
-                boost = -(1 - speedUp) * 100;
-            else
-                boost = (1 - 1/speedUp) * 100;
-            return formatNumber(speedUp) + "  (" + formatNumber(boost) + "%)";
-        }
-        return "Undefined";
-    };
-
-
-}
-
-function ComparedInfo(model1) {
-    this.models = [];
-    this.items = [];
-
-    this.itemsBy = function(model2) {
-        var items = [];
-        model1.classes.each(
-            function (c1) {
-                model2.classes.each(
-                    function (c2) {
-                        if (c2.name === c1.name) {
-                            items.push(new ComparedItem(c1, c2));
-                        }
-                    }
-                )
-            }
-        );
-        return items;
-    };
-
-    this.setModel = function(value) {
-        this.models[0] = value;
-        this.items = this.itemsBy(value);
-    };
-
-}
-
 function QNM(name, id) {
     this.id = id;
     this.name = name;
@@ -679,7 +611,6 @@ function QNM(name, id) {
     this.classes = [];
     this.nodes = [];
     this.visits = [];
-    this.compared = new ComparedInfo(this);
 
     var classNo = 0;
     var nodeNo = 0;

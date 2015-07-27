@@ -2,7 +2,7 @@
     <form>
         <md-toolbar>
             <div class="md-toolbar-tools">
-                <h2>Compare</h2>
+                <i class="mdi mdi-fire"></i>Speed-Up
                 <span flex></span>
                 <md-button class="md-icon-button" ng-click="answer()">
                     <md-icon class="mdi mdi-close" aria-label="Close dialog"></md-icon>
@@ -10,27 +10,30 @@
             </div>
         </md-toolbar>
         <md-dialog-content>
-            <div class="framehdr">
-                <i class="mdi mdi-fire"></i>
-                Speed-Up
-            </div>
+
             <div class="frame">
-                <table ng-init="rowmodels=models(); colmodels=models()">
-                    <tbody>
+                <table ng-init="models=models()">
                     <tr>
-                        <th colspan="4" ng-repeat="model2 in colmodels">
-                            {{model2.name}}
+                        <th>Classes</th>
+                        <th colspan="{{models.length}}">Models</th>
+                    <tr>
+                    <tr>
+                        <th></th>
+                        <th ng-repeat="model in models">
+                            {{model.name}}
                         </th>
                     <tr>
-                    </tbody>
-                    <tbody ng-repeat="model1 in rowmodels">
-                    <tr ng-repeat="item in model1.compared.items">
-                        <th>{{model1.name}}</th>
-                        <th>{{item.name}}</th>
-                        <td>R: {{item.rAsString()}}</td>
-                        <td>X: {{item.xAsString()}}</td>
+                    <tr ng-repeat="class in classes()">
+                        <th>{{class}}</th>
+                        <td ng-repeat="model in models">
+                            <table border="0" style="padding: 0; margin: 0; border: 0">
+                                <row ng-init="item=info(models[0] ,model, class)">
+                                    <td ng-class="item.rClass()">{{item.rAsString()}}</td>
+                                    <td ng-class="item.xClass()">{{item.xAsString()}}</td>
+                                </row>
+                            </table>
+                        </td>
                     </tr>
-                    </tbody>
                 </table>
             </div>
         </md-dialog-content>

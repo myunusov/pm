@@ -272,6 +272,18 @@ tr:nth-of-type(odd) .simplebox {
     color: red !important;
 }
 
+.up {
+    color: green !important;
+}
+
+.non {
+    color: gray !important;
+}
+
+.down {
+    color: red !important;
+}
+
 
 /* Landscape phone to portrait tablet */
 @media (max-width: 600px) {
