@@ -204,15 +204,16 @@ td, th {
 }
 
 
-tab-heading  input {
+.tab-input {
     outline: none;
     border:none !important;
     box-shadow:none !important;
     margin-bottom: 0 !important;
     opacity: 1.0;
+    width: 90px;
 }
 
-tab-heading  button {
+.tab-button {
     background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
     border: 0 none;
     cursor: pointer;
@@ -272,38 +273,11 @@ tr:nth-of-type(odd) .simplebox {
 }
 
 
-/* Large desktop */
-@media (min-width: 600px) {
-    #brand {
-        display: block;
-    }
-    #label1 {
-        display: block;
-    }
-    #label2 {
-        display: none;
-    }
-}
-
 /* Landscape phone to portrait tablet */
 @media (max-width: 600px) {
 
-    .navbar-fixed-top {
-        margin: 0;
-    }
-
     .container {
         margin: 0;
-    }
-
-    #brand {
-        display: c;
-    }
-    #label1 {
-        display: block;
-    }
-    #label2 {
-        display: none;
     }
 
     /* Force table to not be like tables anymore */

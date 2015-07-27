@@ -26,22 +26,31 @@
 
 <div flex class="md-padding" ng-hide="project.models.length < 2">
     <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect>
-        <md-tab ng-repeat="model in project.models" label="{{model.name}}">      <!--  TODO Rename and Delete -->
-            <div style="padding: 25px;">
-                <ng-include data-snap-ignore="true" src="model.view"></ng-include>
-                <br/>
-                <md-button class="md-primary md-raised"
-                           ng-click="project.removeModel(model)"
-                           ng-disabled="project.models.length <= 1">Remove Tab
-                </md-button>
-            </div>
+        <md-tab ng-repeat="model in project.models">
+            <!--  TODO Rename and Delete -->
+                 <md-tab-label>
+                    <input type="text" class="tab-input ng-pristine ng-valid" ng-model="model.name">
+                    <span style="height: 28px">
+                    <button class="tab-button" ng-click="addToCompare(model)">
+                        <i class="mdi mdi-compare"></i>
+                        <md-tooltip>Add to Compare</md-tooltip>
+                    </button>
+                    <button class="tab-button" ng-click="project.removeModel(model)">
+                        <i class="mdi mdi-close"></i>
+                        <md-tooltip>Remove Model</md-tooltip>
+                    </button>
+                </span>
+                 </md-tab-label>
+                 <md-tab-body style="padding: 25px;">
+                     <ng-include src="model.view"></ng-include>
+                 </md-tab-body>
         </md-tab>
     </md-tabs>
 </div>
 
 <div ng-hide="project.models.length != 1">
     <div ng-init="model=project.models[0]" style="padding: 25px;">
-        <ng-include data-snap-ignore="true" src="model.view"></ng-include>
+        <ng-include src="model.view"></ng-include>
     </div>
 </div>
 

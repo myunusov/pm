@@ -32,6 +32,15 @@
             </md-tooltip>
         </md-button>
 
+        <md-button class="md-icon-button" aria-label="Compare"
+                   ng-click="compare($event)"
+                   ng-disabled="isNotComparable()">
+            <md-icon class="mdi mdi-compare"></md-icon>
+            <md-tooltip>
+                Compare
+            </md-tooltip>
+        </md-button>
+
         <md-button hide-sm class="md-icon-button" aria-label="Full Screen">
             <md-icon class="mdi" ng-click="toggleFullScreen();" ng-class="fullScreenClass()"></md-icon>
             <md-tooltip>

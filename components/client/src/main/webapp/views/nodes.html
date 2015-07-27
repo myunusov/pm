@@ -29,11 +29,10 @@
             <td nowrap="nowrap" ng-repeat="type in nodeTypes" ng-init="prop=center.all[type.id]">
                 <input type="text"
                        aria-label="Property {{type.title}}"
-                       class="input input-small simplebox quantity {{prop.state}}"
+                       class="tab-input simplebox quantity {{prop.state}}"
                        ng-change="change(type.id, center)"
                        ng-pattern="prop.pattern"
                        ng-model="prop.text">
-
                 <md-menu>
                     <button aria-label="Select Unit" class="md-icon-button" ng-click="$mdOpenMenu()">
                         {{prop.unit.title}}
@@ -46,7 +45,6 @@
                         </md-menu-item>
                     </md-menu-content>
                 </md-menu>
-
             </td>
             <td nowrap="nowrap">
                 <span style="height: 28px">

@@ -188,6 +188,22 @@ angular.module('pmc.services', [])
         };
     })
 
+    .service('compareProvider', function () {
+
+            var models = [];
+            return {
+                models: function () {
+                    return models;
+                },
+                add: function (model) {
+                    models.push(model);
+                },
+                remove: function (model) {
+                    models.remove(model);
+                }
+            }
+    })
+
     .factory('modelFactory', function() {
     return {
         qnm: function(name) {
