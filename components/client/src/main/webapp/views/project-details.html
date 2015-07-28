@@ -1,5 +1,5 @@
-<section style="padding: 0">
-<form name="projectForm" class="">
+<section>
+<form name="projectForm">
     <md-content md-theme="docs-dark" layout-padding layout="row" layout-sm="column">
         <md-input-container flex-sm="100" flex="40">
             <label>Project</label>
@@ -22,12 +22,11 @@
 </form>
 </section>
 
-<section flex>
+<section flex ng-init="project=project()">
 
-<div flex class="md-padding" ng-hide="project.models.length < 2">
+<div flex layout-fill class="md-padding" ng-if="project.models.length > 1">
     <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect>
         <md-tab ng-repeat="model in project.models">
-            <!--  TODO Rename and Delete -->
                  <md-tab-label>
                     <input type="text" class="tab-input ng-pristine ng-valid" ng-model="model.name">
                     <span style="height: 28px">
@@ -41,58 +40,20 @@
                     </button>
                 </span>
                  </md-tab-label>
-                 <md-tab-body style="padding: 25px;">
+                 <md-tab-body>
                      <ng-include src="model.view"></ng-include>
                  </md-tab-body>
         </md-tab>
     </md-tabs>
 </div>
 
-<div ng-hide="project.models.length != 1">
-    <div ng-init="model=project.models[0]" style="padding: 25px;">
+<div flex layout-fill class="md-padding" ng-if="project.models.length == 1">
+    <div ng-repeat="model in project.models">
         <ng-include src="model.view"></ng-include>
     </div>
 </div>
 
 </section>
-
-
-
-<!--        <div ng-hide="project.models.length < 2">
-            <tabset>
-                <tab ng-repeat="model in project.models">
-
-                    <tab-heading>
-                        <input type="text" class="input input-small simplebox" ng-model="model.name">
-                        <button ng-click="project.removeModel(model)" tooltip-placement="right" tooltip="Remove Model">
-                            <i class="icon-remove"></i>
-                        </button>
-                    </tab-heading>
-                    <ng-include data-snap-ignore="true" src="model.view"></ng-include>
-                </tab>
-            </tabset>
-        </div>-->
-
-
-<md-fab-speed-dial md-direction="up" class="md-fling" style="position: fixed; bottom: 45px; right: 24px;">
-    <md-fab-trigger>
-        <md-button aria-label="menu" class="md-fab md-warn">
-            <md-icon md-svg-src="img/icons/menu.svg"></md-icon>
-        </md-button>
-    </md-fab-trigger>
-    <md-fab-actions>
-        <md-button aria-label="Remove Project" class="md-fab md-raised md-warn md-mini" ng-click="remove()">
-            <md-icon style="height: 24px; width: 24px; font-size: 24px" class="mdi mdi-delete"></md-icon>
-        </md-button>
-        <md-button aria-label="Save Project" class="md-fab md-raised md-mini md-primary" ng-click="save()">
-            <md-icon style="height: 24px; width: 24px; font-size: 24px" class="mdi mdi-content-save"></md-icon>
-        </md-button>
-        <md-button aria-label="New Project" class="md-fab md-raised md-mini md-primary" ng-click="reset()">
-            <md-icon style="height: 24px; width: 24px; font-size: 24px" class="mdi mdi-file-outline"></md-icon>
-        </md-button>
-
-    </md-fab-actions>
-</md-fab-speed-dial>
 
 
 

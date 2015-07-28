@@ -19,7 +19,7 @@ angular.module('pmc.services', [])
             return Object.keys(toastPosition)
                 .filter(function(pos) { return toastPosition[pos]; })
                 .join(' ');
-        };
+        }
 
         function getMessageBy(errorcode) {
             switch (parseFloat(errorcode)) {
@@ -110,7 +110,7 @@ angular.module('pmc.services', [])
                         messageProvider.error(
                             data && data.message ?
                                 data.message :
-                                "Performance Model List is not loaded.", status);
+                                "Project List is not loaded.", status);
                     });
             },
             load: function (name) {
@@ -119,26 +119,27 @@ angular.module('pmc.services', [])
                 $http.get(url + '/' + name)
                     .success(function (dto) {
                         project.setDTO(dto);
-                        messageProvider.info("Performance Model '" + dto.name + "' is loaded.");
+                        messageProvider.info("Project '" + dto.name + "' is loaded.");
                     })
                     .error(function (data, status) {
                         messageProvider.error(
                             data && data.message ?
                                 data.message :
-                                "Performance Model is not loaded.", status);
+                                "Project is not loaded.", status);
                     });
             },
             reset: function () {
                 messageProvider.clear();
                 project.reset();
                 project.models.push(modelFactory.qnm());
+                messageProvider.info("New Project is created.");
             },
             remove: function (name) {
                 name = name || project.name;
                 messageProvider.clear();
                 $http['delete'](url + '/' + name)
                     .success(function (dto) {
-                        messageProvider.info("Performance Model '" + dto.name + "' is deleted.");
+                        messageProvider.info("Project '" + dto.name + "' is deleted.");
                         remove(dto.name);
                         if (project.name === dto.name) {
                             project.reset();
@@ -149,7 +150,7 @@ angular.module('pmc.services', [])
                         messageProvider.error(
                             data && data.message ?
                                 data.message :
-                                "Performance Model is not deleted.", status);
+                                "Project is not deleted.", status);
                     });
             },
             save: function () {
@@ -165,7 +166,7 @@ angular.module('pmc.services', [])
                                 name: dto.name,
                                 version: dto.version
                             });
-                            messageProvider.info("Performance Model is saved as '" + dto.name + "'.");
+                            messageProvider.info("Project is saved as '" + dto.name + "'.");
                         } else {
                             messageProvider.error(dto.name, status);
                         }
@@ -174,7 +175,7 @@ angular.module('pmc.services', [])
                         messageProvider.error(
                             data && data.message ?
                                 data.message :
-                                "Performance Model is not saved.", status);
+                                "Project is not saved.", status);
                     });
             },
             addQNM: function () {
@@ -197,6 +198,7 @@ angular.module('pmc.services', [])
                 },
                 add: function (model) {
                     models.push(model);
+                    models = models.unique();
                 },
                 remove: function (model) {
                     models.remove(model);

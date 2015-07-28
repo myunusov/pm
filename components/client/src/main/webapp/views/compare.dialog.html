@@ -12,13 +12,13 @@
         <md-dialog-content>
 
             <div class="frame">
-                <table ng-init="models=models()">
+                <table class="compare" ng-init="models=models()">
+                    <tbody>
                     <tr>
-                        <th>Classes</th>
-                        <th colspan="{{models.length}}">Models</th>
+                        <th rowspan="3">Classes</th>
+                        <th colspan="{{models.length}}" style="text-align: center;">Models</th>
                     <tr>
                     <tr>
-                        <th></th>
                         <th ng-repeat="model in models">
                             {{model.name}}
                         </th>
@@ -26,7 +26,7 @@
                     <tr ng-repeat="class in classes()">
                         <th>{{class}}</th>
                         <td ng-repeat="model in models">
-                            <table border="0" style="padding: 0; margin: 0; border: 0">
+                            <table class="inner">
                                 <row ng-init="item=info(models[0] ,model, class)">
                                     <td ng-class="item.rClass()">{{item.rAsString()}}</td>
                                     <td ng-class="item.xClass()">{{item.xAsString()}}</td>
@@ -34,6 +34,7 @@
                             </table>
                         </td>
                     </tr>
+                    </tbody>
                 </table>
             </div>
         </md-dialog-content>

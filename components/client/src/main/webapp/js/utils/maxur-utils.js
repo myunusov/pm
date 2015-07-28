@@ -11,6 +11,18 @@ if (typeof String.prototype.endsWith !=='function') {
     };
 }
 
+if (typeof String.prototype.format !=='function') {
+    String.prototype.format = function() {
+        var args = arguments;
+        return this.replace(/{(\d+)}/g, function(match, number) {
+            return typeof args[number] != 'undefined'
+                    ? args[number]
+                    : match
+                    ;
+        });
+    };
+}
+
 if (typeof Array.prototype.remove !=='function') {
     Array.prototype.remove = function (v) {
         var index = findIndex(this, v);

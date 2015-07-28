@@ -7,22 +7,9 @@ angular.module('pmc.controllers', [])
 
         .controller('ProjectCtrl', function ($scope, $mdDialog, projectProvider, compareProvider) {
 
-            $scope.project = projectProvider.getProject();
+            $scope.project = function () {
+                return  projectProvider.getProject();
 
-            $scope.remove = function () {
-                projectProvider.remove();
-            };
-
-            $scope.reset = function () {
-                projectProvider.reset();
-            };
-
-            $scope.load = function () {
-                projectProvider.load();
-            };
-
-            $scope.save = function () {
-                projectProvider.save();
             };
 
             $scope.newModel = function (ev) {
@@ -276,7 +263,7 @@ angular.module('pmc.controllers', [])
 
         })
 
-        .controller('MainMenuCtrl', function ($scope, $timeout, $mdSidenav, $mdUtil, $mdDialog, $log, compareProvider) {
+        .controller('MainMenuCtrl', function ($scope, $timeout, $mdSidenav, $mdUtil, $mdDialog, $log, compareProvider, projectProvider) {
 
             $scope.triger = false;
 
@@ -296,6 +283,29 @@ angular.module('pmc.controllers', [])
                             });
                 }, 300);
             }
+
+            $scope.closeMenu = function () {
+                $mdSidenav('left').close()
+                        .then(function () {
+                            $log.debug("close LEFT is done");
+                        });
+            };
+
+            $scope.remove = function () {
+                projectProvider.remove();
+            };
+
+            $scope.reset = function () {
+                projectProvider.reset();
+            };
+
+            $scope.load = function () {
+                projectProvider.load();
+            };
+
+            $scope.save = function () {
+                projectProvider.save();
+            };
 
             $scope.toggleFullScreen = function () {
                 $scope.triger = window.screenTop || window.screenY;
@@ -340,6 +350,13 @@ angular.module('pmc.controllers', [])
 
             $scope.isNotComparable = function () {
                 return compareProvider.models().length < 2;
+            };
+
+            $scope.compareClass = function () {
+                if (compareProvider.models().length == 0) {
+                   return "mdi-compare"
+                }
+                return "mdi-numeric-{0}-box-multiple-outline".format(compareProvider.models().length);
             };
 
 
@@ -404,7 +421,7 @@ angular.module('pmc.controllers', [])
                                 }
                             )
                         }
-                    )
+                    );
                     return result.unique();
                 };
 
@@ -428,10 +445,10 @@ angular.module('pmc.controllers', [])
                     else return new function(){
                         this.rAsString = function() {
                             return "X";
-                        }
+                        };
                         this.xAsString = function() {
                             return "X";
-                        }
+                        };
                         this.rClass = function() {
                             return "non";
                         };
@@ -541,15 +558,6 @@ angular.module('pmc.controllers', [])
             };
 
 
-        })
-
-        .controller('LeftSidebarCtrl', function ($scope, $timeout, $mdSidenav, $log) {
-            $scope.close = function () {
-                $mdSidenav('left').close()
-                        .then(function () {
-                            $log.debug("close LEFT is done");
-                        });
-            };
         });
 
 

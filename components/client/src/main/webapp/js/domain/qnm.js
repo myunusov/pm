@@ -168,6 +168,12 @@ function QNMName(value) {
         }
     });
 
+    this.setDTO = function (dto) {
+        this._text = null;
+        this.value = dto[0];
+        this.eval = false;
+    };
+
 /*    Object.defineProperty(this, 'pattern', {
         get: function () {
             return "[\s\S]*";
@@ -265,7 +271,7 @@ function QNMCenter() {
                 var q = this.getByName(name);
                 result[name] = [
                     q.eval ? null : q.value,
-                    q.unit.id
+                    q.unit ?  q.unit.id : null
                 ];
             }
         }
@@ -329,7 +335,6 @@ function QNMNode(id, name) {
     this.name = new QNMName(name || "Node " + id);
     this.nodeNumber = new QNMNumber(1);
     this.utilization = new Utilization();
-    this.utilizationEx = new Utilization(0);
 
     this.all = {
         'NAME': this.name,
