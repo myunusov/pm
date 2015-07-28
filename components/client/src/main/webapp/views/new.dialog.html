@@ -13,17 +13,20 @@
 
             <div layout="row" layout-margin>
                 <div flex flex-order="1">
-                    <md-whiteframe class="md-whiteframe-z5" layout="column" layout-align="center center" layout-margin>
-                        <img style="margin: 5px;" alt="QNM" src="img/QNM.png" ng-click="answer('QNM')">
-                        <span>Queue Network Model</span>
-                    </md-whiteframe>
+                    <md-card>
+                        <img ng-src="img/QNM.png" class="md-card-image" alt="Queue Network Model" ng-click="answer('QNM')">
+                        <md-card-content>
+                            <h2 class="md-title">Queue Network Model</h2>
+                         </md-card-content>
+                    </md-card>
                 </div>
-
                 <div flex flex-order="2">
-                    <md-whiteframe class="md-whiteframe-z5" layout="column" layout-align="center center" layout-margin>
-                        <img style="margin: 5px;" alt="SEM" src="img/EGM.png" ng-click="answer('EGM')">
-                        <span>Software Execution Model</span>
-                    </md-whiteframe>
+                    <md-card>
+                        <img ng-src="img/EGM.png" class="md-card-image" alt="Software Execution Model" ng-click="answer('EGM')">
+                        <md-card-content>
+                            <h2 class="md-title">Software Execution Model</h2>
+                        </md-card-content>
+                    </md-card>
                 </div>
             </div>
 

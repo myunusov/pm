@@ -2,9 +2,9 @@
     <div class="framehdr">
         <i class="icon icon-flag"></i>
         Asymptotic Bounds
-        <button class="hdrbutton" ng-click="refreshCharts()" tooltip-placement="left" tooltip="Refresh Charts">
-            <i class="icon-refresh"></i>
-        </button>
+        <md-button class="md-icon-button" ng-click="model.refreshCharts()">
+            <md-icon class="mdi mdi-refresh" aria-label="Refresh Charts"></md-icon>
+        </md-button>
     </div>
     <div class="frame">
         <div id="rmin{{model.id}}" class="bounds-chart"></div>

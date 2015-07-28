@@ -31,7 +31,7 @@
 
         <span flex></span>
 
-        <md-button class="md-icon-button" hide-sm aria-label="Repository" >
+        <md-button class="md-icon-button" hide-sm aria-label="Repository" href="#projects" >
             <md-icon class="mdi mdi-server"></md-icon>
             <md-tooltip>Repository</md-tooltip>
         </md-button>
@@ -50,10 +50,14 @@
             <md-tooltip>Remove Project</md-tooltip>
         </md-button>
 
-
         <md-button aria-label="Compare" hide-sm class="md-icon-button" ng-click="compare($event)" ng-disabled="isNotComparable()">
             <md-icon class="mdi" ng-class = "compareClass()"></md-icon>
             <md-tooltip>Compare</md-tooltip>
+        </md-button>
+
+        <md-button aria-label="Chart" hide-sm class="md-icon-button" href="#chart">
+            <md-icon class="mdi mdi-chart-line"></md-icon>
+            <md-tooltip>Chart</md-tooltip>
         </md-button>
 
         <md-button aria-label="Full Screen" hide-sm class="md-icon-button" >
@@ -151,6 +155,9 @@
 <script src="libs/angular-aria/js/angular-aria.js"></script>
 <script src="libs/angular-animate/js/angular-animate.js"></script>
 <script src="libs/angular-material/js/angular-material.js"></script>
+
+<script src="libs/highcharts/highcharts.js"></script>
+<script src="libs/highcharts/modules/exporting.js"></script>
 
 <script type="text/javascript" src="js/utils/maxur-utils.js"></script>
 

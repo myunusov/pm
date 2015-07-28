@@ -35,27 +35,27 @@
 }
 
 .eval {
-    color: green !important;
+    color: #4CAF50 !important;
 }
 
 .conflict {
-    color: orange !important;
+    color: #FF9800 !important;
 }
 
 .invalid {
-    color: red !important;
+    color: #F44336 !important;
 }
 
 .up {
-    color: green !important;
+    color: #4CAF50 !important;
 }
 
 .non {
-    color: gray !important;
+    color: #9E9E9E !important;
 }
 
 .down {
-    color: red !important;
+    color: #F44336 !important;
 }
 
 
@@ -72,6 +72,10 @@ md-grid-tile .mdi {
     height: 24px
 }
 
+md-toolbar .md-subheader {
+    color: #FFF;
+    background-color: #4CAF50;
+}
 
 /*tooltip*/
 md-toolbar .md-toolbar-tools .md-button, md-toolbar .md-toolbar-tools .md-button:hover {
@@ -92,15 +96,15 @@ md-toolbar .md-toolbar-tools .md-button, md-toolbar .md-toolbar-tools .md-button
 }
 
 .tab-button {
-    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    background: none repeat scroll 0 0 #FFF;
     border: 0 none;
     cursor: pointer;
     padding: 0 0 0 5px;
-    color: #000000;
+    color: #000;
     font-weight: bold;
     line-height: 20px;
     opacity: 0.8;
-    text-shadow: 0 1px 0 #FFFFFF;
+    text-shadow: 0 1px 0 #FFF;
 }
 
 

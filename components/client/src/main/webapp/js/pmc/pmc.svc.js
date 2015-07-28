@@ -206,6 +206,23 @@ angular.module('pmc.services', [])
             }
     })
 
+    .service('chartProvider', function () {
+
+        var model;
+
+        return {
+            model: function () {
+                return model;
+            },
+            add: function (m) {
+                model = m;
+            },
+            refreshCharts: function () {
+                return model.refreshCharts();
+            }
+        }
+    })
+
     .factory('modelFactory', function() {
     return {
         qnm: function(name) {

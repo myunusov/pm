@@ -34,6 +34,10 @@ pmc.config(
                             templateUrl: 'views/project-details.html',
                             controller: 'ProjectCtrl'
                         }).
+                        when('/chart', {
+                            templateUrl: 'views/bounds.html',
+                            controller: 'ChartCtrl'
+                        }).
                         otherwise({
                             redirectTo: '/project/new'
                         });

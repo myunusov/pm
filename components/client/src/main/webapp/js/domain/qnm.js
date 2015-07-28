@@ -817,27 +817,33 @@ function QNM(name, id) {
 
     // R*X = SUM(N * NN)
     this.makeRXNExps = function (clazz) {
-        var result = [
-            [new Parameter('R', clazz), new Parameter('X', clazz)]
-        ];
+        var result = [];
         var visits = this.getVisitsByClass(clazz);
         for (var j = 0; j < visits.length; j++) {
-            if (visits[j].number.value) {
+            if (visits[j].number.value && visits[j].node.nodeNumber.value) {
                 result.push([-1, new Parameter('N', visits[j]), new Parameter('NN', visits[j].node)]);
             }
         }
+        if (result.length == 0) {
+            return null;
+        }
+        result.push([new Parameter('R', clazz), new Parameter('X', clazz)]);
         return new Expression(result);
     };
 
     // U =  SUM(U)
     this.makeUExp = function (node) {
-        var result = [[-1, new Parameter('U', node)]];
+        var result = [];
         var visits = this.getVisitsByNode(node);
         for (var j = 0; j < visits.length; j++) {
             if (visits[j].totalNumber.value) {
                 result.push([new Parameter('U', visits[j])]);
             }
         }
+        if (result.length == 0) {
+            return null;
+        }
+        result.push([-1, new Parameter('U', node)]);
         return new Expression(result);
     };
 
@@ -875,19 +881,25 @@ function QNM(name, id) {
     this.makeExpressions = function () {
         var result = [];
         for (var i = 0; i < this.classes.length; i++) {
-            result.push(this.makeRXNExps(this.classes[i]));
+            pushNotNull(result, this.makeRXNExps(this.classes[i]));
         }
         for (var j = 0; j < this.nodes.length; j++) {
-            result.push(this.makeUExp(this.nodes[j]));
+            pushNotNull(result, this.makeUExp(this.nodes[j]));
         }
         for (var i1 = 0; i1 < this.classes.length; i1++) {
             for (var j1 = 0; j1 < this.nodes.length; j1++) {
-                result.push(this.makeUNExp(this.classes[i1], this.nodes[j1]));
-                result.push(this.makeRTUSExp(this.classes[i1], this.nodes[j1]));
+                pushNotNull(result, this.makeUNExp(this.classes[i1], this.nodes[j1]));
+                pushNotNull(result, this.makeRTUSExp(this.classes[i1], this.nodes[j1]));
             }
         }
         return result;
     };
+
+    function pushNotNull(array, value) {
+        if (value != null) {
+            array.push(value);
+        }
+    }
 
     this.getExpressions = function () {
         var expressions = [];
