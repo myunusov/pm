@@ -359,6 +359,11 @@ angular.module('pmc.controllers', [])
             return compareProvider.models().length < 2;
         };
 
+        $scope.compareModels = function () {
+            return compareProvider.models().length;
+        };
+
+
         $scope.compareClass = function () {
             if (compareProvider.models().length == 0) {
                 return "mdi-compare"

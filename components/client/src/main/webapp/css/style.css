@@ -77,6 +77,33 @@ md-toolbar .md-subheader {
     background-color: #4CAF50;
 }
 
+/*badge*/
+.badge-w {
+    position:absolute;
+    left:21px;
+    top:8px;
+    text-align: center;
+    pointer-events:none;
+    line-height:14px
+}
+
+.badge {
+    color:white;
+    border-radius: 7px;
+    font-size: 12px;
+    display: inline-block;
+    padding: 0 2px;
+    min-width: 10px;
+    min-height:10px;
+    margin: 0 auto;
+    background:#4CAF50;
+    border:1px solid rgba(0,0,0,.2)
+}
+
+
+
+
+
 /*tooltip*/
 md-toolbar .md-toolbar-tools .md-button, md-toolbar .md-toolbar-tools .md-button:hover {
     box-shadow: none;

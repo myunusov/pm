@@ -51,7 +51,10 @@
         </md-button>
 
         <md-button aria-label="Compare" hide-sm class="md-icon-button" ng-click="compare($event)" ng-disabled="isNotComparable()">
-            <md-icon class="mdi" ng-class = "compareClass()"></md-icon>
+           <!-- <md-icon class="mdi" ng-class = "compareClass()"></md-icon>-->
+            <md-icon class="mdi mdi-compare">
+                <span class="badge-w"><span class="badge">{{compareModels()}}</span></span>
+            </md-icon>
             <md-tooltip>Compare</md-tooltip>
         </md-button>
 
