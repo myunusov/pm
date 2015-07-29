@@ -80,8 +80,8 @@ md-toolbar .md-subheader {
 /*badge*/
 .badge-w {
     position:absolute;
-    left:21px;
-    top:8px;
+    left: 14px;
+    top:   8px;
     text-align: center;
     pointer-events:none;
     line-height:14px
