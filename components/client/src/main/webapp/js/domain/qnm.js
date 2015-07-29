@@ -63,7 +63,7 @@ function Quantity() {
     }
 
     function formatNumber(value, prec) {
-        return Math.round(value) === value ? Math.round(value) : parseFloat(value).toPrecision(prec);
+        return Math.round(value) === value ? Math.round(value) : parseFloat(parseFloat(value).toPrecision(prec).toString());
     }
 
 
@@ -363,7 +363,7 @@ function QNMVisit(clazz, node) {
     this.serviceTime.unit = this.serviceTime.units[0];
     this.serviceDemands  = new QNMTime();
     this.serviceDemands.unit = this.serviceDemands.units[0];
-    this.utilization = new Utilization();
+    this.utilization = new Utilization(0);
     this.meanNumberTasks = new QNMNumber();
     this.totalMeanNumberTasks = new QNMNumber();
     this.residenceTime = new QNMTime();
@@ -392,10 +392,10 @@ function QNMVisit(clazz, node) {
             ['U'],
             [-1, 'XI', 'S']
         ], this),
-        new Expression([
+/*        new Expression([
             [-1, 'RT', 'XI'],
             ['N']
-        ], this),
+        ], this),*/
         new Expression([
             [-1, 'S', 'V'],
             ['D']
@@ -407,6 +407,18 @@ function QNMVisit(clazz, node) {
         new Expression([
             [-1, 'TN'],
             ['N', new Parameter('NN', this.node)]
+        ], this),
+        // U + SUM(U * N) = N
+        new Expression([
+            [new Parameter('U', this.node)],
+            [-1, 'N'],
+            [new Parameter('U', this.node), 'N']
+        ], this),
+        // RT = S/(1 - SUM(U)) ->  RT = S + SUM(U * RT)
+        new Expression([
+            [-1, 'RT'],
+            ['S'],
+            [new Parameter('U', this.node), 'RT']
         ], this)
     ];
 
@@ -598,12 +610,14 @@ function Expression(expression, center) {
         for (var i = 0; i < this.expression.length; i++) {
             var factor = calculateFactor(this.expression[i], params);
             if (this.expression[i].contains(x)) {
-                mult = parseFloat((mult + factor).toPrecision(10));
+                mult = mult + factor;
             } else {
-                term = parseFloat((term - factor).toPrecision(10));
+                term = term - factor;
             }
         }
-        x.value = term / mult;
+        term = parseFloat(Math.round(term * 10000000000)/10000000000);
+        mult = parseFloat(Math.round(mult * 10000000000)/10000000000);
+        x.value = parseFloat(Math.round(term * 100000/ mult)/100000);
         return x;
     };
 }
@@ -815,14 +829,14 @@ function QNM(name, id) {
         return result;
     };
 
-    // R*X = SUM(N * NN)
+    // R = SUM(RT * V)
     this.makeRXNExps = function (clazz) {
         var result = [
-            [new Parameter('R', clazz), new Parameter('X', clazz)]
+            [new Parameter('R', clazz)]
         ];
         var visits = this.getVisitsByClass(clazz);
         for (var j = 0; j < visits.length; j++) {
-            result.push([-1, new Parameter('N', visits[j]), new Parameter('NN', visits[j].node)]);
+            result.push([-1, new Parameter('RT', visits[j]), new Parameter('V', visits[j])]);
         }
         return new Expression(result);
     };
@@ -837,50 +851,13 @@ function QNM(name, id) {
         return new Expression(result);
     };
 
-    // U + SUM(U * N) = N
-    this.makeUNExp = function (clazz, node) {
-        var visit = this.getVisitBy(clazz, node);
-        var result = [
-            [new Parameter('U', visit)],
-            [-1, new Parameter('N', visit)]
-        ];
-        var visits = this.getVisitsByNode(node);
-        for (var j = 0; j < visits.length; j++) {
-            result.push([new Parameter('U', visits[j]), new Parameter('N', visit)]);
-        }
-        return new Expression(result);
-    };
-
-    // RT = SV/(1 - SUM(U)) ->  RT = S*V + SUM(U * RT)
-    this.makeRTUSExp = function (clazz, node) {
-        var visit = this.getVisitBy(clazz, node);
-        var result = [
-            [-1, new Parameter('RT', visit)],
-            [new Parameter('S', visit), new Parameter('V', visit)]
-        ];
-        var visits = this.getVisitsByNode(node);
-        for (var j = 0; j < visits.length; j++) {
-            result.push([new Parameter('U', visits[j]), new Parameter('RT', visit)]);
-        }
-        return new Expression(result);
-    };
-
-    // new Expression([['RT'],[-1, 'RT',new Parameter('U', this.node)],[-1, 'S']], this),
-
-
     this.makeExpressions = function () {
         var result = [];
-        for (var i = 0; i < this.classes.length; i++) {
-            result.push(this.makeRXNExps(this.classes[i]));
-        }
         for (var j = 0; j < this.nodes.length; j++) {
             result.push(this.makeUExp(this.nodes[j]));
         }
-        for (var i1 = 0; i1 < this.classes.length; i1++) {
-            for (var j1 = 0; j1 < this.nodes.length; j1++) {
-                result.push(this.makeUNExp(this.classes[i1], this.nodes[j1]));
-                result.push(this.makeRTUSExp(this.classes[i1], this.nodes[j1]));
-            }
+        for (var i = 0; i < this.classes.length; i++) {
+            result.push(this.makeRXNExps(this.classes[i]));
         }
         return result;
     };
