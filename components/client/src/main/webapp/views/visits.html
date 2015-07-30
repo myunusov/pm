@@ -1,15 +1,19 @@
-<div class="framehdr">
-    <i class="mdi mdi-clock-fast"></i>
-    Visits
-    <!--
-        <button ng-click="">
-            <i class="mdi mdi-settings"></i>
-        </button>
-    -->
-</div>
 <div class="frame">
-    <table class="visits qnm">
+    <table class="visits qnm" flex>
         <thead>
+        <tr>
+            <td colspan="{{totalVisitTypes.length + 3}}">
+                <div flex class="framehdr">
+                    <i class="mdi mdi-clock-fast"></i>
+                    Visits
+                    <!--
+                        <button ng-click="">
+                            <i class="mdi mdi-settings"></i>
+                        </button>
+                    -->
+                </div>
+            </td>
+        </tr>
         <tr>
             <th style="width:15px;"><i class="mdi mdi-leaf"></i></th>
             <th>Node</th>

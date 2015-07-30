@@ -199,13 +199,7 @@ md-toolbar .md-toolbar-tools .md-button, md-toolbar .md-toolbar-tools .md-button
     padding: 9px;
     background-color: #f5f5f5;
     font-weight: bold;
-    border: 1px solid #e3e3e3;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    overflow-x:hidden;
 }
 
 

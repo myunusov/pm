@@ -1,19 +1,25 @@
-<div class="framehdr">
-    <i class="mdi mdi-account-network"></i>
-    Classes
-    <button ng-click="addClass()">
-        <i class="mdi mdi-plus"></i>
-        <md-tooltip>Add new Class</md-tooltip>
-    </button>
-    <!--
-        <button ng-click="">
-            <i class="mdi mdi-settings"></i>
-        </button>
-    -->
-</div>
 <div class="frame">
-    <table class="classes qnm">
+    <table class="classes qnm" flex>
         <thead>
+        <tr>
+            <td colspan="{{classTypes.length + 1}}">
+                <div flex class="framehdr">
+                    <i class="mdi mdi-account-network"></i>
+                    Classes
+                    <button ng-click="addClass()">
+                        <i class="mdi mdi-plus"></i>
+                        <md-tooltip>
+                            Add new Class
+                        </md-tooltip>
+                    </button>
+                    <!--
+                        <button ng-click="">
+                            <i class="mdi mdi-settings"></i>
+                        </button>
+                    -->
+                </div>
+            </td>
+        </tr>
         <tr>
             <th ng-repeat="type in classTypes">
                 {{type.title}}
