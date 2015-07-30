@@ -127,6 +127,11 @@ angular.module('pmc.services', [])
                             data && data.message ?
                                 data.message :
                                 "Project is not loaded.", status);
+                        if (project && project.id) {
+                            location.href = "#project/" + project.id;
+                        } else {
+                            location.href = "#project/new";
+                        }
                     });
             },
             new: function () {

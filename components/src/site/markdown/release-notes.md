@@ -13,11 +13,15 @@ The history of Performance Model Calculator releases is documented below. For de
 Changes in this version include:
 
 #### New features:
+- Auto-deploy documents to gh-pages 
 - Re-structure project 
 - Update project's envirenment (plugins and tools)  
 - Tray client  
 - Add editor and calculator for Execute Graph Model 
+- Add  information about project 
 
+#### Enhancements:
+- Hide model tab header on one tab case 
 
 #### Fixed Bugs:
 - Wrong node and source table size  
@@ -51,7 +55,6 @@ Changes in this version include:
 
 #### New features:
 - Version wo Locks 
-- Add  information about project 
 - war package 
 - Model Managment 
 - Compress javascripts 

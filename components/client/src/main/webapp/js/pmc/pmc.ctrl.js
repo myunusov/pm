@@ -13,16 +13,10 @@ angular.module('pmc.controllers', [])
                     if (id !== "new") {
                         if (!projectProvider.getProject() || id !== projectProvider.getProject().id) {
                             projectProvider.load(id);
-                            if (projectProvider.getProject() != null) {
-                                return;
-                            }
-                        } else {
-                            return;
                         }
+                    } else {
+                        projectProvider.new();
                     }
-                    projectProvider.new();
-                    location.href = "#project/" + projectProvider.getProject().id;
-
                 }
             };
 
@@ -567,7 +561,6 @@ angular.module('pmc.controllers', [])
             };
 
             $scope.load = function (project) {
-                projectProvider.load(project.id);
                 location.href = "#project/" + project.id;
             };
 
