@@ -93,7 +93,7 @@ angular.module('pmc.controllers', [])
 
         $scope.init = function () {
             chartProvider.add($scope.model);
-        }
+        };
 
         $scope.nodeTypes = [
             {
@@ -110,6 +110,11 @@ angular.module('pmc.controllers', [])
                 id: "U",
                 title: "Utilization",
                 tooltip: "Total Utilization (U)"
+            },
+            {
+                id: "TN",
+                title: "Number of Tasks",
+                tooltip: "Mean Number of Tasks in Queue (N)"
             }
         ];
 
@@ -121,7 +126,7 @@ angular.module('pmc.controllers', [])
             },
             {
                 id: "M",
-                title: "Users number",
+                title: "Number of Users",
                 tooltip: "Number of Users (Terminals)(M)"
             },
             {
@@ -136,7 +141,7 @@ angular.module('pmc.controllers', [])
             },
             {
                 id: "R",
-                title: "Latency",
+                title: "Response Time",
                 tooltip: "Response Time per Class (R)"
             }
         ];
@@ -144,7 +149,7 @@ angular.module('pmc.controllers', [])
         $scope.totalVisitTypes = [
             {
                 id: "TV",
-                title: "Visits count",
+                title: "Visits",
                 tooltip: "Number of Visits per Request (Vi)"
             },
             {
@@ -168,20 +173,15 @@ angular.module('pmc.controllers', [])
                 tooltip: "Utilization per class (Ui)"
             },
             {
-                id: "TN",
-                title: "Tasks number",
-                tooltip: "Mean Number of Tasks per class (Ni)"
-            },
-            {
                 id: "RT",
-                title: "RT",
+                title: "Residence Time",
                 tooltip: "Residence Time per class (RTi)"
             }
         ];
         $scope.visitTypes = [
             {
                 id: "V",
-                title: "Visits number",
+                title: "Visits",
                 tooltip: "Number of Visits per Request (Vi)"
             },
             {
@@ -203,11 +203,6 @@ angular.module('pmc.controllers', [])
                 id: "U",
                 title: "Utilization",
                 tooltip: "Utilization per class (Ui)"
-            },
-            {
-                id: "N",
-                title: "Tasks number",
-                tooltip: "Mean Number of Tasks per class (Ni)"
             },
             {
                 id: "RT",

@@ -335,13 +335,28 @@ function QNMNode(id, name) {
     this.name = new QNMName(name || "Node " + id);
     this.nodeNumber = new QNMNumber(1);
     this.utilization = new Utilization();
+    this.meanNumberTasks = new QNMNumber();
+    this.totalMeanNumberTasks = new QNMNumber();
 
     this.all = {
         'NAME': this.name,
         'NN': this.nodeNumber,
         'U': this.utilization,
+        'N': this.meanNumberTasks,
+        'TN': this.totalMeanNumberTasks
     };
-    this.expressions = [];
+    this.expressions = [
+        new Expression([
+            [-1, 'TN'],
+            ['N', 'NN']
+        ], this),
+        // N = (1 - U)/U => U + U * N = N
+        new Expression([
+            ['U'],
+            [-1, 'N'],
+            ['U', 'N']
+        ], this)
+    ];
 
     this.equals = function (other) {
         if (!other) {
@@ -365,8 +380,6 @@ function QNMVisit(clazz, node) {
     this.serviceDemands.unit = this.serviceDemands.units[0];
     this.utilization = new Utilization(0);         // XXX Workaround
     this.utilization.eval = true;
-    this.meanNumberTasks = new QNMNumber();
-    this.totalMeanNumberTasks = new QNMNumber();
     this.residenceTime = new QNMTime();
     this.throughput = new Throughput();
 
@@ -376,8 +389,6 @@ function QNMVisit(clazz, node) {
         'S': this.serviceTime,
         'D': this.serviceDemands,
         'U': this.utilization,
-        'N': this.meanNumberTasks,
-        'TN': this.totalMeanNumberTasks,
         'RT': this.residenceTime,
         'XI': this.throughput,
         'V': this.number,
@@ -404,16 +415,6 @@ function QNMVisit(clazz, node) {
         new Expression([
             [-1, 'TV'],
             ['V', new Parameter('NN', this.node)]
-        ], this),
-        new Expression([
-            [-1, 'TN'],
-            ['N', new Parameter('NN', this.node)]
-        ], this),
-        // U + SUM(U * N) = N
-        new Expression([
-            [new Parameter('U', this.node)],
-            [-1, 'N'],
-            [new Parameter('U', this.node), 'N']
         ], this),
         // RT = S/(1 - SUM(U)) ->  RT = S + SUM(U * RT)
         new Expression([

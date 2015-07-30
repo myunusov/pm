@@ -395,20 +395,21 @@ md-toolbar .md-toolbar-tools .md-button, md-toolbar .md-toolbar-tools .md-button
 
 
     .nodes td:nth-of-type(1):before {
-        content: "Node Name";
+        content: "Name";
     }
     .nodes td:nth-of-type(2):before {
-        content: "N";
+        content: "Number";
     }
     .nodes td:nth-of-type(3):before {
         content: "U (full)";
     }
     .nodes td:nth-of-type(4):before {
+        content: "N(I)";
     }
 
 
     .classes td:nth-of-type(1):before {
-        content: "Class Name";
+        content: "Name";
     }
     .classes td:nth-of-type(2):before {
         content: "M";
@@ -450,9 +451,6 @@ md-toolbar .md-toolbar-tools .md-button, md-toolbar .md-toolbar-tools .md-button
         content: "U(I)";
     }
     .visits td:nth-of-type(9):before {
-        content: "N(I)";
-    }
-    .visits td:nth-of-type(10):before {
         content: "RT(I)";
     }
 
