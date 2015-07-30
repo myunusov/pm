@@ -363,7 +363,8 @@ function QNMVisit(clazz, node) {
     this.serviceTime.unit = this.serviceTime.units[0];
     this.serviceDemands  = new QNMTime();
     this.serviceDemands.unit = this.serviceDemands.units[0];
-    this.utilization = new Utilization(0);
+    this.utilization = new Utilization(0);         // XXX Workaround
+    this.utilization.eval = true;
     this.meanNumberTasks = new QNMNumber();
     this.totalMeanNumberTasks = new QNMNumber();
     this.residenceTime = new QNMTime();
@@ -863,13 +864,12 @@ function QNM(name, id) {
     };
 
     this.getExpressions = function () {
-        var expressions = [];
+        var expressions = this.makeExpressions();
         [this.classes, this.visits, this.nodes].each(
                 function (u) {
                     expressions = expressions.concat(u.expressions);
                 }
         );
-        expressions = expressions.concat(this.makeExpressions());
         return expressions;
     };
 
