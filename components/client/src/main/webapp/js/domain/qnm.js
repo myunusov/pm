@@ -949,8 +949,8 @@ function QNM(name, id) {
         var maxXChart = this.calcMaxXChart();
 
         $(function () {
-            $('#rmin' + id).highcharts(minRChart);
-            $('#xmax' + id).highcharts(maxXChart);
+            $('#rmin').highcharts(minRChart);
+            $('#xmax').highcharts(maxXChart);
         });
 
     };
@@ -1042,7 +1042,7 @@ function QNM(name, id) {
         for (var i = 0; i < this.classes.length; i++) {
             result.push(
                 {
-                    name: this.classes[i].name,
+                    name: this.classes[i].name.value,
                     data: this.calcDataFor(this.classes[i], type)
                 }
             );

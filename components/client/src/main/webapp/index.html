@@ -36,7 +36,7 @@
             <md-tooltip>Repository</md-tooltip>
         </md-button>
 
-        <md-button aria-label="New Project" hide-sm class="md-icon-button" href="#project/new">
+        <md-button aria-label="New Project" hide-sm class="md-icon-button" ng-click="new()">
             <md-icon class="mdi mdi-file-outline"></md-icon>
         </md-button>
 
@@ -58,7 +58,7 @@
             <md-tooltip>Compare</md-tooltip>
         </md-button>
 
-        <md-button aria-label="Chart" hide-sm class="md-icon-button" href="#chart">
+        <md-button aria-label="Chart" hide-sm class="md-icon-button" ng-click="chart()">
             <md-icon class="mdi mdi-chart-line"></md-icon>
             <md-tooltip>Chart</md-tooltip>
         </md-button>
@@ -94,7 +94,7 @@
             </div>
 
             <md-list>
-                <md-list-item ng-click="compare($event)">
+                <md-list-item href="#projects">
                     <md-icon class="mdi mdi-server"></md-icon>
                     <p> Project Repository </p>
                 </md-list-item>
@@ -102,9 +102,13 @@
                     <md-icon class="mdi mdi-compare"></md-icon>
                     <p> Compare Models </p>
                 </md-list-item>
+                <md-list-item ng-click="chart()">
+                    <md-icon class="mdi mdi-chart-line"></md-icon>
+                    <p>Chart</p>
+                </md-list-item>
                 <md-divider></md-divider>
                 <md-subheader class="md-no-sticky">Project</md-subheader>
-                <md-list-item ng-click="reset()">
+                <md-list-item ng-click="new()">
                     <md-icon class="mdi mdi-file-outline"></md-icon>
                     <p> New Project </p>
                 </md-list-item>

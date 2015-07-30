@@ -34,7 +34,7 @@ pmc.config(
                             templateUrl: 'views/project-details.html',
                             controller: 'ProjectCtrl'
                         }).
-                        when('/chart', {
+                        when('/chart/:projectId/:modelId', {
                             templateUrl: 'views/bounds.html',
                             controller: 'ChartCtrl'
                         }).

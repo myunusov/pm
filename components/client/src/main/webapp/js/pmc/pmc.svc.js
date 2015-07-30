@@ -139,6 +139,7 @@ angular.module('pmc.services', [])
                 project = new Project("New Project", uuid());
                 project.models.push(modelFactory.qnm("QNM " + project.models.length));
                 messageProvider.info("New Project is created.");
+                location.href = "#project/" + project.id;
             },
             remove: function (id) {
                 id = id || project.id;
@@ -209,23 +210,6 @@ angular.module('pmc.services', [])
                     models.remove(model);
                 }
             }
-    })
-
-    .service('chartProvider', function () {
-
-        var model;
-
-        return {
-            model: function () {
-                return model;
-            },
-            add: function (m) {
-                model = m;
-            },
-            refreshCharts: function () {
-                return model.refreshCharts();
-            }
-        }
     })
 
     .factory('modelFactory', function() {

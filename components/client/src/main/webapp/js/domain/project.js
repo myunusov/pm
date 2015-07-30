@@ -57,4 +57,14 @@ function Project(name, id) {
         this.models.remove(model);
     };
 
+    this.getModel = function (id) {
+        for (var i= 0; i < this.models.length; i++) {
+            var model = this.models[i];
+            if (model.id === id) {
+                return model;
+            }
+        }
+        return null;
+    };
+
 }

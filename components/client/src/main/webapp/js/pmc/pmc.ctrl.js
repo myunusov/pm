@@ -102,11 +102,7 @@ angular.module('pmc.controllers', [])
 
         })
 
-        .controller('QNMCtrl', function ($scope, messageProvider, chartProvider) {
-
-            $scope.init = function () {
-                chartProvider.add($scope.model);
-            };
+        .controller('QNMCtrl', function ($scope, messageProvider) {
 
             $scope.nodeTypes = [
                 {
@@ -310,7 +306,7 @@ angular.module('pmc.controllers', [])
                 projectProvider.remove();
             };
 
-            $scope.reset = function () {
+            $scope.new = function () {
                 projectProvider.new();
             };
 
@@ -320,6 +316,10 @@ angular.module('pmc.controllers', [])
 
             $scope.save = function () {
                 projectProvider.save();
+            };
+
+            $scope.chart = function () {
+                location.href = "#chart/" + projectProvider.project.id;
             };
 
             $scope.toggleFullScreen = function () {
@@ -582,17 +582,21 @@ angular.module('pmc.controllers', [])
         })
 
 
-        .controller('ChartCtrl', function ($scope, chartProvider) {
-
-            $scope.model = chartProvider.model();
+        .controller('ChartCtrl', function ( $scope, $routeParams, $location, $http, projectProvider) {
 
             $scope.init = function () {
-                chartProvider.refreshCharts();
+                var projectId = $routeParams.projectId;
+                var modelId = $routeParams.modelId;
+                var project = projectProvider.getProject();
+                if (!project || project.id !== projectId) {
+                    // todo load
+                    return;
+                }
+                var model = project.getModel(modelId);
+                if (model !== null) {
+                    model.refreshCharts();
+                }
             };
-
-            $scope.$on('$viewContentLoaded', function () {
-                chartProvider.refreshCharts();
-            });
 
         });
 
