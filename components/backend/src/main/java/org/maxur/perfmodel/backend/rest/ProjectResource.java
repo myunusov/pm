@@ -61,25 +61,25 @@ public class ProjectResource {
     }
 
     @GET
-    @Path("/{name}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String load(@PathParam(NAME) String name) {
-        final Project project = repository.get(name);
+    public String load(@PathParam(ID) String id) {
+        final Project project = repository.get(id);
         if (project == null) {
-            LOGGER.error(format(PERFORMANCE_MODEL_IS_NOT_FOUNDED, name));
-            throw notFoundException(format(PERFORMANCE_MODEL_IS_NOT_FOUNDED, name));
+            LOGGER.error(format(PERFORMANCE_MODEL_IS_NOT_FOUNDED, id));
+            throw notFoundException(format(PERFORMANCE_MODEL_IS_NOT_FOUNDED, id));
         }
         return project.asRaw();
     }
 
     @DELETE
-    @Path("/{name}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Project delete(@PathParam(NAME) String name) {
-        final Project project = repository.remove(name);
+    public Project delete(@PathParam(ID) String id) {
+        final Project project = repository.remove(id);
         if (project == null) {
-            LOGGER.error(format(PERFORMANCE_MODEL_IS_NOT_FOUNDED, name));
-            throw notFoundException(format(PERFORMANCE_MODEL_IS_NOT_FOUNDED, name));
+            LOGGER.error(format(PERFORMANCE_MODEL_IS_NOT_FOUNDED, id));
+            throw notFoundException(format(PERFORMANCE_MODEL_IS_NOT_FOUNDED, id));
         }
         return  project;
     }

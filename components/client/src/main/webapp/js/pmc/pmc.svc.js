@@ -81,13 +81,14 @@ angular.module('pmc.services', [])
     .service('projectProvider', function ($http, messageProvider, modelFactory) {
 
         var projects = [];
-        var project = new Project("New Performance Model", uuid());
-        project.models.push(modelFactory.qnm("QNM " + project.models.length));
+
+        var project;
+
         var url = 'api/projects';
 
-        var remove = function (name) {
+        var remove = function (id) {
             for (var i = 0; i < projects.length; i++) {
-                if (projects[i].name === name) {
+                if (projects[i].id === id) {
                     projects.remove(projects[i]);
                     break;
                 }
@@ -113,10 +114,10 @@ angular.module('pmc.services', [])
                                 "Project List is not loaded.", status);
                     });
             },
-            load: function (name) {
-                name = name || project.name;
+            load: function (id) {
+                id = id || project.id;
                 messageProvider.clear();
-                $http.get(url + '/' + name)
+                $http.get(url + '/' + id)
                     .success(function (dto) {
                         project.setDTO(dto);
                         messageProvider.info("Project '" + dto.name + "' is loaded.");
@@ -128,22 +129,21 @@ angular.module('pmc.services', [])
                                 "Project is not loaded.", status);
                     });
             },
-            reset: function () {
+            new: function () {
                 messageProvider.clear();
-                project.reset();
-                project.models.push(modelFactory.qnm());
+                project = new Project("New Project", uuid());
+                project.models.push(modelFactory.qnm("QNM " + project.models.length));
                 messageProvider.info("New Project is created.");
             },
-            remove: function (name) {
-                name = name || project.name;
+            remove: function (id) {
+                id = id || project.id;
                 messageProvider.clear();
-                $http['delete'](url + '/' + name)
+                $http['delete'](url + '/' + id)
                     .success(function (dto) {
                         messageProvider.info("Project '" + dto.name + "' is deleted.");
-                        remove(dto.name);
-                        if (project.name === dto.name) {
-                            project.reset();
-                            project.models.push(modelFactory.qnm());
+                        remove(dto.id);
+                        if (project.id === dto.id) {
+                            project.new();
                         }
                     })
                     .error(function (data, status) {
@@ -160,7 +160,7 @@ angular.module('pmc.services', [])
                     .success(function (dto, status) {
                         if (status && parseFloat(status) === 201) {
                             project.version = dto.version;
-                            remove(dto.name);
+                            remove(dto.id);
                             projects.push({
                                 id: dto.id,
                                 name: dto.name,

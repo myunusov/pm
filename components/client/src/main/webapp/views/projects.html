@@ -1,36 +1,29 @@
-<div class="snap-drawer snap-drawer-left">
+<div flex layout-padding layout-fill  layout-wrap layout="column" ng-init="findAll()">
     <div class="framehdr">
-        <i class="icon fa fa-server"></i>
-        Projects
-        <button class="hdrbutton" onclick="snapper.close();">
-            <i class="icon-remove" tooltip-placement="left" tooltip="Close Panel"></i>
-        </button>
-        <button class="hdrbutton" ng-click="findAll()" tooltip-placement="left" tooltip="Refresh">
-            <i class="icon-refresh"></i>
+        <i class="mdi mdi-server"></i>
+        Project's Repository
+        <button ng-click="findAll()">
+            <i class="mdi mdi-refresh"></i>
+            <md-tooltip>Refresh</md-tooltip>
         </button>
     </div>
-    <div class="frame">
-        <table class="projects">
-            <tr ng-repeat="project in getProjects()">
-                <td><i class="fa fa-file-o"></i></td>
-                <td>{{project.name}}</td>
-                <td>({{project.version}})</td>
-                <td>
-                         <span style="height: 28px">
-                            <button class="hdrbutton" ng-click="remove(project)">
-                                <i class="fa fa-trash-o" tooltip-placement="left" tooltip="Delete Project"></i>
-                            </button>
-                        </span>
-                </td>
-                <td>
-                         <span style="height: 28px">
-                            <button class="hdrbutton" ng-click="load(project)">
-                                <i class="fa fa-download" tooltip-placement="left" tooltip="Load Project"></i>
-                            </button>
-                         </span>
-                </td>
-            </tr>
-        </table>
+    <div class="frame" flex layout-padding class="md-padding">
+        <md-card ng-repeat="project in getProjects()">
+            <md-card-content>
+                <i class="mdi mdi-file"></i>
+                <h3>{{project.name}}</h3>
+                (ver: {{project.version}})
+                <button ng-click="remove(project)">
+                    <i class="mdi mdi-delete"></i>
+                    <md-tooltip>Delete Project</md-tooltip>
+                </button>
+                <button ng-click="load(project)">
+                    <i class="mdi mdi-download"></i>
+                    <md-tooltip>Load Project</md-tooltip>
+                </button>
+            </md-card-content>
+        </md-card>
+
     </div>
-    <div class="snap-drawer snap-drawer-right"></div>
+
 </div>
