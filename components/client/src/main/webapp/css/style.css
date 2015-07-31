@@ -100,9 +100,11 @@ md-toolbar .md-subheader {
     border:1px solid rgba(0,0,0,.2)
 }
 
-
-
-
+/*highcharts*/
+.highcharts-container{
+    /** Rules it should follow **/
+    width: 100%;
+}
 
 /*tooltip*/
 md-toolbar .md-toolbar-tools .md-button, md-toolbar .md-toolbar-tools .md-button:hover {

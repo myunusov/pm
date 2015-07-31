@@ -951,6 +951,7 @@ function QNM(name, id) {
         $(function () {
             $('#rmin').highcharts(minRChart);
             $('#xmax').highcharts(maxXChart);
+            $(window).resize();
         });
 
     };

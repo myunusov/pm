@@ -50,17 +50,11 @@
             <md-tooltip>Remove Project</md-tooltip>
         </md-button>
 
-        <md-button aria-label="Compare" hide-sm class="md-icon-button" ng-click="compare($event)" ng-disabled="isNotComparable()">
-           <!-- <md-icon class="mdi" ng-class = "compareClass()"></md-icon>-->
+        <md-button aria-label="Compare" hide-sm class="md-icon-button" href="#compare" ng-disabled="isNotComparable()">
             <md-icon class="mdi mdi-compare">
                 <span class="badge-w"><span class="badge">{{compareModels()}}</span></span>
             </md-icon>
             <md-tooltip>Compare</md-tooltip>
-        </md-button>
-
-        <md-button aria-label="Chart" hide-sm class="md-icon-button" ng-click="chart()">
-            <md-icon class="mdi mdi-chart-line"></md-icon>
-            <md-tooltip>Chart</md-tooltip>
         </md-button>
 
         <md-button aria-label="Full Screen" hide-sm class="md-icon-button" >
@@ -80,7 +74,7 @@
 
 
 
-<md-content flex layout="row">
+<md-content flex layout="row" style="min-height: 400px">
 
     <!-- LEFT SIDEBAR -->
     <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left">
@@ -94,17 +88,13 @@
             </div>
 
             <md-list>
-                <md-list-item href="#projects">
+                <md-list-item ng-click="showProjects()">
                     <md-icon class="mdi mdi-server"></md-icon>
                     <p> Project Repository </p>
                 </md-list-item>
-                <md-list-item ng-click="compare($event)" ng-hide="isNotComparable()">
+                <md-list-item ng-click="showComparator()" ng-hide="isNotComparable()">
                     <md-icon class="mdi mdi-compare"></md-icon>
                     <p> Compare Models </p>
-                </md-list-item>
-                <md-list-item ng-click="chart()">
-                    <md-icon class="mdi mdi-chart-line"></md-icon>
-                    <p>Chart</p>
                 </md-list-item>
                 <md-divider></md-divider>
                 <md-subheader class="md-no-sticky">Project</md-subheader>

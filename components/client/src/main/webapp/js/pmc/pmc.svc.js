@@ -7,10 +7,10 @@ angular.module('pmc.services', [])
     .service('messageProvider', function ($mdToast, $animate) {
 
         var toastPosition = {
-            bottom: false,
-            top: true,
-            left: false,
-            right: true
+            bottom: true,
+            top: false,
+            left: true,
+            right: false
         };
 
         var alerts = [];
@@ -59,21 +59,31 @@ angular.module('pmc.services', [])
                     result += " " + getMessageBy(errorcode);
                 }
                 alerts.push({type: 'error', msg: result});
-                $mdToast.show(
-                    $mdToast.simple()
-                        .content(result)
-                        .position(getToastPosition())
-                        .hideDelay(3000)
-                );
+                $mdToast.show({
+                    controller: 'ToastCtrl',
+                    template:
+                    '<md-toast class="md-warn" style="background-color: #e57373">\n' +
+                    '<span flex>' + result + '</span>\n' +
+                    '<md-button ng-click="closeToast()">\n' +
+                    '<i class="mdi mdi-close"></i>\n' +
+                    '</md-button>\n</md-toast>',
+                    hideDelay: 6000,
+                    position: getToastPosition()
+                });
             },
             info: function (message) {
                 alerts.push({type: 'success', msg: message});
-                $mdToast.show(
-                    $mdToast.simple()
-                        .content(message)
-                        .position(getToastPosition())
-                        .hideDelay(3000)
-                );
+                $mdToast.show({
+                    controller: 'ToastCtrl',
+                    template:
+                    '<md-toast class="md-warn" style="background-color: #aed581">\n' +
+                    '<span flex>' + message + '</span>\n' +
+                    '<md-button ng-click="closeToast()">\n' +
+                    '<i class="mdi mdi-close"></i>\n' +
+                    '</md-button>\n</md-toast>',
+                    hideDelay: 6000,
+                    position: getToastPosition()
+                });
             }
         };
     })
@@ -184,6 +194,7 @@ angular.module('pmc.services', [])
                                 "Project is not saved.", status);
                     });
             },
+
             addQNM: function () {
                 project.models.push(modelFactory.qnm("QNM " + project.models.length));
             },
