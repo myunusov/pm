@@ -147,7 +147,8 @@ angular.module('pmc.services', [])
             new: function () {
                 messageProvider.clear();
                 project = new Project("New Project", uuid());
-                project.models.push(modelFactory.qnm("QNM " + project.models.length));
+                // project.models.push(modelFactory.qnm("QNM " + project.models.length));
+                project.models.push(modelFactory.egm("SEM " + project.models.length));
                 messageProvider.info("New Project is created.");
                 location.href = "#project/" + project.id;
             },
@@ -200,7 +201,7 @@ angular.module('pmc.services', [])
             },
 
             addEGM: function () {
-                project.models.push(modelFactory.egm("EGM " + project.models.length));
+                project.models.push(modelFactory.egm("SEM " + project.models.length));
             }
 
         };
@@ -232,7 +233,7 @@ angular.module('pmc.services', [])
             return  qnm;
         },
         egm: function(name) {
-            return  new EGM(name || "EGM", uuid());
+            return  new EGM(name || "SEM", uuid());
         }
     };
 });
