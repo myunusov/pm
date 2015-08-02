@@ -1,13 +1,84 @@
-<div class="framehdr">
+<div class="frame">
+    <table class="classes qnm" flex>
+        <thead>
+        <tr>
+            <td colspan="{{classTypes.length + 1}}">
+                <div flex class="framehdr">
+                    <i class="mdi mdi-account-network"></i>
+                    Classes
+                    <button ng-click="addClass()">
+                        <i class="mdi mdi-plus"></i>
+                        <md-tooltip>
+                            Add new Class
+                        </md-tooltip>
+                    </button>
+                    <!--
+                        <button ng-click="">
+                            <i class="mdi mdi-settings"></i>
+                        </button>
+                    -->
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th ng-repeat="type in classTypes">
+                {{type.title}}
+                <md-tooltip>{{type.tooltip }}</md-tooltip>
+            </th>
+            <th style="width:15px;"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="center in model.classes">
+            <td nowrap="nowrap" ng-repeat="type in classTypes" ng-init="prop=center.all[type.id]">
+                <input type="text"
+                       aria-label="Property {{type.title}}"
+                       class="input input-small simplebox quantity {{prop.state}}"
+                       ng-change="change(type.id, center)"
+                       ng-pattern="prop.pattern"
+                       ng-model="prop.text">
+
+                <md-menu>
+                    <button aria-label="Select Unit" class="md-icon-button" ng-click="$mdOpenMenu()">
+                        {{prop.unit.title}}
+                    </button>
+                    <md-menu-content width="1">
+                        <md-menu-item ng-repeat="unit in prop.availableUnits()">
+                            <md-button aria-label="Select Unit" ng-click="prop.setUnit(unit)" style="height: 31px;">
+                                {{unit.title}}
+                            </md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+
+            </td>
+            <td nowrap="nowrap">
+                <span style="height: 28px">
+                    <button class="hdrbutton" ng-click="remove(center)">
+                        <i class="mdi mdi-close"></i>
+                        <md-tooltip>Remove Node</md-tooltip>
+                    </button>
+                </span>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+
+
+
+
+<!--<div class="framehdr">
     <i class="icon icon-user"></i>
     Classes
     <button class="hdrbutton" ng-click="addClass()" tooltip-placement="left" tooltip="Add new Class">
         <i class="icon-plus"></i>
-    </button>
+    </button>-->
     <!--                    <button class="hdrbutton" ng-click="">
                             <i class="icon-cog"></i>
                         </button>-->
-</div>
+<!--</div>
 <div class="frame">
     <table class="classes">
         <thead>
@@ -113,4 +184,4 @@
         </tbody>
     </table>
 
-</div>
+</div>-->

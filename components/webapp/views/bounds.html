@@ -1,13 +1,23 @@
-<div class="row-fluid">
-    <div class="framehdr">
-        <i class="icon icon-flag"></i>
-        Asymptotic Bounds
-        <button class="hdrbutton" ng-click="refreshCharts()" tooltip-placement="left" tooltip="Refresh Charts">
-            <i class="icon-refresh"></i>
-        </button>
-    </div>
-    <div class="frame">
-        <div id="rmin{{model.id}}" class="bounds-chart"></div>
-        <div id="xmax{{model.id}}" class="bounds-chart"></div>
+<div class="qnm">
+    <div layout="column" flex layout-fill ng-init="init()">
+        <md-content flex layout-padding layout-fill layout-wrap layout-gt-lg="row" layout="column">
+            <div class="framehdr" flex="100">
+                <i class="mdi mdi-chart-line"></i>Asymptotic Bounds
+            </div>
+            <div flex="50">
+                <md-card>
+                    <md-card-content>
+                        <div id="rmin" class="bounds-chart" style="width: 100%"></div>
+                    </md-card-content>
+                </md-card>
+            </div>
+            <div flex="50">
+                <md-card>
+                    <md-card-content>
+                        <div id="xmax" class="bounds-chart" style="width: 100%"></div>
+                    </md-card-content>
+                </md-card>
+            </div>
+        </md-content>
     </div>
 </div>
