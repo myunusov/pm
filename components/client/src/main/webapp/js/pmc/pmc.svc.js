@@ -64,7 +64,7 @@ angular.module('pmc.services', [])
                     template:
                     '<md-toast class="md-warn" style="background-color: #e57373">\n' +
                     '<span flex>' + result + '</span>\n' +
-                    '<md-button ng-click="closeToast()">\n' +
+                    '<md-button aria-label="Close Toast" ng-click="closeToast()">\n' +
                     '<i class="mdi mdi-close"></i>\n' +
                     '</md-button>\n</md-toast>',
                     hideDelay: 6000,
@@ -78,7 +78,7 @@ angular.module('pmc.services', [])
                     template:
                     '<md-toast class="md-warn" style="background-color: #aed581">\n' +
                     '<span flex>' + message + '</span>\n' +
-                    '<md-button ng-click="closeToast()">\n' +
+                    '<md-button aria-label="Close Toast" ng-click="closeToast()">\n' +
                     '<i class="mdi mdi-close"></i>\n' +
                     '</md-button>\n</md-toast>',
                     hideDelay: 6000,
@@ -124,12 +124,13 @@ angular.module('pmc.services', [])
                                 "Project List is not loaded.", status);
                     });
             },
-            load: function (id) {
+            load: function (id, success, error) {
                 id = id || project.id;
                 messageProvider.clear();
                 $http.get(url + '/' + id)
                     .success(function (dto) {
                         project.setDTO(dto);
+                        success(project);
                         messageProvider.info("Project '" + dto.name + "' is loaded.");
                     })
                     .error(function (data, status) {
@@ -137,20 +138,17 @@ angular.module('pmc.services', [])
                             data && data.message ?
                                 data.message :
                                 "Project is not loaded.", status);
-                        if (project && project.id) {
-                            location.href = "#project/" + project.id;
-                        } else {
-                            location.href = "#project/new";
-                        }
+                        error(id);
                     });
             },
-            make: function () {
+            make: function (id) {
+                id = id || uuid();
                 messageProvider.clear();
-                project = new Project("New Project", uuid());
+                project = new Project("New Project", id);
                 // project.models.push(modelFactory.qnm("QNM " + project.models.length));
                 project.models.push(modelFactory.egm("SEM " + project.models.length));
                 messageProvider.info("New Project is created.");
-                location.href = "#project/" + project.id;
+                window.location.replace("#project/" + id);
             },
             remove: function (id) {
                 id = id || project.id;
@@ -160,7 +158,7 @@ angular.module('pmc.services', [])
                         messageProvider.info("Project '" + dto.name + "' is deleted.");
                         remove(dto.id);
                         if (project.id === dto.id) {
-                            make();
+                            projectProvider.make();
                         }
                     })
                     .error(function (data, status) {
