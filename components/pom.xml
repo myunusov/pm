@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>base</artifactId>
         <groupId>org.maxur.perfmodel</groupId>
-        <version>1.2-SNAPSHOT</version>
+        <version>1.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>components</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2</version>
     <packaging>pom</packaging>
     <name>PMC: Components</name>
     <description>PMC Components</description>
@@ -28,7 +26,7 @@
     <scm>
         <connection>scm:git:https://github.com/myunusov/pm.git</connection>
         <developerConnection>scm:git:git@github.com:myunusov/pm.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>release-1.2</tag>
     </scm>
 
     <profiles>
@@ -116,7 +114,7 @@
                     <dependency>
                         <groupId>org.maxur.perfmodel</groupId>
                         <artifactId>tools</artifactId>
-                        <version>1.2-SNAPSHOT</version>
+                        <version>1.2</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -128,7 +126,7 @@
                     <dependency>
                         <groupId>org.maxur.perfmodel</groupId>
                         <artifactId>tools</artifactId>
-                        <version>1.2-SNAPSHOT</version>
+                        <version>1.2</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -140,7 +138,7 @@
                     <dependency>
                         <groupId>org.maxur.perfmodel</groupId>
                         <artifactId>tools</artifactId>
-                        <version>1.2-SNAPSHOT</version>
+                        <version>1.2</version>
                     </dependency>
                 </dependencies>
             </plugin>
