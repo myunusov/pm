@@ -144,7 +144,7 @@ angular.module('pmc.services', [])
                         }
                     });
             },
-            new: function () {
+            make: function () {
                 messageProvider.clear();
                 project = new Project("New Project", uuid());
                 // project.models.push(modelFactory.qnm("QNM " + project.models.length));
@@ -160,7 +160,7 @@ angular.module('pmc.services', [])
                         messageProvider.info("Project '" + dto.name + "' is deleted.");
                         remove(dto.id);
                         if (project.id === dto.id) {
-                            project.new();
+                            make();
                         }
                     })
                     .error(function (data, status) {

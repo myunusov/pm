@@ -2,10 +2,9 @@
 
 /* Controllers */
 
-angular.module('pmc.controllers', [])
+var controllers = angular.module('pmc.controllers', []);
 
-
-    .controller('ProjectCtrl', function ($scope, $mdDialog, $routeParams, projectProvider, compareProvider) {
+controllers.controller('ProjectCtrl', function ($scope, $mdDialog, $routeParams, projectProvider, compareProvider) {
 
         $scope.init = function () {
             var id = $routeParams.projectId;
@@ -15,7 +14,7 @@ angular.module('pmc.controllers', [])
                         projectProvider.load(id);
                     }
                 } else {
-                    projectProvider.new();
+                    projectProvider.make();
                 }
             }
         };
@@ -71,7 +70,7 @@ angular.module('pmc.controllers', [])
 
     })
 
-    .controller('MsgCtrl', function ($scope, messageProvider) {
+controllers.controller('MsgCtrl', function ($scope, messageProvider) {
 
         $scope.alerts = [];
         messageProvider.setAlerts($scope.alerts);
@@ -82,7 +81,7 @@ angular.module('pmc.controllers', [])
 
     })
 
-    .controller('EGMCtrl', function ($scope, messageProvider) {
+controllers.controller('EGMCtrl', function ($scope, messageProvider) {
 
         $scope.addResource = function () {
             $scope.model.addResource();
@@ -102,7 +101,7 @@ angular.module('pmc.controllers', [])
 
     })
 
-    .controller('QNMCtrl', function ($scope, messageProvider) {
+controllers.controller('QNMCtrl', function ($scope, messageProvider) {
 
         $scope.nodeTypes = [
             {
@@ -267,7 +266,7 @@ angular.module('pmc.controllers', [])
 
     })
 
-    .controller('MainMenuCtrl', function ($scope,
+controllers.controller('MainMenuCtrl', function ($scope,
                                           $timeout,
                                           $mdSidenav,
                                           $mdUtil,
@@ -317,8 +316,8 @@ angular.module('pmc.controllers', [])
             $mdSidenav('left').close();
         };
 
-        $scope.new = function () {
-            projectProvider.new();
+        $scope.make = function () {
+            projectProvider.make();
             $mdSidenav('left').close();
         };
 
@@ -400,7 +399,7 @@ angular.module('pmc.controllers', [])
 
     })
 
-    .controller('ComparatorCtrl', function ($scope, $mdDialog, compareProvider) {
+controllers.controller('ComparatorCtrl', function ($scope, $mdDialog, compareProvider) {
 
         $scope.hide = function () {
             $mdDialog.hide();
@@ -530,7 +529,7 @@ angular.module('pmc.controllers', [])
     })
 
 
-    .controller('ProjectListCtrl', function ($scope, projectProvider) {
+controllers.controller('ProjectListCtrl', function ($scope, projectProvider) {
 
         $scope.init = function () {
             projectProvider.findAll();
@@ -553,7 +552,7 @@ angular.module('pmc.controllers', [])
         };
     })
 
-    .controller('ModalCtrl', function ($scope, projectProvider) {
+controllers.controller('ModalCtrl', function ($scope, projectProvider) {
 
         $scope.addQNM = function () {
             projectProvider.addQNM();
@@ -565,14 +564,13 @@ angular.module('pmc.controllers', [])
 
     })
 
-
-    .controller('ToastCtrl', function($scope, $mdToast) {
+controllers.controller('ToastCtrl', function($scope, $mdToast) {
         $scope.closeToast = function () {
             $mdToast.hide();
         }
     })
 
-    .controller('ChartCtrl', function ($scope, $routeParams, $location, $http, projectProvider) {
+controllers.controller('ChartCtrl', function ($scope, $routeParams, $location, $http, projectProvider) {
 
         $scope.init = function () {
             var projectId = $routeParams.projectId;
