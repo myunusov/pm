@@ -233,7 +233,10 @@ angular.module('pmc.services', [])
             return  qnm;
         },
         egm: function(name) {
-            return  new EGM(name || "SEM", uuid());
+            var egm = new EGM(name || "SEM", uuid());
+            egm.addResource();
+            egm.addScenario();
+            return  egm;
         }
     };
 });

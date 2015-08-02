@@ -62,16 +62,6 @@ pmc.config(
                 .warnPalette('red')
                 .backgroundPalette('grey')
                 .dark();
-            $mdThemingProvider.theme('error')
-                .primaryPalette('red')
-                .accentPalette('red')
-                .warnPalette('red')
-                .backgroundPalette('red')
-            $mdThemingProvider.theme('info')
-                .primaryPalette('green')
-                .accentPalette('green')
-                .warnPalette('green')
-                .backgroundPalette('green')
         }]);
 
 

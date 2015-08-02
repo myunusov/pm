@@ -22,6 +22,7 @@ function EGMResource(id, name) {
 function EGMStep(type) {
     this.url = "stepContent.html";
     this.inconsistent = false;
+    this.iscompleted = true;
     this.type = type;
     this.rate = 1;
     this.repeat = 1;
@@ -31,7 +32,12 @@ function EGMStep(type) {
     this.steps = [];
     this.stepNo = 0;
 
-    this.setDTO = function (memento) { // TODO
+    this.onUpdate = function () {
+        this.iscompleted = true;
+        this.inconsistent = false;
+    }
+
+    this.setDTO = function (memento) {
         this.id = memento.id;
         this.name = memento.name;
         this.type = memento.type;
@@ -54,12 +60,22 @@ function EGMStep(type) {
                     this
                 );
             } else if (memento.steps[i].type === "F") {
-                step = new EGMFork(
+                step = new EGMSplit(
                     memento.steps[i].id,
                     this
                 );
             } else if (memento.steps[i].type === "S") {
                 step = new EGMSwitch(
+                    memento.steps[i].id,
+                    this
+                );
+            } else if (memento.steps[i].type === "P") {
+                step = new EGMPardo(
+                    memento.steps[i].id,
+                    this
+                );
+            } else if (memento.steps[i].type === "C") {
+                step = new EGMLink(
                     memento.steps[i].id,
                     this
                 );
@@ -85,7 +101,6 @@ function EGMStep(type) {
     this.doSetDTO = function (memento) {
     };
 
-
     this.doCreateDTO = function (result) {
         return result;
     };
@@ -94,7 +109,9 @@ function EGMStep(type) {
         {id: "R", title: "Routine"},
         {id: "L", title: "Loop"},
         {id: "S", title: "Switch"},
-        {id: "F", title: "Fork"}
+        {id: "F", title: "Split"},
+        {id: "P", title: "Pardo"},
+        {id: "C", title: "Scenario"},
     ];
 
     this.addStep = function (type) {
@@ -111,13 +128,29 @@ function EGMStep(type) {
                 step = new EGMSwitch(id2, this);
                 break;
             case "F":
-                step = new EGMFork(id2, this);
+                step = new EGMSplit(id2, this);
+                break;
+            case "P":
+                step = new EGMPardo(id2, this);
+                break;
+            case "C":
+                step = new EGMLink(id2, this);
+                step.setScenario(this.addScenario());
                 break;
             default:
                 step = new EGMRoutine(id2, this);
         }
         this.steps.push(step);
+        this.onUpdate();
     };
+
+    this.addScenario = function () {
+        return this.parent.addScenario();
+    }
+
+    this.findScenario = function (id) {
+        return this.parent.findScenario(id);
+    }
 
     this.change = function () {
         this.worst = this.values;
@@ -125,6 +158,7 @@ function EGMStep(type) {
         if (this.parent) {
             this.parent.resolve();
         }
+        this.onUpdate();
     };
 
     this.resolve = function () {
@@ -139,25 +173,27 @@ function EGMStep(type) {
         if (this.parent) {
             this.parent.resolve();
         }
+        this.onUpdate();
     };
 
-    this.recalc = function () {
+    this.init = function () {
         if (this.steps.length > 0) {
             for (var i = 0; i < this.steps.length; i++) {
-                this.steps[i].recalc();
+                this.steps[i].init();
             }
             this.resolve();
         } else {
             this.worst = this.values;
             this.best = this.values;
         }
+        this.onUpdate();
     };
 
     this.updateBest = function (child) {
         for (var key in child.best) {
             var newValue = child.best.hasOwnProperty(key) && child.best[key] ? child.best[key] : 0;
             var oldValue = this.best.hasOwnProperty(key) && this.best[key] ? this.best[key] : null;
-            this.best[key] =  this.calcMin(child, newValue, oldValue);
+            this.best[key] = this.calcMin(child, newValue, oldValue);
         }
     };
 
@@ -165,7 +201,7 @@ function EGMStep(type) {
         for (var key in child.values) {
             var newValue = child.values.hasOwnProperty(key) && child.values[key] ? child.values[key] : 0;
             var oldValue = this.values.hasOwnProperty(key) && this.values[key] ? this.values[key] : null;
-            this.values[key] =  this.calcAvg(child, newValue, oldValue);
+            this.values[key] = this.calcAvg(child, newValue, oldValue);
         }
     };
 
@@ -173,7 +209,7 @@ function EGMStep(type) {
         for (var key in child.worst) {
             var newValue = child.worst.hasOwnProperty(key) && child.worst[key] ? child.worst[key] : 0;
             var oldValue = this.worst.hasOwnProperty(key) && this.worst[key] ? this.worst[key] : null;
-            this.worst[key] =  this.calcMax(child, newValue, oldValue);
+            this.worst[key] = this.calcMax(child, newValue, oldValue);
         }
     };
 
@@ -190,6 +226,7 @@ function EGMStep(type) {
     this.removeStep = function (step) {
         this.steps.remove(step);
         this.resolve();
+        this.onUpdate();
     };
 
     this.removeSelf = function () {
@@ -220,7 +257,7 @@ function EGMStep(type) {
         return this.type == "S";
     };
 
-    this.isFork = function () {
+    this.isSplit = function () {
         return this.type == "F";
     };
 
@@ -228,18 +265,81 @@ function EGMStep(type) {
         return this.type == "R";
     };
 
+    this.isScenario = function () {
+        return this.type == "C";
+    };
 
     this.isCase = function () {
-        return this.parent.isSwitch();
+        return this.parent && this.parent.isSwitch();
     };
 
     this.getClass = function () {
-        return (this.isParent() ? " parent-li" : "" + " last-child")  + (this.inconsistent ? " invalid" : "");
+        return (this.isParent() ? " parent-li" : "" + " last-child") + (this.inconsistent ? " invalid" : "");
     };
+
+    this.theme = function () {
+        return this.inconsistent ? " md-warn" : this.iscompleted ? "md-primary" : "md-accent";
+    }
 
 }
 
+function EGMLink(id, parent) {
+    this.id = id;
+    this.scenarioId = null;
+    this.scenario = null;
+    this.name = "";
+    this.parent = parent;
+    this.steps = [];
+
+    this.availableChildren = [];
+
+    this.values = {};
+    this.best = {};
+    this.worst = {};
+
+    this.setScenario = function (scenario) {
+        this.scenario = scenario;
+        this.name = scenario.name;
+        this.values = scenario.values;
+        this.best = scenario.best;
+        this.worst = scenario.worst;
+        scenario.addLink(this);
+    }
+
+    this.doCreateDTO = function (result) {
+        result.scenarioId = this.scenario.id;
+        return result;
+    };
+
+    this.doSetDTO = function (memento) {
+        this.scenarioId = memento.scenarioId;
+
+    };
+
+    this.init = function () {
+        this.setScenario(this.findScenario(this.scenarioId));
+    }
+
+    this.image = function () {
+        return "script.svg";
+    }
+
+    this.update = function () {
+        this.values = this.scenario.values;
+        this.best = this.scenario.best;
+        this.worst = this.scenario.worst;
+        parent.resolve();
+    }
+
+    this.removeSelf = function () {
+        this.parent.removeStep(this);
+        this.scenario.removeLink(this);
+    };
+}
+EGMLink.prototype = new EGMStep("C");
+
 function EGMScenario(id, model) {
+
     this.id = id;
     this.name = "Scenario";
     this.model = model;
@@ -250,6 +350,28 @@ function EGMScenario(id, model) {
     this.worst = {};
     this.steps = [];
     this.stepNo = 0;
+    this.link = null;
+
+    this.onUpdate = function () {
+        if (this.link) {
+            this.link.update();
+        }
+    }
+
+    this.image = function () {
+        return "script.svg";
+    }
+
+    this.addLink = function (link) {
+        this.link = link;
+    }
+
+
+    this.removeLink = function (link) {
+        if (this.link === link) {
+            this.link = null;
+        }
+    }
 
     this.allsSteps = function () {
         var result = [];
@@ -266,11 +388,22 @@ function EGMScenario(id, model) {
         )
     }
 
+    this.addScenario = function () {
+        return this.model.addScenario();
+    }
+
+    this.findScenario = function (id) {
+        return this.model.findScenario(id);
+    }
+
     this.removeSelf = function () {
         this.model.removeScenario(this);
+        if (this.link) {
+            this.link.removeSelf();
+        }
     };
 }
-EGMScenario.prototype = new EGMStep("ROOT");
+EGMScenario.prototype = new EGMStep("C");
 
 function EGMRoutine(id, parent, name) {
     this.id = id;
@@ -283,6 +416,10 @@ function EGMRoutine(id, parent, name) {
     this.worst = {};
     this.steps = [];
     this.stepNo = 0;
+
+    this.image = function () {
+        return this.isNode() ? "file-multiple.svg" : "file.svg";
+    }
 }
 EGMRoutine.prototype = new EGMStep("R");
 
@@ -297,6 +434,15 @@ function EGMLoop(id, parent) {
     this.worst = {};
     this.steps = [];
     this.stepNo = 0;
+    this.iscompleted = false;
+
+    this.onUpdate = function () {
+        this.iscompleted = this.steps.length > 0;
+    }
+
+    this.image = function () {
+        return "block-helper.svg";
+    }
 
     this.calcMin = function (child, newValue, oldValue) {
         return parseFloat(parseFloat(newValue) * parseFloat(this.repeat) + parseFloat(oldValue ? oldValue : 0));
@@ -321,15 +467,24 @@ function EGMSwitch(id, parent) {
     this.worst = {};
     this.steps = [];
     this.stepNo = 0;
+    this.iscompleted = false;
 
-    this.totalProbability = function() {
+    this.onUpdate = function () {
+        this.iscompleted = this.steps.length > 0;
+        this.inconsistent = this.totalProbability() > 1;
+    }
+
+    this.image = function () {
+        return "source-fork.svg";
+    }
+
+    this.totalProbability = function () {
         var result = 0;
         this.steps.each(
-            function(step) {
+            function (step) {
                 result += parseFloat(step.rate);
             }
         );
-        this.inconsistent = result > 1;
         return result;
     }
 
@@ -361,9 +516,9 @@ function EGMSwitch(id, parent) {
 }
 EGMSwitch.prototype = new EGMStep("S");
 
-function EGMFork(id, parent) {
+function EGMSplit(id, parent) {
     this.id = id;
-    this.name = "Fork";
+    this.name = "Split";
     this.parent = parent;
 
     this.rate = 1;
@@ -372,6 +527,15 @@ function EGMFork(id, parent) {
     this.worst = {};
     this.steps = [];
     this.stepNo = 0;
+    this.iscompleted = false;
+
+    this.onUpdate = function () {
+        this.iscompleted = this.steps.length > 1;
+    }
+
+    this.image = function () {
+        return "view-agenda.svg";
+    }
 
     this.calcMin = function (child, newValue, oldValue) {
         var newNumber = parseFloat(newValue);
@@ -398,8 +562,56 @@ function EGMFork(id, parent) {
         return newNumber < oldNumber ? newNumber : oldNumber;
     }
 }
-EGMFork.prototype = new EGMStep("F");
+EGMSplit.prototype = new EGMStep("F");
 
+
+function EGMPardo(id, parent) {
+    this.id = id;
+    this.name = "Pardo";
+    this.parent = parent;
+
+    this.rate = 1;
+    this.values = {};
+    this.best = {};
+    this.worst = {};
+    this.steps = [];
+    this.stepNo = 0;
+    this.iscompleted = false;
+
+    this.onUpdate = function () {
+        this.iscompleted = this.steps.length > 1;
+    }
+
+    this.image = function () {
+        return "view-dashboard.svg";
+    }
+
+    this.calcMin = function (child, newValue, oldValue) {
+        var newNumber = parseFloat(newValue);
+        if (!oldValue) {
+            return newNumber;
+        }
+        var oldNumber = parseFloat(oldValue);
+        return newNumber > oldNumber ? newNumber : oldNumber;
+    }
+    this.calcAvg = function (child, newValue, oldValue) {
+        var newNumber = parseFloat(newValue);
+        if (!oldValue) {
+            return newNumber;
+        }
+        var oldNumber = parseFloat(oldValue);
+        return newNumber > oldNumber ? newNumber : oldNumber;
+    }
+    this.calcMax = function (child, newValue, oldValue) {
+        var newNumber = parseFloat(newValue);
+        if (!oldValue) {
+            return newNumber;
+        }
+        var oldNumber = parseFloat(oldValue);
+        return newNumber > oldNumber ? newNumber : oldNumber;
+    }
+}
+EGMPardo.prototype = new EGMStep("P");
 
 function EGM(name, id) {
     this.id = id;
@@ -454,7 +666,7 @@ function EGM(name, id) {
 
     this.init = function () {
         for (var i = 0; i < this.scenarios.length; i++) {
-            this.scenarios[i].recalc();
+            this.scenarios[i].init();
         }
     };
 
@@ -471,6 +683,16 @@ function EGM(name, id) {
     this.addScenario = function () {
         var scenario = new EGMScenario(++scenarioNo, this);
         this.scenarios.push(scenario);
+        return scenario;
+    };
+
+    this.findScenario = function (id) {
+        for (var i = 0; i < this.scenarios.length; i++) {
+            if (this.scenarios[i].id == id) {
+                return this.scenarios[i];
+            }
+        }
+        return null;
     };
 
     this.removeScenario = function (scenario) {

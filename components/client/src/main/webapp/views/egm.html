@@ -170,94 +170,14 @@
                class="input input-small simplebox quantity"
                ng-model="step.rate">
 
-        <div ng-show="step.isLoop()">
-
-            <md-menu>
-                <md-button class="md-fab md-primary" aria-label="loop">
-                    <md-icon md-svg-src="img/icons/block-helper.svg"
-                             style="width: 24px; height: 24px;" ng-click="$mdOpenMenu()">
-                    </md-icon>
-                </md-button>
-                <md-menu-content width="1">
-                    <md-menu-item ng-repeat="child in step.availableChildren">
-                        <md-button aria-label="Add Step" ng-click="step.addStep(child.id)"
-                                   style="height: 31px;float: right">
-                            {{child.title}}
-                        </md-button>
-                    </md-menu-item>
-                </md-menu-content>
-            </md-menu>
-
-            <span class="dropdown" style="float: right">
-                <a class="simpleank" ng-click="step.removeSelf()"><i class="mdi mdi-close"></i></a>
-                <md-tooltip>Remove Step</md-tooltip>
-            </span>
-
-           <input type="text"
-                   ng-show="step.isLoop()"
-                   aria-label="Iteration number"
-                   style="width:100px;"
-                   ng-change="step.resolve()"
-                   class="input input-small simplebox quantity"
-                   ng-model="step.repeat">
-
-        </div>
-
-        <div ng-show="step.isSwitch()">
-
-            <md-menu>
-                <md-button class="md-fab md-primary" aria-label="loop" ng-click="$mdOpenMenu()">
-                    <md-icon md-svg-src="img/icons/source-fork.svg" style="width: 24px; height: 24px;">
-                    </md-icon>
-                </md-button>
-                <md-menu-content width="1">
-                    <md-menu-item ng-repeat="child in step.availableChildren">
-                        <md-button aria-label="Add Step" ng-click="step.addStep(child.id)"
-                                   style="height: 31px;float: right">
-                            {{child.title}}
-                        </md-button>
-                    </md-menu-item>
-                </md-menu-content>
-            </md-menu>
-
-            <span class="dropdown" style="float: right">
-                <a class="simpleank" ng-click="step.removeSelf()"><i class="mdi mdi-close"></i></a>
-                <md-tooltip>Remove Step</md-tooltip>
-            </span>
-
-        </div>
-
-        <div ng-show="step.isFork()">
-
-            <md-menu>
-                <md-button class="md-fab md-primary" aria-label="loop">
-                    <md-icon md-svg-src="img/icons/ic_view_column_black.svg" style="width: 24px; height: 24px;"
-                             ng-click="$mdOpenMenu()">
-                    </md-icon>
-                </md-button>
-                <md-menu-content width="1">
-                    <md-menu-item ng-repeat="child in step.availableChildren">
-                        <md-button aria-label="Add Step" ng-click="step.addStep(child.id)"
-                                   style="height: 31px;float: right">
-                            {{child.title}}
-                        </md-button>
-                    </md-menu-item>
-                </md-menu-content>
-            </md-menu>
-
-            <span class="dropdown" style="float: right">
-                <a class="simpleank" ng-click="step.removeSelf()"><i class="mdi mdi-close"></i></a>
-                <md-tooltip>Remove Step</md-tooltip>
-            </span>
-
-        </div>
-
-        <div ng-show="step.isRoutine()">
-            <div>
+        <div layout="row">
+            <div flex="90">
                 <md-menu>
-                    <md-button class="md-fab md-primary" aria-label="loop" ng-click="$mdOpenMenu()">
-                        <i ng-show="step.isNode()" class="mdi mdi-tree" style="width: 24px; height: 24px;"></i>
-                        <i ng-show="step.isLeaf()" class="mdi mdi-leaf" style="width: 24px; height: 24px;"></i>
+                    <md-button class="md-fab md-mini" ng-class="step.theme()" aria-label="New Step">
+                        <md-icon ng-show="step.isScenario()" md-svg-src="img/icons/{{step.image()}}">
+                        </md-icon>
+                        <md-icon ng-hide="step.isScenario()" md-svg-src="img/icons/{{step.image()}}" ng-click="$mdOpenMenu()">
+                        </md-icon>
                     </md-button>
                     <md-menu-content width="1">
                         <md-menu-item ng-repeat="child in step.availableChildren">
@@ -269,22 +189,37 @@
                     </md-menu-content>
                 </md-menu>
 
-            <span class="dropdown" style="float: right">
+                <span ng-show="step.isRoutine()">
+                    &NonBreakingSpace;{{step.id}}&NonBreakingSpace;.
+                    <input type="text" aria-label="Step Name" class="input input-small simplebox quantity"
+                           ng-model="step.name" style="width:200px">
+                </span>
+
+                <span ng-show="step.isScenario()">
+                    <input type="text" aria-label="Step Name" class="input input-small simplebox quantity"
+                           ng-model="step.name" style="width:200px">
+                </span>
+                <span ng-show="step.isLoop()">
+                   <input  type="text"
+                           aria-label="Iteration number"
+                           style="width:100px;"
+                           ng-change="step.resolve()"
+                           class="input input-small simplebox quantity"
+                           ng-model="step.repeat">
+                </span>
+            </div>
+
+            <div flex="10" class="dropdown" style="float: right">
                 <a class="simpleank" ng-click="step.removeSelf()"><i class="mdi mdi-close"></i></a>
                 <md-tooltip>Remove Step</md-tooltip>
-            </span>
-                &NonBreakingSpace;{{step.id}}&NonBreakingSpace;.
-                <input type="text" aria-label="Step Name" class="input input-small simplebox quantity"
-                       ng-model="step.name"
-                       style="width:50%">
             </div>
+
 
         </div>
 
-
     </div>
 
-    <ul>
+    <ul ng-if="!step.isScenario()">
         <li ng-repeat="step in step.steps" ng-include="step.url" class="tree-li" ng-class="step.getClass()"></li>
     </ul>
 </script>

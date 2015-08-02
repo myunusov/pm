@@ -42,7 +42,7 @@
                     </button>
                     <md-menu-content width="1">
                         <md-menu-item ng-repeat="unit in prop.availableUnits()">
-                            <md-button ng-click="prop.setUnit(unit)" style="height: 31px;">
+                            <md-button aria-label="Select Unit" ng-click="prop.setUnit(unit)" style="height: 31px;">
                                 {{unit.title}}
                             </md-button>
                         </md-menu-item>

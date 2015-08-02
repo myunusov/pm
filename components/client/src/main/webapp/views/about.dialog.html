@@ -4,7 +4,7 @@
             <div class="md-toolbar-tools">
                 <h2>About</h2>
                 <span flex></span>
-                <md-button class="md-icon-button" ng-click="answer('not applicable')">
+                <md-button aria-label="close" class="md-icon-button" ng-click="answer('not applicable')">
                     <md-icon class="mdi mdi-close" aria-label="Close dialog"></md-icon>
                 </md-button>
             </div>
@@ -17,7 +17,7 @@
                     <strong>Maxim Yunusov</strong></p>
             </div>
         </md-dialog-content>
-        <div class="md-actions" layout="row">
+        <div aria-label="ok" class="md-actions" layout="row">
             <md-button ng-click="answer('not useful')" class="md-primary">
                 OK
             </md-button>
