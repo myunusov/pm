@@ -1,0 +1,64 @@
+
+<div class="frame">
+    <table flex class="nodes qnm">
+        <thead>
+        <tr>
+            <td colspan="{{nodeTypes.length + 1}}">
+                <div flex class="framehdr">
+                        <i class="mdi mdi-harddisk"></i>
+                        Nodes
+                        <button ng-click="addNode()">
+                            <i class="mdi mdi-plus"></i>
+                            <md-tooltip>Add new Node</md-tooltip>
+                        </button>
+                        <!--
+                            <button ng-click="">
+                                <i class="mdi mdi-settings"></i>
+                            </button>
+                        -->
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th ng-repeat="type in nodeTypes">
+                {{type.title}}
+                <md-tooltip>{{type.tooltip }}</md-tooltip>
+            </th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="center in model.nodes">
+            <td nowrap="nowrap" ng-repeat="type in nodeTypes" ng-init="prop=center.all[type.id]">
+                <input type="text"
+                       aria-label="Property {{type.title}}"
+                       class="tab-input simplebox quantity {{prop.state}}"
+                       ng-change="change(type.id, center)"
+                       ng-pattern="prop.pattern"
+                       ng-model="prop.text">
+                <md-menu>
+                    <button aria-label="Select Unit" class="md-icon-button" ng-click="$mdOpenMenu()">
+                        {{prop.unit.title}}
+                    </button>
+                    <md-menu-content width="1">
+                        <md-menu-item ng-repeat="unit in prop.availableUnits()">
+                            <md-button aria-label="Select Unit" ng-click="prop.setUnit(unit)" style="height: 31px;">
+                                {{unit.title}}
+                            </md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+            </td>
+            <td nowrap="nowrap">
+                <span style="height: 28px">
+                    <button class="hdrbutton" ng-click="remove(center)">
+                        <i class="mdi mdi-close"></i>
+                        <md-tooltip>Remove Node</md-tooltip>
+                    </button>
+                </span>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>

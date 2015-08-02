@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SimpleFileRepository implements Repository<Project> {
@@ -59,7 +58,7 @@ public class SimpleFileRepository implements Repository<Project> {
 
     @Override
     public Project put(final Project project) {
-        final Project result = projectMap.put(project.getName(), project);
+        final Project result = projectMap.put(project.getId(), project);
         write();
         return result;
     }

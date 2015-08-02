@@ -1,0 +1,225 @@
+<div class="qnm" ng-controller="EGMCtrl">
+
+    <md-content flex layout-padding layout-fill layout-gt-lg="row" layout-wrap layout="column">
+        <div flex="100">
+            <md-card>
+                <md-card-content style="padding: 2px">
+                    <div class="frame">
+                        <table class="resources">
+                            <col>
+                            <col style="width: 35px">
+                            <thead>
+                            <tr>
+                                <td colspan="2">
+                                    <div class="framehdr">
+                                        <i class="mdi mdi-memory"></i>
+                                        Resources
+                                        <button aria-label="Add Resource" ng-click="addResource()">
+                                            <i class="mdi mdi-plus"></i>
+                                        </button>
+                                        <md-tooltip>Add new Resource</md-tooltip>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Resource Name</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="resource in model.resources">
+                                <td nowrap="nowrap">
+                                    <input type="text" aria-label="Resource name" class="input input-small simplebox"
+                                           ng-model="resource.name">
+                                </td>
+                                <td nowrap="nowrap">
+                                <span style="height: 28px">
+                                    <button aria-label="Remove Resource" class="hdrbutton"
+                                            ng-click="removeResource(resource)">
+                                        <i class="mdi mdi-close"></i>
+                                        <md-tooltip>Remove Resource</md-tooltip>
+                                    </button>
+                                 </span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </md-card-content>
+            </md-card>
+            <div flex="100">
+                <md-card>
+                    <div class="frame">
+                        <table class="resources">
+                            <col style="width: 33%">
+                            <thead>
+                            <tr>
+                                <td colspan="2">
+                                    <div class="framehdr">
+                                        <i class="mdi mdi-script"></i>
+                                        Scenarios
+                                        <button aria-label="Add Scenaro" ng-click="addScenario()">
+                                            <i class="mdi mdi-plus"></i>
+                                        </button>
+                                        <md-tooltip>Add new Scenario</md-tooltip>
+                                    </div>
+                                </td>
+                            </tr>
+                            </thead>
+                            <tbody ng-repeat="scenario in model.scenarios">
+                            <tr>
+                                <td colspan="2">
+                                    <b>&NonBreakingSpace;{{scenario.id}}&NonBreakingSpace;.</b>
+                                    <input type="text" aria-label="Step Name"
+                                           class="input input-small simplebox quantity" ng-model="scenario.name"
+                                           style="width:50%">
+
+                                    <span class="dropdown" style="float: right">
+                                        <a class="simpleank" ng-click="scenario.removeSelf()"><i
+                                                class="mdi mdi-close"></i></a>
+                                        <md-tooltip>Remove Step</md-tooltip>
+                                    </span>
+
+                                </td>
+                            </tr>
+                            <tr class="tree" style="border: 0">
+                                <td>
+                                    <div>
+                                        <md-menu style="margin-top: -50px">
+                                            <button aria-label="Select Step" class="md-icon-button"
+                                                    ng-click="$mdOpenMenu()"
+                                                    ng-show="scenario.availableChildren.length">
+                                                <i class="mdi mdi-playlist-plus"
+                                                   style="height: 32px;font-size: 32px"></i>
+                                            </button>
+                                            <md-menu-content width="1">
+                                                <md-menu-item ng-repeat="type in scenario.availableChildren">
+                                                    <md-button aria-label="Add Step"
+                                                               ng-click="scenario.addStep(type.id)"
+                                                               style="height: 31px;">
+                                                        {{type.title}}
+                                                    </md-button>
+                                                </md-menu-item>
+                                            </md-menu-content>
+                                        </md-menu>
+                                        <ul>
+                                            <li ng-repeat="step in scenario.steps" ng-include="step.url"
+                                                class="tree-li parent-li" ng-class="step.getClass()"></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td>
+                                    <md-card>
+                                        <div class="frame">
+                                            <table class="resources">
+                                                <thead>
+                                                <tr>
+                                                    <th>Step</th>
+                                                    <th ng-repeat="resource in model.resources">
+                                                        {{resource.name}}
+                                                    </th>
+                                                </tr>
+                                                </thead>
+                                                <tr ng-repeat="step in scenario.allsSteps()">
+                                                    <td>
+                                                        &NonBreakingSpace;{{step.id}}&NonBreakingSpace;.
+                                                        <input type="text" aria-label="Step Name"
+                                                               class="input input-small simplebox quantity"
+                                                               ng-model="step.name"
+                                                               style="width:50%">
+
+                                                    </td>
+                                                    <td ng-repeat="resource in model.resources">
+                                                        <input type="text"
+                                                               ng-model="step.values[resource.id]"
+                                                               ng-change="step.change()"
+                                                               ng-show="step.isLeaf()"
+                                                               class="input input-small simplebox quantity">
+                                                        <span ng-hide="step.isLeaf()">
+                                                            {{step.values[resource.id]}} ({{step.best[resource.id]}} - {{step.worst[resource.id]}})
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </md-card>
+
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </md-card>
+            </div>
+        </div>
+
+
+</div>
+
+<div style="margin: 64px;"></div>
+
+<script type="text/ng-template" id="stepContent.html">
+
+    <div>
+        <input type="text"
+               ng-show="step.isCase()"
+               aria-label="Probability"
+               style="position: absolute;width:30px; margin-left: -55px"
+               ng-change="step.change()"
+               class="input input-small simplebox quantity"
+               ng-model="step.rate">
+
+        <div layout="row">
+            <div flex="90">
+                <md-menu>
+                    <md-button class="md-fab md-mini" ng-class="step.theme()" aria-label="New Step">
+                        <md-icon ng-show="step.isScenario()" md-svg-src="img/icons/{{step.image()}}">
+                        </md-icon>
+                        <md-icon ng-hide="step.isScenario()" md-svg-src="img/icons/{{step.image()}}" ng-click="$mdOpenMenu()">
+                        </md-icon>
+                    </md-button>
+                    <md-menu-content width="1">
+                        <md-menu-item ng-repeat="child in step.availableChildren">
+                            <md-button aria-label="Add Step" ng-click="step.addStep(child.id)"
+                                       style="height: 31px;float: right">
+                                {{child.title}}
+                            </md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+
+                <span ng-show="step.isRoutine()">
+                    &NonBreakingSpace;{{step.id}}&NonBreakingSpace;.
+                    <input type="text" aria-label="Step Name" class="input input-small simplebox quantity"
+                           ng-model="step.name" style="width:200px">
+                </span>
+
+                <span ng-show="step.isScenario()">
+                    <input type="text" aria-label="Step Name" class="input input-small simplebox quantity"
+                           ng-model="step.name" style="width:200px">
+                </span>
+                <span ng-show="step.isLoop()">
+                   <input  type="text"
+                           aria-label="Iteration number"
+                           style="width:100px;"
+                           ng-change="step.resolve()"
+                           class="input input-small simplebox quantity"
+                           ng-model="step.repeat">
+                </span>
+            </div>
+
+            <div flex="10" class="dropdown" style="float: right">
+                <a class="simpleank" ng-click="step.removeSelf()"><i class="mdi mdi-close"></i></a>
+                <md-tooltip>Remove Step</md-tooltip>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <ul ng-if="!step.isScenario()">
+        <li ng-repeat="step in step.steps" ng-include="step.url" class="tree-li" ng-class="step.getClass()"></li>
+    </ul>
+</script>

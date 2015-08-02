@@ -1,0 +1,187 @@
+<div class="frame">
+    <table class="classes qnm" flex>
+        <thead>
+        <tr>
+            <td colspan="{{classTypes.length + 1}}">
+                <div flex class="framehdr">
+                    <i class="mdi mdi-account-network"></i>
+                    Classes
+                    <button ng-click="addClass()">
+                        <i class="mdi mdi-plus"></i>
+                        <md-tooltip>
+                            Add new Class
+                        </md-tooltip>
+                    </button>
+                    <!--
+                        <button ng-click="">
+                            <i class="mdi mdi-settings"></i>
+                        </button>
+                    -->
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th ng-repeat="type in classTypes">
+                {{type.title}}
+                <md-tooltip>{{type.tooltip }}</md-tooltip>
+            </th>
+            <th style="width:15px;"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="center in model.classes">
+            <td nowrap="nowrap" ng-repeat="type in classTypes" ng-init="prop=center.all[type.id]">
+                <input type="text"
+                       aria-label="Property {{type.title}}"
+                       class="input input-small simplebox quantity {{prop.state}}"
+                       ng-change="change(type.id, center)"
+                       ng-pattern="prop.pattern"
+                       ng-model="prop.text">
+
+                <md-menu>
+                    <button aria-label="Select Unit" class="md-icon-button" ng-click="$mdOpenMenu()">
+                        {{prop.unit.title}}
+                    </button>
+                    <md-menu-content width="1">
+                        <md-menu-item ng-repeat="unit in prop.availableUnits()">
+                            <md-button aria-label="Select Unit" ng-click="prop.setUnit(unit)" style="height: 31px;">
+                                {{unit.title}}
+                            </md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+
+            </td>
+            <td nowrap="nowrap">
+                <span style="height: 28px">
+                    <button class="hdrbutton" ng-click="remove(center)">
+                        <i class="mdi mdi-close"></i>
+                        <md-tooltip>Remove Node</md-tooltip>
+                    </button>
+                </span>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+
+
+
+
+<!--<div class="framehdr">
+    <i class="icon icon-user"></i>
+    Classes
+    <button class="hdrbutton" ng-click="addClass()" tooltip-placement="left" tooltip="Add new Class">
+        <i class="icon-plus"></i>
+    </button>-->
+    <!--                    <button class="hdrbutton" ng-click="">
+                            <i class="icon-cog"></i>
+                        </button>-->
+<!--</div>
+<div class="frame">
+    <table class="classes">
+        <thead>
+        <tr>
+            <th>Class Name</th>
+            <th class="numeric">
+                            <span tooltip="Number of Users (Terminals)(M)" tooltip-placement="left">
+                            Number <br/> of Users
+                            </span>
+            </th>
+            <th class="numeric">
+                            <span tooltip="Think Time (Z)" tooltip-placement="left">
+                            Think Time
+                            </span>
+            </th>
+            <th class="numeric">
+                            <span tooltip="Throughput per Class (X0)" tooltip-placement="left">
+                            Throughput
+                            </span>
+            </th>
+            <th class="numeric">
+                            <span tooltip="Response Time per Class (R)" tooltip-placement="left">
+                            Response <br/> Time
+                            </span>
+            </th>
+            <th style="width:15px;"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="clazz in model.classes">
+            <td nowrap="nowrap">
+                <input type="text" class="input input-small simplebox" ng-model="clazz.name">
+            </td>
+            <td nowrap="nowrap">
+                <input type="text"
+                       ng-change="change('M', clazz)"
+                       class="input input-small simplebox quantity {{clazz.userNumber.state}}"
+                       ng-model="clazz.userNumber.text"
+                       pattern="{{clazz.userNumber.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{clazz.userNumber.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in clazz.userNumber.availableUnits()">
+                                            <a ng-click="clazz.userNumber.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+            </td>
+            <td nowrap="nowrap">
+                <input type="text"
+                       ng-change="change('Z', clazz)"
+                       class="input input-small simplebox quantity {{clazz.thinkTime.state}}"
+                       ng-model="clazz.thinkTime.text"
+                       pattern="{{clazz.thinkTime.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{clazz.thinkTime.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in clazz.thinkTime.availableUnits()">
+                                            <a ng-click="clazz.thinkTime.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+            </td>
+            <td nowrap="nowrap">
+                <input type="text"
+                       ng-change="change('X', clazz)"
+                       class="input input-small simplebox quantity {{clazz.throughput.state}}"
+                       ng-model="clazz.throughput.text"
+                       pattern="{{clazz.throughput.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{clazz.throughput.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in clazz.throughput.availableUnits()">
+                                            <a ng-click="clazz.throughput.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+            </td>
+            <td nowrap="nowrap">
+                <input type="text"
+                       ng-change="change('R', clazz)"
+                       class="input input-small simplebox quantity {{clazz.responseTime.state}}"
+                       ng-model="clazz.responseTime.text"
+                       pattern="{{clazz.responseTime.unit.pattern}}">
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle simpleank">{{clazz.responseTime.unit.title}}</a>
+                                    <ul class="dropdown-menu">
+                                        <li ng-repeat="unit in clazz.responseTime.availableUnits()">
+                                            <a ng-click="clazz.responseTime.setUnit(unit)">{{unit.title}}</a>
+                                        </li>
+                                    </ul>
+                                </span>
+            </td>
+            <td nowrap="nowrap">
+                                <span style="height: 28px">
+                                <button class="hdrbutton" ng-click="removeClass(clazz)" tooltip-placement="left"
+                                        tooltip="Remove Class">
+                                    <i class="icon-remove"></i>
+                                </button>
+                                    </span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>-->

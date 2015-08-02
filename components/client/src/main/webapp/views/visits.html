@@ -1,0 +1,104 @@
+<div class="frame">
+    <table class="visits qnm" flex>
+        <thead>
+        <tr>
+            <td colspan="{{totalVisitTypes.length + 3}}">
+                <div flex class="framehdr">
+                    <i class="mdi mdi-clock-fast"></i>
+                    Visits
+                    <!--
+                        <button ng-click="">
+                            <i class="mdi mdi-settings"></i>
+                        </button>
+                    -->
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th style="width:15px;"><i class="mdi mdi-leaf"></i></th>
+            <th>Node</th>
+            <th>Class</th>
+            <th ng-repeat="type in totalVisitTypes">
+                {{type.title}}
+                <md-tooltip>{{type.tooltip }}</md-tooltip>
+            </th>
+        </tr>
+        </thead>
+        <tbody ng-repeat="center in model.visits">
+        <tr>
+            <td nowrap="nowrap" rowspan="{{center.node.nodeNumber.value}}">
+                <span style="height: 28px;padding: 0" ng-show="center.hasDetails()">
+                    <button class="hdrbutton"
+                            ng-click="center.showDetails()"
+                            ng-hide="center.details">
+                        <i class="mdi mdi-menu-right" style="font-size: 24px;height: 24px"></i>
+                        <md-tooltip>"Show Details"</md-tooltip>
+                    </button>
+                    <button class="hdrbutton"
+                            ng-click="center.hideDetails()"
+                            ng-show="center.details">
+                        <i class="mdi mdi-menu-down" style="font-size: 24px;height: 24px"></i>
+                        <md-tooltip>"Hide Details"</md-tooltip>
+                    </button>
+                </span>
+            </td>
+
+            <td>{{center.node.name.value}}<span ng-show="visit.node.nodeNumber.value > 1">({{visit.node.nodeNumber.value}})</span></td>
+            <td>{{center.clazz.name.value}}</td>
+
+            <td nowrap="nowrap" ng-repeat="type in totalVisitTypes" ng-init="prop=center.all[type.id]">
+                <input type="text"
+                       aria-label="Property {{type.title}}"
+                       class="input input-small simplebox quantity {{prop.state}}"
+                       ng-change="change(type.id, center)"
+                       ng-pattern="prop.pattern"
+                       ng-model="prop.text">
+
+                <md-menu>
+                    <button aria-label="Select Unit" class="md-icon-button" ng-click="$mdOpenMenu()">
+                        {{prop.unit.title}}
+                    </button>
+                    <md-menu-content width="1">
+                        <md-menu-item ng-repeat="unit in prop.availableUnits()">
+                            <md-button aria-label="Select Unit" ng-click="prop.setUnit(unit)" style="height: 31px;">
+                                {{unit.title}}
+                            </md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+
+            </td>
+        </tr>
+
+        <tr ng-show="center.isDetails()">
+            <td>{{center.node.name.value}} (1)</td>
+            <td>{{center.clazz.name.value}}</td>
+
+            <td nowrap="nowrap" ng-repeat="type in visitTypes" ng-init="prop=center.all[type.id]">
+                <input type="text"
+                       aria-label="Property {{type.title}}"
+                       class="input input-small simplebox quantity {{prop.state}}"
+                       ng-change="change(type.id, center)"
+                       ng-pattern="prop.pattern"
+                       ng-model="prop.text">
+
+                <md-menu>
+                    <button aria-label="Select Unit" class="md-icon-button" ng-click="$mdOpenMenu()">
+                        {{prop.unit.title}}
+                    </button>
+                    <md-menu-content width="1">
+                        <md-menu-item ng-repeat="unit in prop.availableUnits()">
+                            <md-button aria-label="Select Unit" ng-click="prop.setUnit(unit)" style="height: 31px;">
+                                {{unit.title}}
+                            </md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+
