@@ -1,4 +1,4 @@
-<div flex layout-padding layout-fill  layout-wrap layout="column" ng-init="findAll()">
+<div flex layout-padding layout-fill layout-wrap layout="column" ng-init="findAll()">
     <div class="framehdr">
         <i class="mdi mdi-server"></i>
         Project's Repository
@@ -7,20 +7,28 @@
             <md-tooltip>Refresh</md-tooltip>
         </button>
     </div>
-    <div class="frame" flex layout-padding class="md-padding">
+    <div flex layout-padding class="md-padding frame">
         <md-card ng-repeat="project in getProjects()">
             <md-card-content>
-                <i class="mdi mdi-file"></i>
-                <h3>{{project.name}}</h3>
-                (ver: {{project.version}})
-                <button ng-click="remove(project)">
-                    <i class="mdi mdi-delete"></i>
-                    <md-tooltip>Delete Project</md-tooltip>
-                </button>
-                <button ng-click="load(project)">
-                    <i class="mdi mdi-download"></i>
-                    <md-tooltip>Load Project</md-tooltip>
-                </button>
+                <div layout="row" layout-align="space-between center">
+                    <div>
+                        <md-button class="md-fab md-mini md-primary" aria-label="Load Project">
+                            <md-icon class="mdi mdi-download" style="height: 28px; font-size: 28px"
+                                     ng-click="load(project)()"></md-icon>
+                            <md-tooltip>Load Project</md-tooltip>
+                        </md-button>
+
+                        <b>{{project.name}}</b>
+                        (ver: {{project.version}})
+                    </div>
+                    <div>
+                        <md-button class="md-fab md-mini md-warn" aria-label="Remove Project">
+                            <md-icon class="mdi mdi-delete" style="height: 28px; font-size: 28px"
+                                     ng-click="remove(project)()"></md-icon>
+                            <md-tooltip>Delete Project</md-tooltip>
+                        </md-button>
+                    </div>
+                </div>
             </md-card-content>
         </md-card>
 
