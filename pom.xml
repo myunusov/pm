@@ -350,7 +350,7 @@
                 </executions>
                 <configuration>
                     <serverId>releases</serverId>
-                    <nexusUrl>http://localhost:8081/nexus/</nexusUrl>
+                    <nexusUrl>${nexus.url}</nexusUrl>
                 </configuration>
             </plugin>
 

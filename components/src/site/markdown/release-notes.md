@@ -14,6 +14,7 @@ Changes in this version include:
 
 #### New features:
 - Auto-deploy documents to gh-pages 
+- Update CSS and JS Libraries 
 - Re-structure project 
 - Update project's envirenment (plugins and tools)  
 - Tray client  
