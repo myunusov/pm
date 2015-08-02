@@ -13,13 +13,14 @@
     "angular-animate": "1.4.x",
     "angular-material": "~0.10.0",
     "jquery": "~2.1.4",
-    "materialize": "~0.97.0",
-    "material-design-icons": "~2.0.0",
     "mdi": "~1.1.70"
   },
   "install" : {
     "base":  "src/main/webapp/libs",
     "path" : {
+      "json": "{name}",
+      "map": "{name}",
+      "html": "{name}",
       "js": "{name}/js",
       "scss": "{name}/styles",
       "css": "{name}/css",
@@ -29,14 +30,6 @@
       "woff": "{name}/fonts",
       "woff2": "{name}/fonts",
       "Roboto": "{name}/fonts/roboto"
-    },
-    "sources" : {
-      "material-design-icons" : [
-         "src/main/webapp/bower_components/material-design-icons/iconfont/MaterialIcons-Regular.eot",
-         "src/main/webapp/bower_components/material-design-icons/iconfont/MaterialIcons-Regular.ttf",
-         "src/main/webapp/bower_components/material-design-icons/iconfont/MaterialIcons-Regular.woff",
-         "src/main/webapp/bower_components/material-design-icons/iconfont/MaterialIcons-Regular.woff2"
-      ]
     }
   }
 }
