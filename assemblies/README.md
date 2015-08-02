@@ -1,6 +1,8 @@
 Release Steps
 
-#### 1. Create Release on gitHub (or Milestone ?)
+#### 1. Create Milestone on gitHub 
+
+Must be at last one clossed issue !
 
 #### 2. Change download path in \PM\components\src\site\site.xml
  
@@ -19,3 +21,11 @@ mvn release:prepare -PPROD,nexus,zip
 ```
 mvn release:deploy -PPROD,nexus,zip
 ```
+
+#### 5. Create Release on gitHub (with artifact)
+
+Manualy, may be with
+```
+                         <groupId>de.jutzig</groupId>
+                         <artifactId>github-release-plugin</artifactId>
+```                         

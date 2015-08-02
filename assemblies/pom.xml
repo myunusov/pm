@@ -106,6 +106,39 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>com.github.danielflower.mavenplugins</groupId>
+                        <artifactId>gitlog-maven-plugin</artifactId>
+                        <version>1.12.0</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Authority bug-->
+<!--                    <plugin>
+                        <groupId>de.jutzig</groupId>
+                        <artifactId>github-release-plugin</artifactId>
+                        <version>1.1.1</version>
+                        <executions>
+                            <execution>
+                                <id>github-upload</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>release</goal>
+                                </goals>
+                                <inherited>false</inherited>
+                                <configuration>
+                                    <releaseName>v${project.version}</releaseName>
+                                    <tag>v${project.version}</tag>
+                                    <artifact>${project.build.directory}/assemblies-${project.version}.zip</artifact>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>-->
+                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-changes-plugin</artifactId>
                         <version>2.11</version>
