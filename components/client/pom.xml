@@ -5,12 +5,12 @@
     <parent>
         <groupId>org.maxur.perfmodel</groupId>
         <artifactId>components</artifactId>
-        <version>1.2</version>
+        <version>1.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>client</artifactId>
     <name>PMC: Web Client</name>
-    <version>1.2</version>
+    <version>1.3-SNAPSHOT</version>
     <description>Java Script Client of Performance Model Calculator System</description>
 
     <properties>
@@ -24,7 +24,7 @@
     <scm>
         <connection>scm:git:https://github.com/myunusov/pm.git</connection>
         <developerConnection>scm:git:git@github.com:myunusov/pm.git</developerConnection>
-        <tag>release-1.2</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <profiles>
