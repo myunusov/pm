@@ -352,6 +352,12 @@ function EGMScenario(id, model) {
     this.stepNo = 0;
     this.link = null;
 
+    this.dropOptions = {
+        onDrop: function(dragEl) {
+            alert(dragEl);
+        }
+    }
+
     this.onUpdate = function () {
         if (this.link) {
             this.link.update();

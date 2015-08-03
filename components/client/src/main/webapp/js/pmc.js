@@ -6,6 +6,7 @@ var pmc = angular.module(
     'pmc',
     [
         'ngRoute',
+        'ngDragDrop',
         'ngMaterial',
 
         'pmc.services',

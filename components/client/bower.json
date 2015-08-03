@@ -11,7 +11,9 @@
     "angular-route": "1.4.x",
     "angular-resource": "1.4.x",
     "angular-animate": "1.4.x",
+    "angular-dragdrop": "~1.0.11",
     "angular-material": "~0.10.0",
+    "jquery-ui" : "~1.11.4",
     "jquery": "~2.1.4",
     "mdi": "~1.1.70"
   },
