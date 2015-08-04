@@ -112,16 +112,30 @@ angular.module('pmc.services', [])
                 return projects;
             },
             findAll: function () {
+                var localProjects = [];
+                var index = $.jStorage.index();
+                for (var i = 0; i < index.length; i++) {
+                    var item = $.jStorage.get(index[i]);
+                    item.isLocal = true;
+                    localProjects.push(item);
+                }
                 messageProvider.clear();
                 $http.get(url + '/')
                     .success(function (dto) {
                         projects = dto;
+                        for (var i = 0; i < projects.length; i++) {
+                            var item = $.jStorage.get(projects[i]);
+                            item.isLocal = false;
+                            localProjects.push(item);
+                        }
+                        projects.concat(localProjects);
                     })
                     .error(function (data, status) {
                         messageProvider.error(
                             data && data.message ?
                                 data.message :
                                 "Project List is not loaded.", status);
+                        projects = localProjects;
                     });
             },
             load: function (id, success, error) {
@@ -171,6 +185,7 @@ angular.module('pmc.services', [])
             save: function () {
                 messageProvider.clear();
                 var dto = project.createDTO();
+                $.jStorage.set(project.id, dto);
                 $http.post(url, JSON.stringify(dto))
                     .success(function (dto, status) {
                         if (status && parseFloat(status) === 201) {
