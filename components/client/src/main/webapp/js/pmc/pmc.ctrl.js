@@ -4,34 +4,34 @@
 
 var controllers = angular.module('pmc.controllers', []);
 
-controllers.controller('ProjectCtrl', function ($scope, $log, $mdDialog, $routeParams, projectProvider, compareProvider) {
+controllers.controller('ProjectCtrl', function ($scope, $log, $mdDialog, $stateParams, projectProvider, compareProvider) {
 
     $scope.init = function () {
-        var id = $routeParams.projectId;
-        $log.debug("1) id = " + id);
-        if (id == null) {
+        var id = $stateParams.projectId;
+        var action = $stateParams.action;
+        var currentProject = projectProvider.getProject();
+        if (id === null) {
+            window.location.replace("#project/" + currentProject.id);
+        }
+        if (currentProject && id === currentProject.id) {
             return;
         }
-        if (id == "new") {
+        if (action === "new") {
             projectProvider.make();
             return;
         }
-        var currentProject = projectProvider.getProject();
-        $log.debug("2) id = " + id);
-        if (!currentProject || id !== currentProject.id) {
-            $log.debug("3) id = " + id);
-            projectProvider.load(id,
-                function () {
-                },
-                function () {
-                    if (currentProject && currentProject.id) {
-                        window.location.replace("#project/" + currentProject.id);
-                    } else {
-                        projectProvider.make();
-                    }
+        projectProvider.load(id,
+            function () {
+            },
+            function () {
+                if (currentProject && currentProject.id) {
+                    window.location.replace("#project/" + currentProject.id);
+                } else {
+                    projectProvider.make();
                 }
-            );
-        }
+            }
+        );
+
     };
 
     $scope.project = function () {
@@ -594,11 +594,11 @@ controllers.controller('ToastCtrl', function ($scope, $mdToast) {
     }
 })
 
-controllers.controller('ChartCtrl', function ($scope, $routeParams, $location, $http, projectProvider) {
+controllers.controller('ChartCtrl', function ($scope, $stateParams, $location, $http, projectProvider) {
 
     $scope.init = function () {
-        var projectId = $routeParams.projectId;
-        var modelId = $routeParams.modelId;
+        var projectId = $stateParams.projectId;
+        var modelId = $stateParams.modelId;
         var project = projectProvider.getProject();
         if (!project || project.id !== projectId) {
             projectProvider.load(projectId,

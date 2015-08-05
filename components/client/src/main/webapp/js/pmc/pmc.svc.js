@@ -148,7 +148,6 @@ angular.module('pmc.services', [])
                 // project.models.push(modelFactory.qnm("QNM " + project.models.length));
                 project.models.push(modelFactory.egm("SEM " + project.models.length));
                 messageProvider.info("New Project is created.");
-                window.location.replace("#project/" + id);
             },
             remove: function (id) {
                 id = id || project.id;

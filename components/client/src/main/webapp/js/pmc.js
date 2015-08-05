@@ -5,7 +5,7 @@
 var pmc = angular.module(
     'pmc',
     [
-        'ngRoute',
+        'ui.router',
         'ngMaterial',
 
         'pmc.services',
@@ -20,39 +20,54 @@ var pmc = angular.module(
 );
 
 
-pmc.config(
-    [
-        '$routeProvider',
-        function ($routeProvider) {
-
-            $routeProvider.
-                when('/projects', {
-                    templateUrl: 'views/projects.html',
-                    controller: 'ProjectListCtrl'
-                }).
-                when('/project/:projectId', {
-                    templateUrl: 'views/project-details.html',
-                    controller: 'ProjectCtrl'
-                }).
-                when('/chart/:projectId/:modelId', {
-                    templateUrl: 'views/bounds.html',
-                    controller: 'ChartCtrl'
-                }).
-                when('/compare', {
-                    templateUrl: 'views/compare.html',
-                    controller: 'ComparatorCtrl'
-                }).
-                otherwise({
-                    redirectTo: '/project/new'
+pmc.config(['$urlRouterProvider',
+        function ($urlRouterProvider) {
+            $urlRouterProvider.otherwise(
+                function ($injector, $location) {
+                    $location.path('/project/' + uuid() + "/new");
                 });
         }
     ]
 );
 
+pmc.config(['$stateProvider',
+        function ($stateProvider) {
+            $stateProvider
+                .state('projects', {
+                    url: '/projects',
+                    templateUrl: 'views/projects.html',
+                    controller: 'ProjectListCtrl',
+                    resolve:{
+                        simpleObj:  function(){
+                            return {value: 'simple!'};
+                        }
+                    }
+                })
+                .state('project', {
+                    url: '/project/:projectId/{action}',
+                    templateUrl: 'views/project-details.html',
+                    controller: 'ProjectCtrl',
+                    resolve:{
+                        simpleObj:  function(){
+                            return {value: 'simple!'};
+                        }
+                    }
+                })
+                .state('chart', {
+                    url: '/chart/:projectId/:modelId',
+                    templateUrl: 'views/bounds.html',
+                    controller: 'ChartCtrl'
+                })
+                .state('compare', {
+                    url: '/compare',
+                    templateUrl: 'views/compare.html',
+                    controller: 'ComparatorCtrl'
+                });
+        }
+    ]
+);
 
-pmc.config(
-    [
-        '$mdThemingProvider',
+pmc.config(['$mdThemingProvider',
         function ($mdThemingProvider) {
             $mdThemingProvider.theme('default')
                 .primaryPalette('green');
@@ -62,8 +77,9 @@ pmc.config(
                 .warnPalette('red')
                 .backgroundPalette('grey')
                 .dark();
-        }]);
-
+        }
+    ]
+);
 
 
 

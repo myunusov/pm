@@ -9,6 +9,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="libs/angular-material/css/angular-material.css">
     <link type="text/css" rel="stylesheet" href="css/style.css" media="screen,projection"/>
+
 </head>
 
 <body>
@@ -31,12 +32,12 @@
 
         <span flex></span>
 
-        <md-button class="md-icon-button" hide-sm aria-label="Repository" href="#projects" >
+        <md-button class="md-icon-button" hide-sm aria-label="Repository" ui-sref="projects" >
             <md-icon class="mdi mdi-server"></md-icon>
             <md-tooltip>Repository</md-tooltip>
         </md-button>
 
-        <md-button aria-label="New Project" hide-sm class="md-icon-button" ng-click="make()">
+        <md-button aria-label="New Project" hide-sm class="md-icon-button" ng-click="location.href= '#project/' + uuid() + '/new'">
             <md-icon class="mdi mdi-file-outline"></md-icon>
         </md-button>
 
@@ -63,16 +64,6 @@
         </md-button>
     </div>
 </md-toolbar>
-
-
-
-<!--        <md-fab-trigger>
-            <md-button aria-label="menu" class="md-fab md-warn">
-                <md-icon md-svg-src="img/icons/menu.svg"></md-icon>
-            </md-button>
-        </md-fab-trigger>-->
-
-
 
 <md-content flex layout="row" style="min-height: 400px">
 
@@ -121,7 +112,7 @@
     </md-sidenav>
 
     <!-- CONTEXT -->
-    <div flex ng-view>
+    <div flex ui-view autoscroll="false">
     </div>
 
 
@@ -147,7 +138,7 @@
 
 <script src="libs/jquery/js/jquery.js"></script>
 <script src="libs/angular/js/angular.js"></script>
-<script src="libs/angular-route/js/angular-route.js"></script>
+<script src="libs/angular-ui-router/js/angular-ui-router.js"></script>
 
 <script src="libs/angular-aria/js/angular-aria.js"></script>
 <script src="libs/angular-animate/js/angular-animate.js"></script>
