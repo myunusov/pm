@@ -4,34 +4,12 @@
 
 var controllers = angular.module('pmc.controllers', []);
 
-controllers.controller('ProjectCtrl', function ($scope, $log, $mdDialog, $stateParams, projectProvider, compareProvider) {
+controllers.controller('ProjectCtrl', function ($scope, $log, $mdDialog, $stateParams, projectProvider, compareProvider, project) {
 
     $scope.init = function () {
-        var id = $stateParams.projectId;
-        var action = $stateParams.action;
-        var currentProject = projectProvider.getProject();
-        if (id === null) {
-            window.location.replace("#project/" + currentProject.id);
+        if (project.id !== projectProvider.getProject().id) {
+            alert();
         }
-        if (currentProject && id === currentProject.id) {
-            return;
-        }
-        if (action === "new") {
-            projectProvider.make();
-            return;
-        }
-        projectProvider.load(id,
-            function () {
-            },
-            function () {
-                if (currentProject && currentProject.id) {
-                    window.location.replace("#project/" + currentProject.id);
-                } else {
-                    projectProvider.make();
-                }
-            }
-        );
-
     };
 
     $scope.project = function () {
@@ -84,7 +62,7 @@ controllers.controller('ProjectCtrl', function ($scope, $log, $mdDialog, $stateP
 
     $scope.init();
 
-})
+});
 
 controllers.controller('MsgCtrl', function ($scope, messageProvider) {
 
@@ -95,7 +73,7 @@ controllers.controller('MsgCtrl', function ($scope, messageProvider) {
         messageProvider.close(index);
     };
 
-})
+});
 
 controllers.controller('EGMCtrl', function ($scope, messageProvider) {
 
@@ -115,7 +93,7 @@ controllers.controller('EGMCtrl', function ($scope, messageProvider) {
         $scope.model.removeScenario(scenario);
     };
 
-})
+});
 
 controllers.controller('QNMCtrl', function ($scope, messageProvider) {
 
@@ -280,7 +258,7 @@ controllers.controller('QNMCtrl', function ($scope, messageProvider) {
         $scope.model.recalculate();
     };
 
-})
+});
 
 controllers.controller('MainMenuCtrl', function ($scope,
                                                  $timeout,
@@ -333,7 +311,7 @@ controllers.controller('MainMenuCtrl', function ($scope,
     };
 
     $scope.make = function () {
-        projectProvider.make();
+        location.href= '#project/' + uuid() + '/new';
         $mdSidenav('left').close();
     };
 
@@ -421,7 +399,7 @@ controllers.controller('MainMenuCtrl', function ($scope,
         };
     }
 
-})
+});
 
 controllers.controller('ComparatorCtrl', function ($scope, $mdDialog, compareProvider) {
 
@@ -574,7 +552,7 @@ controllers.controller('ProjectListCtrl', function ($scope, projectProvider) {
     $scope.remove = function (project) {
         projectProvider.remove(project.id);
     };
-})
+});
 
 controllers.controller('ModalCtrl', function ($scope, projectProvider) {
 
@@ -586,13 +564,13 @@ controllers.controller('ModalCtrl', function ($scope, projectProvider) {
         projectProvider.addEGM();
     };
 
-})
+});
 
 controllers.controller('ToastCtrl', function ($scope, $mdToast) {
     $scope.closeToast = function () {
         $mdToast.hide();
     }
-})
+});
 
 controllers.controller('ChartCtrl', function ($scope, $stateParams, $location, $http, projectProvider) {
 

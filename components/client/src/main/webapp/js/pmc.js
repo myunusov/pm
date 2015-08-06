@@ -19,7 +19,6 @@ var pmc = angular.module(
     }
 );
 
-
 pmc.config(['$urlRouterProvider',
         function ($urlRouterProvider) {
             $urlRouterProvider.otherwise(
@@ -38,7 +37,11 @@ pmc.config(['$stateProvider',
                     templateUrl: 'views/projects.html',
                     controller: 'ProjectListCtrl',
                     resolve:{
-                        simpleObj:  function(){
+                        projects:  function(){
+
+                            // TODO
+
+
                             return {value: 'simple!'};
                         }
                     }
@@ -48,8 +51,34 @@ pmc.config(['$stateProvider',
                     templateUrl: 'views/project-details.html',
                     controller: 'ProjectCtrl',
                     resolve:{
-                        simpleObj:  function(){
-                            return {value: 'simple!'};
+                        project:  function($stateParams, projectProvider){
+                            var id = $stateParams.projectId;
+                            var action = $stateParams.action;
+                            var currentProject = projectProvider.getProject();
+                            if (id === null) {
+                                window.location.replace("#project/" + currentProject.id);
+                            }
+                            if (currentProject && id === currentProject.id) {
+                                return currentProject;
+                            }
+                            if (action === "new") {
+                                return projectProvider.make(id);
+                            }
+                            projectProvider.load(id,
+                                    function () {
+                                        return projectProvider.getProject();
+                                    },
+                                    function () {
+                                        var project;
+                                        if (currentProject && currentProject.id) {
+                                            project = currentProject;
+                                        } else {
+                                            project = projectProvider.make();
+                                        }
+                                        window.location.replace("#project/" + currentProject.id);
+                                        return project;
+                                    }
+                            );
                         }
                     }
                 })
