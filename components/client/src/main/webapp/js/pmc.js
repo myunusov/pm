@@ -19,30 +19,33 @@ var pmc = angular.module(
     }
 );
 
+pmc.config(
+    function configureApplication(projectProvider) {
+    }
+);
+
 pmc.config(['$urlRouterProvider',
         function ($urlRouterProvider) {
             $urlRouterProvider.otherwise(
                 function ($injector, $location) {
-                    $location.path('/project/' + uuid() + "/new");
+                    window.location.replace("#project/" + uuid() + "/new");
                 });
         }
     ]
 );
 
-pmc.config(['$stateProvider',
+pmc.config([
+        '$stateProvider',
         function ($stateProvider) {
+
             $stateProvider
                 .state('projects', {
                     url: '/projects',
                     templateUrl: 'views/projects.html',
                     controller: 'ProjectListCtrl',
-                    resolve:{
-                        projects:  function(){
-
-                            // TODO
-
-
-                            return {value: 'simple!'};
+                    resolve: {
+                        projects: function (projectService) {
+                            return projectService.findAll();
                         }
                     }
                 })
@@ -50,35 +53,15 @@ pmc.config(['$stateProvider',
                     url: '/project/:projectId/{action}',
                     templateUrl: 'views/project-details.html',
                     controller: 'ProjectCtrl',
-                    resolve:{
-                        project:  function($stateParams, projectProvider){
+                    resolve: {
+                        currentProject: function ($stateParams, project, projectService) {
                             var id = $stateParams.projectId;
+                            if (project.id && project.id === id ) {
+                                return project;
+                            }
                             var action = $stateParams.action;
-                            var currentProject = projectProvider.getProject();
-                            if (id === null) {
-                                window.location.replace("#project/" + currentProject.id);
-                            }
-                            if (currentProject && id === currentProject.id) {
-                                return currentProject;
-                            }
-                            if (action === "new") {
-                                return projectProvider.make(id);
-                            }
-                            projectProvider.load(id,
-                                    function () {
-                                        return projectProvider.getProject();
-                                    },
-                                    function () {
-                                        var project;
-                                        if (currentProject && currentProject.id) {
-                                            project = currentProject;
-                                        } else {
-                                            project = projectProvider.make();
-                                        }
-                                        window.location.replace("#project/" + currentProject.id);
-                                        return project;
-                                    }
-                            );
+                            var newProject = action === "new" ? projectService.make(id) : projectService.load(id);
+                            return project.clone(newProject);
                         }
                     }
                 })
