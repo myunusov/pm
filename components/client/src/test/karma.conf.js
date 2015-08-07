@@ -8,8 +8,8 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
-            'src/main/webapp/bower_components/angular/angular.js',
-            'src/main/webapp/bower_components/angular-mocks/angular-mocks.js',
+            'src/main/webapp/libs/angular/js/angular.js',
+            'src/main/webapp/libs/angular-mocks/js/angular-mocks.js',
             'src/main/webapp/js/**/*.js',
             'src/test/unit/**/*.js'
         ],
@@ -66,7 +66,7 @@ module.exports = function (config) {
         // - IE (only Windows)
         // CLI --browsers Chrome,Firefox,Safari
         // browsers: ['Chrome', 'Firefox'],
-        browsers: ['PhantomJS'],
+        browsers: ['Chrome'],
 
         // If browser does not capture in given timeout [ms], kill it
         // CLI --capture-timeout 5000

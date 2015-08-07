@@ -6,7 +6,6 @@
   "repository": "https://github.com/myunusov/pm.git",
   "license": "APACHE2_0",
   "devDependencies": {
-    "phantomjs": "^1.9.17",
 
     "karma": "^0.12.16",
     "karma-chrome-launcher": "^0.2.0",
