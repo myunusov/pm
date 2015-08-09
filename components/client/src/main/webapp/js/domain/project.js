@@ -1,6 +1,3 @@
-function ProjectMemento() {
-}
-
 function Project(name, id) {
 
     this.id = id;
@@ -9,8 +6,7 @@ function Project(name, id) {
     this.description = "";
     this.models = [];
 
-    this.createDTO = function () {
-        var memento = new ProjectMemento();
+    this.createDTO = function (memento) {
         memento.id = this.id;
         memento.name = this.name;
         memento.version = this.version;

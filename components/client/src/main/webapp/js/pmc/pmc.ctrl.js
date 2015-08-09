@@ -245,12 +245,14 @@ controllers.controller('QNMCtrl', function ($scope, messageProvider) {
 
 controllers.controller('MainMenuCtrl', function ($scope,
                                                  $timeout,
+                                                 $location,
                                                  $mdSidenav,
                                                  $mdUtil,
                                                  $mdDialog,
                                                  $log,
                                                  compareProvider,
-                                                 project) {
+                                                 project,
+                                                 projectService) {
 
     $scope.triger = false;
 
@@ -288,34 +290,17 @@ controllers.controller('MainMenuCtrl', function ($scope,
         $mdSidenav('left').close();
     };
 
-    $scope.remove = function () {
-        // TODO
-        project.remove();
-        $mdSidenav('left').close();
-    };
-
     $scope.make = function () {
-        location.href = '#project/' + uuid() + '/new';
+        // TODO if current project is not saved ? Save it to local DB with timeout
+        var id = uuid();
+        project.clone(projectService.make(id));
+        $location.path("project/" + id);
         $mdSidenav('left').close();
     };
 
-    $scope.load = function () {
-        // TODO
-        project.load(id,
-            function () {
-            },
-            function () {
-                if (!(currentProject && currentProject.id)) {
-                    project.make();
-                }
-            }
-        );
-        $mdSidenav('left').close();
-    };
 
     $scope.save = function () {
-        // TODO
-        project.save();
+        projectService.save(project.id);
         $mdSidenav('left').close();
     };
 
@@ -517,20 +502,36 @@ controllers.controller('ComparatorCtrl', function ($scope, $mdDialog, comparePro
 })
 
 
-controllers.controller('ProjectListCtrl', function ($scope, projects) {
+controllers.controller('ProjectListCtrl', function ($scope, $location, projects, project, projectService) {
 
     $scope.projects = projects;
 
+    var remove = function (id) {
+        for (var i = 0; i < $scope.projects.length; i++) {
+            if ($scope.projects[i].id === id) {
+                $scope.projects.remove($scope.projects[i]);
+                break;
+            }
+        }
+    };
+
     $scope.findAll = function () {
-        projectService.findAll();
+        projects = projectService.findAll();
     };
 
-    $scope.load = function (project) {
-        location.href = "#project/" + project.id;
+    $scope.load = function (prj) {
+        $location.path("project/" + prj.id);
     };
 
-    $scope.remove = function (project) {
-        projectService.remove(project.id);
+    $scope.remove = function (prj) {
+        // TODO confirmation or undo
+        projectService.remove(prj.id);
+        // TODO on success only
+        remove(prj.id);
+        if (project.id === prj.id) {
+            var id = uuid();
+            project.clone(projectService.make(id));
+        }
     };
 });
 
@@ -549,14 +550,14 @@ controllers.controller('ChartCtrl', function ($scope, $stateParams, $location, $
         var modelId = $stateParams.modelId;
 
         /*        var project = projectService.getProject();
-        if (!project || project.id !== projectId) {
-            projectService.load(projectId,
-                function () {
-                },
-                function () {
-                }
-            );
-        }*/
+         if (!project || project.id !== projectId) {
+         projectService.load(projectId,
+         function () {
+         },
+         function () {
+         }
+         );
+         }*/
         var model = project.getModel(modelId);
         if (model !== null) {
             model.refreshCharts();

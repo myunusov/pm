@@ -6,6 +6,7 @@ var pmc = angular.module(
     'pmc',
     [
         'ui.router',
+        'ngResource',
         'ngMaterial',
 
         'pmc.services',
@@ -28,7 +29,16 @@ pmc.config(['$urlRouterProvider',
         function ($urlRouterProvider) {
             $urlRouterProvider.otherwise(
                 function ($injector, $location) {
-                    window.location.replace("#project/" + uuid() + "/new");
+                    var projectService = $injector.get('projectService');
+                    var project = $injector.get('project');
+                    var id;
+                    if (project.id) {
+                        id = project.id;
+                    } else {
+                        id = uuid();
+                        project.clone(projectService.make(id));
+                    }
+                    $location.path("project/" + id).replace()
                 });
         }
     ]
@@ -39,19 +49,9 @@ pmc.config([
         function ($stateProvider) {
 
             $stateProvider
-                .state('projects', {
-                    url: '/projects',
-                    templateUrl: 'views/projects.html',
-                    controller: 'ProjectListCtrl',
-                    resolve: {
-                        projects: function (projectService) {
-                            return projectService.findAll();
-                        }
-                    }
-                })
                 .state('project', {
-                    url: '/project/:projectId/{action}',
-                    templateUrl: 'views/project-details.html',
+                    url: '/project/:projectId',
+                    templateUrl: 'views/project.html',
                     controller: 'ProjectCtrl',
                     resolve: {
                         currentProject: function ($stateParams, project, projectService) {
@@ -59,9 +59,17 @@ pmc.config([
                             if (project.id && project.id === id ) {
                                 return project;
                             }
-                            var action = $stateParams.action;
-                            var newProject = action === "new" ? projectService.make(id) : projectService.load(id);
-                            return project.clone(newProject);
+                            return project.clone(projectService.load(id));
+                        }
+                    }
+                })
+                .state('projects', {
+                    url: '/projects',
+                    templateUrl: 'views/projects.html',
+                    controller: 'ProjectListCtrl',
+                    resolve: {
+                        projects: function (projectService) {
+                            return projectService.findAll();
                         }
                     }
                 })

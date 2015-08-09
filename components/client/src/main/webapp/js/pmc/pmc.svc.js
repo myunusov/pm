@@ -90,37 +90,28 @@ angular.module('pmc.services', [])
 
     .provider('project', function () {
         var project = new Project();
-        this.$get = function() {
+        this.$get = function () {
             return project;
         }
     })
 
-    .service('projectService', function ($http, messageProvider, modelFactory) {
+    .service('projectService', function ($resource, project, messageProvider, modelFactory) {
 
-        var projects = [];
+        var ProjectDto = $resource('/api/project/:projectId', {projectId: '@id'});
 
-        var project;
-
-        var url = 'api/projects';
-
-        var remove = function (id) {
-            for (var i = 0; i < projects.length; i++) {
-                if (projects[i].id === id) {
-                    projects.remove(projects[i]);
-                    break;
-                }
-            }
-        };
         return {
-            getProject: function () {
-                return project;
-            },
-            getProjects: function () {
-                return projects;
-            },
+            // TODO result must be retuned sync. May be $resources ?
+
+            // TODO Fix
             findAll: function () {
                 messageProvider.clear();
-                $http.get(url + '/')
+                return ProjectDto.query(function () {
+                    // TODO error handler
+                    //projects = dto;
+                });
+
+
+/*                $http.get(url + '/')
                     .success(function (dto) {
                         projects = dto;
                     })
@@ -129,76 +120,97 @@ angular.module('pmc.services', [])
                             data && data.message ?
                                 data.message :
                                 "Project List is not loaded.", status);
-                    });
+                    });*/
             },
-            load: function (id, success, error) {
-                id = id || project.id;
-                messageProvider.clear();
-                $http.get(url + '/' + id)
-                    .success(function (dto) {
-                        project.setDTO(dto);
-                        success(project);
-                        messageProvider.info("Project '" + dto.name + "' is loaded.");
-                    })
-                    .error(function (data, status) {
-                        messageProvider.error(
-                            data && data.message ?
-                                data.message :
-                                "Project is not loaded.", status);
-                        error(id);
-                    });
-            },
+
             make: function (id) {
                 id = id || uuid();
                 messageProvider.clear();
-                project = new Project("New Project", id);
+                var result = new Project("New Project", id);
                 // project.models.push(modelFactory.qnm("QNM " + project.models.length));
-                project.models.push(modelFactory.egm("SEM " + project.models.length));
+                result.models.push(modelFactory.egm("SEM 0"));
                 messageProvider.info("New Project is created.");
+                return result;
+            },
+            load: function (id) {
+                messageProvider.clear();
+                var dto = ProjectDto.get({projectId: id}, function () {
+                    // TODO error handler
+                    project.setDTO(dto);
+                    messageProvider.info("Project '" + dto.name + "' is loaded.");
+                });
                 return project;
+
+
+                /*                id = id || project.id;
+                 messageProvider.clear();
+                 $http.get(url + '/' + id)
+                 .success(function (dto) {
+                 project.setDTO(dto);
+                 success(project);
+                 messageProvider.info("Project '" + dto.name + "' is loaded.");
+                 })
+                 .error(function (data, status) {
+                 messageProvider.error(
+                 data && data.message ?
+                 data.message :
+                 "Project is not loaded.", status);
+                 error(id);
+                 });*/
             },
             remove: function (id) {
-                id = id || project.id;
                 messageProvider.clear();
-                $http['delete'](url + '/' + id)
-                    .success(function (dto) {
-                        messageProvider.info("Project '" + dto.name + "' is deleted.");
-                        remove(dto.id);
-                        if (project.id === dto.id) {
-                            this.make();
-                        }
-                    })
-                    .error(function (data, status) {
-                        messageProvider.error(
-                            data && data.message ?
-                                data.message :
-                                "Project is not deleted.", status);
-                    });
+                ProjectDto.remove({projectId: id}, function () {
+                    // TODO error handler
+                    messageProvider.info("Project is deleted.");
+                });
+                /*                id = id || project.id;
+                 messageProvider.clear();
+                 $http['delete'](url + '/' + id)
+                 .success(function (dto) {
+                 messageProvider.info("Project '" + dto.name + "' is deleted.");
+                 remove(dto.id);
+                 if (project.id === dto.id) {
+                 this.make();
+                 }
+                 })
+                 .error(function (data, status) {
+                 messageProvider.error(
+                 data && data.message ?
+                 data.message :
+                 "Project is not deleted.", status);
+                 });*/
             },
             save: function () {
                 messageProvider.clear();
-                var dto = project.createDTO();
-                $http.post(url, JSON.stringify(dto))
-                    .success(function (dto, status) {
-                        if (status && parseFloat(status) === 201) {
-                            project.version = dto.version;
-                            remove(dto.id);
-                            projects.push({
-                                id: dto.id,
-                                name: dto.name,
-                                version: dto.version
-                            });
-                            messageProvider.info("Project is saved as '" + dto.name + "'.");
-                        } else {
-                            messageProvider.error(dto.name, status);
-                        }
-                    })
-                    .error(function (data, status) {
-                        messageProvider.error(
-                            data && data.message ?
-                                data.message :
-                                "Project is not saved.", status);
-                    });
+                var dto = project.createDTO(new ProjectDto());
+                dto.$save(
+                    // TODO error handler
+                    function (dto, putResponseHeaders) {
+                        messageProvider.info("Project is saved as '" + dto.name + "'.");
+                    }
+                );
+                /*                $http.post(url, JSON.stringify(dto))
+                 .success(function (dto, status) {
+                 if (status && parseFloat(status) === 201) {
+                 project.version = dto.version;
+                 remove(dto.id);
+                 projects.push({
+                 id: dto.id,
+                 name: dto.name,
+                 version: dto.version
+                 });
+                 messageProvider.info("Project is saved as '" + dto.name + "'.");
+                 } else {
+                 messageProvider.error(dto.name, status);
+                 }
+                 })
+                 .error(function (data, status) {
+                 messageProvider.error(
+                 data && data.message ?
+                 data.message :
+                 "Project is not saved.", status);
+                 });*/
             },
 
         };

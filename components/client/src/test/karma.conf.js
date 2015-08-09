@@ -66,7 +66,7 @@ module.exports = function (config) {
         // - IE (only Windows)
         // CLI --browsers Chrome,Firefox,Safari
         // browsers: ['Chrome', 'Firefox'],
-        browsers: ['Chrome'],
+        browsers: ['PhantomJS'],
 
         // If browser does not capture in given timeout [ms], kill it
         // CLI --capture-timeout 5000
