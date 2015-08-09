@@ -4,7 +4,7 @@
 
 angular.module('pmc.services', [])
 
-    .service('messageProvider', function ($mdToast, $animate) {
+    .service('messageService', function ($mdToast, $animate) {
 
         var toastPosition = {
             bottom: true,
@@ -12,8 +12,6 @@ angular.module('pmc.services', [])
             left: true,
             right: false
         };
-
-        var alerts = [];
 
         function getToastPosition() {
             return Object.keys(toastPosition)
@@ -39,15 +37,6 @@ angular.module('pmc.services', [])
         }
 
         return {
-            setAlerts: function (value) {
-                alerts = value;
-            },
-            clear: function () {
-                alerts.length = 0;
-            },
-            close: function (index) {
-                alerts.splice(index, 1);
-            },
             error: function (message, errorcode) {
                 var result = "Error!";
                 if (message instanceof Array) {
@@ -60,7 +49,6 @@ angular.module('pmc.services', [])
                 if (errorcode) {
                     result += " " + getMessageBy(errorcode);
                 }
-                alerts.push({type: 'error', msg: result});
                 $mdToast.show({
                     controller: 'ToastCtrl',
                     template: '<md-toast class="md-warn" style="background-color: #e57373">\n' +
@@ -95,7 +83,7 @@ angular.module('pmc.services', [])
         }
     })
 
-    .service('projectService', function ($resource, project, messageProvider, modelFactory) {
+    .service('projectService', function ($resource, project, messageService, modelFactory) {
 
         var ProjectDto = $resource('/api/project/:projectId', {projectId: '@id'});
 
@@ -104,7 +92,6 @@ angular.module('pmc.services', [])
 
             // TODO Fix
             findAll: function () {
-                messageProvider.clear();
                 return ProjectDto.query(function () {
                     // TODO error handler
                     //projects = dto;
@@ -125,19 +112,17 @@ angular.module('pmc.services', [])
 
             make: function (id) {
                 id = id || uuid();
-                messageProvider.clear();
                 var result = new Project("New Project", id);
                 // project.models.push(modelFactory.qnm("QNM " + project.models.length));
                 result.models.push(modelFactory.egm("SEM 0"));
-                messageProvider.info("New Project is created.");
+                messageService.info("New Project is created.");
                 return result;
             },
             load: function (id) {
-                messageProvider.clear();
                 var dto = ProjectDto.get({projectId: id}, function () {
                     // TODO error handler
                     project.setDTO(dto);
-                    messageProvider.info("Project '" + dto.name + "' is loaded.");
+                    messageService.info("Project '" + dto.name + "' is loaded.");
                 });
                 return project;
 
@@ -159,10 +144,9 @@ angular.module('pmc.services', [])
                  });*/
             },
             remove: function (id) {
-                messageProvider.clear();
                 ProjectDto.remove({projectId: id}, function () {
                     // TODO error handler
-                    messageProvider.info("Project is deleted.");
+                    messageService.info("Project is deleted.");
                 });
                 /*                id = id || project.id;
                  messageProvider.clear();
@@ -182,12 +166,11 @@ angular.module('pmc.services', [])
                  });*/
             },
             save: function () {
-                messageProvider.clear();
                 var dto = project.createDTO(new ProjectDto());
                 dto.$save(
                     // TODO error handler
                     function (dto, putResponseHeaders) {
-                        messageProvider.info("Project is saved as '" + dto.name + "'.");
+                        messageService.info("Project is saved as '" + dto.name + "'.");
                     }
                 );
                 /*                $http.post(url, JSON.stringify(dto))

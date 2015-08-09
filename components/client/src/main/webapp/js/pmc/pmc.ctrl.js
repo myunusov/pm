@@ -47,18 +47,7 @@ controllers.controller('ProjectCtrl', function ($scope, $log, $mdDialog, $stateP
 
 });
 
-controllers.controller('MsgCtrl', function ($scope, messageProvider) {
-
-    $scope.alerts = [];
-    messageProvider.setAlerts($scope.alerts);
-
-    $scope.closeAlert = function (index) {
-        messageProvider.close(index);
-    };
-
-});
-
-controllers.controller('EGMCtrl', function ($scope, messageProvider) {
+controllers.controller('EGMCtrl', function ($scope) {
 
     $scope.addResource = function () {
         $scope.model.addResource();
@@ -78,7 +67,7 @@ controllers.controller('EGMCtrl', function ($scope, messageProvider) {
 
 });
 
-controllers.controller('QNMCtrl', function ($scope, messageProvider) {
+controllers.controller('QNMCtrl', function ($scope, messageService) {
 
     $scope.nodeTypes = [
         {
@@ -199,14 +188,13 @@ controllers.controller('QNMCtrl', function ($scope, messageProvider) {
 
     $scope.change = function (fieldName, center) {
         var model = $scope.model;
-        messageProvider.clear();
         model.init();
         var changedField = new Parameter(fieldName, center);
         if (!model.calculate(changedField)) {
-            messageProvider.error("Performance Model is not consistent");
+            messageService.error("Performance Model is not consistent");
         }
         if (!model.valid()) {
-            messageProvider.error("Performance Model is invalid");
+            messageService.error("Performance Model is invalid");
         }
     };
 
