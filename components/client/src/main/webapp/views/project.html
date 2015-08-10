@@ -1,4 +1,18 @@
-<section>
+<div ng-if="!project.id">
+
+    <md-content class="md-padding">
+        <md-card>
+            <img src="img/404.png" class="md-card-image" alt="Page Not Found">
+            <md-card-content>
+                    <h2>Sorry. We couldn't find that page :(</h2>
+                    <a href="#">Continue with new Project</a>
+            </md-card-content>
+        </md-card>
+        <br/>
+    </md-content>
+</div>
+
+<section ng-if="project.id">
 <form name="projectForm">
     <md-content md-theme="docs-dark" layout-padding layout="row" layout-sm="column">
         <md-input-container flex-sm="100" flex="40">
@@ -22,7 +36,7 @@
 </form>
 </section>
 
-<section flex ng-init="project=project()">
+<section flex ng-if="project.id">
 
 <div flex layout-fill class="md-padding" ng-if="project.models.length > 1">
     <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect>
