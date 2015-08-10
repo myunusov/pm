@@ -1,8 +1,22 @@
-<div class="qnm">
-    <div layout="column" flex layout-fill ng-init="init()">
+<div ng-if="!model">
+
+    <md-content class="md-padding">
+        <md-card>
+            <img src="img/404.png" class="md-card-image" alt="Page Not Found">
+            <md-card-content>
+                <h2>Sorry. We couldn't find that page :(</h2>
+                <a href="#">Continue with new Project</a>
+            </md-card-content>
+        </md-card>
+        <br/>
+    </md-content>
+</div>
+
+<div class="qnm" ng-if="model">
+    <div layout="column" flex layout-fill>
         <md-content flex layout-padding layout-fill layout-wrap layout-gt-lg="row" layout="column">
             <div class="framehdr" flex="100">
-                <i class="mdi mdi-chart-line"></i>Asymptotic Bounds
+                <i class="mdi mdi-chart-line"></i>&nbsp;{{model.name}}: Asymptotic Bounds
             </div>
             <div flex="50">
                 <md-card>

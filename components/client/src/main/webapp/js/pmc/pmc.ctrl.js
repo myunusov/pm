@@ -494,7 +494,7 @@ controllers.controller('ComparatorCtrl', function ($scope, $mdDialog, comparePro
             return this.x < 1 ? "down" : "up";
         };
     }
-})
+});
 
 
 controllers.controller('ProjectListCtrl', function ($scope, $location, projects, project, projectService) {
@@ -537,27 +537,14 @@ controllers.controller('ToastCtrl', function ($scope, $mdToast) {
     }
 });
 
-controllers.controller('ChartCtrl', function ($scope, $stateParams, $location, $http, project) {
+controllers.controller('ChartCtrl', function ($scope, currentModel) {
 
-    $scope.init = function () {
-        // TODO
-        var projectId = $stateParams.projectId;
-        var modelId = $stateParams.modelId;
+    $scope.model = currentModel;
 
-        /*        var project = projectService.getProject();
-         if (!project || project.id !== projectId) {
-         projectService.load(projectId,
-         function () {
-         },
-         function () {
-         }
-         );
-         }*/
-        var model = project.getModel(modelId);
-        if (model !== null) {
-            model.refreshCharts();
-        }
-    };
+    if (currentModel !== null) {
+        currentModel.refreshCharts();
+    }
+
 
 });
 
