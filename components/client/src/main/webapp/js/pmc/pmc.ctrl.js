@@ -4,7 +4,14 @@
 
 var controllers = angular.module('pmc.controllers', []);
 
-controllers.controller('ProjectCtrl', function ($scope, $log, $mdDialog, $stateParams, modelFactory, compareProvider, currentProject) {
+controllers.controller('ProjectCtrl', function (
+        $scope,
+        $log,
+        $mdDialog,
+        modelFactory,
+        compareProvider,
+        currentProject
+) {
 
     $scope.project = currentProject;
 
