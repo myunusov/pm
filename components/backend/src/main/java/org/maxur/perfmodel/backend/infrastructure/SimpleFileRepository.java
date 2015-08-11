@@ -29,12 +29,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class SimpleFileRepository implements Repository<Project> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleFileRepository.class);
 
-    private static ConcurrentHashMap<String, Project> projectMap = new ConcurrentHashMap<>();
+    private static ConcurrentMap<String, Project> projectMap = new ConcurrentHashMap<>();
 
     private PropertiesService propertiesService;
 
