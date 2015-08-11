@@ -9,9 +9,12 @@
     <!-- CSS -->
     <link rel="stylesheet" href="libs/angular-material/css/angular-material.css">
     <link type="text/css" rel="stylesheet" href="css/style.css" media="screen,projection"/>
+
 </head>
 
-<div flex layout="column" ng-controller="MainMenuCtrl">
+<body>
+
+<div id="main" flex layout="column" ng-controller="MainMenuCtrl">
 
 <!--MAIN MENU-->
 <md-toolbar md-scroll-shrink class="md-whiteframe-glow-z1 site-content-toolbar md-default-theme" >
@@ -28,7 +31,7 @@
 
         <span flex></span>
 
-        <md-button class="md-icon-button" hide-sm aria-label="Repository" href="#projects" >
+        <md-button aria-label="Repository" class="md-icon-button" hide-sm  ui-sref="projects" >
             <md-icon class="mdi mdi-server"></md-icon>
             <md-tooltip>Repository</md-tooltip>
         </md-button>
@@ -40,11 +43,6 @@
         <md-button aria-label="Save Project" hide-sm class="md-icon-button" ng-click="save()">
             <md-icon class="mdi mdi-content-save"></md-icon>
             <md-tooltip>Save Project</md-tooltip>
-        </md-button>
-
-        <md-button aria-label="Remove Project" hide-sm class="md-icon-button" ng-click="remove()">
-            <md-icon class="mdi mdi-delete"></md-icon>
-            <md-tooltip>Remove Project</md-tooltip>
         </md-button>
 
         <md-button aria-label="Compare" hide-sm class="md-icon-button" href="#compare" ng-disabled="isNotComparable()">
@@ -60,16 +58,6 @@
         </md-button>
     </div>
 </md-toolbar>
-
-
-
-<!--        <md-fab-trigger>
-            <md-button aria-label="menu" class="md-fab md-warn">
-                <md-icon md-svg-src="img/icons/menu.svg"></md-icon>
-            </md-button>
-        </md-fab-trigger>-->
-
-
 
 <md-content flex layout="row" style="min-height: 400px">
 
@@ -103,11 +91,6 @@
                     <md-icon class="mdi mdi-content-save"></md-icon>
                     <p> Save Project </p>
                 </md-list-item>
-                <md-list-item ng-click="remove()">
-                    <md-icon class="mdi mdi-delete"></md-icon>
-                    <p> Delete Project </p>
-                </md-list-item>
-
             </md-list>
 
         </md-toolbar>
@@ -118,7 +101,7 @@
     </md-sidenav>
 
     <!-- CONTEXT -->
-    <div flex ng-view>
+    <div flex ui-view autoscroll="false">
     </div>
 
 
@@ -145,10 +128,11 @@
 <script src="libs/jquery-json/js/jquery.json.js"></script>
 <script src="libs/jstorage/js/jstorage.js"></script>
 <script src="libs/angular/js/angular.js"></script>
-<script src="libs/angular-route/js/angular-route.js"></script>
+<script src="libs/angular-ui-router/js/angular-ui-router.js"></script>
 
 <script src="libs/angular-aria/js/angular-aria.js"></script>
 <script src="libs/angular-animate/js/angular-animate.js"></script>
+<script src="libs/angular-resource/js/angular-resource.js"></script>
 <script src="libs/angular-material/js/angular-material.js"></script>
 
 <script src="libs/highcharts/highcharts.js"></script>

@@ -4,40 +4,16 @@
 
 var controllers = angular.module('pmc.controllers', []);
 
-controllers.controller('ProjectCtrl', function ($scope, $log, $mdDialog, $routeParams, projectProvider, compareProvider) {
+controllers.controller('ProjectCtrl', function (
+        $scope,
+        $log,
+        $mdDialog,
+        modelFactory,
+        compareProvider,
+        currentProject
+) {
 
-    $scope.init = function () {
-        var id = $routeParams.projectId;
-        $log.debug("1) id = " + id);
-        if (id == null) {
-            return;
-        }
-        if (id == "new") {
-            projectProvider.make();
-            return;
-        }
-        var currentProject = projectProvider.getProject();
-        $log.debug("2) id = " + id);
-        if (!currentProject || id !== currentProject.id) {
-            $log.debug("3) id = " + id);
-            projectProvider.load(id,
-                function () {
-                },
-                function () {
-                    if (currentProject && currentProject.id) {
-                        window.location.replace("#project/" + currentProject.id);
-                    } else {
-                        projectProvider.make();
-                    }
-                }
-            );
-        }
-    };
-
-    $scope.project = function () {
-        return projectProvider.getProject();
-
-    };
+    $scope.project = currentProject;
 
     $scope.newModel = function (ev) {
         $mdDialog.show({
@@ -48,15 +24,17 @@ controllers.controller('ProjectCtrl', function ($scope, $log, $mdDialog, $routeP
             targetEvent: ev
         })
             .then(function (answer) {
+                var length = $scope.project.models.length;
                 if (answer === "QNM") {
-                    projectProvider.addQNM();
+                    $scope.project.models.push(modelFactory.qnm("QNM " + length));
                 }
                 if (answer === "EGM") {
-                    projectProvider.addEGM();
+                    $scope.project.models.push(modelFactory.egm("SEM " + length));
                 }
             }, function () {
             });
     };
+
 
     function NewModelDialogController($scope, $mdDialog) {
         $scope.hide = function () {
@@ -70,34 +48,13 @@ controllers.controller('ProjectCtrl', function ($scope, $log, $mdDialog, $routeP
         };
     }
 
-    $scope.addQNM = function () {
-        projectProvider.addQNM();
-    };
-
-    $scope.addEGM = function () {
-        projectProvider.addEGM();
-    };
-
     $scope.addToCompare = function (model) {
         compareProvider.add(model);
     };
 
-    $scope.init();
+});
 
-})
-
-controllers.controller('MsgCtrl', function ($scope, messageProvider) {
-
-    $scope.alerts = [];
-    messageProvider.setAlerts($scope.alerts);
-
-    $scope.closeAlert = function (index) {
-        messageProvider.close(index);
-    };
-
-})
-
-controllers.controller('EGMCtrl', function ($scope, messageProvider) {
+controllers.controller('EGMCtrl', function ($scope) {
 
     $scope.addResource = function () {
         $scope.model.addResource();
@@ -115,9 +72,9 @@ controllers.controller('EGMCtrl', function ($scope, messageProvider) {
         $scope.model.removeScenario(scenario);
     };
 
-})
+});
 
-controllers.controller('QNMCtrl', function ($scope, messageProvider) {
+controllers.controller('QNMCtrl', function ($scope, messageService) {
 
     $scope.nodeTypes = [
         {
@@ -238,14 +195,13 @@ controllers.controller('QNMCtrl', function ($scope, messageProvider) {
 
     $scope.change = function (fieldName, center) {
         var model = $scope.model;
-        messageProvider.clear();
         model.init();
         var changedField = new Parameter(fieldName, center);
         if (!model.calculate(changedField)) {
-            messageProvider.error("Performance Model is not consistent");
+            messageService.error("Performance Model is not consistent");
         }
         if (!model.valid()) {
-            messageProvider.error("Performance Model is invalid");
+            messageService.error("Performance Model is invalid");
         }
     };
 
@@ -280,16 +236,18 @@ controllers.controller('QNMCtrl', function ($scope, messageProvider) {
         $scope.model.recalculate();
     };
 
-})
+});
 
 controllers.controller('MainMenuCtrl', function ($scope,
                                                  $timeout,
+                                                 $location,
                                                  $mdSidenav,
                                                  $mdUtil,
                                                  $mdDialog,
                                                  $log,
                                                  compareProvider,
-                                                 projectProvider) {
+                                                 project,
+                                                 projectService) {
 
     $scope.triger = false;
 
@@ -327,31 +285,17 @@ controllers.controller('MainMenuCtrl', function ($scope,
         $mdSidenav('left').close();
     };
 
-    $scope.remove = function () {
-        projectProvider.remove();
-        $mdSidenav('left').close();
-    };
-
     $scope.make = function () {
-        projectProvider.make();
+        // TODO if current project is not saved ? Save it to local DB with timeout
+        var id = uuid();
+        project.clone(projectService.make(id));
+        $location.path("project/" + id);
         $mdSidenav('left').close();
     };
 
-    $scope.load = function () {
-        projectProvider.load(id,
-            function () {
-            },
-            function () {
-                if (!(currentProject && currentProject.id)) {
-                    projectProvider.make();
-                }
-            }
-        );
-        $mdSidenav('left').close();
-    };
 
     $scope.save = function () {
-        projectProvider.save();
+        projectService.save(project.id);
         $mdSidenav('left').close();
     };
 
@@ -421,7 +365,7 @@ controllers.controller('MainMenuCtrl', function ($scope,
         };
     }
 
-})
+});
 
 controllers.controller('ComparatorCtrl', function ($scope, $mdDialog, compareProvider) {
 
@@ -550,69 +494,57 @@ controllers.controller('ComparatorCtrl', function ($scope, $mdDialog, comparePro
             return this.x < 1 ? "down" : "up";
         };
     }
-})
+});
 
 
-controllers.controller('ProjectListCtrl', function ($scope, projectProvider) {
+controllers.controller('ProjectListCtrl', function ($scope, $location, projects, project, projectService) {
 
-    $scope.init = function () {
-        projectProvider.findAll();
-    };
+    $scope.projects = projects;
 
-    $scope.getProjects = function () {
-        return projectProvider.getProjects();
+    var remove = function (id) {
+        for (var i = 0; i < $scope.projects.length; i++) {
+            if ($scope.projects[i].id === id) {
+                $scope.projects.remove($scope.projects[i]);
+                break;
+            }
+        }
     };
 
     $scope.findAll = function () {
-        projectProvider.findAll();
+        projects = projectService.findAll();
     };
 
-    $scope.load = function (project) {
-        location.href = "#project/" + project.id;
+    $scope.load = function (prj) {
+        $location.path("project/" + prj.id);
     };
 
-    $scope.remove = function (project) {
-        projectProvider.remove(project.id);
+    $scope.remove = function (prj) {
+        // TODO confirmation or undo
+        projectService.remove(prj.id);
+        // TODO on success only
+        remove(prj.id);
+        if (project.id === prj.id) {
+            var id = uuid();
+            project.clone(projectService.make(id));
+        }
     };
-})
+});
 
-controllers.controller('ModalCtrl', function ($scope, projectProvider) {
-
-    $scope.addQNM = function () {
-        projectProvider.addQNM();
-    };
-
-    $scope.addEGM = function () {
-        projectProvider.addEGM();
-    };
-
-})
 
 controllers.controller('ToastCtrl', function ($scope, $mdToast) {
     $scope.closeToast = function () {
         $mdToast.hide();
     }
-})
+});
 
-controllers.controller('ChartCtrl', function ($scope, $routeParams, $location, $http, projectProvider) {
+controllers.controller('ChartCtrl', function ($scope, currentModel) {
 
-    $scope.init = function () {
-        var projectId = $routeParams.projectId;
-        var modelId = $routeParams.modelId;
-        var project = projectProvider.getProject();
-        if (!project || project.id !== projectId) {
-            projectProvider.load(projectId,
-                function () {
-                },
-                function () {
-                }
-            );
-        }
-        var model = project.getModel(modelId);
-        if (model !== null) {
-            model.refreshCharts();
-        }
-    };
+    $scope.model = currentModel;
+
+    if (currentModel !== null) {
+        currentModel.refreshCharts();
+    }
+
 
 });
 

@@ -8,8 +8,8 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
-            'src/main/webapp/bower_components/angular/angular.js',
-            'src/main/webapp/bower_components/angular-mocks/angular-mocks.js',
+            'src/main/webapp/libs/angular/js/angular.js',
+            'src/main/webapp/libs/angular-mocks/js/angular-mocks.js',
             'src/main/webapp/js/**/*.js',
             'src/test/unit/**/*.js'
         ],
