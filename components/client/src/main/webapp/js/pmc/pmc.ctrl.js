@@ -239,7 +239,6 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
 });
 
 controllers.controller('MainMenuCtrl', function ($scope,
-                                                 $timeout,
                                                  $location,
                                                  $mdSidenav,
                                                  $mdUtil,

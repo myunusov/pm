@@ -104,8 +104,7 @@ angular.module('pmc.services', [])
                     for (var j = 0; j < projects.length; j++) {
                         projects[i].isLocal = false;
                     }
-                    projects.concat(localProjects);                    
-                    return projects;
+                    return projects.concat(localProjects);
                 },
 
                 make: function (id) {
@@ -120,6 +119,7 @@ angular.module('pmc.services', [])
                     var dto = ProjectDto.get({projectId: id}, function () {
                         project.setDTO(dto);
                         messageService.info("Project '" + dto.name + "' is loaded.");
+                        $.jStorage.set(project.id, dto);
                     }, function (error) {
                         var text = error.statusText ? ". " + error.statusText + ". " : "";
                         messageService.error("Project is not loaded." + text, error.status);
