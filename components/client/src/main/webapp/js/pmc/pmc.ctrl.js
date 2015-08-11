@@ -567,17 +567,12 @@ controllers.controller('ChartCtrl', function ($scope, currentModel) {
         }
     }
 
-
-    $scope.$on('$viewContentLoaded',
-        function(event){
-            if ($scope.model !== null) {
-                $scope.model.refreshCharts();
-            }
-        });
-
     $scope.$watch('$viewContentLoaded', function() {
+
         if ($scope.model !== null) {
-            $scope.model.refreshCharts();
+            setTimeout(function() {
+                $scope.model.refreshCharts();
+            }, 100);
         }
     });
 
