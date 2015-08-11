@@ -496,32 +496,53 @@ controllers.controller('ComparatorCtrl', function ($scope, $mdDialog, comparePro
 });
 
 
-controllers.controller('ProjectListCtrl', function ($scope, $location, projects, project, projectService) {
+controllers.controller('ProjectListCtrl', function (
+    $scope,
+    $location,
+    localProjects,
+    remoteProjects,
+    project,
+    projectService
+) {
 
-    $scope.projects = projects;
+    $scope.localProjects = localProjects;
+    $scope.remoteProjects = remoteProjects;
 
-    var remove = function (id) {
-        for (var i = 0; i < $scope.projects.length; i++) {
-            if ($scope.projects[i].id === id) {
-                $scope.projects.remove($scope.projects[i]);
+    var remove = function (projects, id) {
+        for (var i = 0; i < projects.length; i++) {
+            if (projects[i].id === id) {
+                projects.remove(projects[i]);
                 break;
             }
         }
     };
 
-    $scope.findAll = function () {
-        projects = projectService.findAll();
+    $scope.findRemoteProjects = function () {
+        $scope.remoteProjects = projectService.findRemoteProjects();
+    };
+
+    $scope.findLocalProjects = function () {
+        $scope.localProjects = projectService.findLocalProjects();
     };
 
     $scope.load = function (prj) {
+        projectService.load(prj);
         $location.path("project/" + prj.id);
     };
 
     $scope.remove = function (prj) {
         // TODO confirmation or undo
-        projectService.remove(prj.id);
+        if (prj.isLocal) {
+            $.jStorage.deleteKey(prj.id);
+            remove(localProjects, prj.id);
+        } else {
+            projectService.remove(prj.id);
+            // TODO on success only
+            remove(remoteProjects, prj.id);
+            $.jStorage.deleteKey(prj.id);
+            remove(localProjects, prj.id);
+        }
         // TODO on success only
-        remove(prj.id);
         if (project.id === prj.id) {
             var id = uuid();
             project.clone(projectService.make(id));
@@ -540,10 +561,25 @@ controllers.controller('ChartCtrl', function ($scope, currentModel) {
 
     $scope.model = currentModel;
 
-    if (currentModel !== null) {
-        currentModel.refreshCharts();
+    $scope.refresh = function () {
+        if ($scope.model !== null) {
+            $scope.model.refreshCharts();
+        }
     }
 
+
+    $scope.$on('$viewContentLoaded',
+        function(event){
+            if ($scope.model !== null) {
+                $scope.model.refreshCharts();
+            }
+        });
+
+    $scope.$watch('$viewContentLoaded', function() {
+        if ($scope.model !== null) {
+            $scope.model.refreshCharts();
+        }
+    });
 
 });
 

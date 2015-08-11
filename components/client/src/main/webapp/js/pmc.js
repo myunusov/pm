@@ -56,10 +56,10 @@ pmc.config([
                     resolve: {
                         currentProject: function ($stateParams, project, projectService) {
                             var id = $stateParams.projectId;
-                            if (project.id && project.id === id ) {
+                            if (project.id && project.id === id) {
                                 return project;
                             }
-                            return project.clone(projectService.load(id));
+                            return project.clone(projectService.findBy(id));
                         }
                     }
                 })
@@ -68,8 +68,11 @@ pmc.config([
                     templateUrl: 'views/projects.html',
                     controller: 'ProjectListCtrl',
                     resolve: {
-                        projects: function (projectService) {
-                            return projectService.findAll();
+                        remoteProjects: function (projectService) {
+                            return projectService.findRemoteProjects();
+                        },
+                        localProjects: function (projectService) {
+                            return projectService.findLocalProjects();
                         }
                     }
                 })
@@ -77,20 +80,20 @@ pmc.config([
                     url: '/chart/:projectId/:modelId',
                     templateUrl: 'views/bounds.html',
                     controller: 'ChartCtrl',
-                        resolve: {
-                            currentModel: function ($stateParams, project, projectService) {
-                                var projectId = $stateParams.projectId;
-                                var modelId = $stateParams.modelId;
-                                if (project.id && project.id === projectId ) {
-                                    return project.getModel(modelId);
-                                }
-                                var prj = projectService.load(projectId);
-                                if (prj === null) {
-                                    return null;
-                                }
-                                return project.clone(prj).getModel(modelId);
+                    resolve: {
+                        currentModel: function ($stateParams, project, projectService) {
+                            var projectId = $stateParams.projectId;
+                            var modelId = $stateParams.modelId;
+                            if (project.id && project.id === projectId) {
+                                return project.getModel(modelId);
                             }
+                            var prj = projectService.findBy(projectId);
+                            if (prj === null) {
+                                return null;
+                            }
+                            return project.clone(prj).getModel(modelId);
                         }
+                    }
                 })
                 .state('compare', {
                     url: '/compare',
