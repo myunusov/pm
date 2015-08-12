@@ -131,6 +131,14 @@
                     <exclude>**/bower_components/**</exclude>
                 </excludes>
             </resource>
+            <resource>
+                <directory>src/main/webapp/views</directory>
+                <targetPath>${project.build.OutputDirectory}/views</targetPath>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
         </resources>
         <plugins>
             <plugin>

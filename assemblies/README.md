@@ -7,9 +7,9 @@ Must be at last one clossed issue !
 #### 2. Change download path in \PM\components\src\site\site.xml
  
  ```
-<item name="Download" href="https://github.com/myunusov/pm/releases/download/v.1.3/assemblies-1.3.zip" />
+<item name="Download" href="https://github.com/myunusov/pm/releases/download/v.2.1/assemblies-2.1.zip" />
  ```
- 
+  
 #### 3. Check Prject, Prepare POM's, make tag etc 
 
 ```
