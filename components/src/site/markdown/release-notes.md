@@ -1,10 +1,25 @@
 # Release notes
 
-The Maxur Team is pleased to announce the Performance Model Calculator 1.2 release!
+The Maxur Team is pleased to announce the Performance Model Calculator 2.1 release!
 
 The history of Performance Model Calculator releases is documented below. For details of changes refer to the [project's GitHub issues][pmc-issues].
 
 [pmc-issues]: http://github.com/myunusov/pm/issues?state=closed
+
+
+## 2.1 
+
+
+Changes in this version include:
+
+#### New features:
+- System can save model to local repository without connection to service 
+
+
+#### Fixed Bugs:
+- Microsoft Edge and IE (11) repeat init script 
+
+
 
 
 ## 1.2 
@@ -13,6 +28,7 @@ The history of Performance Model Calculator releases is documented below. For de
 Changes in this version include:
 
 #### New features:
+- Remove unused files from client's webapp 
 - Auto-deploy documents to gh-pages 
 - Update CSS and JS Libraries 
 - Re-structure project 

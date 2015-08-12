@@ -54,4 +54,4 @@ Performance, Responsive, Usability
 
 For a manual installation, you can download the Performance Model Calculator here:
 
-* [GitHub](https://github/myunusov/pm)
+* [GitHub](https://github.com/myunusov/pm)
