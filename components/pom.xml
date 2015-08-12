@@ -159,7 +159,7 @@
                                 <artifactItem>
                                     <groupId>org.maxur.perfmodel</groupId>
                                     <artifactId>assemblies</artifactId>
-                                    <version>1.2-SNAPSHOT</version>
+                                    <version>${project.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <includes>**/webapp/**/*.*</includes>
@@ -169,7 +169,7 @@
                                 <artifactItem>
                                     <groupId>org.maxur.perfmodel</groupId>
                                     <artifactId>assemblies</artifactId>
-                                    <version>1.2-SNAPSHOT</version>
+                                    <version>${project.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <includes>RELEASE-NOTES.md</includes>
