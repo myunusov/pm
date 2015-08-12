@@ -108,13 +108,13 @@ angular.module('pmc.services', [])
 
             findRemoteProjects: function () {
                 var result = ProjectDto.query(function (data) {
+                    for (var j = 0; j < data.length; j++) {
+                        data[j].isLocal = false;
+                    }
                 }, function (error) {
                     var text = error.statusText ? ". " + error.statusText + ". " : "";
                     messageService.error("Project Repository is not accessible." + text, error.status);
                 });
-                for (var j = 0; j < result.length; j++) {
-                    result[i].isLocal = false;
-                }
                 return result;
             },
 

@@ -90,7 +90,8 @@ public class ProjectResource {
     public synchronized Response save(final String object) {
         try {
             final ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-            final Map<String,Object> map = mapper.readValue(object, new TypeReference<HashMap<String,Object>>(){});
+            final Map<String,Object> map = mapper.readValue(object, new TypeReference<HashMap<String,Object>>(){
+            });
 
             final String id = (String) map.get(ID);
             final String name = (String) map.get(NAME);
