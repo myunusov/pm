@@ -1,14 +1,14 @@
-<div flex layout-padding layout-fill layout-wrap layout="column" ng-init="findAll()">
+<div flex layout-padding layout-fill layout-wrap layout="column">
     <div class="framehdr">
         <i class="mdi mdi-server"></i>
-        Project's Repository
-        <button ng-click="findAll()">
+        Remote Project's Repository
+        <button ng-click="findRemoteProjects()">
             <i class="mdi mdi-refresh"></i>
             <md-tooltip>Refresh</md-tooltip>
         </button>
     </div>
     <div flex layout-padding class="md-padding frame">
-        <md-card ng-repeat="project in getProjects()">
+        <md-card ng-repeat="project in remoteProjects | filter : {isLocal : false }">
             <md-card-content>
                 <div layout="row" layout-align="space-between center">
                     <div>
@@ -33,5 +33,38 @@
         </md-card>
 
     </div>
+    <div class="framehdr">
+        <i class="mdi mdi-server"></i>
+        Local Project's Repository
+        <button ng-click="findLocalProjects()">
+            <i class="mdi mdi-refresh"></i>
+            <md-tooltip>Refresh</md-tooltip>
+        </button>
+    </div>
+    <div flex layout-padding class="md-padding frame">
+        <md-card ng-repeat="project in localProjects | filter : {isLocal : true }">
+            <md-card-content>
+                <div layout="row" layout-align="space-between center">
+                    <div>
+                        <md-button class="md-fab md-mini md-primary" aria-label="Load Project">
+                            <md-icon class="mdi mdi-download" style="height: 28px; font-size: 28px"
+                                     ng-click="load(project)()"></md-icon>
+                            <md-tooltip>Load Project</md-tooltip>
+                        </md-button>
 
+                        <b>{{project.name}}</b>
+                        (ver: {{project.version}})
+                    </div>
+                    <div>
+                        <md-button class="md-fab md-mini md-warn" aria-label="Remove Project">
+                            <md-icon class="mdi mdi-delete" style="height: 28px; font-size: 28px"
+                                     ng-click="remove(project)()"></md-icon>
+                            <md-tooltip>Delete Project</md-tooltip>
+                        </md-button>
+                    </div>
+                </div>
+            </md-card-content>
+        </md-card>
+
+    </div>
 </div>
