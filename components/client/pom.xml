@@ -90,8 +90,12 @@
         <profile>
             <id>karma</id>
             <properties>
-                <sonar.javascript.jstest.reportsPath>target/karma</sonar.javascript.jstest.reportsPath>
-                <sonar.javascript.lcov.reportPath>target/karma/lcov.info</sonar.javascript.lcov.reportPath>
+                <sonar.javascript.jstestdriver.reportsPath>target/reports/surefire</sonar.javascript.jstestdriver.reportsPath>
+                <sonar.javascript.jstest.reportsPath>target/reports/surefire</sonar.javascript.jstest.reportsPath>
+                <sonar.surefire.reportsPath>target/reports/surefire/</sonar.surefire.reportsPath>
+                <sonar.javascript.lcov.reportPath>target/reports/coverage/lcov.info</sonar.javascript.lcov.reportPath>
+                <sonar.sources>src/main/webapp</sonar.sources>
+                <sonar.tests>src/test/unit</sonar.tests>
             </properties>
             <build>
                 <plugins>

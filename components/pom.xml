@@ -544,20 +544,6 @@
                 </reportSets>
             </plugin>
 
-            <!--  Starting with version 1.1.6, the pit maven plugin has a maven report goal. -->
-            <!--
-                        <plugin>
-                            <groupId>org.pitest</groupId>
-                            <artifactId>pitest-maven</artifactId>
-                            <reportSets>
-                                <reportSet>
-                                    <reports>
-                                        <report>report</report>
-                                    </reports>
-                                </reportSet>
-                            </reportSets>
-                        </plugin>
-            -->
 
             <!--  Not supported Java 8-->
 

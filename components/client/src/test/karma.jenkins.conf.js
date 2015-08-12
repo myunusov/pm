@@ -17,17 +17,18 @@ module.exports = function (config) {
             'src/test/unit/**/*.js': ['commonjs']
         },
 
-        reporters: ['dots', 'progress', , 'junit', 'coverage'],
+        reporters: ['dots', 'progress', 'junit', 'coverage'],
         junitReporter    : {
-            outputDir : 'target/surefire-reports/'
+            outputDir : 'target/reports/surefire'
         },
         coverageReporter : {
-            type : 'cobertura',
-            dir  : 'target/coverage-reports/'
+            type : 'lcov',
+            dir  : 'target/reports/',
+            subdir: 'coverage'
         },
 
         port: 9876,
-        colors: true,
+        colors: false,
         logLevel: config.LOG_INFO,
         autoWatch: false,
         browsers: ['PhantomJS'],
