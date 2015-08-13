@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -26,18 +27,19 @@
 
         <project.source.compile>1.8</project.source.compile>
         <project.target.compile>1.8</project.target.compile>
-        <site.deploy.url />
+        <site.deploy.url/>
 
         <sonar.artifact.path>${basedir}/assemblies/target/assemblies-${project.version}.zip</sonar.artifact.path>
 
-<!--
-        - settings.xml -
-        <server>
-            <id>github</id>
-            <password>OAuthToken</password>
-        </server>
--->
+        <!--
+                - settings.xml -
+                <server>
+                    <id>github</id>
+                    <password>OAuthToken</password>
+                </server>
+        -->
         <github.global.server>github</github.global.server>
+        <maven-clover2-plugin.version>4.0.5</maven-clover2-plugin.version>
     </properties>
 
 
@@ -166,6 +168,72 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+
+        <profile>
+            <id>clover</id>
+            <activation>
+                <file>
+                    <exists>${basedir}/clover.license</exists>
+                </file>
+            </activation>
+            <properties>
+                <maven.clover.skip>true</maven.clover.skip>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.atlassian.maven.plugins</groupId>
+                        <artifactId>maven-clover2-plugin</artifactId>
+                        <version>${maven-clover2-plugin.version}</version>
+                        <configuration>
+                            <generateXml>true</generateXml>
+                            <alwaysReport>true</alwaysReport>
+                            <jdk>${project.source.compile}</jdk>
+                            <snapshot>${user.home}/.clover/${groupId}-${artifactId}/clover.snapshot</snapshot>
+                            <licenseLocation>${project.root}/clover.license</licenseLocation>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>clover</id>
+                                <goals>
+                                    <goal>setup</goal>
+                                    <goal>optimize</goal>
+                                    <goal>snapshot</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>clover</goal>
+                                    <goal>log</goal>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>site</id>
+                                <phase>pre-site</phase>
+                                <goals>
+                                    <goal>instrument</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <reporting>
+                <plugins>
+                    <plugin>
+                        <groupId>com.atlassian.maven.plugins</groupId>
+                        <artifactId>maven-clover2-plugin</artifactId>
+                        <version>${maven-clover2-plugin.version}</version>
+                        <configuration>
+                            <jdk>${project.source.compile}</jdk>
+                            <licenseLocation>${project.root}/clover.license</licenseLocation>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </reporting>
         </profile>
 
     </profiles>
@@ -327,8 +395,8 @@
                                         <exclude>org.maxur.perfmodel:*</exclude>
                                     </excludes>
                                 </requireReleaseDeps>
-                                <requireUpperBoundDeps />
-                                <DependencyConvergence />
+                                <requireUpperBoundDeps/>
+                                <DependencyConvergence/>
                             </rules>
                             <fail>true</fail>
                         </configuration>
@@ -337,25 +405,25 @@
             </plugin>
 
             <!-- Staging only Nexus Pro version-->
-<!--            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.5</version>
-                <executions>
-                    <execution>
-                        <id>default-deploy</id>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>deploy</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>releases</serverId>
-                    <nexusUrl>${nexus.url}</nexusUrl>
-                </configuration>
-            </plugin>-->
+            <!--            <plugin>
+                            <groupId>org.sonatype.plugins</groupId>
+                            <artifactId>nexus-staging-maven-plugin</artifactId>
+                            <version>1.6.5</version>
+                            <executions>
+                                <execution>
+                                    <id>default-deploy</id>
+                                    <phase>deploy</phase>
+                                    <goals>
+                                        <goal>deploy</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                            <extensions>true</extensions>
+                            <configuration>
+                                <serverId>releases</serverId>
+                                <nexusUrl>${nexus.url}</nexusUrl>
+                            </configuration>
+                        </plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

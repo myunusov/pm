@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -19,21 +20,10 @@
 
         <sonar.language>java</sonar.language>
         <sonar.sources>${project.basedir}/src/main/java/</sonar.sources>
-        <sonar.java.coveragePlugin>clover</sonar.java.coveragePlugin>
-        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-
-        <sonar.clover.reportPath>${project.build.directory}/site/clover/clover.xml</sonar.clover.reportPath>
-        <clover.generateXml>true</clover.generateXml>
-        <clover.generateHtml>true</clover.generateHtml>
 
         <slf4j.version>1.7.5</slf4j.version>
-
         <logback.version>1.0.13</logback.version>
-
-        <derby.version>10.11.1.1</derby.version>
-
         <jersey.version>2.13</jersey.version>
-
         <jackson.version>2.3.2</jackson.version>
     </properties>
 
@@ -44,6 +34,17 @@
     </scm>
 
     <profiles>
+        <profile>
+            <id>clover</id>
+            <properties>
+                <sonar.java.coveragePlugin>clover</sonar.java.coveragePlugin>
+                <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+                <sonar.clover.reportPath>target/site/clover/clover.xml</sonar.clover.reportPath>
+                <clover.generateXml>true</clover.generateXml>
+                <clover.generateHtml>true</clover.generateHtml>
+                <maven.clover.skip>false</maven.clover.skip>
+            </properties>
+        </profile>
         <profile>
             <id>check</id>
             <activation>
