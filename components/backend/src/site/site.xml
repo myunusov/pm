@@ -21,9 +21,5 @@
       <item name="Backend" href="/" />
     </breadcrumbs>
 
-    <menu name="Reports">
-      <item name="Coverage Report" href="pitest/index.html" />
-    </menu>
-
   </body>
 </project>

@@ -4,8 +4,7 @@
 
 angular.module('pmc.services', [])
 
-    .service('messageProvider', function ($mdToast, $animate) {
-
+    .service('messageService', function ($mdToast) {
         var toastPosition = {
             bottom: true,
             top: false,
@@ -13,11 +12,11 @@ angular.module('pmc.services', [])
             right: false
         };
 
-        var alerts = [];
-
         function getToastPosition() {
             return Object.keys(toastPosition)
-                .filter(function(pos) { return toastPosition[pos]; })
+                .filter(function (pos) {
+                    return toastPosition[pos];
+                })
                 .join(' ');
         }
 
@@ -37,17 +36,8 @@ angular.module('pmc.services', [])
         }
 
         return {
-            setAlerts: function (value) {
-                alerts = value;
-            },
-            clear: function () {
-                alerts.length = 0;
-            },
-            close: function (index) {
-                alerts.splice(index, 1);
-            },
             error: function (message, errorcode) {
-                var result = "Error!";
+                var result = "";
                 if (message instanceof Array) {
                     for (var i = 0; i < message.length; i++) {
                         result += " " + message[i];
@@ -58,11 +48,9 @@ angular.module('pmc.services', [])
                 if (errorcode) {
                     result += " " + getMessageBy(errorcode);
                 }
-                alerts.push({type: 'error', msg: result});
                 $mdToast.show({
                     controller: 'ToastCtrl',
-                    template:
-                    '<md-toast class="md-warn" style="background-color: #e57373">\n' +
+                    template: '<md-toast class="md-warn" style="background-color: #e57373">\n' +
                     '<span flex>' + result + '</span>\n' +
                     '<md-button aria-label="Close Toast" ng-click="closeToast()">\n' +
                     '<i class="mdi mdi-close"></i>\n' +
@@ -72,11 +60,9 @@ angular.module('pmc.services', [])
                 });
             },
             info: function (message) {
-                alerts.push({type: 'success', msg: message});
                 $mdToast.show({
                     controller: 'ToastCtrl',
-                    template:
-                    '<md-toast class="md-warn" style="background-color: #aed581">\n' +
+                    template: '<md-toast class="md-warn" style="background-color: #aed581">\n' +
                     '<span flex>' + message + '</span>\n' +
                     '<md-button aria-label="Close Toast" ng-click="closeToast()">\n' +
                     '<i class="mdi mdi-close"></i>\n' +
@@ -88,154 +74,150 @@ angular.module('pmc.services', [])
         };
     })
 
-    .service('projectProvider', function ($http, messageProvider, modelFactory) {
+    .provider('project', function () {
+        var project = new Project();
+        this.$get = function () {
+            return project;
+        }
+    })
 
-        var projects = [];
+    .service('projectService', function ($resource, project, messageService, modelFactory) {
 
-        var project;
+        var ProjectDto = $resource('/api/project/:projectId', {projectId: '@id'});
 
-        var url = 'api/projects';
-
-        var remove = function (id) {
-            for (var i = 0; i < projects.length; i++) {
-                if (projects[i].id === id) {
-                    projects.remove(projects[i]);
-                    break;
-                }
+        function saveTempBak() {
+            if (project && project.id) {
+                var dto = project.createDTO(new ProjectDto());
+                $.jStorage.set(project.id, dto);
+                $.jStorage.setTTL(project.id, 1800000);
             }
-        };
+        }
+
         return {
-            getProject: function () {
+
+            findLocalProjects: function () {
+                var result = [];
+                var index = $.jStorage.index();
+                for (var i = 0; i < index.length; i++) {
+                    var item = $.jStorage.get(index[i]);
+                    item.isLocal = true;
+                    result.push(item);
+                }
+                return result;
+            },
+
+            findRemoteProjects: function () {
+                var result = ProjectDto.query(function (data) {
+                    for (var j = 0; j < data.length; j++) {
+                        data[j].isLocal = false;
+                    }
+                }, function (error) {
+                    var text = error.statusText ? ". " + error.statusText + ". " : "";
+                    messageService.error("Project Repository is not accessible." + text, error.status);
+                });
+                return result;
+            },
+
+            make: function (id) {
+                saveTempBak();
+                id = id || uuid();
+                var result = new Project("New Project", id);
+                // result.models.push(modelFactory.qnm("QNM 0"));
+                result.models.push(modelFactory.egm("SEM 0"));
+                messageService.info("New Project is created.");
+                return result;
+            },
+            findBy: function (id) {
+                if (project && project.id === id) {
+                    return project;
+                }
+                saveTempBak();
+                var dto = $.jStorage.get(id);
+                if (dto) {
+                    project.setDTO(dto);
+                    return project;
+                }
+                dto = ProjectDto.get({projectId: id}, function () {
+                    project.setDTO(dto);
+                    messageService.info("Project '" + dto.name + "' is loaded.");
+                    $.jStorage.set(project.id, dto);
+                }, function (error) {
+                    var text = error.statusText ? ". " + error.statusText + ". " : "";
+                    messageService.error("Project is not loaded." + text, error.status);
+                });
                 return project;
             },
-            getProjects: function () {
-                return projects;
-            },
-            findAll: function () {
-                messageProvider.clear();
-                $http.get(url + '/')
-                    .success(function (dto) {
-                        projects = dto;
-                    })
-                    .error(function (data, status) {
-                        messageProvider.error(
-                            data && data.message ?
-                                data.message :
-                                "Project List is not loaded.", status);
-                    });
-            },
-            load: function (id, success, error) {
-                id = id || project.id;
-                messageProvider.clear();
-                $http.get(url + '/' + id)
-                    .success(function (dto) {
+            load: function (prj) {
+                saveTempBak();
+                var dto;
+                if (prj.islocal) {
+                    dto = $.jStorage.get(prj.id);
+                    project.setDTO(dto);
+                } else {
+                    dto = ProjectDto.get({projectId: prj.id}, function () {
                         project.setDTO(dto);
-                        success(project);
-                        messageProvider.info("Project '" + dto.name + "' is loaded.");
-                    })
-                    .error(function (data, status) {
-                        messageProvider.error(
-                            data && data.message ?
-                                data.message :
-                                "Project is not loaded.", status);
-                        error(id);
+                        messageService.info("Project '" + dto.name + "' is loaded.");
+                        $.jStorage.set(project.id, dto);
+                    }, function (error) {
+                        var text = error.statusText ? ". " + error.statusText + ". " : "";
+                        messageService.error("Project is not loaded." + text, error.status);
                     });
-            },
-            make: function (id) {
-                id = id || uuid();
-                messageProvider.clear();
-                project = new Project("New Project", id);
-                // project.models.push(modelFactory.qnm("QNM " + project.models.length));
-                project.models.push(modelFactory.egm("SEM " + project.models.length));
-                messageProvider.info("New Project is created.");
-                window.location.replace("#project/" + id);
+                }
+                return project;
             },
             remove: function (id) {
-                id = id || project.id;
-                messageProvider.clear();
-                $http['delete'](url + '/' + id)
-                    .success(function (dto) {
-                        messageProvider.info("Project '" + dto.name + "' is deleted.");
-                        remove(dto.id);
-                        if (project.id === dto.id) {
-                            projectProvider.make();
-                        }
-                    })
-                    .error(function (data, status) {
-                        messageProvider.error(
-                            data && data.message ?
-                                data.message :
-                                "Project is not deleted.", status);
-                    });
+                ProjectDto.remove({projectId: id}, function () {
+                    $.jStorage.deleteKey(id);
+                    messageService.info("Project is deleted.");
+                }, function (error) {
+                    var text = error.statusText ? ". " + error.statusText + ". " : "";
+                    messageService.error("Project is not deleted." + text, error.status);
+                });
             },
             save: function () {
-                messageProvider.clear();
-                var dto = project.createDTO();
-                $http.post(url, JSON.stringify(dto))
-                    .success(function (dto, status) {
-                        if (status && parseFloat(status) === 201) {
-                            project.version = dto.version;
-                            remove(dto.id);
-                            projects.push({
-                                id: dto.id,
-                                name: dto.name,
-                                version: dto.version
-                            });
-                            messageProvider.info("Project is saved as '" + dto.name + "'.");
-                        } else {
-                            messageProvider.error(dto.name, status);
-                        }
-                    })
-                    .error(function (data, status) {
-                        messageProvider.error(
-                            data && data.message ?
-                                data.message :
-                                "Project is not saved.", status);
-                    });
-            },
-
-            addQNM: function () {
-                project.models.push(modelFactory.qnm("QNM " + project.models.length));
-            },
-
-            addEGM: function () {
-                project.models.push(modelFactory.egm("SEM " + project.models.length));
+                var dto = project.createDTO(new ProjectDto());
+                $.jStorage.set(project.id, dto);
+                dto.$save(function (dto) {
+                    messageService.info("Project is saved as '" + dto.name + "'.");
+                }, function (error) {
+                    var text = error.statusText ? ". " + error.statusText + ". " : "";
+                    messageService.error("Project is not saved." + text, error.status);
+                });
             }
-
         };
     })
 
     .service('compareProvider', function () {
 
-            var models = [];
-            return {
-                models: function () {
-                    return models;
-                },
-                add: function (model) {
-                    models.push(model);
-                    models = models.unique();
-                },
-                remove: function (model) {
-                    models.remove(model);
-                }
+        var models = [];
+        return {
+            models: function () {
+                return models;
+            },
+            add: function (model) {
+                models.push(model);
+                models = models.unique();
+            },
+            remove: function (model) {
+                models.remove(model);
             }
+        }
     })
 
-    .factory('modelFactory', function() {
-    return {
-        qnm: function(name) {
-            var qnm = new QNM(name || "QNM", uuid());
-            qnm.addClass();
-            qnm.addNode();
-            return  qnm;
-        },
-        egm: function(name) {
-            var egm = new EGM(name || "SEM", uuid());
-            egm.addResource();
-            egm.addScenario();
-            return  egm;
-        }
-    };
-});
+    .factory('modelFactory', function () {
+        return {
+            qnm: function (name) {
+                var qnm = new QNM(name || "QNM", uuid());
+                qnm.addClass();
+                qnm.addNode();
+                return qnm;
+            },
+            egm: function (name) {
+                var egm = new EGM(name || "SEM", uuid());
+                egm.addResource();
+                egm.addScenario();
+                return egm;
+            }
+        };
+    });
 

@@ -159,7 +159,7 @@
                                 <artifactItem>
                                     <groupId>org.maxur.perfmodel</groupId>
                                     <artifactId>assemblies</artifactId>
-                                    <version>1.2-SNAPSHOT</version>
+                                    <version>${project.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <includes>**/webapp/**/*.*</includes>
@@ -169,7 +169,7 @@
                                 <artifactItem>
                                     <groupId>org.maxur.perfmodel</groupId>
                                     <artifactId>assemblies</artifactId>
-                                    <version>1.2-SNAPSHOT</version>
+                                    <version>${project.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <includes>RELEASE-NOTES.md</includes>
@@ -544,20 +544,6 @@
                 </reportSets>
             </plugin>
 
-            <!--  Starting with version 1.1.6, the pit maven plugin has a maven report goal. -->
-            <!--
-                        <plugin>
-                            <groupId>org.pitest</groupId>
-                            <artifactId>pitest-maven</artifactId>
-                            <reportSets>
-                                <reportSet>
-                                    <reports>
-                                        <report>report</report>
-                                    </reports>
-                                </reportSet>
-                            </reportSets>
-                        </plugin>
-            -->
 
             <!--  Not supported Java 8-->
 

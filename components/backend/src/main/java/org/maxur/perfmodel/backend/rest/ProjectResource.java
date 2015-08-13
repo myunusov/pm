@@ -35,7 +35,7 @@ import static org.maxur.perfmodel.backend.rest.WebException.notFoundException;
  * @author Maxim Yunusov
  * @version 1.0 01.09.13
  */
-@Path("/{a:projects}")
+@Path("/{a:project}")
 public class ProjectResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProjectResource.class);
@@ -52,7 +52,6 @@ public class ProjectResource {
 
     @Inject
     private Repository<Project> repository;
-
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -85,12 +84,14 @@ public class ProjectResource {
     }
 
     @POST
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public synchronized Response save(final String object) {
         try {
             final ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-            final Map<String,Object> map = mapper.readValue(object, new TypeReference<HashMap<String,Object>>(){});
+            final Map<String,Object> map = mapper.readValue(object, new TypeReference<HashMap<String,Object>>(){
+            });
 
             final String id = (String) map.get(ID);
             final String name = (String) map.get(NAME);

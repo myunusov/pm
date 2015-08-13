@@ -11,7 +11,7 @@
     <artifactId>assemblies</artifactId>
     <packaging>pom</packaging>
     <name>PMC: Assemblers</name>
-    <description>Assemblies POM for Maxur Project</description>
+    <description>Performance Model Calculator Distributive</description>
 
     <properties>
         <project.root>./..</project.root>

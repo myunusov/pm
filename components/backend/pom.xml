@@ -22,6 +22,10 @@
         <sonar.java.coveragePlugin>clover</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
 
+        <sonar.clover.reportPath>${project.build.directory}/site/clover/clover.xml</sonar.clover.reportPath>
+        <clover.generateXml>true</clover.generateXml>
+        <clover.generateHtml>true</clover.generateHtml>
+
         <slf4j.version>1.7.5</slf4j.version>
 
         <logback.version>1.0.13</logback.version>
@@ -301,13 +305,20 @@
                         <outputFormat>XML</outputFormat>
                     </outputFormats>
                     <threads>4</threads>
-                    <reportsDirectory>${project.build.directory}/site/pitest</reportsDirectory>
+                    <reportsDirectory>${project.build.directory}/pit-reports</reportsDirectory>
                     <timestampedReports>false</timestampedReports>
                 </configuration>
                 <executions>
                     <execution>
                         <id>check</id>
                         <phase>pre-site</phase>
+                        <goals>
+                            <goal>mutationCoverage</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>test</id>
+                        <phase>test</phase>
                         <goals>
                             <goal>mutationCoverage</goal>
                         </goals>
@@ -340,6 +351,21 @@
                     <xmlOutput>true</xmlOutput>
                 </configuration>
             </plugin>
+
+            <!--  Starting with version 1.1.6, the pit maven plugin has a maven report goal. -->
+
+            <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
 
         </plugins>
     </reporting>

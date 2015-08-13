@@ -5,8 +5,8 @@ module.exports = function (config) {
         frameworks: ['jasmine', 'commonjs'],
 
         files: [
-            'src/main/webapp/bower_components/angular/angular.js',
-            'src/main/webapp/bower_components/angular-mocks/angular-mocks.js',
+            'src/main/webapp/libs/angular/js/angular.js',
+            'src/main/webapp/libs/angular-mocks/js/angular-mocks.js',
             'src/main/webapp/js/**/*.js',
             'src/test/unit/**/*.js'
         ],
@@ -17,17 +17,18 @@ module.exports = function (config) {
             'src/test/unit/**/*.js': ['commonjs']
         },
 
-        reporters: ['dots', 'progress', , 'junit', 'coverage'],
+        reporters: ['dots', 'progress', 'junit', 'coverage'],
         junitReporter    : {
-            outputDir : 'target/surefire-reports/'
+            outputDir : 'target/reports/surefire'
         },
         coverageReporter : {
-            type : 'cobertura',
-            dir  : 'target/coverage-reports/'
+            type : 'lcov',
+            dir  : 'target/reports/',
+            subdir: 'coverage'
         },
 
         port: 9876,
-        colors: true,
+        colors: false,
         logLevel: config.LOG_INFO,
         autoWatch: false,
         browsers: ['PhantomJS'],

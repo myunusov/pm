@@ -18,7 +18,7 @@
 
         <sonar.language>js</sonar.language>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-        <sonar.exclusions>**/angular/**,**/bootstrap/**,**/ng-bootstrap/**,**/snap/**</sonar.exclusions>
+        <sonar.exclusions>**/libs/**,**/bower_components/**</sonar.exclusions>
     </properties>
 
     <scm>
@@ -60,10 +60,42 @@
         </profile>
 
         <profile>
+            <id>npm</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.4.0</version>
+                        <executions>
+                            <execution>
+                                <id>exec-npm-install</id>
+                                <phase>generate-sources</phase>
+                                <configuration>
+                                    <executable>npm</executable>
+                                    <arguments>
+                                        <argument>install</argument>
+                                    </arguments>
+                                </configuration>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
             <id>karma</id>
             <properties>
-                <sonar.javascript.jstest.reportsPath>target/karma</sonar.javascript.jstest.reportsPath>
-                <sonar.javascript.lcov.reportPath>target/karma/lcov.info</sonar.javascript.lcov.reportPath>
+                <sonar.javascript.jstestdriver.reportsPath>target/reports/surefire</sonar.javascript.jstestdriver.reportsPath>
+                <sonar.javascript.jstest.reportsPath>target/reports/surefire</sonar.javascript.jstest.reportsPath>
+                <sonar.surefire.reportsPath>target/reports/surefire/</sonar.surefire.reportsPath>
+                <sonar.javascript.lcov.reportPath>target/reports/coverage/lcov.info</sonar.javascript.lcov.reportPath>
+                <sonar.sources>src/main/webapp</sonar.sources>
+                <sonar.tests>src/test/unit</sonar.tests>
             </properties>
             <build>
                 <plugins>
@@ -103,6 +135,14 @@
                     <exclude>**/bower_components/**</exclude>
                 </excludes>
             </resource>
+            <resource>
+                <directory>src/main/webapp/views</directory>
+                <targetPath>${project.build.OutputDirectory}/views</targetPath>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
         </resources>
         <plugins>
             <plugin>
@@ -114,26 +154,7 @@
                     </excludes>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.4.0</version>
-                <executions>
-                    <execution>
-                        <id>exec-npm-install</id>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <executable>npm</executable>
-                            <arguments>
-                                <argument>install</argument>
-                            </arguments>
-                        </configuration>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>

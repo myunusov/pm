@@ -35,7 +35,7 @@ function EGMStep(type) {
     this.onUpdate = function () {
         this.iscompleted = true;
         this.inconsistent = false;
-    }
+    };
 
     this.setDTO = function (memento) {
         this.id = memento.id;
@@ -111,7 +111,7 @@ function EGMStep(type) {
         {id: "S", title: "Switch"},
         {id: "F", title: "Split"},
         {id: "P", title: "Pardo"},
-        {id: "C", title: "Scenario"},
+        {id: "C", title: "Scenario"}
     ];
 
     this.addStep = function (type) {
@@ -146,11 +146,11 @@ function EGMStep(type) {
 
     this.addScenario = function () {
         return this.parent.addScenario();
-    }
+    };
 
     this.findScenario = function (id) {
         return this.parent.findScenario(id);
-    }
+    };
 
     this.change = function () {
         this.worst = this.values;
@@ -215,13 +215,13 @@ function EGMStep(type) {
 
     this.calcMin = function (child, newValue, oldValue) {
         return parseFloat(parseFloat(newValue) + parseFloat(oldValue ? oldValue : 0));
-    }
+    };
     this.calcAvg = function (child, newValue, oldValue) {
         return parseFloat(parseFloat(newValue) + parseFloat(oldValue ? oldValue : 0));
-    }
+    };
     this.calcMax = function (child, newValue, oldValue) {
         return parseFloat(parseFloat(newValue) + parseFloat(oldValue ? oldValue : 0));
-    }
+    };
 
     this.removeStep = function (step) {
         this.steps.remove(step);
@@ -304,7 +304,7 @@ function EGMLink(id, parent) {
         this.best = scenario.best;
         this.worst = scenario.worst;
         scenario.addLink(this);
-    }
+    };
 
     this.doCreateDTO = function (result) {
         result.scenarioId = this.scenario.id;
@@ -318,18 +318,18 @@ function EGMLink(id, parent) {
 
     this.init = function () {
         this.setScenario(this.findScenario(this.scenarioId));
-    }
+    };
 
     this.image = function () {
         return "script.svg";
-    }
+    };
 
     this.update = function () {
         this.values = this.scenario.values;
         this.best = this.scenario.best;
         this.worst = this.scenario.worst;
         parent.resolve();
-    }
+    };
 
     this.removeSelf = function () {
         this.parent.removeStep(this);
@@ -356,28 +356,28 @@ function EGMScenario(id, model) {
         onDrop: function(dragEl) {
             alert(dragEl);
         }
-    }
+    };
 
     this.onUpdate = function () {
         if (this.link) {
             this.link.update();
         }
-    }
+    };
 
     this.image = function () {
         return "script.svg";
-    }
+    };
 
     this.addLink = function (link) {
         this.link = link;
-    }
+    };
 
 
     this.removeLink = function (link) {
         if (this.link === link) {
             this.link = null;
         }
-    }
+    };
 
     this.allsSteps = function () {
         var result = [];
@@ -396,11 +396,11 @@ function EGMScenario(id, model) {
 
     this.addScenario = function () {
         return this.model.addScenario();
-    }
+    };
 
     this.findScenario = function (id) {
         return this.model.findScenario(id);
-    }
+    };
 
     this.removeSelf = function () {
         this.model.removeScenario(this);
@@ -444,18 +444,18 @@ function EGMLoop(id, parent) {
 
     this.onUpdate = function () {
         this.iscompleted = this.steps.length > 0;
-    }
+    };
 
     this.image = function () {
         return "block-helper.svg";
-    }
+    };
 
     this.calcMin = function (child, newValue, oldValue) {
         return parseFloat(parseFloat(newValue) * parseFloat(this.repeat) + parseFloat(oldValue ? oldValue : 0));
-    }
+    };
     this.calcAvg = function (child, newValue, oldValue) {
         return parseFloat(parseFloat(newValue) * parseFloat(this.repeat) + parseFloat(oldValue ? oldValue : 0));
-    }
+    };
     this.calcMax = function (child, newValue, oldValue) {
         return parseFloat(parseFloat(newValue) * parseFloat(this.repeat) + parseFloat(oldValue ? oldValue : 0));
     }
@@ -478,11 +478,11 @@ function EGMSwitch(id, parent) {
     this.onUpdate = function () {
         this.iscompleted = this.steps.length > 0;
         this.inconsistent = this.totalProbability() > 1;
-    }
+    };
 
     this.image = function () {
         return "source-fork.svg";
-    }
+    };
 
     this.totalProbability = function () {
         var result = 0;
@@ -492,7 +492,7 @@ function EGMSwitch(id, parent) {
             }
         );
         return result;
-    }
+    };
 
     this.calcMin = function (child, newValue, oldValue) {
         if (this.totalProbability() < 1) {
@@ -504,13 +504,13 @@ function EGMSwitch(id, parent) {
         }
         var oldNumber = parseFloat(oldValue);
         return newNumber < oldNumber ? newNumber : oldNumber;
-    }
+    };
     this.calcAvg = function (child, newValue, oldValue) {
         if (!oldValue) {
             return parseFloat(newValue) * parseFloat(child.rate);
         }
         return parseFloat(parseFloat(newValue) * parseFloat(child.rate) + parseFloat(oldValue));
-    }
+    };
     this.calcMax = function (child, newValue, oldValue) {
         var newNumber = parseFloat(newValue);
         if (!oldValue) {
@@ -537,11 +537,11 @@ function EGMSplit(id, parent) {
 
     this.onUpdate = function () {
         this.iscompleted = this.steps.length > 1;
-    }
+    };
 
     this.image = function () {
         return "view-agenda.svg";
-    }
+    };
 
     this.calcMin = function (child, newValue, oldValue) {
         var newNumber = parseFloat(newValue);
@@ -550,7 +550,7 @@ function EGMSplit(id, parent) {
         }
         var oldNumber = parseFloat(oldValue);
         return newNumber < oldNumber ? newNumber : oldNumber;
-    }
+    };
     this.calcAvg = function (child, newValue, oldValue) {
         var newNumber = parseFloat(newValue);
         if (!oldValue) {
@@ -558,7 +558,7 @@ function EGMSplit(id, parent) {
         }
         var oldNumber = parseFloat(oldValue);
         return newNumber < oldNumber ? newNumber : oldNumber;
-    }
+    };
     this.calcMax = function (child, newValue, oldValue) {
         var newNumber = parseFloat(newValue);
         if (!oldValue) {
@@ -586,11 +586,11 @@ function EGMPardo(id, parent) {
 
     this.onUpdate = function () {
         this.iscompleted = this.steps.length > 1;
-    }
+    };
 
     this.image = function () {
         return "view-dashboard.svg";
-    }
+    };
 
     this.calcMin = function (child, newValue, oldValue) {
         var newNumber = parseFloat(newValue);
@@ -599,7 +599,7 @@ function EGMPardo(id, parent) {
         }
         var oldNumber = parseFloat(oldValue);
         return newNumber > oldNumber ? newNumber : oldNumber;
-    }
+    };
     this.calcAvg = function (child, newValue, oldValue) {
         var newNumber = parseFloat(newValue);
         if (!oldValue) {
@@ -607,7 +607,7 @@ function EGMPardo(id, parent) {
         }
         var oldNumber = parseFloat(oldValue);
         return newNumber > oldNumber ? newNumber : oldNumber;
-    }
+    };
     this.calcMax = function (child, newValue, oldValue) {
         var newNumber = parseFloat(newValue);
         if (!oldValue) {
