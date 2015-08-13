@@ -6,8 +6,8 @@ Must be at last one clossed issue !
 
 #### 2. Create Site
 
-PMC:Component 
-    mvn site
+PMC:Component (with api doc) 
+    mvn site 
 PMC: root
     mvn site:stage
   

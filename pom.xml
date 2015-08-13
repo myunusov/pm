@@ -29,7 +29,7 @@
         <project.target.compile>1.8</project.target.compile>
         <site.deploy.url/>
 
-        <sonar.artifact.path>${basedir}/assemblies/target/assemblies-${project.version}.zip</sonar.artifact.path>
+        <sonar.artifact.path>${project.root}/assemblies/target/assemblies-${project.version}.zip</sonar.artifact.path>
 
         <!--
                 - settings.xml -

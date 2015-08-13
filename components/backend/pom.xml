@@ -43,6 +43,9 @@
                 <clover.generateXml>true</clover.generateXml>
                 <clover.generateHtml>true</clover.generateHtml>
                 <maven.clover.skip>false</maven.clover.skip>
+
+                <sonar.pitest.reportsDirectory>target/pit-reports</sonar.pitest.reportsDirectory>
+                <sonar.pitest.mode>reuseReport</sonar.pitest.mode>
             </properties>
         </profile>
         <profile>
