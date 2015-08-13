@@ -1,0 +1,12 @@
+<map id="G" name="G">
+<area shape="rect" id="node1_0" href="./WebServer.html" title="org.maxur.perfmodel.backend.infrastructure.WebServer" alt="" coords="201,113,281,137"/>
+<area shape="rect" id="node1" href="./WebServer.html" title="&lt;TABLE&gt;" alt="" coords="191,101,292,149"/>
+<area shape="rect" id="node4_1" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/grizzly/http/server/HttpServer.html" title="org.glassfish.grizzly.http.server.HttpServer" alt="" coords="16,203,173,239"/>
+<area shape="rect" id="node4" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/grizzly/http/server/HttpServer.html" title="&lt;TABLE&gt;" alt="" coords="5,197,184,245"/>
+<area shape="rect" id="node5_2" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/jersey/server/ResourceConfig.html" title="org.glassfish.jersey.server.ResourceConfig" alt="" coords="219,203,352,239"/>
+<area shape="rect" id="node5" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/jersey/server/ResourceConfig.html" title="&lt;TABLE&gt;" alt="" coords="208,197,363,245"/>
+<area shape="rect" id="node2_3" href="../TrayIconApplication.html" title="org.maxur.perfmodel.backend.TrayIconApplication" alt="" coords="60,11,209,47"/>
+<area shape="rect" id="node2" href="../TrayIconApplication.html" title="&lt;TABLE&gt;" alt="" coords="49,5,220,53"/>
+<area shape="rect" id="node3_4" href="../Launcher.html" title="org.maxur.perfmodel.backend.Launcher" alt="" coords="255,11,404,47"/>
+<area shape="rect" id="node3" href="../Launcher.html" title="&lt;TABLE&gt;" alt="" coords="244,5,415,53"/>
+</map>

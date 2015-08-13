@@ -1,0 +1,10 @@
+<map id="G" name="G">
+<area shape="rect" id="node1_0" href="./WebException.html" title="org.maxur.perfmodel.backend.rest.WebException" alt="" coords="15,17,115,41"/>
+<area shape="rect" id="node1" href="./WebException.html" title="&lt;TABLE&gt;" alt="" coords="5,5,126,53"/>
+<area shape="rect" id="node2_1" href="./ProjectResource.html" title="org.maxur.perfmodel.backend.rest.ProjectResource" alt="" coords="161,17,276,41"/>
+<area shape="rect" id="node2" href="./ProjectResource.html" title="&lt;TABLE&gt;" alt="" coords="151,5,287,53"/>
+<area shape="rect" id="node3_2" href="./PMObjectMapperProvider.html" title="org.maxur.perfmodel.backend.rest.PMObjectMapperProvider" alt="" coords="321,17,487,41"/>
+<area shape="rect" id="node3" href="./PMObjectMapperProvider.html" title="&lt;TABLE&gt;" alt="" coords="311,5,497,53"/>
+<area shape="rect" id="node4_3" href="./ApplicationResource.html" title="org.maxur.perfmodel.backend.rest.ApplicationResource" alt="" coords="533,17,667,41"/>
+<area shape="rect" id="node4" href="./ApplicationResource.html" title="&lt;TABLE&gt;" alt="" coords="522,5,678,53"/>
+</map>
