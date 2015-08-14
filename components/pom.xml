@@ -16,6 +16,7 @@
 
     <properties>
         <project.root>./../</project.root>
+        <junit.reportsPath>target\surefire-reports</junit.reportsPath>
     </properties>
 
     <modules>
@@ -50,7 +51,6 @@
                 </plugins>
             </build>
         </profile>
-
     </profiles>
 
     <build>
