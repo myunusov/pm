@@ -51,33 +51,33 @@ function EGMStep(type) {
             var step;
             if (memento.steps[i].type === "R") {
                 step = new EGMRoutine(
-                    memento.steps[i].id,
-                    this
+                        memento.steps[i].id,
+                        this
                 );
             } else if (memento.steps[i].type === "L") {
                 step = new EGMLoop(
-                    memento.steps[i].id,
-                    this
+                        memento.steps[i].id,
+                        this
                 );
             } else if (memento.steps[i].type === "F") {
                 step = new EGMSplit(
-                    memento.steps[i].id,
-                    this
+                        memento.steps[i].id,
+                        this
                 );
             } else if (memento.steps[i].type === "S") {
                 step = new EGMSwitch(
-                    memento.steps[i].id,
-                    this
+                        memento.steps[i].id,
+                        this
                 );
             } else if (memento.steps[i].type === "P") {
                 step = new EGMPardo(
-                    memento.steps[i].id,
-                    this
+                        memento.steps[i].id,
+                        this
                 );
             } else if (memento.steps[i].type === "C") {
                 step = new EGMLink(
-                    memento.steps[i].id,
-                    this
+                        memento.steps[i].id,
+                        this
                 );
             }
             step.setDTO(memento.steps[i]);
@@ -152,6 +152,10 @@ function EGMStep(type) {
         return this.parent.findScenario(id);
     };
 
+    this.getResources = function () {
+        return this.parent.getResources();
+    };
+
     this.change = function () {
         this.worst = this.values;
         this.best = this.values;
@@ -162,14 +166,7 @@ function EGMStep(type) {
     };
 
     this.resolve = function () {
-        this.values = {};
-        this.worst = {};
-        this.best = {};
-        for (var i = 0; i < this.steps.length; i++) {
-            this.updateBest(this.steps[i]);
-            this.updateAvg(this.steps[i]);
-            this.updateWorst(this.steps[i]);
-        }
+        this.updateChildren();
         if (this.parent) {
             this.parent.resolve();
         }
@@ -177,11 +174,12 @@ function EGMStep(type) {
     };
 
     this.init = function () {
-        if (this.steps.length > 0) {
+        var hasChildren = this.steps.length > 0;
+        if (hasChildren) {
             for (var i = 0; i < this.steps.length; i++) {
                 this.steps[i].init();
             }
-            this.resolve();
+            this.updateChildren();
         } else {
             this.worst = this.values;
             this.best = this.values;
@@ -189,38 +187,73 @@ function EGMStep(type) {
         this.onUpdate();
     };
 
-    this.updateBest = function (child) {
-        for (var key in child.best) {
-            var newValue = child.best.hasOwnProperty(key) && child.best[key] ? child.best[key] : 0;
-            var oldValue = this.best.hasOwnProperty(key) && this.best[key] ? this.best[key] : null;
-            this.best[key] = this.calcMin(child, newValue, oldValue);
+    this.updateChildren = function () {
+        var calc = this.makeCalculator();
+        var resources = this.getResources();
+        for (var i = 0; i < this.steps.length; i++) {
+            var step = this.steps[i];
+            for (var j = 0; j < resources.length; j++) {
+                var resource = resources[j];
+                calc.addBest(step.best[resource], resource);
+                calc.addAvg(step.values[resource], resource, step.rate);
+                calc.addWorst(step.worst[resource], resource);
+                this.best[resource] = this.calcMin(
+                        step.rate,
+                        step.best[resource] || 0,
+                        this.best[resource] || null
+                );
+                this.values[resource] = this.calcAvg(
+                        step.rate,
+                        parseFloat(newValue) * parseFloat(rate)  ,
+                        this.values[resource] || null
+                );
+                this.worst[resource] = this.calcMax(
+                        step.rate,
+                        step.worst[resource] || 0,
+                        this.worst[resource] || null
+                );
+            }
         }
+        this.best = calc.abest;
+        this.values = calc.avalues;
+        this.worst = calc.aworst;
     };
 
-    this.updateAvg = function (child) {
-        for (var key in child.values) {
-            var newValue = child.values.hasOwnProperty(key) && child.values[key] ? child.values[key] : 0;
-            var oldValue = this.values.hasOwnProperty(key) && this.values[key] ? this.values[key] : null;
-            this.values[key] = this.calcAvg(child, newValue, oldValue);
-        }
+    function NodeCalculator() {
+        this.abest = {};
+        this.avalues = {};
+        this.aworst = {};
+
+        this.addBest = function(value, resource) {
+            if (value) {
+                this.abest[resource] = parseFloat(parseFloat(value) + parseFloat(this.abest[resource] || 0));
+            }
+        };
+        this.addAvg = function(value, resource, rate) {
+            if (value) {
+                this.avalues[resource] = parseFloat(parseFloat(value) + parseFloat(this.avalues[resource] || 0));
+            }
+        };
+        this.addWorst = function(value, resource) {
+            if (value) {
+                this.aworst[resource] = parseFloat(parseFloat(value) + parseFloat(this.aworst[resource] || 0));
+            }
+        };
+
+    }
+
+    this.makeCalculator = function () {
+        return new NodeCalculator()
     };
 
-    this.updateWorst = function (child) {
-        for (var key in child.worst) {
-            var newValue = child.worst.hasOwnProperty(key) && child.worst[key] ? child.worst[key] : 0;
-            var oldValue = this.worst.hasOwnProperty(key) && this.worst[key] ? this.worst[key] : null;
-            this.worst[key] = this.calcMax(child, newValue, oldValue);
-        }
+    this.calcMin = function (rate, newValue, oldValue) {
+        return parseFloat(parseFloat(newValue) + parseFloat(oldValue || 0));
     };
-
-    this.calcMin = function (child, newValue, oldValue) {
-        return parseFloat(parseFloat(newValue) + parseFloat(oldValue ? oldValue : 0));
+    this.calcAvg = function (rate, newValue, oldValue) {
+        return parseFloat(parseFloat(newValue) + parseFloat(oldValue || 0));
     };
-    this.calcAvg = function (child, newValue, oldValue) {
-        return parseFloat(parseFloat(newValue) + parseFloat(oldValue ? oldValue : 0));
-    };
-    this.calcMax = function (child, newValue, oldValue) {
-        return parseFloat(parseFloat(newValue) + parseFloat(oldValue ? oldValue : 0));
+    this.calcMax = function (rate, newValue, oldValue) {
+        return parseFloat(parseFloat(newValue) + parseFloat(oldValue || 0));
     };
 
     this.removeStep = function (step) {
@@ -353,7 +386,7 @@ function EGMScenario(id, model) {
     this.link = null;
 
     this.dropOptions = {
-        onDrop: function(dragEl) {
+        onDrop: function (dragEl) {
             alert(dragEl);
         }
     };
@@ -379,7 +412,7 @@ function EGMScenario(id, model) {
         }
     };
 
-    this.allsSteps = function () {
+    this.allSteps = function () {
         var result = [];
         findAll(result, this);
         return result;
@@ -388,9 +421,9 @@ function EGMScenario(id, model) {
     function findAll(result, parent) {
         result.push(parent);
         parent.steps.each(
-            function (step) {
-                findAll(result, step);
-            }
+                function (step) {
+                    findAll(result, step);
+                }
         )
     }
 
@@ -400,6 +433,10 @@ function EGMScenario(id, model) {
 
     this.findScenario = function (id) {
         return this.model.findScenario(id);
+    };
+
+    this.getResources = function () {
+        return this.model.resources;
     };
 
     this.removeSelf = function () {
@@ -450,14 +487,14 @@ function EGMLoop(id, parent) {
         return "block-helper.svg";
     };
 
-    this.calcMin = function (child, newValue, oldValue) {
-        return parseFloat(parseFloat(newValue) * parseFloat(this.repeat) + parseFloat(oldValue ? oldValue : 0));
+    this.calcMin = function (rate, newValue, oldValue) {
+        return parseFloat(parseFloat(newValue) * parseFloat(this.repeat) + parseFloat(oldValue || 0));
     };
-    this.calcAvg = function (child, newValue, oldValue) {
-        return parseFloat(parseFloat(newValue) * parseFloat(this.repeat) + parseFloat(oldValue ? oldValue : 0));
+    this.calcAvg = function (rate, newValue, oldValue) {
+        return parseFloat(parseFloat(newValue) * parseFloat(this.repeat) + parseFloat(oldValue || 0));
     };
-    this.calcMax = function (child, newValue, oldValue) {
-        return parseFloat(parseFloat(newValue) * parseFloat(this.repeat) + parseFloat(oldValue ? oldValue : 0));
+    this.calcMax = function (rate, newValue, oldValue) {
+        return parseFloat(parseFloat(newValue) * parseFloat(this.repeat) + parseFloat(oldValue || 0));
     }
 }
 EGMLoop.prototype = new EGMStep("L");
@@ -487,14 +524,14 @@ function EGMSwitch(id, parent) {
     this.totalProbability = function () {
         var result = 0;
         this.steps.each(
-            function (step) {
-                result += parseFloat(step.rate);
-            }
+                function (step) {
+                    result += parseFloat(step.rate);
+                }
         );
         return result;
     };
 
-    this.calcMin = function (child, newValue, oldValue) {
+    this.calcMin = function (rate, newValue, oldValue) {
         if (this.totalProbability() < 1) {
             return 0;
         }
@@ -505,13 +542,10 @@ function EGMSwitch(id, parent) {
         var oldNumber = parseFloat(oldValue);
         return newNumber < oldNumber ? newNumber : oldNumber;
     };
-    this.calcAvg = function (child, newValue, oldValue) {
-        if (!oldValue) {
-            return parseFloat(newValue) * parseFloat(child.rate);
-        }
-        return parseFloat(parseFloat(newValue) * parseFloat(child.rate) + parseFloat(oldValue));
+    this.calcAvg = function (rate, newValue, oldValue) {
+        return parseFloat(parseFloat(newValue) * parseFloat(rate) + oldValue ? parseFloat(oldValue) : 0);
     };
-    this.calcMax = function (child, newValue, oldValue) {
+    this.calcMax = function (rate, newValue, oldValue) {
         var newNumber = parseFloat(newValue);
         if (!oldValue) {
             return newNumber;
@@ -543,7 +577,7 @@ function EGMSplit(id, parent) {
         return "view-agenda.svg";
     };
 
-    this.calcMin = function (child, newValue, oldValue) {
+    this.calcMin = function (rate, newValue, oldValue) {
         var newNumber = parseFloat(newValue);
         if (!oldValue) {
             return newNumber;
@@ -551,7 +585,7 @@ function EGMSplit(id, parent) {
         var oldNumber = parseFloat(oldValue);
         return newNumber < oldNumber ? newNumber : oldNumber;
     };
-    this.calcAvg = function (child, newValue, oldValue) {
+    this.calcAvg = function (rate, newValue, oldValue) {
         var newNumber = parseFloat(newValue);
         if (!oldValue) {
             return newNumber;
@@ -559,7 +593,7 @@ function EGMSplit(id, parent) {
         var oldNumber = parseFloat(oldValue);
         return newNumber < oldNumber ? newNumber : oldNumber;
     };
-    this.calcMax = function (child, newValue, oldValue) {
+    this.calcMax = function (rate, newValue, oldValue) {
         var newNumber = parseFloat(newValue);
         if (!oldValue) {
             return newNumber;
@@ -592,7 +626,7 @@ function EGMPardo(id, parent) {
         return "view-dashboard.svg";
     };
 
-    this.calcMin = function (child, newValue, oldValue) {
+    this.calcMin = function (rate, newValue, oldValue) {
         var newNumber = parseFloat(newValue);
         if (!oldValue) {
             return newNumber;
@@ -600,7 +634,7 @@ function EGMPardo(id, parent) {
         var oldNumber = parseFloat(oldValue);
         return newNumber > oldNumber ? newNumber : oldNumber;
     };
-    this.calcAvg = function (child, newValue, oldValue) {
+    this.calcAvg = function (rate, newValue, oldValue) {
         var newNumber = parseFloat(newValue);
         if (!oldValue) {
             return newNumber;
@@ -608,7 +642,7 @@ function EGMPardo(id, parent) {
         var oldNumber = parseFloat(oldValue);
         return newNumber > oldNumber ? newNumber : oldNumber;
     };
-    this.calcMax = function (child, newValue, oldValue) {
+    this.calcMax = function (rate, newValue, oldValue) {
         var newNumber = parseFloat(newValue);
         if (!oldValue) {
             return newNumber;
@@ -650,8 +684,8 @@ function EGM(name, id) {
         this.resources = [];
         for (var i1 = 0; i1 < memento.resources.length; i1++) {
             var resource = new EGMResource(
-                memento.resources[i1].id,
-                memento.resources[i1].name
+                    memento.resources[i1].id,
+                    memento.resources[i1].name
             );
             resource.setDTO(memento.resources[i1]);
             this.resources.push(resource);
@@ -660,8 +694,8 @@ function EGM(name, id) {
         this.scenarios = [];
         for (var i2 = 0; i2 < memento.scenarios.length; i2++) {
             var scenario = new EGMScenario(
-                memento.scenarios[i2].id,
-                this
+                    memento.scenarios[i2].id,
+                    this
             );
             scenario.setDTO(memento.scenarios[i2]);
             this.scenarios.push(scenario);
