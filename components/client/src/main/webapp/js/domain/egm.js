@@ -1,3 +1,5 @@
+"use strict";
+
 function format(number) {
     return parseFloat(number.toPrecision(5)).toString();
 }
@@ -19,6 +21,88 @@ function EGMResource(id, name) {
     };
 }
 
+function SEMValues(owner) {
+
+    this.values = {};
+
+    this.setDTO = function (memento) {
+        this.values = memento;
+    }
+
+    this.createDTO = function () {
+        return this.values;
+    }
+
+    this.clear = function () {
+        this.values = {};
+    }
+
+    this.set = function (value) {
+        var resources = owner.getResources();
+        if (value) {
+            return;
+        }
+        for (var j = 0; j < resources.length; j++) {
+            var key = resources[j].id;
+            this.values[key] = value;
+        }
+    }
+
+    this.add = function (values) {
+        var resources = owner.getResources();
+        for (var j = 0; j < resources.length; j++) {
+            var key = resources[j].id;
+            if (values.values[key] || values.values[key] === 0) {
+                this.values[key] = parseFloat(parseFloat(values.values[key]) + parseFloat(this.values[key] || 0));
+            }
+        }
+    }
+
+    this.addWithMult = function (values, rate) {
+        var resources = owner.getResources();
+        var number = parseFloat(rate);
+        for (var j = 0; j < resources.length; j++) {
+            var key = resources[j].id;
+            if (values.values[key] || values.values[key] === 0) {
+                this.values[key] = parseFloat(parseFloat(values.values[key]) * number + parseFloat(this.values[key] || 0));
+            }
+        }
+    }
+
+    this.min = function (values) {
+        var resources = owner.getResources();
+        for (var j = 0; j < resources.length; j++) {
+            var key = resources[j].id;
+            if (values.values[key] || values.values[key] === 0) {
+                var newValue = parseFloat(values.values[key]);
+                if (!this.values[key]) {
+                    this.values[key] = newValue;
+                } else {
+                    var oldValue = parseFloat(this.values[key] || 0);
+                    this.values[key] = newValue < oldValue ? newValue : oldValue;
+                }
+            }
+        }
+    }
+
+    this.max = function (values) {
+        var resources = owner.getResources();
+        for (var j = 0; j < resources.length; j++) {
+            var key = resources[j].id;
+            if (values.values[key] || values.values[key] === 0) {
+                var newValue = parseFloat(values.values[key]);
+                if (!this.values[key]) {
+                    this.values[key] = newValue;
+                } else {
+                    var oldValue = parseFloat(this.values[key] || 0);
+                    this.values[key] = newValue > oldValue ? newValue : oldValue;
+                }
+            }
+        }
+    }
+
+}
+
 function EGMStep(type) {
     this.url = "stepContent.html";
     this.inconsistent = false;
@@ -26,9 +110,6 @@ function EGMStep(type) {
     this.type = type;
     this.rate = 1;
     this.repeat = 1;
-    this.values = {};
-    this.best = {};
-    this.worst = {};
     this.steps = [];
     this.stepNo = 0;
 
@@ -42,7 +123,10 @@ function EGMStep(type) {
         this.name = memento.name;
         this.type = memento.type;
         this.stepNo = memento.stepNo;
-        this.values = memento.values;
+
+        this.avg = new SEMValues(this);
+        this.avg.setDTO(memento.values);
+
         this.rate = memento.rate;
         this.repeat = memento.repeat;
         this.doSetDTO(memento);
@@ -51,33 +135,33 @@ function EGMStep(type) {
             var step;
             if (memento.steps[i].type === "R") {
                 step = new EGMRoutine(
-                        memento.steps[i].id,
-                        this
+                    memento.steps[i].id,
+                    this
                 );
             } else if (memento.steps[i].type === "L") {
                 step = new EGMLoop(
-                        memento.steps[i].id,
-                        this
+                    memento.steps[i].id,
+                    this
                 );
             } else if (memento.steps[i].type === "F") {
                 step = new EGMSplit(
-                        memento.steps[i].id,
-                        this
+                    memento.steps[i].id,
+                    this
                 );
             } else if (memento.steps[i].type === "S") {
                 step = new EGMSwitch(
-                        memento.steps[i].id,
-                        this
+                    memento.steps[i].id,
+                    this
                 );
             } else if (memento.steps[i].type === "P") {
                 step = new EGMPardo(
-                        memento.steps[i].id,
-                        this
+                    memento.steps[i].id,
+                    this
                 );
             } else if (memento.steps[i].type === "C") {
                 step = new EGMLink(
-                        memento.steps[i].id,
-                        this
+                    memento.steps[i].id,
+                    this
                 );
             }
             step.setDTO(memento.steps[i]);
@@ -91,7 +175,7 @@ function EGMStep(type) {
             name: this.name,
             type: this.type,
             stepNo: this.stepNo,
-            values: this.values,
+            values: this.avg.createDTO(),
             rate: this.rate
         };
         result.steps = createArrayDTO(this.steps);
@@ -140,6 +224,9 @@ function EGMStep(type) {
             default:
                 step = new EGMRoutine(id2, this);
         }
+        if (this.isSwitch()) {
+            step.rate = 0.5;
+        }
         this.steps.push(step);
         this.onUpdate();
     };
@@ -157,8 +244,10 @@ function EGMStep(type) {
     };
 
     this.change = function () {
-        this.worst = this.values;
-        this.best = this.values;
+        if (this.isLeaf()) {
+            this.worst = this.avg;
+            this.best = this.avg;
+        }
         if (this.parent) {
             this.parent.resolve();
         }
@@ -174,87 +263,32 @@ function EGMStep(type) {
     };
 
     this.init = function () {
-        var hasChildren = this.steps.length > 0;
-        if (hasChildren) {
+        if (this.isLeaf()) {
+            this.worst = this.avg;
+            this.best = this.avg;
+        } else {
             for (var i = 0; i < this.steps.length; i++) {
                 this.steps[i].init();
             }
             this.updateChildren();
-        } else {
-            this.worst = this.values;
-            this.best = this.values;
         }
         this.onUpdate();
     };
 
     this.updateChildren = function () {
-        var calc = this.makeCalculator();
-        var resources = this.getResources();
+        this.best.clear();
+        this.avg.clear();
+        this.worst.clear();
         for (var i = 0; i < this.steps.length; i++) {
-            var step = this.steps[i];
-            for (var j = 0; j < resources.length; j++) {
-                var resource = resources[j];
-                calc.addBest(step.best[resource], resource);
-                calc.addAvg(step.values[resource], resource, step.rate);
-                calc.addWorst(step.worst[resource], resource);
-                this.best[resource] = this.calcMin(
-                        step.rate,
-                        step.best[resource] || 0,
-                        this.best[resource] || null
-                );
-                this.values[resource] = this.calcAvg(
-                        step.rate,
-                        parseFloat(newValue) * parseFloat(rate)  ,
-                        this.values[resource] || null
-                );
-                this.worst[resource] = this.calcMax(
-                        step.rate,
-                        step.worst[resource] || 0,
-                        this.worst[resource] || null
-                );
-            }
+            this.calc(this.steps[i]);
         }
-        this.best = calc.abest;
-        this.values = calc.avalues;
-        this.worst = calc.aworst;
     };
 
-    function NodeCalculator() {
-        this.abest = {};
-        this.avalues = {};
-        this.aworst = {};
-
-        this.addBest = function(value, resource) {
-            if (value) {
-                this.abest[resource] = parseFloat(parseFloat(value) + parseFloat(this.abest[resource] || 0));
-            }
-        };
-        this.addAvg = function(value, resource, rate) {
-            if (value) {
-                this.avalues[resource] = parseFloat(parseFloat(value) + parseFloat(this.avalues[resource] || 0));
-            }
-        };
-        this.addWorst = function(value, resource) {
-            if (value) {
-                this.aworst[resource] = parseFloat(parseFloat(value) + parseFloat(this.aworst[resource] || 0));
-            }
-        };
-
+    this.calc = function (step) {
+        this.best.add(step.best);
+        this.avg.add(step.avg);
+        this.worst.add(step.worst);
     }
-
-    this.makeCalculator = function () {
-        return new NodeCalculator()
-    };
-
-    this.calcMin = function (rate, newValue, oldValue) {
-        return parseFloat(parseFloat(newValue) + parseFloat(oldValue || 0));
-    };
-    this.calcAvg = function (rate, newValue, oldValue) {
-        return parseFloat(parseFloat(newValue) + parseFloat(oldValue || 0));
-    };
-    this.calcMax = function (rate, newValue, oldValue) {
-        return parseFloat(parseFloat(newValue) + parseFloat(oldValue || 0));
-    };
 
     this.removeStep = function (step) {
         this.steps.remove(step);
@@ -326,14 +360,10 @@ function EGMLink(id, parent) {
 
     this.availableChildren = [];
 
-    this.values = {};
-    this.best = {};
-    this.worst = {};
-
     this.setScenario = function (scenario) {
         this.scenario = scenario;
         this.name = scenario.name;
-        this.values = scenario.values;
+        this.avg = scenario.avg;
         this.best = scenario.best;
         this.worst = scenario.worst;
         scenario.addLink(this);
@@ -358,7 +388,7 @@ function EGMLink(id, parent) {
     };
 
     this.update = function () {
-        this.values = this.scenario.values;
+        this.avg = this.scenario.avg;
         this.best = this.scenario.best;
         this.worst = this.scenario.worst;
         parent.resolve();
@@ -369,6 +399,7 @@ function EGMLink(id, parent) {
         this.scenario.removeLink(this);
     };
 }
+
 EGMLink.prototype = new EGMStep("C");
 
 function EGMScenario(id, model) {
@@ -378,9 +409,10 @@ function EGMScenario(id, model) {
     this.model = model;
     this.parent = null;
 
-    this.values = {};
-    this.best = {};
-    this.worst = {};
+    this.avg = new SEMValues(this);
+    this.best = new SEMValues(this);
+    this.worst = new SEMValues(this);
+
     this.steps = [];
     this.stepNo = 0;
     this.link = null;
@@ -421,9 +453,9 @@ function EGMScenario(id, model) {
     function findAll(result, parent) {
         result.push(parent);
         parent.steps.each(
-                function (step) {
-                    findAll(result, step);
-                }
+            function (step) {
+                findAll(result, step);
+            }
         )
     }
 
@@ -446,6 +478,7 @@ function EGMScenario(id, model) {
         }
     };
 }
+
 EGMScenario.prototype = new EGMStep("C");
 
 function EGMRoutine(id, parent, name) {
@@ -454,9 +487,9 @@ function EGMRoutine(id, parent, name) {
     this.parent = parent;
 
     this.rate = 1;
-    this.values = {};
-    this.best = {};
-    this.worst = {};
+    this.avg = new SEMValues(this);
+    this.best = new SEMValues(this);
+    this.worst = new SEMValues(this);
     this.steps = [];
     this.stepNo = 0;
 
@@ -464,6 +497,7 @@ function EGMRoutine(id, parent, name) {
         return this.isNode() ? "file-multiple.svg" : "file.svg";
     }
 }
+
 EGMRoutine.prototype = new EGMStep("R");
 
 function EGMLoop(id, parent) {
@@ -471,13 +505,23 @@ function EGMLoop(id, parent) {
     this.name = "Loop";
     this.parent = parent;
 
-    this.repeat = 1;
-    this.values = {};
-    this.best = {};
-    this.worst = {};
+    this.repeat = 2;
+    this.avg = new SEMValues(this);
+    this.best = new SEMValues(this);
+    this.worst = new SEMValues(this);
     this.steps = [];
     this.stepNo = 0;
     this.iscompleted = false;
+
+    this.doCreateDTO = function (result) {
+        result.repeat = this.repeat;
+        return result;
+    };
+
+    this.doSetDTO = function (memento) {
+        this.repeat = memento.repeat;
+
+    };
 
     this.onUpdate = function () {
         this.iscompleted = this.steps.length > 0;
@@ -487,16 +531,14 @@ function EGMLoop(id, parent) {
         return "block-helper.svg";
     };
 
-    this.calcMin = function (rate, newValue, oldValue) {
-        return parseFloat(parseFloat(newValue) * parseFloat(this.repeat) + parseFloat(oldValue || 0));
-    };
-    this.calcAvg = function (rate, newValue, oldValue) {
-        return parseFloat(parseFloat(newValue) * parseFloat(this.repeat) + parseFloat(oldValue || 0));
-    };
-    this.calcMax = function (rate, newValue, oldValue) {
-        return parseFloat(parseFloat(newValue) * parseFloat(this.repeat) + parseFloat(oldValue || 0));
+    this.calc = function (step) {
+        this.best.addWithMult(step.best, this.repeat);
+        this.avg.addWithMult(step.avg, this.repeat);
+        this.worst.addWithMult(step.worst, this.repeat);
     }
+
 }
+
 EGMLoop.prototype = new EGMStep("L");
 
 function EGMSwitch(id, parent) {
@@ -505,9 +547,9 @@ function EGMSwitch(id, parent) {
     this.parent = parent;
 
     this.rate = 1;
-    this.values = {};
-    this.best = {};
-    this.worst = {};
+    this.avg = new SEMValues(this);
+    this.best = new SEMValues(this);
+    this.worst = new SEMValues(this);
     this.steps = [];
     this.stepNo = 0;
     this.iscompleted = false;
@@ -524,36 +566,24 @@ function EGMSwitch(id, parent) {
     this.totalProbability = function () {
         var result = 0;
         this.steps.each(
-                function (step) {
-                    result += parseFloat(step.rate);
-                }
+            function (step) {
+                result += parseFloat(step.rate);
+            }
         );
         return result;
     };
 
-    this.calcMin = function (rate, newValue, oldValue) {
+    this.calc = function (step) {
         if (this.totalProbability() < 1) {
-            return 0;
+            this.best.set(0);
+        } else {
+            this.best.min(step.best);
         }
-        var newNumber = parseFloat(newValue);
-        if (!oldValue) {
-            return newNumber;
-        }
-        var oldNumber = parseFloat(oldValue);
-        return newNumber < oldNumber ? newNumber : oldNumber;
-    };
-    this.calcAvg = function (rate, newValue, oldValue) {
-        return parseFloat(parseFloat(newValue) * parseFloat(rate) + oldValue ? parseFloat(oldValue) : 0);
-    };
-    this.calcMax = function (rate, newValue, oldValue) {
-        var newNumber = parseFloat(newValue);
-        if (!oldValue) {
-            return newNumber;
-        }
-        var oldNumber = parseFloat(oldValue);
-        return newNumber > oldNumber ? newNumber : oldNumber;
+        this.avg.addWithMult(step.best, step.rate);
+        this.worst.max(step.worst);
     }
 }
+
 EGMSwitch.prototype = new EGMStep("S");
 
 function EGMSplit(id, parent) {
@@ -562,9 +592,9 @@ function EGMSplit(id, parent) {
     this.parent = parent;
 
     this.rate = 1;
-    this.values = {};
-    this.best = {};
-    this.worst = {};
+    this.avg = new SEMValues(this);
+    this.best = new SEMValues(this);
+    this.worst = new SEMValues(this);
     this.steps = [];
     this.stepNo = 0;
     this.iscompleted = false;
@@ -577,31 +607,14 @@ function EGMSplit(id, parent) {
         return "view-agenda.svg";
     };
 
-    this.calcMin = function (rate, newValue, oldValue) {
-        var newNumber = parseFloat(newValue);
-        if (!oldValue) {
-            return newNumber;
-        }
-        var oldNumber = parseFloat(oldValue);
-        return newNumber < oldNumber ? newNumber : oldNumber;
-    };
-    this.calcAvg = function (rate, newValue, oldValue) {
-        var newNumber = parseFloat(newValue);
-        if (!oldValue) {
-            return newNumber;
-        }
-        var oldNumber = parseFloat(oldValue);
-        return newNumber < oldNumber ? newNumber : oldNumber;
-    };
-    this.calcMax = function (rate, newValue, oldValue) {
-        var newNumber = parseFloat(newValue);
-        if (!oldValue) {
-            return newNumber;
-        }
-        var oldNumber = parseFloat(oldValue);
-        return newNumber < oldNumber ? newNumber : oldNumber;
+    this.calc = function (step) {
+        this.best.min(step.best);
+        this.avg.min(step.avg);
+        this.worst.min(step.worst);
     }
+
 }
+
 EGMSplit.prototype = new EGMStep("F");
 
 
@@ -611,9 +624,9 @@ function EGMPardo(id, parent) {
     this.parent = parent;
 
     this.rate = 1;
-    this.values = {};
-    this.best = {};
-    this.worst = {};
+    this.avg = new SEMValues(this);
+    this.best = new SEMValues(this);
+    this.worst = new SEMValues(this);
     this.steps = [];
     this.stepNo = 0;
     this.iscompleted = false;
@@ -626,31 +639,13 @@ function EGMPardo(id, parent) {
         return "view-dashboard.svg";
     };
 
-    this.calcMin = function (rate, newValue, oldValue) {
-        var newNumber = parseFloat(newValue);
-        if (!oldValue) {
-            return newNumber;
-        }
-        var oldNumber = parseFloat(oldValue);
-        return newNumber > oldNumber ? newNumber : oldNumber;
-    };
-    this.calcAvg = function (rate, newValue, oldValue) {
-        var newNumber = parseFloat(newValue);
-        if (!oldValue) {
-            return newNumber;
-        }
-        var oldNumber = parseFloat(oldValue);
-        return newNumber > oldNumber ? newNumber : oldNumber;
-    };
-    this.calcMax = function (rate, newValue, oldValue) {
-        var newNumber = parseFloat(newValue);
-        if (!oldValue) {
-            return newNumber;
-        }
-        var oldNumber = parseFloat(oldValue);
-        return newNumber > oldNumber ? newNumber : oldNumber;
+    this.calc = function (step) {
+        this.best.max(step.best);
+        this.avg.max(step.avg);
+        this.worst.max(step.worst);
     }
 }
+
 EGMPardo.prototype = new EGMStep("P");
 
 function EGM(name, id) {
@@ -674,6 +669,7 @@ function EGM(name, id) {
         memento.scenarioNo = this.scenarioNo;
         memento.resources = createArrayDTO(this.resources);
         memento.scenarios = createArrayDTO(this.scenarios);
+        // TODO
         return memento;
     };
 
@@ -684,8 +680,8 @@ function EGM(name, id) {
         this.resources = [];
         for (var i1 = 0; i1 < memento.resources.length; i1++) {
             var resource = new EGMResource(
-                    memento.resources[i1].id,
-                    memento.resources[i1].name
+                memento.resources[i1].id,
+                memento.resources[i1].name
             );
             resource.setDTO(memento.resources[i1]);
             this.resources.push(resource);
@@ -694,12 +690,14 @@ function EGM(name, id) {
         this.scenarios = [];
         for (var i2 = 0; i2 < memento.scenarios.length; i2++) {
             var scenario = new EGMScenario(
-                    memento.scenarios[i2].id,
-                    this
+                memento.scenarios[i2].id,
+                this
             );
             scenario.setDTO(memento.scenarios[i2]);
             this.scenarios.push(scenario);
         }
+
+        // TODO
 
         this.init();
     };

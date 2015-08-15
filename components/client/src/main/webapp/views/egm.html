@@ -134,12 +134,12 @@
                                                     </td>
                                                     <td ng-repeat="resource in model.resources">
                                                         <input type="text"
-                                                               ng-model="step.values[resource.id]"
+                                                               ng-model="step.avg.values[resource.id]"
                                                                ng-change="step.change()"
                                                                ng-show="step.isLeaf()"
                                                                class="input input-small simplebox quantity">
                                                         <span ng-hide="step.isLeaf()">
-                                                            {{step.values[resource.id]}} ({{step.best[resource.id]}} - {{step.worst[resource.id]}})
+                                                            {{step.avg.values[resource.id]}} ({{step.best.values[resource.id]}} - {{step.worst.values[resource.id]}})
                                                         </span>
                                                     </td>
                                                 </tr>
