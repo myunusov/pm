@@ -14,10 +14,10 @@
 
 <body>
 
-<div id="main" flex layout="column" ng-controller="MainMenuCtrl">
+<div flex layout="column" resize ng-style="height()" ng-controller="MainMenuCtrl">
 
 <!--MAIN MENU-->
-<md-toolbar md-scroll-shrink class="md-whiteframe-glow-z1 site-content-toolbar md-default-theme" >
+<md-toolbar class="md-whiteframe-glow-z1 site-content-toolbar md-scroll-shrink md-default-theme" >
     <div class="md-toolbar-tools">
 
         <md-button aria-label="Menu" hide-gt-sm class="md-icon-button" ng-click="toggleLeft()">
@@ -60,7 +60,7 @@
     </div>
 </md-toolbar>
 
-<md-content flex layout="row" style="min-height: 400px">
+<md-content flex>
 
     <!-- LEFT SIDEBAR -->
     <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left">
@@ -102,7 +102,7 @@
     </md-sidenav>
 
     <!-- CONTEXT -->
-    <div flex ui-view autoscroll="false">
+    <div flex ui-view autoscroll="true">
     </div>
 
 
