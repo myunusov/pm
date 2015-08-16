@@ -186,10 +186,10 @@ function EGMStep(type) {
         if (this.isSwitch()) {
             step.rate = 0.5;
         }
-        if (step.isScenario()) {  // TODO Choose Scenario
+/*        if (step.isScenario()) {  // TODO Choose Scenario
             var scenario = this.addScenario();
             step.scenarioId = scenario.id;
-        }
+        }*/
         this.steps.push(step);
         this.change();
     };
@@ -331,14 +331,12 @@ function EGMLink() {
 
     this.resolve = function (newId) {
         this.id = newId || this.id;
-        this.setScenario(this.findScenario(this.scenarioId));
+        if (this.scenarioId)
+            this.setScenario(this.findScenario(this.scenarioId));
     };
 
     this.onUpdate = function () {
         this.inconsistent = !this.scenario;
-        this.avg = this.scenario.avg;
-        this.best = this.scenario.best;
-        this.worst = this.scenario.worst;
     };
 
     this.image = function () {
@@ -369,7 +367,7 @@ function EGMScenario(id, model) {
 
     this.onUpdate = function () {
         if (this.link) {
-            this.link.onUpdate();
+            this.link.change();
         }
     };
 
