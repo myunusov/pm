@@ -11,7 +11,7 @@
     "angular-resource": "1.4.x",
     "angular-animate": "1.4.x",
     "angular-ui-router": "~0.2.15",
-    "angular-material": "~0.10.0",
+    "angular-material": "~0.10.1",
     "jquery": "~2.1.4",
     "mdi": "~1.1.70"
   },

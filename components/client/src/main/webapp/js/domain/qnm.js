@@ -17,7 +17,7 @@ function QNMUnit(id, title, rate, pattern) {
 
 function Quantity() {
 
-    this.eval = false;
+    this.calculated = false;
     this.inconsistent = false;
     this.coflicted = false;
     this.unit;
@@ -41,7 +41,7 @@ function Quantity() {
             if (this.coflicted) {
                 return "conflict";
             }
-            if (this.eval) {
+            if (this.calculated) {
                 return "eval";
             }
             return "";
@@ -55,7 +55,7 @@ function Quantity() {
                 (number(this.value) ? formatNumber(this.value / this.unit.rate, 5) : this.value);
         },
         set: function (value) {
-            this.eval = false;
+            this.calculated = false;
             this._text = value;
             this.value = number(value) ? formatNumber(value * this.unit.rate, 10) : value;
         }
@@ -82,7 +82,7 @@ function Quantity() {
     };
 
     this.setValue = function (newValue) {
-        this.eval = true;
+        this.calculated = true;
         if ((this._text || this._text === 0) && equals(this._text, newValue)) {
             this.value = this._text;
         } else {
@@ -105,7 +105,7 @@ function Quantity() {
         this._text = null;
         this.value = dto[0];
         this.setUnitByStr(dto[1]);
-        this.eval = false;
+        this.calculated = false;
     };
 
     this.setUnitByStr = function (unit) {
@@ -172,7 +172,7 @@ function QNMName(value) {
     this.setDTO = function (dto) {
         this._text = null;
         this.value = dto[0];
-        this.eval = false;
+        this.calculated = false;
     };
 
     /*    Object.defineProperty(this, 'pattern', {
@@ -271,7 +271,7 @@ function QNMCenter() {
             if (this.all.hasOwnProperty(name)) {
                 var q = this.getByName(name);
                 result[name] = [
-                    q.eval ? null : q.value,
+                    q.calculated ? null : q.value,
                     q.unit ? q.unit.id : null
                 ];
             }
@@ -380,7 +380,7 @@ function QNMVisit(clazz, node) {
     this.serviceDemands = new QNMTime();
     this.serviceDemands.unit = this.serviceDemands.units[0];
     this.utilization = new Utilization(0);         // XXX Workaround
-    this.utilization.eval = true;
+    this.utilization.calculated = true;
     this.residenceTime = new QNMTime();
     this.throughput = new Throughput();
 
