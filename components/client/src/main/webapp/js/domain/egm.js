@@ -331,12 +331,18 @@ function EGMLink() {
 
     this.resolve = function (newId) {
         this.id = newId || this.id;
-        if (this.scenarioId)
+        if (this.scenarioId) {
             this.setScenario(this.findScenario(this.scenarioId));
+        } else {
+            this.avg = new SEMValues(this);
+            this.best = new SEMValues(this);
+            this.worst = new SEMValues(this);
+        }
+        this.onUpdate();
     };
 
     this.onUpdate = function () {
-        this.inconsistent = !this.scenario;
+           this.inconsistent = !this.scenario;
     };
 
     this.image = function () {
@@ -345,7 +351,8 @@ function EGMLink() {
 
     this.removeSelf = function () {
         this.parent.removeStep(this);
-        this.scenario.removeLink(this);
+        if (this.scenario)
+            this.scenario.removeLink(this);
     };
 }
 
