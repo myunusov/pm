@@ -111,82 +111,14 @@ function EGMStep(type) {
     this.rate = 1;
     this.repeat = 1;
     this.steps = [];
-    this.stepNo = 0;
 
-    this.onUpdate = function () {
-        this.iscompleted = true;
-        this.inconsistent = false;
-    };
-
-    this.setDTO = function (memento) {
-        this.id = memento.id;
-        this.name = memento.name;
-        this.type = memento.type;
-        this.stepNo = memento.stepNo;
-
-        this.avg = new SEMValues(this);
-        this.avg.setDTO(memento.values);
-
-        this.rate = memento.rate;
-        this.repeat = memento.repeat;
-        this.doSetDTO(memento);
-        this.steps = [];
-        for (var i = 0; i < memento.steps.length; i++) {
-            var step;
-            if (memento.steps[i].type === "R") {
-                step = new EGMRoutine(
-                    memento.steps[i].id,
-                    this
-                );
-            } else if (memento.steps[i].type === "L") {
-                step = new EGMLoop(
-                    memento.steps[i].id,
-                    this
-                );
-            } else if (memento.steps[i].type === "F") {
-                step = new EGMSplit(
-                    memento.steps[i].id,
-                    this
-                );
-            } else if (memento.steps[i].type === "S") {
-                step = new EGMSwitch(
-                    memento.steps[i].id,
-                    this
-                );
-            } else if (memento.steps[i].type === "P") {
-                step = new EGMPardo(
-                    memento.steps[i].id,
-                    this
-                );
-            } else if (memento.steps[i].type === "C") {
-                step = new EGMLink(
-                    memento.steps[i].id,
-                    this
-                );
-            }
-            step.setDTO(memento.steps[i]);
-            this.steps.push(step);
-        }
-    };
-
-    this.createDTO = function () {
-        var result = {
-            id: this.id,
-            name: this.name,
-            type: this.type,
-            stepNo: this.stepNo,
-            values: this.avg.createDTO(),
-            rate: this.rate
-        };
-        result.steps = createArrayDTO(this.steps);
-        return this.doCreateDTO(result);
-    };
-
-    this.doSetDTO = function (memento) {
-    };
-
-    this.doCreateDTO = function (result) {
-        return result;
+    this.types = {
+        "R": EGMRoutine,
+        "L": EGMLoop,
+        "S": EGMSwitch,
+        "F": EGMSplit,
+        "P": EGMPardo,
+        "C": EGMLink
     };
 
     this.availableChildren = [
@@ -198,36 +130,68 @@ function EGMStep(type) {
         {id: "C", title: "Scenario"}
     ];
 
-    this.addStep = function (type) {
-        var id2 = this.id + "." + ++this.stepNo;
-        var step;
-        switch (type) {
-            case "R":
-                step = new EGMRoutine(id2, this);
-                break;
-            case "L":
-                step = new EGMLoop(id2, this);
-                break;
-            case "S":
-                step = new EGMSwitch(id2, this);
-                break;
-            case "F":
-                step = new EGMSplit(id2, this);
-                break;
-            case "P":
-                step = new EGMPardo(id2, this);
-                break;
-            case "C":
-                step = new EGMLink(id2, this);
-                step.setScenario(this.addScenario());
-                break;
-            default:
+    this.setDTO = function (memento) {
+        this.id = memento.id;
+        this.name = memento.name;
+        this.type = memento.type;
+
+        this.avg = new SEMValues(this);
+        this.avg.setDTO(memento.values);
+
+        this.rate = memento.rate;
+        this.repeat = memento.repeat;
+
+        this.doSetDTO(memento);
+        this.steps = [];
+
+        for (var i = 0; i < memento.steps.length; i++) {
+            var step = new (Function.prototype.bind.call(this.types[memento.steps[i].type]));
+            step.parent = this;
+            step.setDTO(memento.steps[i]);
+            this.steps.push(step);
         }
+    };
+
+    this.createDTO = function () {
+        var result = {
+            id: this.id,
+            name: this.name,
+            type: this.type,
+            values: this.avg.createDTO(),
+            rate: this.rate
+        };
+        result.steps = createArrayDTO(this.steps);
+        return this.doCreateDTO(result);
+    };
+
+    this.doSetDTO = function () {
+    };
+
+    this.doCreateDTO = function (result) {
+        return result;
+    };
+
+    this.removeStep = function (step) {
+        this.steps.remove(step);
+        this.change();
+    };
+
+    this.removeSelf = function () {
+        this.parent.removeStep(this);
+    };
+
+    this.addStep = function (type) {
+        var step = new (Function.prototype.bind.call(this.types[type]));
+        step.parent = this;
         if (this.isSwitch()) {
             step.rate = 0.5;
         }
+        if (step.isScenario()) {  // TODO Choose Scenario
+            var scenario = this.addScenario();
+            step.scenarioId = scenario.id;
+        }
         this.steps.push(step);
-        this.onUpdate();
+        this.change();
     };
 
     this.addScenario = function () {
@@ -243,60 +207,47 @@ function EGMStep(type) {
     };
 
     this.change = function () {
-        if (this.isLeaf()) {
-            this.worst = this.avg;
-            this.best = this.avg;
+        if (this.isRoot()) {
+            this.resolve(this.id);
+        } else {
+            this.parent.change();
         }
-        if (this.parent) {
-            this.parent.resolve();
-        }
-        this.onUpdate();
     };
 
-    this.resolve = function () {
-        this.updateChildren();
-        if (this.parent) {
-            this.parent.resolve();
-        }
-        this.onUpdate();
-    };
-
-    this.init = function () {
+    this.resolve = function (newId) {
+        this.id = newId || this.id;
         if (this.isLeaf()) {
             this.worst = this.avg;
             this.best = this.avg;
         } else {
             for (var i = 0; i < this.steps.length; i++) {
-                this.steps[i].init();
+                var index = i + 1;
+                var id = this.id + "." + index;
+                this.steps[i].resolve(id);
             }
+            this.best.clear();
+            this.avg.clear();
+            this.worst.clear();
             this.updateChildren();
         }
         this.onUpdate();
     };
 
     this.updateChildren = function () {
-        this.best.clear();
-        this.avg.clear();
-        this.worst.clear();
         for (var i = 0; i < this.steps.length; i++) {
             this.calc(this.steps[i]);
         }
+    };
+
+    this.onUpdate = function () {
+        this.iscompleted = true;
+        this.inconsistent = false;
     };
 
     this.calc = function (step) {
         this.best.add(step.best);
         this.avg.add(step.avg);
         this.worst.add(step.worst);
-    };
-
-    this.removeStep = function (step) {
-        this.steps.remove(step);
-        this.resolve();
-        this.onUpdate();
-    };
-
-    this.removeSelf = function () {
-        this.parent.removeStep(this);
     };
 
     this.isParent = function () {
@@ -349,18 +300,19 @@ function EGMStep(type) {
 
 }
 
-function EGMLink(id, parent) {
-    this.id = id;
+function EGMLink() {
+    this.id;
+    this.parent;
     this.scenarioId = null;
     this.scenario = null;
     this.name = "";
-    this.parent = parent;
     this.steps = [];
 
     this.availableChildren = [];
 
     this.setScenario = function (scenario) {
         this.scenario = scenario;
+        this.scenarioId = scenario.id;
         this.name = scenario.name;
         this.avg = scenario.avg;
         this.best = scenario.best;
@@ -375,22 +327,22 @@ function EGMLink(id, parent) {
 
     this.doSetDTO = function (memento) {
         this.scenarioId = memento.scenarioId;
-
     };
 
-    this.init = function () {
+    this.resolve = function (newId) {
+        this.id = newId || this.id;
         this.setScenario(this.findScenario(this.scenarioId));
+    };
+
+    this.onUpdate = function () {
+        this.inconsistent = !this.scenario;
+        this.avg = this.scenario.avg;
+        this.best = this.scenario.best;
+        this.worst = this.scenario.worst;
     };
 
     this.image = function () {
         return "script.svg";
-    };
-
-    this.update = function () {
-        this.avg = this.scenario.avg;
-        this.best = this.scenario.best;
-        this.worst = this.scenario.worst;
-        parent.resolve();
     };
 
     this.removeSelf = function () {
@@ -413,12 +365,11 @@ function EGMScenario(id, model) {
     this.worst = new SEMValues(this);
 
     this.steps = [];
-    this.stepNo = 0;
     this.link = null;
 
     this.onUpdate = function () {
         if (this.link) {
-            this.link.update();
+            this.link.onUpdate();
         }
     };
 
@@ -474,17 +425,16 @@ function EGMScenario(id, model) {
 
 EGMScenario.prototype = new EGMStep("C");
 
-function EGMRoutine(id, parent, name) {
-    this.id = id;
-    this.name = name || "Step";
-    this.parent = parent;
+function EGMRoutine() {
+    this.id;
+    this.parent;
+    this.name = "Step";
 
     this.rate = 1;
     this.avg = new SEMValues(this);
     this.best = new SEMValues(this);
     this.worst = new SEMValues(this);
     this.steps = [];
-    this.stepNo = 0;
 
     this.image = function () {
         return this.isNode() ? "file-multiple.svg" : "file.svg";
@@ -493,17 +443,16 @@ function EGMRoutine(id, parent, name) {
 
 EGMRoutine.prototype = new EGMStep("R");
 
-function EGMLoop(id, parent) {
-    this.id = id;
+function EGMLoop() {
+    this.id;
+    this.parent;
     this.name = "Loop";
-    this.parent = parent;
 
     this.repeat = 2;
     this.avg = new SEMValues(this);
     this.best = new SEMValues(this);
     this.worst = new SEMValues(this);
     this.steps = [];
-    this.stepNo = 0;
     this.iscompleted = false;
 
     this.doCreateDTO = function (result) {
@@ -534,17 +483,16 @@ function EGMLoop(id, parent) {
 
 EGMLoop.prototype = new EGMStep("L");
 
-function EGMSwitch(id, parent) {
-    this.id = id;
+function EGMSwitch() {
+    this.id;
+    this.parent;
     this.name = "Switch";
-    this.parent = parent;
 
     this.rate = 1;
     this.avg = new SEMValues(this);
     this.best = new SEMValues(this);
     this.worst = new SEMValues(this);
     this.steps = [];
-    this.stepNo = 0;
     this.iscompleted = false;
 
     this.onUpdate = function () {
@@ -579,17 +527,16 @@ function EGMSwitch(id, parent) {
 
 EGMSwitch.prototype = new EGMStep("S");
 
-function EGMSplit(id, parent) {
-    this.id = id;
+function EGMSplit() {
+    this.id;
+    this.parent;
     this.name = "Split";
-    this.parent = parent;
 
     this.rate = 1;
     this.avg = new SEMValues(this);
     this.best = new SEMValues(this);
     this.worst = new SEMValues(this);
     this.steps = [];
-    this.stepNo = 0;
     this.iscompleted = false;
 
     this.onUpdate = function () {
@@ -611,17 +558,16 @@ function EGMSplit(id, parent) {
 EGMSplit.prototype = new EGMStep("F");
 
 
-function EGMPardo(id, parent) {
-    this.id = id;
+function EGMPardo() {
+    this.id;
+    this.parent;
     this.name = "Pardo";
-    this.parent = parent;
 
     this.rate = 1;
     this.avg = new SEMValues(this);
     this.best = new SEMValues(this);
     this.worst = new SEMValues(this);
     this.steps = [];
-    this.stepNo = 0;
     this.iscompleted = false;
 
     this.onUpdate = function () {
@@ -638,7 +584,6 @@ function EGMPardo(id, parent) {
         this.worst.max(step.worst);
     };
 }
-
 EGMPardo.prototype = new EGMStep("P");
 
 function EGM(name, id) {
@@ -658,8 +603,8 @@ function EGM(name, id) {
         memento.id = this.id;
         memento.name = this.name;
         memento.type = "egm";
-        memento.resourcesNo = this.resourcesNo;
-        memento.scenarioNo = this.scenarioNo;
+        memento.resourcesNo = resourcesNo;
+        memento.scenarioNo = scenarioNo;
         memento.resources = createArrayDTO(this.resources);
         memento.scenarios = createArrayDTO(this.scenarios);
         return memento;
@@ -668,6 +613,9 @@ function EGM(name, id) {
     this.setDTO = function (memento) {
         this.id = memento.id;
         this.name = memento.name;
+
+        resourcesNo = memento.resourcesNo;
+        scenarioNo = memento.scenarioNo;
 
         this.resources = [];
         for (var i1 = 0; i1 < memento.resources.length; i1++) {
@@ -693,7 +641,7 @@ function EGM(name, id) {
 
     this.init = function () {
         for (var i = 0; i < this.scenarios.length; i++) {
-            this.scenarios[i].init();
+            this.scenarios[i].resolve();
         }
     };
 
