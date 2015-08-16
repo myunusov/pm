@@ -248,6 +248,8 @@ controllers.controller('MainMenuCtrl', function ($scope,
                                                  project,
                                                  projectService) {
 
+    $scope.frameHeight = window.innerHeight;
+
     $scope.triger = false;
 
     $scope.toggleLeft = buildToggler('left');
