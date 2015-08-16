@@ -178,12 +178,31 @@
              jqyoui-draggable="{animate:true}"
              data-jqyoui-options="{revert: 'invalid'}">
             <div flex="90">
-                <md-menu>
-                    <md-button
-                            class="md-fab md-mini" ng-class="step.theme()" aria-label="New Step">
-                        <md-icon ng-show="step.isScenario()" md-svg-src="img/icons/{{step.image()}}">
+                <md-menu ng-show="step.isScenario()">
+                    <md-button class="md-fab md-mini" ng-class="step.theme()" aria-label="Select Scenario">
+                        <md-icon  md-svg-src="img/icons/{{step.image()}}" ng-click="$mdOpenMenu()">
                         </md-icon>
-                        <md-icon ng-hide="step.isScenario()" md-svg-src="img/icons/{{step.image()}}" ng-click="$mdOpenMenu()">
+                    </md-button>
+                    <md-menu-content width="1">
+                        <md-menu-item>
+                            <md-button aria-label="Choise Scenario" ng-click="step.addScenario()"
+                                       style="height: 31px;float: right">
+                                New Scenario
+                            </md-button>
+                        </md-menu-item>
+
+                        <md-menu-item ng-repeat="scenario in model.scenarios">
+                            <md-button aria-label="Choise Scenario" ng-click="step.choiseScenario(scenario)"
+                                       style="height: 31px;float: right">
+                                {{scenario.id}}. {{scenario.name}}
+                            </md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+
+                <md-menu ng-hide="step.isScenario()">
+                    <md-button class="md-fab md-mini" ng-class="step.theme()" aria-label="New Step">
+                        <md-icon  md-svg-src="img/icons/{{step.image()}}" ng-click="$mdOpenMenu()">
                         </md-icon>
                     </md-button>
                     <md-menu-content width="1">

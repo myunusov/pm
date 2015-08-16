@@ -186,10 +186,6 @@ function EGMStep(type) {
         if (this.isSwitch()) {
             step.rate = 0.5;
         }
-/*        if (step.isScenario()) {  // TODO Choose Scenario
-            var scenario = this.addScenario();
-            step.scenarioId = scenario.id;
-        }*/
         this.steps.push(step);
         this.change();
     };
@@ -305,23 +301,50 @@ function EGMLink() {
     this.parent;
     this.scenarioId = null;
     this.scenario = null;
-    this.name = "";
+    this._name = "";
     this.steps = [];
 
+    Object.defineProperty(this, 'name', {
+        get: function () {
+            return this.scenario ? this.scenario.name : this._name;
+        },
+        set: function (value) {
+            if (this.scenario) {
+                this.scenario.name = value;
+            } else {
+                this._name = value;
+            }
+        }
+    });
+
+    this.iscompleted = false;
+
     this.availableChildren = [];
+
+    this.choiseScenario = function (scenario) {
+        this.setScenario(scenario);
+        this.change();
+    };
+
+    this.addScenario = function () {
+        this.setScenario(this.parent.addScenario());
+        this.change();
+    };
+
+    this.removeScenario = function (scenario) {
+        this.scenarioId = null;
+        this.scenario = null;
+        this.change();
+    };
 
     this.setScenario = function (scenario) {
         this.scenario = scenario;
         this.scenarioId = scenario.id;
-        this.name = scenario.name;
-        this.avg = scenario.avg;
-        this.best = scenario.best;
-        this.worst = scenario.worst;
         scenario.addLink(this);
     };
 
     this.doCreateDTO = function (result) {
-        result.scenarioId = this.scenario.id;
+        result.scenarioId = this.scenario ? this.scenario.id : null;
         return result;
     };
 
@@ -331,18 +354,23 @@ function EGMLink() {
 
     this.resolve = function (newId) {
         this.id = newId || this.id;
-        if (this.scenarioId) {
-            this.setScenario(this.findScenario(this.scenarioId));
-        } else {
+        if (!this.scenarioId) {
             this.avg = new SEMValues(this);
             this.best = new SEMValues(this);
             this.worst = new SEMValues(this);
+        } else {
+            if (!this.scenario) {
+                this.setScenario(this.findScenario(this.scenarioId));
+            }
+            this.avg = this.scenario.avg;
+            this.best = this.scenario.best;
+            this.worst = this.scenario.worst;
         }
         this.onUpdate();
     };
 
     this.onUpdate = function () {
-           this.inconsistent = !this.scenario;
+        this.iscompleted = this.scenario;
     };
 
     this.image = function () {
@@ -370,11 +398,11 @@ function EGMScenario(id, model) {
     this.worst = new SEMValues(this);
 
     this.steps = [];
-    this.link = null;
+    this.links = [];
 
     this.onUpdate = function () {
-        if (this.link) {
-            this.link.change();
+        for (var i = 0; i < this.links.length; i++) {
+            this.links[i].change();
         }
     };
 
@@ -383,14 +411,12 @@ function EGMScenario(id, model) {
     };
 
     this.addLink = function (link) {
-        this.link = link;
+        this.links.push(link);
     };
 
-
     this.removeLink = function (link) {
-        if (this.link === link) {
-            this.link = null;
-        }
+        this.links.push(link);
+        this.links.remove(link);
     };
 
     this.allSteps = function () {
@@ -422,8 +448,8 @@ function EGMScenario(id, model) {
 
     this.removeSelf = function () {
         this.model.removeScenario(this);
-        if (this.link) {
-            this.link.removeSelf();
+        for (var i = 0; i < this.links.length; i++) {
+            this.links[i].removeScenario();
         }
     };
 }
