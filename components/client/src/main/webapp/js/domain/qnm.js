@@ -1,3 +1,5 @@
+"use strict";
+
 function QNMUnit(id, title, rate, pattern) {
     this.id = id;
     this.title = (title || title === '') ? title : id;
@@ -9,7 +11,7 @@ function QNMUnit(id, title, rate, pattern) {
             return null;
         }
         return (other instanceof QNMUnit) &&
-                other.id === this.id;
+            other.id === this.id;
     };
 }
 
@@ -66,11 +68,10 @@ function Quantity() {
         return Math.round(value) === value ? Math.round(value) : parseFloat(parseFloat(value).toPrecision(prec).toString());
     }
 
-
     this.availableUnits = function () {
         var result = [];
         if (!this.units) {
-            return  result;
+            return result;
         }
         for (var i = 0; i < this.units.length; i++) {
             if (!this.units[i].equals(this.unit)) {
@@ -174,11 +175,11 @@ function QNMName(value) {
         this.eval = false;
     };
 
-/*    Object.defineProperty(this, 'pattern', {
-        get: function () {
-            return "[\s\S]*";
-        }
-    });*/
+    /*    Object.defineProperty(this, 'pattern', {
+     get: function () {
+     return "[\s\S]*";
+     }
+     });*/
 
     Object.defineProperty(this, 'state', {
         get: function () {
@@ -249,7 +250,7 @@ function QNMCenter() {
             return null;
         }
         return (other instanceof QNMCenter) &&
-                other.id === this.id;
+            other.id === this.id;
     };
 
     this.setDTO = function (dto) {
@@ -261,7 +262,7 @@ function QNMCenter() {
         }
     };
 
-    this.createDTO = function() {
+    this.createDTO = function () {
         var result = {
             id: this.id,
             name: this.name
@@ -271,14 +272,14 @@ function QNMCenter() {
                 var q = this.getByName(name);
                 result[name] = [
                     q.eval ? null : q.value,
-                    q.unit ?  q.unit.id : null
+                    q.unit ? q.unit.id : null
                 ];
             }
         }
         return this.doCreateDTO(result);
     };
 
-    this.doCreateDTO = function(result) {
+    this.doCreateDTO = function (result) {
         return result;
     };
 
@@ -325,7 +326,7 @@ function QNMClass(id, name) {
             return null;
         }
         return (other instanceof QNMClass) &&
-                other.id === this.id;
+            other.id === this.id;
     };
 }
 QNMClass.prototype = new QNMCenter();
@@ -363,7 +364,7 @@ function QNMNode(id, name) {
             return null;
         }
         return (other instanceof QNMNode) &&
-                other.id === this.id;
+            other.id === this.id;
     };
 }
 QNMNode.prototype = new QNMCenter();
@@ -376,7 +377,7 @@ function QNMVisit(clazz, node) {
     this.totalNumber = new QNMNumber(1);
     this.serviceTime = new QNMTime();
     this.serviceTime.unit = this.serviceTime.units[0];
-    this.serviceDemands  = new QNMTime();
+    this.serviceDemands = new QNMTime();
     this.serviceDemands.unit = this.serviceDemands.units[0];
     this.utilization = new Utilization(0);         // XXX Workaround
     this.utilization.eval = true;
@@ -404,10 +405,10 @@ function QNMVisit(clazz, node) {
             ['U'],
             [-1, 'XI', 'S']
         ], this),
-/*        new Expression([
-            [-1, 'RT', 'XI'],
-            ['N']
-        ], this),*/
+        /*        new Expression([
+         [-1, 'RT', 'XI'],
+         ['N']
+         ], this),*/
         new Expression([
             [-1, 'S', 'V'],
             ['D']
@@ -424,7 +425,7 @@ function QNMVisit(clazz, node) {
         ], this)
     ];
 
-    this.doCreateDTO = function(result) {
+    this.doCreateDTO = function (result) {
         result.clazz = this.clazz.id;
         result.node = this.node.id;
         return result;
@@ -435,7 +436,7 @@ function QNMVisit(clazz, node) {
             return null;
         }
         return (other instanceof QNMVisit) &&
-                other.id === this.id;
+            other.id === this.id;
     };
 
     this.hasDetails = function () {
@@ -455,7 +456,6 @@ function QNMVisit(clazz, node) {
     };
 
 
-
 }
 QNMVisit.prototype = new QNMCenter();
 
@@ -469,10 +469,10 @@ function Parameter(name, center) {
     };
 
     this.equals = function (other) {
-        return  other &&
-                other instanceof Parameter &&
-                other.name === this.name &&
-                other.center.equals(this.center);
+        return other &&
+            other instanceof Parameter &&
+            other.name === this.name &&
+            other.center.equals(this.center);
     };
 
     this.sync = function () {
@@ -489,7 +489,7 @@ function Parameter(name, center) {
             value: this.value,
             centerId: this.center.id,
             centerType: this.center instanceof QNMClass ? "clazz" :
-                    (this.center instanceof QNMNode ? "node" : "visit")
+                (this.center instanceof QNMNode ? "node" : "visit")
         };
     };
 }
@@ -562,23 +562,23 @@ function Expression(expression, center) {
 
     if (center) {
         this.expression.subst(
-                function (v) {
-                    return (number(v) || v instanceof Parameter) ? v : new Parameter(v, center);
-                }
+            function (v) {
+                return (number(v) || v instanceof Parameter) ? v : new Parameter(v, center);
+            }
         );
     }
 
     this.args = this.expression.unique().filterBy(
-            function (v) {
-                return !number(v);
-            }
+        function (v) {
+            return !number(v);
+        }
     );
 
     this.unknown = function (params) {
         var result = this.args.filterBy(
-                function (v) {
-                    return !params.contains(v);
-                }
+            function (v) {
+                return !params.contains(v);
+            }
         );
         if (result && result.length === 1) {
             return result[0];
@@ -617,9 +617,9 @@ function Expression(expression, center) {
                 term = term - factor;
             }
         }
-        term = parseFloat(Math.round(term * 10000000000)/10000000000);
-        mult = parseFloat(Math.round(mult * 10000000000)/10000000000);
-        x.value = parseFloat(Math.round(term * 100000/ mult)/100000);
+        term = parseFloat(Math.round(term * 10000000000) / 10000000000);
+        mult = parseFloat(Math.round(mult * 10000000000) / 10000000000);
+        x.value = parseFloat(Math.round(term * 100000 / mult) / 100000);
         return x;
     };
 }
@@ -648,7 +648,7 @@ function QNM(name, id) {
         memento.classes = createArrayDTO(this.classes);
         memento.nodes = createArrayDTO(this.nodes);
         memento.visits = createArrayDTO(this.visits);
-        return  memento;
+        return memento;
     };
 
     this.setDTO = function (memento) {
@@ -657,25 +657,25 @@ function QNM(name, id) {
         classNo = memento.classNo;
         nodeNo = memento.nodeNo;
         this.classes = [];
-        for (var i1= 0; i1 < memento.classes.length; i1++) {
+        for (var i1 = 0; i1 < memento.classes.length; i1++) {
             var clazz = new QNMClass(
-                    memento.classes[i1].id,
-                    memento.classes[i1].name
+                memento.classes[i1].id,
+                memento.classes[i1].name
             );
             clazz.setDTO(memento.classes[i1]);
             this.classes.push(clazz);
         }
         this.nodes = [];
-        for (var i2= 0; i2 < memento.nodes.length; i2++) {
+        for (var i2 = 0; i2 < memento.nodes.length; i2++) {
             var node = new QNMNode(
-                    memento.nodes[i2].id,
-                    memento.nodes[i2].name
+                memento.nodes[i2].id,
+                memento.nodes[i2].name
             );
             node.setDTO(memento.nodes[i2]);
             this.nodes.push(node);
         }
         this.visits = [];
-        for (var i3= 0; i3 < memento.visits.length; i3++) {
+        for (var i3 = 0; i3 < memento.visits.length; i3++) {
             var node1 = this.getNodeById(memento.visits[i3].node);
             var class1 = this.getClassById(memento.visits[i3].clazz);
             var visit = new QNMVisit(class1, node1);
@@ -684,7 +684,7 @@ function QNM(name, id) {
         }
 
         changedFields = [];
-        for (var i5= 0; i5 < memento.changedFields.length; i5++) {
+        for (var i5 = 0; i5 < memento.changedFields.length; i5++) {
             var field = memento.changedFields[i5];
             var center = this.getCenterBy(field);
             if (!center) {
@@ -708,10 +708,14 @@ function QNM(name, id) {
 
     this.getCenterBy = function (field) {
         switch (field.centerType) {
-            case "clazz": return getElementById(this.classes, field.centerId);
-            case "node":   return getElementById(this.nodes, field.centerId);
-            case "visit":  return getElementById(this.visits, field.centerId);
-            default: return null;
+            case "clazz":
+                return getElementById(this.classes, field.centerId);
+            case "node":
+                return getElementById(this.nodes, field.centerId);
+            case "visit":
+                return getElementById(this.visits, field.centerId);
+            default:
+                return null;
         }
     };
 
@@ -761,7 +765,7 @@ function QNM(name, id) {
         return null;
     };
 
-    this.getClassById = function(id) {
+    this.getClassById = function (id) {
         for (var i = 0; i < this.classes.length; i++) {
             if (this.classes[i].id === id) {
                 return this.classes[i];
@@ -770,7 +774,7 @@ function QNM(name, id) {
         return null;
     };
 
-    this.getNodeById = function(id) {
+    this.getNodeById = function (id) {
         for (var i = 0; i < this.nodes.length; i++) {
             if (this.nodes[i].id === id) {
                 return this.nodes[i];
@@ -803,14 +807,14 @@ function QNM(name, id) {
         var fields = changedFields.clone().reverse();
 
         [this.classes, this.nodes, this.visits].each(
-                function (u) {
-                    var notEmpty = u.getSignificance();
-                    for (var i = 0; i < notEmpty.length; i++) {
-                        if (!fields.contains(notEmpty[i])) {
-                            fields.push(notEmpty[i]);
-                        }
+            function (u) {
+                var notEmpty = u.getSignificance();
+                for (var i = 0; i < notEmpty.length; i++) {
+                    if (!fields.contains(notEmpty[i])) {
+                        fields.push(notEmpty[i]);
                     }
                 }
+            }
         );
         return fields;
     };
@@ -818,15 +822,15 @@ function QNM(name, id) {
     this.valid = function () {
         var result = true;
         [this.classes, this.nodes, this.visits].each(
-                function (u) {
-                    var fields = u.getAll();
-                    for (var i = 0; i < fields.length; i++) {
-                        if (!fields[i].valid()) {
-                            result = false;
-                            break;
-                        }
+            function (u) {
+                var fields = u.getAll();
+                for (var i = 0; i < fields.length; i++) {
+                    if (!fields[i].valid()) {
+                        result = false;
+                        break;
                     }
                 }
+            }
         );
         return result;
     };
@@ -867,22 +871,22 @@ function QNM(name, id) {
     this.getExpressions = function () {
         var expressions = this.makeExpressions();
         [this.classes, this.visits, this.nodes].each(
-                function (u) {
-                    expressions = expressions.concat(u.expressions);
-                }
+            function (u) {
+                expressions = expressions.concat(u.expressions);
+            }
         );
         return expressions;
     };
 
     this.init = function () {
         [this.classes, this.visits, this.nodes].each(
-                function (u) {
-                    var all = u.getAll();
-                    for (var j = 0; j < all.length; j++) {
-                        all[j].coflicted = false;
-                        all[j].inconsistent = false;
-                    }
+            function (u) {
+                var all = u.getAll();
+                for (var j = 0; j < all.length; j++) {
+                    all[j].coflicted = false;
+                    all[j].inconsistent = false;
                 }
+            }
         );
     };
 
@@ -899,7 +903,7 @@ function QNM(name, id) {
     };
 
     this.recalculate = function () {
-        var calculator  = this.makeCalculator();
+        var calculator = this.makeCalculator();
         if (!calculator) {
             return true;
         }
@@ -930,187 +934,7 @@ function QNM(name, id) {
         return this.recalculate();
     };
 
-    var pointsNumber = 10;
-
-    this.refreshCharts = function() {
-
-        var id = this.id;
-
-        var sum = 0;
-        for (var i = 0; i < this.nodes.length; i++) {
-            var n = this.nodes[i];
-            var nn = n.nodeNumber.value;
-            nn = parseFloat(nn);
-            sum += nn;
-        }
-        pointsNumber = sum > 8 ? sum + 2 : 10;
-
-        var minRChart = this.calcMinRChart();
-        var maxXChart = this.calcMaxXChart();
-
-        $(function () {
-            $('#rmin').highcharts(minRChart);
-            $('#xmax').highcharts(maxXChart);
-            $(window).resize();
-        });
-
-    };
-
-    this.calcMaxXChart = function() {
-
-        return {
-            title: {
-                text: 'Maximum Throughput',
-                x: -20 //center
-            },
-            subtitle: {
-                text: 'X(N)',
-                x: -20
-            },
-            xAxis: {
-                categories: this.calcCategories()
-            },
-            yAxis: {
-                title: {
-                    text: 'X (tps)'
-                },
-                plotLines: [{
-                    value: 0,
-                    width: 1,
-                    color: '#808080'
-                }]
-            },
-            tooltip: {
-                valueSuffix: 'tps'
-            },
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle',
-                borderWidth: 0
-            },
-            series: this.calcChartSeries("maxX")
-        }
-    };
-
-    this.calcMinRChart = function() {
-
-        return {
-            title: {
-                text: 'Minimum Response Time',
-                x: -20 //center
-            },
-            subtitle: {
-                text: 'R(N)',
-                x: -20
-            },
-            xAxis: {
-                 categories: this.calcCategories()
-            },
-            yAxis: {
-                title: {
-                    text: 'R (sec.)'
-                },
-                plotLines: [{
-                    value: 0,
-                    width: 1,
-                    color: '#808080'
-                }]
-            },
-            tooltip: {
-                valueSuffix: 'sec.'
-            },
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle',
-                borderWidth: 0
-            },
-            series: this.calcChartSeries("minR")
-        }
-    };
-
-    this.calcCategories = function() {
-        var result = [];
-        for (var i = 0; i < pointsNumber; i++) {
-            result.push(i + 1);
-        }
-        return result;
-    };
-
-    this.calcChartSeries = function (type) {
-        var result = [];
-        for (var i = 0; i < this.classes.length; i++) {
-            result.push(
-                {
-                    name: this.classes[i].name.value,
-                    data: this.calcDataFor(this.classes[i], type)
-                }
-            );
-        }
-        return result;
-    };
-
-    this.calcDataFor = function(clazz, type) {
-        var result = [];
-        for (var i = 0; i < pointsNumber; i++) {
-            if (type === "minR") {
-                result.push(this.calcMinR(clazz, i + 1));
-            } else {
-                result.push(this.calcMaxX(clazz, i + 1));
-            }
-        }
-        return result;
-    };
-
-
-    this.calcMaxX = function(clazz, tn) {
-        var visits = this.getVisitsByClass(clazz);
-        var sumD = 0;
-        var maxD = 0;
-        for (var i = 0; i < visits.length; i++) {
-            var v = visits[i];
-            var d = v.serviceDemands.value;
-            if (!d || !number(d)) {
-                return "Undefined";
-            }
-            var nn = v.node.nodeNumber.value;
-            d = parseFloat(d);
-            nn = parseFloat(nn);
-            if (d > maxD) {
-                maxD = d;
-            }
-            sumD += d * nn;
-        }
-        var result1 = 1 / maxD;
-        var result2 = tn / sumD;
-        var result = result1 < result2 ? result1 : result2;
-        return parseFloat(result.toPrecision(5));
-    };
-
-
-    this.calcMinR = function(clazz, tn) {
-        var visits = this.getVisitsByClass(clazz);
-        var sumD = 0;
-        var maxD = 0;
-        for (var i = 0; i < visits.length; i++) {
-            var v = visits[i];
-            var d = v.serviceDemands.value;
-            if (!d || !number(d)) {
-                return "Undefined";
-            }
-            var nn = v.node.nodeNumber.value;
-            d = parseFloat(d);
-            nn = parseFloat(nn);
-            if (d > maxD) {
-                maxD = d;
-            }
-            sumD += d * nn;
-        }
-        var result1 = tn * maxD;
-        var result2 = sumD;
-        var result = result1 > result2 ? result1 : result2;
-        return parseFloat(result.toPrecision(5));
-    };
-
 }
+
+
+

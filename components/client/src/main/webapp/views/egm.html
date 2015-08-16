@@ -74,7 +74,7 @@
                                            class="input input-small simplebox quantity" ng-model="scenario.name"
                                            style="width:50%">
 
-                                    <span class="dropdown" style="float: right">
+                                    <span style="float: right">
                                         <a class="simpleank" ng-click="scenario.removeSelf()"><i
                                                 class="mdi mdi-close"></i></a>
                                         <md-tooltip>Remove Step</md-tooltip>
@@ -87,8 +87,6 @@
                                     <div>
                                         <md-menu style="margin-top: -50px">
                                             <button
-                                                    data-drop="true"
-                                                    data-jqyoui-options="scenario.dropOptions" jqyoui-droppable
                                                     aria-label="Select Step" class="md-icon-button"
                                                     ng-click="$mdOpenMenu()"
                                                     ng-show="scenario.availableChildren.length">
@@ -115,17 +113,20 @@
                                     <md-card>
                                         <div class="frame">
                                             <table class="resources">
+                                                <col style="width: 80px">
+                                                <col style="width: 200px">
+                                                <col>
                                                 <thead>
                                                 <tr>
-                                                    <th>Step</th>
+                                                    <th colspan="2">Step</th>
                                                     <th ng-repeat="resource in model.resources">
                                                         {{resource.name}}
                                                     </th>
                                                 </tr>
                                                 </thead>
                                                 <tr ng-repeat="step in scenario.allSteps()">
+                                                    <td>{{step.id}}</td>
                                                     <td>
-                                                        &NonBreakingSpace;{{step.id}}&NonBreakingSpace;.
                                                         <input type="text" aria-label="Step Name"
                                                                class="input input-small simplebox quantity"
                                                                ng-model="step.name"
@@ -164,7 +165,7 @@
 
 <script type="text/ng-template" id="stepContent.html">
 
-    <div data-drop="true" data-jqyoui-options jqyoui-droppable >
+    <div>
         <input type="text"
                ng-show="step.isCase()"
                aria-label="Probability"
@@ -215,7 +216,7 @@
                 </span>
             </div>
 
-            <div flex="10" class="dropdown" style="float: right">
+            <div flex="10" style="float: right">
                 <a class="simpleank" ng-click="step.removeSelf()"><i class="mdi mdi-close"></i></a>
                 <md-tooltip>Remove Step</md-tooltip>
             </div>

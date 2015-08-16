@@ -60,6 +60,6 @@ function Project(name, id) {
         this.version = project.version;
         this.models = project.models;
         return this;
-    }
+    };
 
 }

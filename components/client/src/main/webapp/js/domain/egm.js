@@ -27,15 +27,15 @@ function SEMValues(owner) {
 
     this.setDTO = function (memento) {
         this.values = memento;
-    }
+    };
 
     this.createDTO = function () {
         return this.values;
-    }
+    };
 
     this.clear = function () {
         this.values = {};
-    }
+    };
 
     this.set = function (value) {
         var resources = owner.getResources();
@@ -46,7 +46,7 @@ function SEMValues(owner) {
             var key = resources[j].id;
             this.values[key] = value;
         }
-    }
+    };
 
     this.add = function (values) {
         var resources = owner.getResources();
@@ -56,7 +56,7 @@ function SEMValues(owner) {
                 this.values[key] = parseFloat(parseFloat(values.values[key]) + parseFloat(this.values[key] || 0));
             }
         }
-    }
+    };
 
     this.addWithMult = function (values, rate) {
         var resources = owner.getResources();
@@ -67,7 +67,7 @@ function SEMValues(owner) {
                 this.values[key] = parseFloat(parseFloat(values.values[key]) * number + parseFloat(this.values[key] || 0));
             }
         }
-    }
+    };
 
     this.min = function (values) {
         var resources = owner.getResources();
@@ -83,7 +83,7 @@ function SEMValues(owner) {
                 }
             }
         }
-    }
+    };
 
     this.max = function (values) {
         var resources = owner.getResources();
@@ -99,7 +99,7 @@ function SEMValues(owner) {
                 }
             }
         }
-    }
+    };
 
 }
 
@@ -222,7 +222,6 @@ function EGMStep(type) {
                 step.setScenario(this.addScenario());
                 break;
             default:
-                step = new EGMRoutine(id2, this);
         }
         if (this.isSwitch()) {
             step.rate = 0.5;
@@ -288,7 +287,7 @@ function EGMStep(type) {
         this.best.add(step.best);
         this.avg.add(step.avg);
         this.worst.add(step.worst);
-    }
+    };
 
     this.removeStep = function (step) {
         this.steps.remove(step);
@@ -317,23 +316,23 @@ function EGMStep(type) {
     };
 
     this.isLoop = function () {
-        return this.type == "L";
+        return this.type === "L";
     };
 
     this.isSwitch = function () {
-        return this.type == "S";
+        return this.type === "S";
     };
 
     this.isSplit = function () {
-        return this.type == "F";
+        return this.type === "F";
     };
 
     this.isRoutine = function () {
-        return this.type == "R";
+        return this.type === "R";
     };
 
     this.isScenario = function () {
-        return this.type == "C";
+        return this.type === "C";
     };
 
     this.isCase = function () {
@@ -346,7 +345,7 @@ function EGMStep(type) {
 
     this.theme = function () {
         return this.inconsistent ? " md-warn" : this.iscompleted ? "md-primary" : "md-accent";
-    }
+    };
 
 }
 
@@ -417,12 +416,6 @@ function EGMScenario(id, model) {
     this.stepNo = 0;
     this.link = null;
 
-    this.dropOptions = {
-        onDrop: function (dragEl) {
-            alert(dragEl);
-        }
-    };
-
     this.onUpdate = function () {
         if (this.link) {
             this.link.update();
@@ -456,8 +449,8 @@ function EGMScenario(id, model) {
             function (step) {
                 findAll(result, step);
             }
-        )
-    }
+        );
+    };
 
     this.addScenario = function () {
         return this.model.addScenario();
@@ -495,7 +488,7 @@ function EGMRoutine(id, parent, name) {
 
     this.image = function () {
         return this.isNode() ? "file-multiple.svg" : "file.svg";
-    }
+    };
 }
 
 EGMRoutine.prototype = new EGMStep("R");
@@ -535,7 +528,7 @@ function EGMLoop(id, parent) {
         this.best.addWithMult(step.best, this.repeat);
         this.avg.addWithMult(step.avg, this.repeat);
         this.worst.addWithMult(step.worst, this.repeat);
-    }
+    };
 
 }
 
@@ -581,7 +574,7 @@ function EGMSwitch(id, parent) {
         }
         this.avg.addWithMult(step.best, step.rate);
         this.worst.max(step.worst);
-    }
+    };
 }
 
 EGMSwitch.prototype = new EGMStep("S");
@@ -611,7 +604,7 @@ function EGMSplit(id, parent) {
         this.best.min(step.best);
         this.avg.min(step.avg);
         this.worst.min(step.worst);
-    }
+    };
 
 }
 
@@ -643,7 +636,7 @@ function EGMPardo(id, parent) {
         this.best.max(step.best);
         this.avg.max(step.avg);
         this.worst.max(step.worst);
-    }
+    };
 }
 
 EGMPardo.prototype = new EGMStep("P");
@@ -669,7 +662,6 @@ function EGM(name, id) {
         memento.scenarioNo = this.scenarioNo;
         memento.resources = createArrayDTO(this.resources);
         memento.scenarios = createArrayDTO(this.scenarios);
-        // TODO
         return memento;
     };
 
@@ -696,9 +688,6 @@ function EGM(name, id) {
             scenario.setDTO(memento.scenarios[i2]);
             this.scenarios.push(scenario);
         }
-
-        // TODO
-
         this.init();
     };
 
@@ -726,7 +715,7 @@ function EGM(name, id) {
 
     this.findScenario = function (id) {
         for (var i = 0; i < this.scenarios.length; i++) {
-            if (this.scenarios[i].id == id) {
+            if (this.scenarios[i].id === id) {
                 return this.scenarios[i];
             }
         }

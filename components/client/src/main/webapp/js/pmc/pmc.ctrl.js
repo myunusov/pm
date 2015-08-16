@@ -563,7 +563,7 @@ controllers.controller('ChartCtrl', function ($scope, currentModel) {
 
     $scope.refresh = function () {
         if ($scope.model !== null) {
-            $scope.model.refreshCharts();
+            refreshCharts($scope.model);
         }
     }
 
@@ -571,11 +571,23 @@ controllers.controller('ChartCtrl', function ($scope, currentModel) {
 
         if ($scope.model !== null) {
             setTimeout(function() {
-                $scope.model.refreshCharts();
+                refreshCharts($scope.model);
             }, 100);
         }
     });
 
+    function refreshCharts(model) {
+        var builder = new ChartBuilder(model);
+        var minRChart = builder.buildMinRChart();
+        var maxXChart = builder.buildMaxXChart();
+
+        $(function () {
+            $('#rmin').highcharts(minRChart);
+            $('#xmax').highcharts(maxXChart);
+            $(window).resize();
+        });
+
+    };
 });
 
 

@@ -6,7 +6,6 @@ var pmc = angular.module(
     'pmc',
     [
         'ui.router',
-        'ngDragDrop',    
         'ngResource',
         'ngMaterial',
 
@@ -18,11 +17,6 @@ var pmc = angular.module(
     ],
     function ($httpProvider) {
         delete $httpProvider.defaults.headers.common['X-Requested-With'];
-    }
-);
-
-pmc.config(
-    function configureApplication(projectProvider) {
     }
 );
 
@@ -39,7 +33,7 @@ pmc.config(['$urlRouterProvider',
                         id = uuid();
                         project.clone(projectService.make(id));
                     }
-                    $location.path("project/" + id).replace()
+                    $location.path("project/" + id).replace();
                 });
         }
     ]

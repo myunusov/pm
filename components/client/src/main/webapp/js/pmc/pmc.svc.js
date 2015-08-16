@@ -122,7 +122,7 @@ angular.module('pmc.services', [])
                 saveTempBak();
                 id = id || uuid();
                 var result = new Project("New Project", id);
-                // result.models.push(modelFactory.qnm("QNM 0"));
+                result.models.push(modelFactory.qnm("QNM 0"));
                 result.models.push(modelFactory.egm("SEM 0"));
                 messageService.info("New Project is created.");
                 return result;
