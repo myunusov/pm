@@ -171,6 +171,40 @@ function EGMStep(type) {
         return result;
     };
 
+    this.findById = function(id) {
+        for (var i = 0; i < this.steps.length; i++) {
+            if (this.steps[i].id === id) {
+                return this.steps[i];
+            }
+            if (id.indexOf(this.steps[i].id) > -1) {
+                return this.steps[i].findById(id);
+            }
+        }
+        return null;
+    }
+
+    this.moveAtFirst = function (step) {
+        this.removeSelf();
+        var parent = step;
+        this.parent = parent;
+        if (parent.isSwitch()) {
+            this.rate = 0.5;
+        }
+        parent.steps.splice(0, 0, this);
+        this.change();
+    }
+
+    this.moveAfter = function (step) {
+        this.removeSelf();
+        var parent = step.parent;
+        this.parent = parent;
+        if (parent.isSwitch()) {
+            this.rate = 0.5;
+        }
+        parent.steps.splice(parent.steps.indexOf(step) + 1, 0, this);
+        this.change();
+    }
+
     this.removeStep = function (step) {
         this.steps.remove(step);
         this.change();
@@ -179,6 +213,7 @@ function EGMStep(type) {
     this.removeSelf = function () {
         this.parent.removeStep(this);
     };
+
 
     this.addStep = function (type) {
         var step = new (Function.prototype.bind.call(this.types[type]));
@@ -705,6 +740,17 @@ function EGM(name, id) {
         this.scenarios.remove(scenario);
     };
 
+    this.findById = function(id) {
+        for (var i = 0; i < this.scenarios.length; i++) {
+            if ("" + this.scenarios[i].id === id) {
+                return this.scenarios[i];
+            }
+            if (id.indexOf(this.scenarios[i].id) === 0) {
+                return this.scenarios[i].findById(id);
+            }
+        }
+        return null;
+    }
 
 }
 

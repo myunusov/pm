@@ -56,8 +56,28 @@ controllers.controller('ProjectCtrl', function (
 
 controllers.controller('EGMCtrl', function ($scope) {
 
-    $scope.handleDrop = function() {
-        alert('Item '  + ' has been dropped in ' );
+    $scope.moveAfter = function(itemId, nodeId) {
+        var nodeStepId = nodeId.substring(4);
+        var itemStepId = itemId.substring(4);
+        if (nodeStepId.indexOf(itemStepId) === 0) {
+            return false;
+        }
+        var node = $scope.model.findById(nodeStepId);
+        var item = $scope.model.findById(itemStepId);
+        item.moveAfter(node);
+        $scope.$apply();
+     };
+
+    $scope.moveAtFirst = function(itemId, nodeId) {
+        var nodeStepId = nodeId.substring(4);
+        var itemStepId = itemId.substring(4);
+        if (nodeStepId.indexOf(itemStepId) === 0) {
+            return false;
+        }
+        var node = $scope.model.findById(nodeStepId);
+        var item = $scope.model.findById(itemStepId);
+        item.moveAtFirst(node);
+        $scope.$apply();
     };
 
     $scope.addResource = function () {

@@ -87,6 +87,7 @@
                                     <div>
                                         <md-menu style="margin-top: -50px">
                                             <button
+                                                    id="root{{ scenario.id }}" droppable drop="moveAtFirst(itemId, nodeId)"
                                                     aria-label="Select Step" class="md-icon-button"
                                                     ng-click="$mdOpenMenu()"
                                                     ng-show="scenario.availableChildren.length">
@@ -165,7 +166,7 @@
 
 <script type="text/ng-template" id="stepContent.html">
 
-    <div droppable drop="handleDrop()" node="node" id="node{{ step.id }}">
+    <div id="node{{ step.id }}" droppable drop="moveAfter(itemId, nodeId)" >
         <input type="text"
                ng-show="step.isCase()"
                aria-label="Probability"
@@ -175,7 +176,10 @@
                ng-model="step.rate">
 
         <div>
-            <div flex="90" draggable id="item{{ step.id }}" item="item">
+            <div flex="90"
+                 draggable
+                 id="item{{ step.id }}"
+                 >
                 <md-menu ng-show="step.isScenario()">
                     <md-button class="md-fab md-mini" ng-class="step.theme()" aria-label="Select Scenario">
                         <md-icon  md-svg-src="img/icons/{{step.image()}}" ng-click="$mdOpenMenu()">
@@ -199,7 +203,11 @@
                 </md-menu>
 
                 <md-menu ng-hide="step.isScenario()">
-                    <md-button class="md-fab md-mini" ng-class="step.theme()" aria-label="New Step">
+                    <md-button
+                            id="root{{ step.id }}" droppable drop="moveAtFirst(itemId, nodeId)"
+                            class="md-fab md-mini"
+                            ng-class="step.theme()"
+                            aria-label="New Step">
                         <md-icon  md-svg-src="img/icons/{{step.image()}}" ng-click="$mdOpenMenu()">
                         </md-icon>
                     </md-button>
