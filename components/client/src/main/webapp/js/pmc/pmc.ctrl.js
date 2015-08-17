@@ -56,6 +56,10 @@ controllers.controller('ProjectCtrl', function (
 
 controllers.controller('EGMCtrl', function ($scope) {
 
+    $scope.handleDrop = function() {
+        alert('Item '  + ' has been dropped in ' );
+    };
+
     $scope.addResource = function () {
         $scope.model.addResource();
     };
