@@ -181,7 +181,7 @@ function EGMStep(type) {
             }
         }
         return null;
-    }
+    };
 
     this.moveAtFirst = function (step) {
         this.removeSelf();
@@ -192,7 +192,7 @@ function EGMStep(type) {
         }
         parent.steps.splice(0, 0, this);
         this.change();
-    }
+    };
 
     this.moveAfter = function (step) {
         this.removeSelf();
@@ -203,7 +203,7 @@ function EGMStep(type) {
         }
         parent.steps.splice(parent.steps.indexOf(step) + 1, 0, this);
         this.change();
-    }
+    };
 
     this.removeStep = function (step) {
         this.steps.remove(step);
@@ -409,7 +409,7 @@ function EGMLink() {
     };
 
     this.image = function () {
-        return "script.svg";
+        return "latency.svg";
     };
 
     this.removeSelf = function () {
@@ -442,7 +442,7 @@ function EGMScenario(id, model) {
     };
 
     this.image = function () {
-        return "script.svg";
+        return "latency.svg";
     };
 
     this.addLink = function (link) {
@@ -467,7 +467,7 @@ function EGMScenario(id, model) {
                 findAll(result, step);
             }
         );
-    };
+    }
 
     this.addScenario = function () {
         return this.model.addScenario();
@@ -503,7 +503,7 @@ function EGMRoutine() {
     this.steps = [];
 
     this.image = function () {
-        return this.isNode() ? "file-multiple.svg" : "file.svg";
+        return this.isNode() ? "expanded.svg" : "basic.svg";
     };
 }
 
@@ -536,7 +536,7 @@ function EGMLoop() {
     };
 
     this.image = function () {
-        return "block-helper.svg";
+        return "repetition.svg";
     };
 
     this.calc = function (step) {
@@ -567,7 +567,7 @@ function EGMSwitch() {
     };
 
     this.image = function () {
-        return "source-fork.svg";
+        return "case.svg";
     };
 
     this.totalProbability = function () {
@@ -610,7 +610,7 @@ function EGMSplit() {
     };
 
     this.image = function () {
-        return "view-agenda.svg";
+        return "split.svg";
     };
 
     this.calc = function (step) {
@@ -641,7 +641,7 @@ function EGMPardo() {
     };
 
     this.image = function () {
-        return "view-dashboard.svg";
+        return "pardo.svg";
     };
 
     this.calc = function (step) {
