@@ -1,9 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
- <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="24" height="24" viewBox="0 0 24 24">
  <g>
-  <title>Layer 1</title>
-  <circle id="svg_8" r="9.855253" cy="12.079419" cx="11.986937" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="null" stroke="#000000" fill="none"/>
-  <line id="svg_10" y2="5.011869" x2="18.716511" y1="18.358094" x1="4.807235" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="null" stroke="#000000" fill="none"/>
+  <circle fill="none"
+                       stroke="#000010"
+                       stroke-width="2"
+                       cx="12.0" cy="12.0" r="10.0"/>
+  <line fill="none"
+                   stroke="#000010"
+                   stroke-width="2"
+   y2="5" x2="19" y1="19" x1="5" />
  </g>
 </svg>

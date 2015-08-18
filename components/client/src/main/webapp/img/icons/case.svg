@@ -1,8 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
- <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->
- <g>
-  <title>Layer 1</title>
-  <path transform="rotate(179.777, 12.0723, 12.0801)" id="svg_11" d="m2.49829,2.42135l19.146609,0l0,19.31555l-19.146609,0l4.90077,-5.204054l-4.90077,-4.453747l4.728107,-4.247355l-4.728107,-5.410394z" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="null" stroke="#000000" fill="none"/>
- </g>
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="24" height="24" viewBox="0 0 24 24">
+
+
+  <polygon points="2,2 22,2 15,7 22,12 15,17 22,22, 2,22"
+
+  stroke-width="2"
+  stroke="#000000"
+  fill="none"
+
+
+  />
 </svg>
