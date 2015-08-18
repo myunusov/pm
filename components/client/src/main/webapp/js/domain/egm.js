@@ -113,22 +113,13 @@ function EGMStep(type) {
     this.steps = [];
 
     this.types = {
-        "R": EGMRoutine,
-        "L": EGMLoop,
-        "S": EGMSwitch,
-        "F": EGMSplit,
-        "P": EGMPardo,
-        "C": EGMLink
+        "R": {type: EGMRoutine, title: "Basic"},
+        "L": {type: EGMLoop,    title: "Repetition"},
+        "S": {type: EGMSwitch,  title: "Case"},
+        "F": {type: EGMSplit,   title: "Split"},
+        "P": {type: EGMPardo,   title: "Pardo"},
+        "C": {type: EGMLink,    title: "Call"}
     };
-
-    this.availableChildren = [
-        {id: "R", title: "Routine"},
-        {id: "L", title: "Loop"},
-        {id: "S", title: "Switch"},
-        {id: "F", title: "Split"},
-        {id: "P", title: "Pardo"},
-        {id: "C", title: "Scenario"}
-    ];
 
     this.setDTO = function (memento) {
         this.id = memento.id;
@@ -145,7 +136,7 @@ function EGMStep(type) {
         this.steps = [];
 
         for (var i = 0; i < memento.steps.length; i++) {
-            var step = new (Function.prototype.bind.call(this.types[memento.steps[i].type]));
+            var step = new (Function.prototype.bind.call(this.types[memento.steps[i].type].type));
             step.parent = this;
             step.setDTO(memento.steps[i]);
             this.steps.push(step);
@@ -216,7 +207,7 @@ function EGMStep(type) {
 
 
     this.addStep = function (type) {
-        var step = new (Function.prototype.bind.call(this.types[type]));
+        var step = new (Function.prototype.bind.call(this.types[type].type));
         step.parent = this;
         if (this.isSwitch()) {
             step.rate = 0.5;
@@ -354,7 +345,7 @@ function EGMLink() {
 
     this.iscompleted = false;
 
-    this.availableChildren = [];
+    this.types = [];
 
     this.choiseScenario = function (scenario) {
         this.setScenario(scenario);

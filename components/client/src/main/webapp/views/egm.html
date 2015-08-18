@@ -89,15 +89,14 @@
                                             <button
                                                     id="root{{ scenario.id }}" droppable drop="moveAtFirst(itemId, nodeId)"
                                                     aria-label="Select Step" class="md-icon-button"
-                                                    ng-click="$mdOpenMenu()"
-                                                    ng-show="scenario.availableChildren.length">
+                                                    ng-click="$mdOpenMenu()">
                                                 <i class="mdi mdi-playlist-plus"
                                                    style="height: 32px;font-size: 32px"></i>
                                             </button>
                                             <md-menu-content width="1">
-                                                <md-menu-item ng-repeat="type in scenario.availableChildren">
+                                                <md-menu-item ng-repeat="(id, type) in scenario.types">
                                                     <md-button aria-label="Add Step"
-                                                               ng-click="scenario.addStep(type.id)"
+                                                               ng-click="scenario.addStep(id)"
                                                                style="height: 31px;">
                                                         {{type.title}}
                                                     </md-button>
@@ -212,10 +211,10 @@
                         </md-icon>
                     </md-button>
                     <md-menu-content width="1">
-                        <md-menu-item ng-repeat="child in step.availableChildren">
-                            <md-button aria-label="Add Step" ng-click="step.addStep(child.id)"
+                        <md-menu-item ng-repeat="(id, type) in step.types">
+                            <md-button aria-label="Add Step" ng-click="step.addStep(id)"
                                        style="height: 31px;float: right">
-                                {{child.title}}
+                                {{type.title}}
                             </md-button>
                         </md-menu-item>
                     </md-menu-content>
