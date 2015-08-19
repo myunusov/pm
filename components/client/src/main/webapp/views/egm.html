@@ -113,12 +113,14 @@
                                     <md-card>
                                         <div class="frame">
                                             <table class="resources">
-                                                <col style="width: 80px">
+                                                <col style="width: 90px">
                                                 <col style="width: 200px">
+                                                <col style="width: 60px">
                                                 <col>
                                                 <thead>
                                                 <tr>
-                                                    <th colspan="2">Step</th>
+                                                    <th colspan="2">Processing Step</th>
+                                                    <th>Visits</th>
                                                     <th ng-repeat="resource in model.resources">
                                                         {{resource.name}}
                                                     </th>
@@ -133,6 +135,7 @@
                                                                style="width:50%">
 
                                                     </td>
+                                                    <td>{{step.reps}}</td>
                                                     <td ng-repeat="resource in model.resources">
                                                         <input type="text"
                                                                ng-model="step.avg.values[resource.id]"

@@ -85,6 +85,22 @@ function SEMValues(owner) {
         }
     };
 
+    this.avg = function (values) {
+        var resources = owner.getResources();
+        for (var j = 0; j < resources.length; j++) {
+            var key = resources[j].id;
+            if (values.values[key] || values.values[key] === 0) {
+                var newValue = parseFloat(values.values[key]);
+                if (!this.values[key]) {
+                    this.values[key] = newValue;
+                } else {
+                    var oldValue = parseFloat(this.values[key] || 0);
+                    this.values[key] = newValue < oldValue ? newValue : oldValue;
+                }
+            }
+        }
+    };
+
     this.max = function (values) {
         var resources = owner.getResources();
         for (var j = 0; j < resources.length; j++) {
@@ -230,34 +246,54 @@ function EGMStep(type) {
 
     this.change = function () {
         if (this.isRoot()) {
-            this.resolve(this.id);
+            this.resolve();
         } else {
             this.parent.change();
         }
     };
 
     this.resolve = function (newId) {
+        this.updateId();
+        this.updateRеps();
+        this.recalc();
+        this.onUpdate();
+    }
+
+    this.updateId = function (newId) {
         this.id = newId || this.id;
+        for (var i = 0; i < this.steps.length;) {
+            this.steps[i].updateId(this.id + "." + ++i);
+        }
+    }
+
+    this.updateRеps = function(parentReps) {
+        this.reps = parentReps || 1;
+        this.reps *= this.rate || 1;
+        this.reps *= this.repeat || 1;
+        for (var i = 0; i < this.steps.length; i++) {
+            this.steps[i].updateRеps(this.reps);
+        }
+    }
+
+    this.recalc = function() {
         if (this.isLeaf()) {
             this.worst = this.avg;
             this.best = this.avg;
         } else {
             for (var i = 0; i < this.steps.length; i++) {
-                var index = i + 1;
-                var id = this.id + "." + index;
-                this.steps[i].resolve(id);
+                this.steps[i].recalc();
             }
             this.best.clear();
             this.avg.clear();
             this.worst.clear();
             this.updateChildren();
         }
-        this.onUpdate();
-    };
+    }
 
     this.updateChildren = function () {
         for (var i = 0; i < this.steps.length; i++) {
             this.calc(this.steps[i]);
+            this.steps[i].onUpdate();
         }
     };
 
@@ -378,8 +414,7 @@ function EGMLink() {
         this.scenarioId = memento.scenarioId;
     };
 
-    this.resolve = function (newId) {
-        this.id = newId || this.id;
+    this.recalc = function () {
         if (!this.scenarioId) {
             this.avg = new SEMValues(this);
             this.best = new SEMValues(this);
@@ -392,7 +427,6 @@ function EGMLink() {
             this.best = this.scenario.best;
             this.worst = this.scenario.worst;
         }
-        this.onUpdate();
     };
 
     this.onUpdate = function () {
@@ -606,8 +640,8 @@ function EGMSplit() {
 
     this.calc = function (step) {
         this.best.min(step.best);
-        this.avg.min(step.avg);
-        this.worst.min(step.worst);
+        this.avg.avg(step.avg);
+        this.worst.max(step.worst);
     };
 
 }
