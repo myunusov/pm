@@ -16,62 +16,64 @@
 
 <div flex layout="column" resize ng-style="height()" ng-controller="MainMenuCtrl">
 
-<!--MAIN MENU-->
-<md-toolbar class="md-whiteframe-glow-z1 site-content-toolbar md-scroll-shrink md-default-theme" >
-    <div class="md-toolbar-tools">
+    <!--MAIN MENU-->
+    <md-toolbar class="md-whiteframe-glow-z1 site-content-toolbar md-scroll-shrink md-default-theme">
+        <div class="md-toolbar-tools">
 
-        <md-button aria-label="Menu" hide-gt-sm class="md-icon-button" ng-click="toggleLeft()">
-            <md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
-            <md-tooltip>Main Menu</md-tooltip>
-        </md-button>
+            <md-button aria-label="Menu" hide-gt-sm class="md-icon-button" ng-click="toggleLeft()">
+                <md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
+                <md-tooltip>Main Menu</md-tooltip>
+            </md-button>
 
-        <md-button aria-label="About" ng-click="showAbout($event)">
-            <h2><span>Performance Model Calculator</span></h2>
-        </md-button>
+            <md-button aria-label="About" ng-click="showAbout($event)">
+                <h2><span>Performance Model Calculator</span></h2>
+            </md-button>
 
-        <span flex></span>
+            <span flex></span>
 
-        <md-button aria-label="Repository" class="md-icon-button" hide-sm  ui-sref="projects" >
-            <md-icon class="mdi mdi-server"></md-icon>
-            <md-tooltip>Repository</md-tooltip>
-        </md-button>
+            <md-button aria-label="Repository" class="md-icon-button" hide-sm ui-sref="projects">
+                <md-icon class="mdi mdi-server"></md-icon>
+                <md-tooltip>Repository</md-tooltip>
+            </md-button>
 
-        <md-button aria-label="New Project" hide-sm class="md-icon-button" ng-click="make()">
-            <md-icon class="mdi mdi-file-outline"></md-icon>
-            <md-tooltip>New Project</md-tooltip>
-        </md-button>
+            <md-button aria-label="New Project" hide-sm class="md-icon-button" ng-click="make()">
+                <md-icon class="mdi mdi-file-outline"></md-icon>
+                <md-tooltip>New Project</md-tooltip>
+            </md-button>
 
-        <md-button aria-label="Save Project" hide-sm class="md-icon-button" ng-click="save()">
-            <md-icon class="mdi mdi-content-save"></md-icon>
-            <md-tooltip>Save Project</md-tooltip>
-        </md-button>
+            <md-button aria-label="Save Project" hide-sm class="md-icon-button" ng-click="save()">
+                <md-icon class="mdi mdi-content-save"></md-icon>
+                <md-tooltip>Save Project</md-tooltip>
+            </md-button>
 
-        <md-button aria-label="Compare" hide-sm class="md-icon-button" href="#compare" ng-disabled="isNotComparable()">
-            <md-icon class="mdi mdi-compare">
-                <span class="badge-w"><span class="badge">{{compareModels()}}</span></span>
-            </md-icon>
-            <md-tooltip>Compare</md-tooltip>
-        </md-button>
+            <md-button aria-label="Compare" hide-sm class="md-icon-button" href="#compare"
+                       ng-disabled="isNotComparable()">
+                <md-icon class="mdi mdi-compare">
+                    <span class="badge-w"><span class="badge">{{compareModels()}}</span></span>
+                </md-icon>
+                <md-tooltip>Compare</md-tooltip>
+            </md-button>
 
-        <md-button aria-label="Full Screen" hide-sm class="md-icon-button" >
-            <md-icon class="mdi" ng-click="toggleFullScreen();" ng-class="fullScreenClass()"></md-icon>
-            <md-tooltip>Toggle Full Screen</md-tooltip>
-        </md-button>
-    </div>
-</md-toolbar>
+            <md-button aria-label="Full Screen" hide-sm class="md-icon-button">
+                <md-icon class="mdi" ng-click="toggleFullScreen();" ng-class="fullScreenClass()"></md-icon>
+                <md-tooltip>Toggle Full Screen</md-tooltip>
+            </md-button>
+        </div>
+    </md-toolbar>
 
-<md-content flex>
+    <md-content flex>
 
-    <!-- LEFT SIDEBAR -->
-    <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left">
-        <md-toolbar>
-            <div class="md-toolbar-tools">
-                <h3 class="md-toolbar-tools">Main Menu</h3>
-                <span flex></span>
-                <md-button class="md-icon-button" aria-label="Close" ng-click="closeMenu()">
-                    <md-icon class="mdi mdi-close"></md-icon>
-                </md-button>
-            </div>
+        <!-- LEFT SIDEBAR -->
+        <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left">
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h3 class="md-toolbar-tools">Main Menu</h3>
+                    <span flex></span>
+                    <md-button class="md-icon-button" aria-label="Close" ng-click="closeMenu()">
+                        <md-icon class="mdi mdi-close"></md-icon>
+                    </md-button>
+                </div>
+            </md-toolbar>
 
             <md-list>
                 <md-list-item ng-click="showProjects()">
@@ -94,19 +96,18 @@
                 </md-list-item>
             </md-list>
 
-        </md-toolbar>
 
-        <md-content layout-padding>
+            <md-content layout-padding>
 
-        </md-content>
-    </md-sidenav>
+            </md-content>
+        </md-sidenav>
 
-    <!-- CONTEXT -->
-    <div flex ui-view autoscroll="true">
-    </div>
+        <!-- CONTEXT -->
+        <div flex ui-view autoscroll="true">
+        </div>
 
 
-</md-content>
+    </md-content>
 
 
 </div>
