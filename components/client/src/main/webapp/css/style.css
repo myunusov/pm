@@ -72,10 +72,17 @@ md-grid-tile .mdi {
     height: 24px
 }
 
-md-toolbar .md-subheader {
-    color: #FFF;
-    background-color: #4CAF50;
+
+/*main menu (sidebar) */
+md-sidenav md-list .mdi {
+    font-size: 24px;
+    height: 24px
 }
+
+md-sidenav md-list-item :hover {
+    color: #259b24;
+}
+
 
 /*badge*/
 .badge-w {
