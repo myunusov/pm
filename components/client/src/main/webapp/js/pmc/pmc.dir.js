@@ -4,6 +4,92 @@
 
 angular.module('pmc.directives', [])
 
+    .directive('draggable', function () {
+        return function (scope, element) {
+            // this gives us the native JS object
+            var el = element[0];
+
+            el.draggable = true;
+
+            el.addEventListener(
+                'dragstart',
+                function (e) {
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('Text', this.id);
+                    this.classList.add('drag');
+                    return false;
+                },
+                false
+            );
+
+            el.addEventListener(
+                'dragend',
+                function (e) {
+                    this.classList.remove('drag');
+                    return false;
+                },
+                false
+            );
+        };
+    })
+
+    .directive('droppable', function () {
+        return {
+            scope: {
+                drop: '&' // parent
+            },
+            link: function (scope, element) {
+                // again we need the native object
+                var el = element[0];
+                el.addEventListener(
+                    'dragover',
+                    function (e) {
+                        // allows us to drop
+                        e.dataTransfer.dropEffect = 'move';
+                        if (e.preventDefault)
+                            e.preventDefault();
+                        event.target.style.opacity = .5;
+                        this.classList.add('over');
+                        return false;
+                    },
+                    false
+                );
+                el.addEventListener(
+                    'dragenter',
+                    function (e) {
+                        this.classList.add('over');
+                        event.target.style.opacity = .5;
+                        return false;
+                    },
+                    false
+                );
+
+                el.addEventListener(
+                    'dragleave',
+                    function (e) {
+                        this.classList.remove('over');
+                        event.target.style.opacity = 1;
+                        return false;
+                    },
+                    false
+                );
+                el.addEventListener(
+                    'drop',
+                    function (e) {
+                        // Stops some browsers from redirecting.
+                        if (e.stopPropagation)
+                            e.stopPropagation();
+                        this.classList.remove('over');
+                        event.target.style.opacity = 1;
+                        var item = document.getElementById(e.dataTransfer.getData('Text'));
+                        var fn = scope.drop({itemId: item.id, nodeId: this.id});
+                    },
+                    false
+                );
+            }
+        }
+    })
+
     .directive('resize', function ($window) {
         return function (scope, element) {
             var w = angular.element($window);
@@ -49,7 +135,7 @@ angular.module('pmc.directives', [])
         return function (scope, element, attrs) {
             $(element).find(' > i').not(".icon-leaf").on('click', clickingCallback);
         }
-    })
+    });
 
 
 function clickingCallback(e) {

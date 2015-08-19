@@ -113,22 +113,13 @@ function EGMStep(type) {
     this.steps = [];
 
     this.types = {
-        "R": EGMRoutine,
-        "L": EGMLoop,
-        "S": EGMSwitch,
-        "F": EGMSplit,
-        "P": EGMPardo,
-        "C": EGMLink
+        "R": {type: EGMRoutine, title: "Basic"},
+        "L": {type: EGMLoop,    title: "Repetition"},
+        "S": {type: EGMSwitch,  title: "Case"},
+        "F": {type: EGMSplit,   title: "Split"},
+        "P": {type: EGMPardo,   title: "Pardo"},
+        "C": {type: EGMLink,    title: "Call"}
     };
-
-    this.availableChildren = [
-        {id: "R", title: "Routine"},
-        {id: "L", title: "Loop"},
-        {id: "S", title: "Switch"},
-        {id: "F", title: "Split"},
-        {id: "P", title: "Pardo"},
-        {id: "C", title: "Scenario"}
-    ];
 
     this.setDTO = function (memento) {
         this.id = memento.id;
@@ -145,7 +136,7 @@ function EGMStep(type) {
         this.steps = [];
 
         for (var i = 0; i < memento.steps.length; i++) {
-            var step = new (Function.prototype.bind.call(this.types[memento.steps[i].type]));
+            var step = new (Function.prototype.bind.call(this.types[memento.steps[i].type].type));
             step.parent = this;
             step.setDTO(memento.steps[i]);
             this.steps.push(step);
@@ -171,6 +162,40 @@ function EGMStep(type) {
         return result;
     };
 
+    this.findById = function(id) {
+        for (var i = 0; i < this.steps.length; i++) {
+            if (this.steps[i].id === id) {
+                return this.steps[i];
+            }
+            if (id.indexOf(this.steps[i].id) > -1) {
+                return this.steps[i].findById(id);
+            }
+        }
+        return null;
+    };
+
+    this.moveAtFirst = function (step) {
+        this.removeSelf();
+        var parent = step;
+        this.parent = parent;
+        if (parent.isSwitch()) {
+            this.rate = 0.5;
+        }
+        parent.steps.splice(0, 0, this);
+        this.change();
+    };
+
+    this.moveAfter = function (step) {
+        this.removeSelf();
+        var parent = step.parent;
+        this.parent = parent;
+        if (parent.isSwitch()) {
+            this.rate = 0.5;
+        }
+        parent.steps.splice(parent.steps.indexOf(step) + 1, 0, this);
+        this.change();
+    };
+
     this.removeStep = function (step) {
         this.steps.remove(step);
         this.change();
@@ -180,8 +205,9 @@ function EGMStep(type) {
         this.parent.removeStep(this);
     };
 
+
     this.addStep = function (type) {
-        var step = new (Function.prototype.bind.call(this.types[type]));
+        var step = new (Function.prototype.bind.call(this.types[type].type));
         step.parent = this;
         if (this.isSwitch()) {
             step.rate = 0.5;
@@ -319,7 +345,7 @@ function EGMLink() {
 
     this.iscompleted = false;
 
-    this.availableChildren = [];
+    this.types = [];
 
     this.choiseScenario = function (scenario) {
         this.setScenario(scenario);
@@ -374,7 +400,7 @@ function EGMLink() {
     };
 
     this.image = function () {
-        return "script.svg";
+        return "latency.svg";
     };
 
     this.removeSelf = function () {
@@ -407,7 +433,7 @@ function EGMScenario(id, model) {
     };
 
     this.image = function () {
-        return "script.svg";
+        return "latency.svg";
     };
 
     this.addLink = function (link) {
@@ -432,7 +458,7 @@ function EGMScenario(id, model) {
                 findAll(result, step);
             }
         );
-    };
+    }
 
     this.addScenario = function () {
         return this.model.addScenario();
@@ -468,7 +494,7 @@ function EGMRoutine() {
     this.steps = [];
 
     this.image = function () {
-        return this.isNode() ? "file-multiple.svg" : "file.svg";
+        return this.isNode() ? "expanded.svg" : "basic.svg";
     };
 }
 
@@ -501,7 +527,7 @@ function EGMLoop() {
     };
 
     this.image = function () {
-        return "block-helper.svg";
+        return "repetition.svg";
     };
 
     this.calc = function (step) {
@@ -532,7 +558,7 @@ function EGMSwitch() {
     };
 
     this.image = function () {
-        return "source-fork.svg";
+        return "case.svg";
     };
 
     this.totalProbability = function () {
@@ -575,7 +601,7 @@ function EGMSplit() {
     };
 
     this.image = function () {
-        return "view-agenda.svg";
+        return "split.svg";
     };
 
     this.calc = function (step) {
@@ -606,7 +632,7 @@ function EGMPardo() {
     };
 
     this.image = function () {
-        return "view-dashboard.svg";
+        return "pardo.svg";
     };
 
     this.calc = function (step) {
@@ -705,6 +731,17 @@ function EGM(name, id) {
         this.scenarios.remove(scenario);
     };
 
+    this.findById = function(id) {
+        for (var i = 0; i < this.scenarios.length; i++) {
+            if ("" + this.scenarios[i].id === id) {
+                return this.scenarios[i];
+            }
+            if (id.indexOf(this.scenarios[i].id) === 0) {
+                return this.scenarios[i].findById(id);
+            }
+        }
+        return null;
+    }
 
 }
 

@@ -87,16 +87,16 @@
                                     <div>
                                         <md-menu style="margin-top: -50px">
                                             <button
+                                                    id="root{{ scenario.id }}" droppable drop="moveAtFirst(itemId, nodeId)"
                                                     aria-label="Select Step" class="md-icon-button"
-                                                    ng-click="$mdOpenMenu()"
-                                                    ng-show="scenario.availableChildren.length">
+                                                    ng-click="$mdOpenMenu()">
                                                 <i class="mdi mdi-playlist-plus"
                                                    style="height: 32px;font-size: 32px"></i>
                                             </button>
                                             <md-menu-content width="1">
-                                                <md-menu-item ng-repeat="type in scenario.availableChildren">
+                                                <md-menu-item ng-repeat="(id, type) in scenario.types">
                                                     <md-button aria-label="Add Step"
-                                                               ng-click="scenario.addStep(type.id)"
+                                                               ng-click="scenario.addStep(id)"
                                                                style="height: 31px;">
                                                         {{type.title}}
                                                     </md-button>
@@ -165,7 +165,7 @@
 
 <script type="text/ng-template" id="stepContent.html">
 
-    <div>
+    <div id="node{{ step.id }}" droppable drop="moveAfter(itemId, nodeId)" >
         <input type="text"
                ng-show="step.isCase()"
                aria-label="Probability"
@@ -174,10 +174,11 @@
                class="input input-small simplebox quantity"
                ng-model="step.rate">
 
-        <div layout="row" data-drag="true"
-             jqyoui-draggable="{animate:true}"
-             data-jqyoui-options="{revert: 'invalid'}">
-            <div flex="90">
+        <div>
+            <div flex="90"
+                 draggable
+                 id="item{{ step.id }}"
+                 >
                 <md-menu ng-show="step.isScenario()">
                     <md-button class="md-fab md-mini" ng-class="step.theme()" aria-label="Select Scenario">
                         <md-icon  md-svg-src="img/icons/{{step.image()}}" ng-click="$mdOpenMenu()">
@@ -201,22 +202,25 @@
                 </md-menu>
 
                 <md-menu ng-hide="step.isScenario()">
-                    <md-button class="md-fab md-mini" ng-class="step.theme()" aria-label="New Step">
+                    <md-button
+                            id="root{{ step.id }}" droppable drop="moveAtFirst(itemId, nodeId)"
+                            class="md-fab md-mini"
+                            ng-class="step.theme()"
+                            aria-label="New Step">
                         <md-icon  md-svg-src="img/icons/{{step.image()}}" ng-click="$mdOpenMenu()">
                         </md-icon>
                     </md-button>
                     <md-menu-content width="1">
-                        <md-menu-item ng-repeat="child in step.availableChildren">
-                            <md-button aria-label="Add Step" ng-click="step.addStep(child.id)"
+                        <md-menu-item ng-repeat="(id, type) in step.types">
+                            <md-button aria-label="Add Step" ng-click="step.addStep(id)"
                                        style="height: 31px;float: right">
-                                {{child.title}}
+                                {{type.title}}
                             </md-button>
                         </md-menu-item>
                     </md-menu-content>
                 </md-menu>
 
                 <span ng-show="step.isRoutine()">
-                    &NonBreakingSpace;{{step.id}}&NonBreakingSpace;.
                     <input type="text" aria-label="Step Name" class="input input-small simplebox quantity"
                            ng-model="step.name" style="width:200px">
                 </span>
@@ -245,7 +249,7 @@
 
     </div>
 
-    <ul ng-if="!step.isScenario()">
+    <ul ng-if="!step.isScenario()" >
         <li ng-repeat="step in step.steps" ng-include="step.url" class="tree-li" ng-class="step.getClass()"></li>
     </ul>
 </script>
