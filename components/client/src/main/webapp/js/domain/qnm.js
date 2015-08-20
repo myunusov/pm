@@ -935,6 +935,3 @@ function QNM(name, id) {
     };
 
 }
-
-
-

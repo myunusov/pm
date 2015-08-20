@@ -2,7 +2,7 @@ module.exports = function (config) {
     config.set({
         basePath: '../../',
 
-        frameworks: ['jasmine', 'commonjs'],
+        frameworks: ['jasmine'],
 
         files: [
             'src/main/webapp/libs/angular/js/angular.js',
@@ -13,8 +13,7 @@ module.exports = function (config) {
         exclude: [],
 
         preprocessors: {
-            'src/main/webapp/js/**/*.js': ['commonjs', 'coverage'],
-            'src/test/unit/**/*.js': ['commonjs']
+            'src/main/webapp/js/**/*.js': ['coverage']
         },
 
         reporters: ['dots', 'progress', 'junit', 'coverage'],
@@ -29,7 +28,7 @@ module.exports = function (config) {
 
         port: 9876,
         colors: false,
-        logLevel: config.LOG_INFO,
+        logLevel: config.LOG_DEBUG,
         autoWatch: false,
         browsers: ['PhantomJS'],
         captureTimeout: 20000,
@@ -40,7 +39,6 @@ module.exports = function (config) {
             'karma-jasmine',
             'karma-junit-reporter',
             'karma-phantomjs-launcher',
-            'karma-commonjs',
             'karma-coverage'
         ]
 
