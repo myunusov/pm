@@ -104,21 +104,25 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         {
             id: "NAME",
             title: "Name",
+            type: "text",
             tooltip: "Node Name"
         },
         {
             id: "NN",
             title: "Number",
+            type: "number",
             tooltip: "Number of Node instances"
         },
         {
             id: "U",
             title: "Utilization",
+            type: "text",
             tooltip: "Total Utilization (U)"
         },
         {
             id: "TN",
-            title: "Number of Tasks",
+            title: "Queue Length",
+            type: "text",
             tooltip: "Mean Number of Tasks in Queue (N)"
         }
     ];
@@ -127,26 +131,31 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         {
             id: "NAME",
             title: "Name",
+            type: "text",
             tooltip: "Class Name"
         },
         {
             id: "M",
             title: "Number of Users",
+            type: "number",
             tooltip: "Number of Users (Terminals)(M)"
         },
         {
             id: "Z",
             title: "Think Time",
+            type: "text",
             tooltip: "Think Time (Z)"
         },
         {
             id: "X",
             title: "Throughput",
+            type: "text",
             tooltip: "Throughput per Class (X0)"
         },
         {
             id: "R",
             title: "Response Time",
+            type: "text",
             tooltip: "Response Time per Class (R)"
         }
     ];
@@ -155,11 +164,13 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         {
             id: "TV",
             title: "Visits",
+            type: "number",
             tooltip: "Number of Visits per Request (Vi)"
         },
         {
             id: "XI",
             title: "Throughput",
+            type: "text",
             tooltip: "Throughput per class (Xi)"
         },
         {
@@ -170,6 +181,7 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         {
             id: "D",
             title: "Demands",
+            type: "text",
             tooltip: "Service Demands per class (Di)"
         },
         {
@@ -180,6 +192,7 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         {
             id: "RT",
             title: "Residence Time",
+            type: "text",
             tooltip: "Residence Time per class (RTi)"
         }
     ];
@@ -187,31 +200,37 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         {
             id: "V",
             title: "Visits",
+            type: "number",
             tooltip: "Number of Visits per Request (Vi)"
         },
         {
             id: "XI",
             title: "Throughput",
+            type: "text",
             tooltip: "Throughput per class (Xi)"
         },
         {
             id: "S",
             title: "Service Time",
+            type: "text",
             tooltip: "Service Time per class (Si)"
         },
         {
             id: "D",
             title: "Service Demands",
+            type: "text",
             tooltip: "Service Demands per class (Di)"
         },
         {
             id: "U",
             title: "Utilization",
+            type: "text",
             tooltip: "Utilization per class (Ui)"
         },
         {
             id: "RT",
             title: "Residence Time",
+            type: "text",
             tooltip: "Residence Time per class (RTi)"
         }
 

@@ -1,6 +1,10 @@
 <div class="frame">
     <table class="visits qnm" flex>
         <thead>
+        <col width="35px"/>
+        <col/>
+        <col/>
+        <col data-ng-repeat="type in totalVisitTypes"/>
         <tr>
             <td colspan="{{totalVisitTypes.length + 3}}">
                 <div flex class="framehdr">
@@ -15,10 +19,10 @@
             </td>
         </tr>
         <tr>
-            <th style="width:15px;"><i class="mdi mdi-leaf"></i></th>
+            <th><i class="mdi mdi-leaf"></i></th>
             <th>Node</th>
             <th>Class</th>
-            <th ng-repeat="type in totalVisitTypes">
+            <th data-ng-repeat="type in totalVisitTypes">
                 {{type.title}}
                 <md-tooltip>{{type.tooltip }}</md-tooltip>
             </th>
@@ -47,7 +51,7 @@
             <td>{{center.clazz.name.value}}</td>
 
             <td nowrap="nowrap" ng-repeat="type in totalVisitTypes" ng-init="prop=center.all[type.id]">
-                <input type="text"
+                <input type="{{type.type}}"
                        aria-label="Property {{type.title}}"
                        class="input input-small simplebox quantity {{prop.state}}"
                        ng-change="change(type.id, center)"
@@ -71,7 +75,7 @@
         </tr>
 
         <tr ng-show="center.isDetails()">
-            <td>{{center.node.name.value}} (1)</td>
+            <td>{{center.node.name.value}} &#x2715 {{center.node.nodeNumber.value}}</td>
             <td>{{center.clazz.name.value}}</td>
 
             <td nowrap="nowrap" ng-repeat="type in visitTypes" ng-init="prop=center.all[type.id]">
