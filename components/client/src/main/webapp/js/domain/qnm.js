@@ -6,6 +6,14 @@ function QNMUnit(id, title, rate, pattern) {
     this.rate = rate || 1;
     this.pattern = pattern || "\\d*[\\., \\,]?\\d*";
 
+
+    Object.defineProperty(this, 'shortTitle', {
+        get: function () {
+            return this.title;
+        }
+    });
+
+
     this.equals = function (other) {
         if (!other) {
             return null;
@@ -191,6 +199,29 @@ function QNMName(value) {
     });
 }
 
+
+function QNMNodeName(value) {
+    this.value = value;
+    this.units = [
+        new QNMUnit('cpu', 'CPU'),
+        new QNMUnit('disk', 'Disk'),
+        new QNMUnit('hdd', 'HDD'),
+        new QNMUnit('ssd', 'SSD')
+    ];
+
+    this.unit = new QNMUnit('▾');
+
+    this.availableUnits = function () {
+        return this.units;
+    };
+
+    this.setUnit = function (newValue) {
+        this.text = newValue.title;
+    };
+
+}
+QNMNodeName.prototype = new QNMName();
+
 function Throughput(value) {
     this.value = value;
     this._text = value;
@@ -333,7 +364,7 @@ QNMClass.prototype = new QNMCenter();
 
 function QNMNode(id, name) {
     this.id = id;
-    this.name = new QNMName(name || "Node " + id);
+    this.name = new QNMNodeName(name || "Node " + id);
     this.nodeNumber = new QNMNumber(1);
     this.utilization = new Utilization();
     this.meanNumberTasks = new QNMNumber();

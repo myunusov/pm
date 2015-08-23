@@ -40,7 +40,7 @@
                        ng-model="prop.text">
                 <md-menu>
                     <button aria-label="Select Unit" class="md-icon-button" ng-click="$mdOpenMenu()">
-                        {{prop.unit.title}}
+                        {{prop.unit.shortTitle}}
                     </button>
                     <md-menu-content width="1">
                         <md-menu-item ng-repeat="unit in prop.availableUnits()">
