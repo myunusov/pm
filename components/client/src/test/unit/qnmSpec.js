@@ -56,7 +56,7 @@ describe('QN Model', function() {
         expect(visit.totalNumber.value).toEqual(1);
         expect(visit.serviceTime.value).toBeUndefined();
         expect(visit.serviceDemands.value).toBeUndefined();
-        expect(visit.utilization.value).toEqual(0);
+        expect(visit.utilization.value).toBeUndefined();
         expect(visit.residenceTime.value).toBeUndefined();
         expect(visit.throughput.value).toBeUndefined();
     });

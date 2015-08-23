@@ -410,8 +410,7 @@ function QNMVisit(clazz, node) {
     this.serviceTime.unit = this.serviceTime.units[0];
     this.serviceDemands = new QNMTime();
     this.serviceDemands.unit = this.serviceDemands.units[0];
-    this.utilization = new Utilization(0);         // XXX Workaround
-    this.utilization.calculated = true;
+    this.utilization = new Utilization();
     this.residenceTime = new QNMTime();
     this.throughput = new Throughput();
 
@@ -931,6 +930,20 @@ function QNM(name, id) {
             return null;
         }
         return new Calculator(fields, expressions);
+    };
+
+    this.cleanCalcFields = function () {
+        [this.classes, this.visits, this.nodes].each(
+            function (u) {
+                var all = u.getAll();
+                for (var j = 0; j < all.length; j++) {
+                    if (all[j].calculated) {
+                        all[j].text = undefined;
+                        all[j].calculated = false;
+                    }
+                }
+            }
+        );
     };
 
     this.recalculate = function () {

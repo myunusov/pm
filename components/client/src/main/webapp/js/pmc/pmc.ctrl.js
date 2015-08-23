@@ -250,11 +250,13 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
 
     $scope.addNode = function () {
         $scope.model.addNode();
+        $scope.model.cleanCalcFields();
         $scope.model.recalculate();
     };
 
     $scope.addClass = function () {
         $scope.model.addClass();
+        $scope.model.cleanCalcFields();
         $scope.model.recalculate();
     };
 
@@ -266,16 +268,7 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         } else {
             return;
         }
-        $scope.model.recalculate();
-    };
-
-    $scope.removeNode = function (node) {
-        $scope.model.removeNode(node);
-        $scope.model.recalculate();
-    };
-
-    $scope.removeClass = function (clazz) {
-        $scope.model.removeClass(clazz);
+        $scope.model.cleanCalcFields();
         $scope.model.recalculate();
     };
 
