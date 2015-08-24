@@ -103,10 +103,8 @@
                                                 </md-menu-item>
                                             </md-menu-content>
                                         </md-menu>
-                                        <ul>
-                                            <li ng-repeat="step in scenario.steps" ng-include="step.url"
-                                                class="tree-li parent-li" ng-class="step.getClass()"></li>
-                                        </ul>
+                                        <mx-tree node="scenario" steps="scenario.steps">
+                                        </mx-tree>
                                     </div>
                                 </td>
                                 <td>
@@ -165,7 +163,7 @@
 
 <script type="text/ng-template" id="stepContent.html">
 
-    <div id="node{{ step.id }}" droppable drop="moveAfter(itemId, nodeId)" >
+    <div>
         <input type="text"
                ng-show="step.isCase()"
                aria-label="Probability"
@@ -175,10 +173,7 @@
                ng-model="step.rate">
 
         <div>
-            <div flex="90"
-                 draggable
-                 id="item{{ step.id }}"
-                 >
+            <div flex="90">
                 <md-menu ng-show="step.isScenario()">
                     <md-button class="md-fab md-mini" ng-class="step.theme()" aria-label="Select Scenario">
                         <md-icon  md-svg-src="img/icons/{{step.image()}}" ng-click="$mdOpenMenu()">
@@ -203,7 +198,6 @@
 
                 <md-menu ng-hide="step.isScenario()">
                     <md-button
-                            id="root{{ step.id }}" droppable drop="moveAtFirst(itemId, nodeId)"
                             class="md-fab md-mini"
                             ng-class="step.theme()"
                             aria-label="New Step">
@@ -249,7 +243,8 @@
 
     </div>
 
-    <ul ng-if="!step.isScenario()" >
+
+<!--    <ul ng-if="!step.isScenario()" >
         <li ng-repeat="step in step.steps" ng-include="step.url" class="tree-li" ng-class="step.getClass()"></li>
-    </ul>
+    </ul>-->
 </script>

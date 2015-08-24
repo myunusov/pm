@@ -206,6 +206,21 @@ function EGMStep(type) {
     };
 
 
+    this.dragStart = function () {
+    };
+
+    this.dragEnd = function () {
+    };
+
+    this.isChild = function(step) {
+        return this.id.indexOf(step.id) === 0;
+    };
+
+    this.dragOver = function (step) {
+        return step instanceof EGMStep && !this.isChild(step);
+    };
+
+
     this.addStep = function (type) {
         var step = new (Function.prototype.bind.call(this.types[type].type));
         step.parent = this;
@@ -310,10 +325,6 @@ function EGMStep(type) {
 
     this.isCase = function () {
         return this.parent && this.parent.isSwitch();
-    };
-
-    this.getClass = function () {
-        return (this.isParent() ? " parent-li" : "" + " last-child") + (this.inconsistent ? " invalid" : "");
     };
 
     this.theme = function () {
