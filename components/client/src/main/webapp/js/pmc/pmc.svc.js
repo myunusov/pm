@@ -93,6 +93,14 @@ angular.module('pmc.services', [])
             }
         }
 
+        function saveAsCurrent(currentProject) {
+            if (currentProject && currentProject.id) {
+                var dto = currentProject.createDTO(new ProjectDto());
+                $.jStorage.set(currentProject.id, dto);
+                $.jStorage.setTTL(currentProject.id, 1800000);
+            }
+        }
+
         return {
 
             findLocalProjects: function () {
@@ -124,6 +132,7 @@ angular.module('pmc.services', [])
                 var result = new Project("New Project", id);
                 result.models.push(modelFactory.qnm("QNM 0"));
                 result.models.push(modelFactory.egm("SEM 0"));
+                saveAsCurrent(result);
                 messageService.info("New Project is created.");
                 return result;
             },
@@ -145,10 +154,13 @@ angular.module('pmc.services', [])
                     var text = error.statusText ? ". " + error.statusText + ". " : "";
                     messageService.error("Project is not loaded." + text, error.status);
                 });
+                saveAsCurrent(project);
                 return project;
             },
             load: function (prj) {
-                saveTempBak();
+                if (project && project.id !== prj.id) {
+                    saveTempBak();
+                }
                 var dto;
                 if (prj.islocal) {
                     dto = $.jStorage.get(prj.id);
@@ -163,6 +175,7 @@ angular.module('pmc.services', [])
                         messageService.error("Project is not loaded." + text, error.status);
                     });
                 }
+                saveAsCurrent(project);
                 return project;
             },
             remove: function (id) {

@@ -570,16 +570,13 @@ controllers.controller('ProjectListCtrl', function (
 
     $scope.remove = function (prj) {
         // TODO confirmation or undo
-        if (prj.isLocal) {
-            $.jStorage.deleteKey(prj.id);
-            remove(localProjects, prj.id);
-        } else {
+        if (!prj.isLocal) {
             projectService.remove(prj.id);
             // TODO on success only
             remove(remoteProjects, prj.id);
-            $.jStorage.deleteKey(prj.id);
-            remove(localProjects, prj.id);
         }
+        $.jStorage.deleteKey(prj.id);
+        remove(localProjects, prj.id);
         // TODO on success only
         if (project.id === prj.id) {
             var id = uuid();
