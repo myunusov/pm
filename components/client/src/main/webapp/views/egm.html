@@ -172,7 +172,7 @@
                class="input input-small simplebox quantity"
                ng-model="step.rate">
 
-        <div>
+        <div flex layout="row" layout-align="space-between center">
             <div flex="90">
                 <md-menu ng-show="step.isScenario()">
                     <md-button class="md-fab md-mini" ng-class="step.theme()" aria-label="Select Scenario">
@@ -233,8 +233,8 @@
                 </span>
             </div>
 
-            <div flex="10" style="float: right">
-                <a class="simpleank" ng-click="step.removeSelf()"><i class="mdi mdi-close"></i></a>
+            <div flex>
+                <a class="simpleank" ng-click="step.removeSelf()"><i class="mdi mdi-close" align="right" style="float:right;"></i></a>
                 <md-tooltip>Remove Step</md-tooltip>
             </div>
 
@@ -242,9 +242,4 @@
         </div>
 
     </div>
-
-
-<!--    <ul ng-if="!step.isScenario()" >
-        <li ng-repeat="step in step.steps" ng-include="step.url" class="tree-li" ng-class="step.getClass()"></li>
-    </ul>-->
 </script>

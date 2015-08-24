@@ -59,7 +59,11 @@
 }
 
 
-
+li .over {
+    border-bottom-width: 5px;
+    border-bottom-style: solid;
+    border-bottom-color: #b9f6ca;
+}
 
 /*main menu*/
 md-toolbar .mdi {

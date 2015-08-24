@@ -220,6 +220,17 @@ function EGMStep(type) {
         return step instanceof EGMStep && !this.isChild(step);
     };
 
+    this.drop = function (step) {
+        step.removeSelf();
+        var parent = this.parent;
+        step.parent = parent;
+        if (parent.isSwitch()) {
+            this.step = 0.5;
+        }
+        parent.steps.splice(parent.steps.indexOf(this) + 1, 0, step);
+        this.change();
+    };
+
 
     this.addStep = function (type) {
         var step = new (Function.prototype.bind.call(this.types[type].type));
