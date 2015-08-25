@@ -78,21 +78,9 @@ dirs.directive('mxTreeNodeContent', function () {
         item.classList.remove('over-bottom');
     }
 
-    function calcDragClass(event) {
-
-        var Y = event.layerY - $(event.target).position().top;
-
-        var pos = Math.floor(Y / ($(event.target).height() / 3));
-
-        switch (pos) {
-            case 2:
-                return 'over-bottom';
-            case 1:
-                return 'over-middle';
-            default:
-                return 'over-top';
-        }
-
+    function calcDragPos(element, event) {
+        var y = event.layerY - $(element).position().top;
+        return Math.floor(y / ($(element).height() / 3));
     }
 
     return {
@@ -139,13 +127,30 @@ dirs.directive('mxTreeNodeContent', function () {
                     'dragover',
                     function (e) {
                         e.stopPropagation();
+                        var pos = calcDragPos(el, e);
+                        if (pos < 1) {
+                            return false;
+                        }
+
                         if (typeof scope.step.dragOver == 'function') {
                             if (!scope.step.dragOver(rootCtrl.item)) {
                                 return false;
                             }
                         }
                         cleanDragClasses(this);
-                        this.classList.add(calcDragClass(e));
+
+                        switch (pos) {
+                            case 2:
+                                this.classList.add('over-bottom');
+                                break;
+                            case 1:
+                                this.classList.add('over-middle');
+                                break;
+                            default:
+                                this.classList.add('over-top');
+                                break;
+                        }
+
                         // allows us to drop
                         e.dataTransfer.dropEffect = 'move';
                         if (e.preventDefault)
@@ -157,8 +162,6 @@ dirs.directive('mxTreeNodeContent', function () {
             el.addEventListener(
                     'dragenter',
                     function (e) {
-                        cleanDragClasses(this);
-                        this.classList.add(calcDragClass(e));
                         return false;
                     },
                     false
