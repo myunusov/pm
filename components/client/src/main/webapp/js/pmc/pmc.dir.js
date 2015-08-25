@@ -79,8 +79,9 @@ dirs.directive('mxTreeNodeContent', function () {
     }
 
     function calcDragPos(element, event) {
-        var y = event.layerY - $(element).position().top;
-        return Math.floor(y / ($(element).height() / 3));
+        var rect = element.getBoundingClientRect();
+        var offsetY = event.clientY - rect.top;
+        return Math.floor(offsetY / ($(element).height() / 3));
     }
 
     return {
