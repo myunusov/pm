@@ -62,7 +62,7 @@
 li .over-top {
     border-top-width: 1px;
     border-top-style: solid;
-    border-top-color: #b9f6ca;
+    border-top-color: #000;
 }
 
 li .over-middle {
@@ -75,9 +75,9 @@ li .over-middle .simplebox {
 
 
 li .over-bottom {
-    border-bottom-width: 5px;
+    border-bottom-width: 1px;
     border-bottom-style: solid;
-    border-bottom-color: #b9f6ca;
+    border-bottom-color: #000;
 }
 
 

@@ -137,8 +137,11 @@ dirs.directive('mxTreeNodeContent', function () {
                                 return false;
                             }
                         }
+                        // allows us to drop
+                        e.dataTransfer.dropEffect = 'move';
+                        if (e.preventDefault)
+                            e.preventDefault();
                         cleanDragClasses(this);
-
                         switch (pos) {
                             case 2:
                                 this.classList.add('over-bottom');
@@ -150,11 +153,6 @@ dirs.directive('mxTreeNodeContent', function () {
                                 this.classList.add('over-top');
                                 break;
                         }
-
-                        // allows us to drop
-                        e.dataTransfer.dropEffect = 'move';
-                        if (e.preventDefault)
-                            e.preventDefault();
                         return false;
                     },
                     false
