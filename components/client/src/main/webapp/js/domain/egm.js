@@ -174,28 +174,6 @@ function EGMStep(type) {
         return null;
     };
 
-    this.moveAtFirst = function (step) {
-        this.removeSelf();
-        var parent = step;
-        this.parent = parent;
-        if (parent.isSwitch()) {
-            this.rate = 0.5;
-        }
-        parent.steps.splice(0, 0, this);
-        this.change();
-    };
-
-    this.moveAfter = function (step) {
-        this.removeSelf();
-        var parent = step.parent;
-        this.parent = parent;
-        if (parent.isSwitch()) {
-            this.rate = 0.5;
-        }
-        parent.steps.splice(parent.steps.indexOf(step) + 1, 0, this);
-        this.change();
-    };
-
     this.removeStep = function (step) {
         this.steps.remove(step);
         this.change();
@@ -203,13 +181,6 @@ function EGMStep(type) {
 
     this.removeSelf = function () {
         this.parent.removeStep(this);
-    };
-
-
-    this.dragStart = function () {
-    };
-
-    this.dragEnd = function () {
     };
 
     this.isChild = function(step) {
@@ -220,14 +191,25 @@ function EGMStep(type) {
         return step instanceof EGMStep && !this.isChild(step);
     };
 
-    this.drop = function (step) {
+    this.dropBefore = function (step) {
+        this.parent.insert(step, this.parent.steps.indexOf(this));
+    };
+
+    this.dropAfter = function (step) {
+        this.parent.insert(step, this.parent.steps.indexOf(this) + 1);
+    };
+
+    this.dropIn = function (step) {
+        this.insert(step, 0);
+    };
+
+    this.insert = function (step, pos) {
         step.removeSelf();
-        var parent = this.parent;
-        step.parent = parent;
-        if (parent.isSwitch()) {
-            this.step = 0.5;
+        step.parent = this;
+        if (this.isSwitch()) {
+            step.rate = 0.5;
         }
-        parent.steps.splice(parent.steps.indexOf(this) + 1, 0, step);
+        this.steps.splice(pos, 0, step);
         this.change();
     };
 

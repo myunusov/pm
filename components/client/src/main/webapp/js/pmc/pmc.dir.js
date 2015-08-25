@@ -4,7 +4,7 @@
 
 var dirs = angular.module('pmc.directives', []);
 
-dirs.controller('MxTreeCtrl', function($scope) {
+dirs.controller('MxTreeCtrl', function ($scope) {
 
     this.item = null;
 
@@ -16,10 +16,6 @@ dirs.controller('MxTreeCtrl', function($scope) {
         this.item = null;
     };
 
-    this.getItem = function () {
-        return this.item;
-    };
-
 });
 
 dirs.directive('mxTree', function () {
@@ -29,6 +25,12 @@ dirs.directive('mxTree', function () {
         scope: {
             steps: '=',
             node: '='
+        },
+        transclude: true,
+        link: function(scope, element, attrs, ctrl, transclude) {
+            transclude(scope, function(clone) {
+                $(clone[1]).html();
+            });
         },
         template: "<mx-branch steps='steps' node='node'></mx-branch>"
     }
@@ -44,7 +46,7 @@ dirs.directive('mxBranch', function () {
             steps: '=',
             node: '='
         },
-        template: '<ul><mx-tree-node ng-repeat="step in steps" step="step"></mx-tree-node></ul>',
+        template: '<ul><mx-tree-node ng-repeat="step in steps" step="step"></mx-tree-node></ul>'
     };
 });
 
@@ -57,104 +59,159 @@ dirs.directive('mxTreeNode', function ($compile) {
         scope: {
             step: '='
         },
-        link: function (scope, element, attrs, rootCtrl) {
-
-            var el = element[0];
-
-            el.draggable = true;
-
+        link: function (scope, element) {
             if (angular.isArray(scope.step.steps)) {
                 element.append("<mx-branch steps='step.steps' node='step'></mx-branch>");
                 $compile(element.contents())(scope)
             }
 
-            el.addEventListener(
-                'dragstart',
-                function (e) {
-                    e.dataTransfer.effectAllowed = 'move';
-                    e.dataTransfer.setData('Text', this.id);
-                    this.classList.add('drag');
-                    rootCtrl.dragStart(scope.step);
-                    if (typeof scope.step.dragStart == 'function') {
-                        scope.step.dragStart();
-                    }
-                    e.stopPropagation();
-                    return false;
-                },
-                false
-            );
+        },
+        template: '<li class="tree-li parent-li"><mx-tree-node-content step="step"></mx-tree-node-content></li>'
+    };
+});
 
-            el.addEventListener(
-                'dragend',
-                function (e) {
-                    this.classList.remove('drag');
-                    rootCtrl.dragEnd(scope.step);
-                    if (typeof scope.step.dragEnd == 'function') {
-                        scope.step.dragEnd();
-                    }
-                    e.stopPropagation();
-                    return false;
-                },
-                false
-            );
+dirs.directive('mxTreeNodeContent', function () {
 
+    function cleanDragClasses(item) {
+        item.classList.remove('over-top');
+        item.classList.remove('over-middle');
+        item.classList.remove('over-bottom');
+    }
+
+    function calcDragClass(event) {
+
+        var Y = event.layerY - $(event.target).position().top;
+
+        var pos = Math.floor(Y / ($(event.target).height() / 3));
+
+        switch (pos) {
+            case 2:
+                return 'over-bottom';
+            case 1:
+                return 'over-middle';
+            default:
+                return 'over-top';
+        }
+
+    }
+
+    return {
+        restrict: 'E',
+        replace: true,
+        require: '^mxTree',
+        scope: {
+            step: '='
+        },
+        link: function (scope, element, attrs, rootCtrl) {
+            var el = element[0];
+            el.draggable = true;
             el.addEventListener(
-                'dragover',
-                function (e) {
-                    e.stopPropagation();
-                    if (typeof scope.step.dragOver == 'function') {
-                        if (!scope.step.dragOver(rootCtrl.item)) {
-                            return false;
+                    'dragstart',
+                    function (e) {
+                        e.dataTransfer.effectAllowed = 'move';
+                        e.dataTransfer.setData('Text', this.id);
+                        this.classList.add('drag');
+                        rootCtrl.dragStart(scope.step);
+                        if (typeof scope.step.dragStart == 'function') {
+                            scope.step.dragStart();
                         }
-                    }
-                    // allows us to drop
-                    e.dataTransfer.dropEffect = 'move';
-                    if (e.preventDefault)
-                        e.preventDefault();
-                    event.target.style.opacity = .5;
-                    this.classList.add('over');
-                    return false;
-                },
-                false
-            );
-            el.addEventListener(
-                'dragenter',
-                function (e) {
-                    this.classList.add('over');
-                    event.target.style.opacity = .5;
-                    return false;
-                },
-                false
+                        e.stopPropagation();
+                        return false;
+                    },
+                    false
             );
 
             el.addEventListener(
-                'dragleave',
-                function (e) {
-                    this.classList.remove('over');
-                    event.target.style.opacity = 1;
-                    return false;
-                },
-                false
+                    'dragend',
+                    function (e) {
+                        this.classList.remove('drag');
+                        rootCtrl.dragEnd(scope.step);
+                        if (typeof scope.step.dragEnd == 'function') {
+                            scope.step.dragEnd();
+                        }
+                        e.stopPropagation();
+                        return false;
+                    },
+                    false
+            );
+
+            el.addEventListener(
+                    'dragover',
+                    function (e) {
+                        e.stopPropagation();
+                        if (typeof scope.step.dragOver == 'function') {
+                            if (!scope.step.dragOver(rootCtrl.item)) {
+                                return false;
+                            }
+                        }
+                        cleanDragClasses(this);
+                        this.classList.add(calcDragClass(e));
+                        // allows us to drop
+                        e.dataTransfer.dropEffect = 'move';
+                        if (e.preventDefault)
+                            e.preventDefault();
+                        return false;
+                    },
+                    false
             );
             el.addEventListener(
-                'drop',
-                function (e) {
-                    // Stops some browsers from redirecting.
-                    if (e.stopPropagation)
-                        e.stopPropagation();
-                    this.classList.remove('over');
-                    event.target.style.opacity = 1;
-                    if (typeof scope.step.drop == 'function') {
-                        scope.step.drop(rootCtrl.item);
-                        scope.$apply();
-                    }
-                },
-                false
+                    'dragenter',
+                    function (e) {
+                        cleanDragClasses(this);
+                        this.classList.add(calcDragClass(e));
+                        return false;
+                    },
+                    false
+            );
+
+            el.addEventListener(
+                    'dragleave',
+                    function (e) {
+                        cleanDragClasses(this);
+                        return false;
+                    },
+                    false
+            );
+            el.addEventListener(
+                    'drop',
+                    function (e) {
+                        // Stops some browsers from redirecting.
+                        if (e.stopPropagation)
+                            e.stopPropagation();
+                        cleanDragClasses(this);
+                        var Y = event.layerY - $(event.target).position().top;
+                        var pos = Math.floor(Y / ($(event.target).height() / 3));
+                        switch (pos) {
+                            case 2:
+                                if (typeof scope.step.dropAfter == 'function') {
+                                    scope.step.dropAfter(rootCtrl.item);
+                                    scope.$apply();
+                                }
+                                break;
+                            case 1:
+                                if (typeof scope.step.dropIn == 'function') {
+                                    scope.step.dropIn(rootCtrl.item);
+                                    scope.$apply();
+                                }
+                                break;
+                            default:
+                                if (typeof scope.step.dropBefore == 'function') {
+                                    scope.step.dropBefore(rootCtrl.item);
+                                    scope.$apply();
+                                }
+                                break;
+                        }
+
+
+                    },
+                    false
             );
         },
-        template: '<li class="tree-li parent-li""> <div ng-include="step.url"></div></li>'
-    };
-})
+        template: '<div><div ng-include="step.url"></div></div>'
+    }
+
+
+});
 
 dirs.directive('draggable', function () {
     return function (scope, element) {
@@ -164,23 +221,23 @@ dirs.directive('draggable', function () {
         el.draggable = true;
 
         el.addEventListener(
-            'dragstart',
-            function (e) {
-                e.dataTransfer.effectAllowed = 'move';
-                e.dataTransfer.setData('Text', this.id);
-                this.classList.add('drag');
-                return false;
-            },
-            false
+                'dragstart',
+                function (e) {
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('Text', this.id);
+                    this.classList.add('drag');
+                    return false;
+                },
+                false
         );
 
         el.addEventListener(
-            'dragend',
-            function (e) {
-                this.classList.remove('drag');
-                return false;
-            },
-            false
+                'dragend',
+                function (e) {
+                    this.classList.remove('drag');
+                    return false;
+                },
+                false
         );
     };
 });
@@ -194,49 +251,49 @@ dirs.directive('droppable', function () {
             // again we need the native object
             var el = element[0];
             el.addEventListener(
-                'dragover',
-                function (e) {
-                    // allows us to drop
-                    e.dataTransfer.dropEffect = 'move';
-                    if (e.preventDefault)
-                        e.preventDefault();
-                    event.target.style.opacity = .5;
-                    this.classList.add('over');
-                    return false;
-                },
-                false
+                    'dragover',
+                    function (e) {
+                        // allows us to drop
+                        e.dataTransfer.dropEffect = 'move';
+                        if (e.preventDefault)
+                            e.preventDefault();
+                        event.target.style.opacity = .5;
+                        this.classList.add('over');
+                        return false;
+                    },
+                    false
             );
             el.addEventListener(
-                'dragenter',
-                function (e) {
-                    this.classList.add('over');
-                    event.target.style.opacity = .5;
-                    return false;
-                },
-                false
+                    'dragenter',
+                    function (e) {
+                        this.classList.add('over');
+                        event.target.style.opacity = .5;
+                        return false;
+                    },
+                    false
             );
 
             el.addEventListener(
-                'dragleave',
-                function (e) {
-                    this.classList.remove('over');
-                    event.target.style.opacity = 1;
-                    return false;
-                },
-                false
+                    'dragleave',
+                    function (e) {
+                        this.classList.remove('over');
+                        event.target.style.opacity = 1;
+                        return false;
+                    },
+                    false
             );
             el.addEventListener(
-                'drop',
-                function (e) {
-                    // Stops some browsers from redirecting.
-                    if (e.stopPropagation)
-                        e.stopPropagation();
-                    this.classList.remove('over');
-                    event.target.style.opacity = 1;
-                    var item = document.getElementById(e.dataTransfer.getData('Text'));
-                    var fn = scope.drop({itemId: item.id, nodeId: this.id});
-                },
-                false
+                    'drop',
+                    function (e) {
+                        // Stops some browsers from redirecting.
+                        if (e.stopPropagation)
+                            e.stopPropagation();
+                        this.classList.remove('over');
+                        event.target.style.opacity = 1;
+                        var item = document.getElementById(e.dataTransfer.getData('Text'));
+                        var fn = scope.drop({itemId: item.id, nodeId: this.id});
+                    },
+                    false
             );
         }
     }
