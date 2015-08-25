@@ -128,7 +128,7 @@ dirs.directive('mxTreeNodeContent', function () {
                     function (e) {
                         e.stopPropagation();
                         var pos = calcDragPos(el, e);
-                        if (pos < 1) {
+                        if (pos < 0) {
                             return false;
                         }
 
