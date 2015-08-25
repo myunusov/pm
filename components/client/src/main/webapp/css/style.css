@@ -59,6 +59,26 @@
 }
 
 
+li .over-top {
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: #000;
+}
+
+li .over-middle {
+    background-color: #b9f6ca;
+}
+
+li .over-middle .simplebox {
+    background-color: #b9f6ca;
+}
+
+
+li .over-bottom {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #000;
+}
 
 
 /*main menu*/
@@ -141,8 +161,8 @@ md-fab-toolbar.md-left md-fab-trigger.align-with-text {
 }
 .tree-li {
     list-style-type:none;
-    margin:0;
-    padding:10px 0 0 5px;
+    margin:  0;
+    padding: 0;
     position:relative
 }
 .tree-li::before, .tree-li::after {

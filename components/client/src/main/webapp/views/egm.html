@@ -103,10 +103,9 @@
                                                 </md-menu-item>
                                             </md-menu-content>
                                         </md-menu>
-                                        <ul>
-                                            <li ng-repeat="step in scenario.steps" ng-include="step.url"
-                                                class="tree-li parent-li" ng-class="step.getClass()"></li>
-                                        </ul>
+                                        <mx-tree node="scenario" steps="scenario.steps">
+                                            <div>Replaced</div>
+                                        </mx-tree>
                                     </div>
                                 </td>
                                 <td>
@@ -165,7 +164,7 @@
 
 <script type="text/ng-template" id="stepContent.html">
 
-    <div id="node{{ step.id }}" droppable drop="moveAfter(itemId, nodeId)" >
+    <div>
         <input type="text"
                ng-show="step.isCase()"
                aria-label="Probability"
@@ -174,11 +173,8 @@
                class="input input-small simplebox quantity"
                ng-model="step.rate">
 
-        <div>
-            <div flex="90"
-                 draggable
-                 id="item{{ step.id }}"
-                 >
+        <div flex layout="row" layout-align="space-between center">
+            <div flex="90">
                 <md-menu ng-show="step.isScenario()">
                     <md-button class="md-fab md-mini" ng-class="step.theme()" aria-label="Select Scenario">
                         <md-icon  md-svg-src="img/icons/{{step.image()}}" ng-click="$mdOpenMenu()">
@@ -203,7 +199,6 @@
 
                 <md-menu ng-hide="step.isScenario()">
                     <md-button
-                            id="root{{ step.id }}" droppable drop="moveAtFirst(itemId, nodeId)"
                             class="md-fab md-mini"
                             ng-class="step.theme()"
                             aria-label="New Step">
@@ -239,8 +234,8 @@
                 </span>
             </div>
 
-            <div flex="10" style="float: right">
-                <a class="simpleank" ng-click="step.removeSelf()"><i class="mdi mdi-close"></i></a>
+            <div flex>
+                <a class="simpleank" ng-click="step.removeSelf()"><i class="mdi mdi-close" align="right" style="float:right;"></i></a>
                 <md-tooltip>Remove Step</md-tooltip>
             </div>
 
@@ -248,8 +243,4 @@
         </div>
 
     </div>
-
-    <ul ng-if="!step.isScenario()" >
-        <li ng-repeat="step in step.steps" ng-include="step.url" class="tree-li" ng-class="step.getClass()"></li>
-    </ul>
 </script>

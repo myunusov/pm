@@ -174,28 +174,6 @@ function EGMStep(type) {
         return null;
     };
 
-    this.moveAtFirst = function (step) {
-        this.removeSelf();
-        var parent = step;
-        this.parent = parent;
-        if (parent.isSwitch()) {
-            this.rate = 0.5;
-        }
-        parent.steps.splice(0, 0, this);
-        this.change();
-    };
-
-    this.moveAfter = function (step) {
-        this.removeSelf();
-        var parent = step.parent;
-        this.parent = parent;
-        if (parent.isSwitch()) {
-            this.rate = 0.5;
-        }
-        parent.steps.splice(parent.steps.indexOf(step) + 1, 0, this);
-        this.change();
-    };
-
     this.removeStep = function (step) {
         this.steps.remove(step);
         this.change();
@@ -203,6 +181,36 @@ function EGMStep(type) {
 
     this.removeSelf = function () {
         this.parent.removeStep(this);
+    };
+
+    this.isChild = function(step) {
+        return this.id.indexOf(step.id) === 0;
+    };
+
+    this.dragOver = function (step) {
+        return step instanceof EGMStep && !this.isChild(step);
+    };
+
+    this.dropBefore = function (step) {
+        this.parent.insert(step, this.parent.steps.indexOf(this));
+    };
+
+    this.dropAfter = function (step) {
+        this.parent.insert(step, this.parent.steps.indexOf(this) + 1);
+    };
+
+    this.dropIn = function (step) {
+        this.insert(step, 0);
+    };
+
+    this.insert = function (step, pos) {
+        step.removeSelf();
+        step.parent = this;
+        if (this.isSwitch()) {
+            step.rate = 0.5;
+        }
+        this.steps.splice(pos, 0, step);
+        this.change();
     };
 
 
@@ -310,10 +318,6 @@ function EGMStep(type) {
 
     this.isCase = function () {
         return this.parent && this.parent.isSwitch();
-    };
-
-    this.getClass = function () {
-        return (this.isParent() ? " parent-li" : "" + " last-child") + (this.inconsistent ? " invalid" : "");
     };
 
     this.theme = function () {
