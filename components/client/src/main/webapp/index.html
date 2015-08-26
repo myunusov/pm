@@ -165,8 +165,11 @@
 
 <script type="text/ng-template" id="model-group.html">
     <div layout-padding="2px" layout="row">
-        <div flex><md-icon class="mdi mdi-package-variant" ></md-icon></div>
-        <div flex><p>{{step.title}}</p></div>
+        <div flex>
+            <md-icon class="mdi mdi-package-variant" style="height: 32px;font-size: 32px"></md-icon>
+            &nbsp;{{step.title}}
+        </div>
+
     </div>
 </script>
 <script type="text/ng-template" id="model.html">
