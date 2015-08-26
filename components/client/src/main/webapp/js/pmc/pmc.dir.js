@@ -316,7 +316,7 @@ dirs.directive('resize', function ($window) {
 
             scope.height = function () {
                 return {
-                    'height': (newValue.h) + 'px'
+                    'height': (newValue.h - 20) + 'px'
                 };
             };
             scope.width = function () {

@@ -46,7 +46,7 @@
                 <md-tooltip>Save Project</md-tooltip>
             </md-button>
 
-            <md-button aria-label="Compare" hide-sm class="md-icon-button" href="#compare"
+            <md-button aria-label="Compare" hide-sm class="md-icon-button" ng-click="showComparator()"
                        ng-disabled="isNotComparable()">
                 <md-icon class="mdi mdi-compare">
                     <span class="badge-w"><span class="badge">{{compareModels()}}</span></span>
@@ -58,6 +58,7 @@
                 <md-icon class="mdi" ng-click="toggleFullScreen();" ng-class="fullScreenClass()"></md-icon>
                 <md-tooltip>Toggle Full Screen</md-tooltip>
             </md-button>
+
         </div>
     </md-toolbar>
 
@@ -102,6 +103,7 @@
             </md-content>
         </md-sidenav>
 
+
         <!-- CONTEXT -->
         <div flex ui-view autoscroll="true">
         </div>
@@ -112,7 +114,7 @@
 
 </div>
 
-<!--FOOTER
+<!--FOOTER -->
 <footer class="page-footer teal lighten-2">
     <div class="footer-copyright">
         <div class="container">
@@ -124,7 +126,7 @@
                                                             href="http://www.maxur.org">Maxim Yunusov</a></span>
         </div>
     </div>
-</footer>-->
+</footer>
 
 <script src="libs/jquery/js/jquery.js"></script>
 <script src="libs/jquery-json/js/jquery.json.js"></script>
