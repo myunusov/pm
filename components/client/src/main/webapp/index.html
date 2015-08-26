@@ -46,7 +46,7 @@
                 <md-tooltip>Save Project</md-tooltip>
             </md-button>
 
-            <md-button aria-label="Compare" hide-sm class="md-icon-button" ng-click="showComparator()"
+            <md-button aria-label="Compare" hide-sm class="md-icon-button" ui-sref="compare"
                        ng-disabled="isNotComparable()">
                 <md-icon class="mdi mdi-compare">
                     <span class="badge-w"><span class="badge">{{compareModels()}}</span></span>
@@ -117,10 +117,23 @@
                 </div>
             </md-toolbar>
 
-            <mx-tree step="project"> </mx-tree>
-
             <md-list>
-                <md-list-item ng-repeat="model in project.models" layout-padding="2px" class="frame">
+                <md-subheader class="md-no-sticky">Software Execution Models</md-subheader>
+                <md-list-item ng-repeat="model in project.sems()" layout-padding="2px" class="frame">
+                    <md-button class="md-icon-button" aria-label="Open Model" ng-click="openModel(model)">
+                        <md-icon class="mdi mdi-package-variant" ></md-icon>
+                    </md-button>
+                    <label>
+                        <input type="text" class="simplebox ng-pristine ng-valid" ng-model="model.name">
+                    </label>
+                    <span flex></span>
+                    <md-button class="md-icon-button" aria-label="Remove Model" ng-click="project.removeModel(model)">
+                        <md-icon class="mdi mdi-close"></md-icon>
+                    </md-button>
+                </md-list-item>
+                <md-divider></md-divider>
+                <md-subheader class="md-no-sticky">Queue Network Models</md-subheader>
+                <md-list-item ng-repeat="model in project.qnms()" layout-padding="2px" class="frame">
                     <md-button class="md-icon-button" aria-label="Open Model" ng-click="openModel(model)">
                         <md-icon class="mdi mdi-package-variant" ></md-icon>
                     </md-button>
@@ -150,7 +163,7 @@
 </div>
 
 <!--FOOTER -->
-<footer class="page-footer teal lighten-2">
+<div>
     <div class="footer-copyright">
         <div class="container">
             <span>Code licensed under <a class="grey-text text-lighten-4"
@@ -161,31 +174,7 @@
                                                             href="http://www.maxur.org">Maxim Yunusov</a></span>
         </div>
     </div>
-</footer>
-
-<script type="text/ng-template" id="model-group.html">
-    <div layout-padding="2px" layout="row">
-        <div flex>
-            <md-icon class="mdi mdi-package-variant" style="height: 32px;font-size: 32px"></md-icon>
-            &nbsp;{{step.title}}
-        </div>
-
-    </div>
-</script>
-<script type="text/ng-template" id="model.html">
-    <div>
-        <md-button class="md-icon-button" aria-label="Open Model" ng-click="openModel(step)">
-            <md-icon class="mdi mdi-package-variant" ></md-icon>
-        </md-button>
-        <label>
-            <input type="text" class="simplebox ng-pristine ng-valid" ng-model="model.name">
-        </label>
-        <span flex></span>
-        <md-button class="md-icon-button" aria-label="Remove Model" ng-click="project.removeModel(model)">
-            <md-icon class="mdi mdi-close"></md-icon>
-        </md-button>
-    </div>
-</script>
+</div>
 
 <script src="libs/jquery/js/jquery.js"></script>
 <script src="libs/jquery-json/js/jquery.json.js"></script>

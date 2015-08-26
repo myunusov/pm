@@ -15,6 +15,10 @@ controllers.controller('ProjectCtrl', function (
 
     $scope.project = currentProject;
 
+    $scope.model = function() {
+        return $scope.project.getCurrentModel();
+    };
+
     $scope.hideModel = function(model) {
         $scope.project.visibleModels.remove(model);
     };
@@ -28,13 +32,14 @@ controllers.controller('ProjectCtrl', function (
             targetEvent: ev
         })
             .then(function (answer) {
-                var length = $scope.project.models.length;
-                    var model;
+                var model;
                 if (answer === "QNM") {
-                    model = modelFactory.qnm("QNM " + length);
-                }
-                if (answer === "EGM") {
-                    model = modelFactory.egm("SEM " + length);
+                    model = modelFactory.qnm("QNM " + $scope.project.qnms().length);
+                } else if (answer === "EGM") {
+                    model = modelFactory.egm("SEM " + $scope.project.sems().length);
+                } else {
+                    $scope.project.currentModelIndex = $scope.project.visibleModels.length - 1;
+                    return;
                 }
                 $scope.project.addModel(model);
 

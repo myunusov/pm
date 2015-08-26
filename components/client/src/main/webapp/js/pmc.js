@@ -80,13 +80,13 @@ pmc.config([
                             var projectId = $stateParams.projectId;
                             var modelId = $stateParams.modelId;
                             if (project.id && project.id === projectId) {
-                                return project.getModel(modelId);
+                                return project.findModelById(modelId);
                             }
                             var prj = projectService.findBy(projectId);
                             if (prj === null) {
                                 return null;
                             }
-                            return project.clone(prj).getModel(modelId);
+                            return project.clone(prj).findModelById(modelId);
                         }
                     }
                 })

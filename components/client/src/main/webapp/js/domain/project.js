@@ -1,3 +1,5 @@
+"use strict";
+
 function Project(name, id) {
 
     this.id = id;
@@ -5,19 +7,6 @@ function Project(name, id) {
     this.version = 0;
     this.description = "";
     this.models = [];
-
-    this.steps = [
-        {
-            title: "QNM" ,
-            url: "model-group.html",
-            steps: []
-        },
-        {
-            title: "SEM" ,
-            url: "model-group.html",
-            steps: []
-        }
-    ];
 
     this.visibleModels = [];
     this.currentModelIndex = 0;
@@ -28,6 +17,13 @@ function Project(name, id) {
         memento.version = this.version;
         memento.description = this.description;
         memento.models = createArrayDTO(this.models);
+
+        memento.visibleModels = [];
+        for(var i = 0; i < this.visibleModels.length; i++) {
+            memento.visibleModels.push(this.visibleModels[i].id);
+        }
+        memento.currentModelIndex = this.currentModelIndex;
+
         return memento;
     };
 
@@ -37,6 +33,7 @@ function Project(name, id) {
         this.version = memento.version;
         this.description = memento.description;
         this.models = [];
+        this.visibleModels = [];
         for (var i = 0; i < memento.models.length; i++) {
             var model;
             if (memento.models[i].type === "qnm") {
@@ -52,7 +49,12 @@ function Project(name, id) {
             }
             model.setDTO(memento.models[i]);
             this.models.push(model);
+            for(var j = 0; j < memento.visibleModels.length; j++) {
+                if (memento.visibleModels[j] === model.id)
+                this.visibleModels.push(model);
+            }
         }
+        this.currentModelIndex = memento.currentModelIndex;
     };
 
     this.removeModel = function (model) {
@@ -65,6 +67,15 @@ function Project(name, id) {
         this.visibleModels.push(model);
     };
 
+    this.findModelById = function(id) {
+        for(var i = 0; i < this.models.length; i++) {
+            if (this.models[i].id === id) {
+                return this.models[i];
+            }
+        }
+        return null;
+    }
+
     this.openModel = function (model) {
         for(var i = 0; i < this.visibleModels.length; i++) {
             if (this.visibleModels[i].id === model.id) {
@@ -76,15 +87,33 @@ function Project(name, id) {
         this.currentModelIndex = this.visibleModels.length - 1;
     };
 
-    this.getModel = function (id) {
+
+    this.getCurrentModel = function () {
+        return this.visibleModels[this.currentModelIndex];
+    };
+
+    this.sems = function () {
+        var result =[];
         for (var i = 0; i < this.models.length; i++) {
             var model = this.models[i];
-            if (model.id === id) {
-                return model;
+            if (model.type === 'egm') {
+                result.push(model);
             }
         }
-        return null;
-    };
+        return result;
+    }
+
+    this.qnms = function () {
+        var result =[];
+        for (var i = 0; i < this.models.length; i++) {
+            var model = this.models[i];
+            if (model.type === "qnm") {
+                result.push(model);
+            }
+        }
+        return result;
+    }
+
 
     this.clone = function (project) {
         this.id = project.id;

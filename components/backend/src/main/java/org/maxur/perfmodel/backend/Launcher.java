@@ -82,7 +82,7 @@ public class Launcher {
         if (trayIconApplication.isReady()) {
             trayIconApplication.start();
         } else {
-            System.out.println("Press Enter to stop\n");
+            LOGGER.info("Press Enter to stop\n");
             //noinspection ResultOfMethodCallIgnored
             System.in.read();
             done();
