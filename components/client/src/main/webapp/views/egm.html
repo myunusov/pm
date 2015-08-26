@@ -103,7 +103,7 @@
                                                 </md-menu-item>
                                             </md-menu-content>
                                         </md-menu>
-                                        <mx-tree node="scenario" steps="scenario.steps">
+                                        <mx-tree step="scenario">
                                             <div>Replaced</div>
                                         </mx-tree>
                                     </div>
@@ -188,7 +188,7 @@
                             </md-button>
                         </md-menu-item>
 
-                        <md-menu-item ng-repeat="scenario in model.scenarios">
+                        <md-menu-item ng-repeat="scenario in step.allScenarios()">
                             <md-button aria-label="Choise Scenario" ng-click="step.choiseScenario(scenario)"
                                        style="height: 31px;float: right">
                                 {{scenario.id}}. {{scenario.name}}
@@ -235,7 +235,7 @@
             </div>
 
             <div flex>
-                <a class="simpleank" ng-click="step.removeSelf()"><i class="mdi mdi-close" align="right" style="float:right;"></i></a>
+                <a class="simpleank" ng-click="step.removeSelf()"><i class="mdi mdi-close" style="float:right;"></i></a>
                 <md-tooltip>Remove Step</md-tooltip>
             </div>
 

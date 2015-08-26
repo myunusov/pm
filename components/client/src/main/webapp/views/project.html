@@ -39,13 +39,13 @@
 
 <section flex ng-if="project.id">
 
-    <div flex layout-fill class="md-padding" ng-if="project.models.length > 1">
-        <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect md-dynamic-height>
-            <md-tab ng-repeat="model in project.models">
+    <div flex layout-fill class="md-padding" ng-if="project.visibleModels.length > 1">
+        <md-tabs md-selected="project.currentModelIndex" md-border-bottom md-autoselect md-dynamic-height>
+            <md-tab ng-repeat="model in project.visibleModels">
                 <md-tab-label>
                     <input type="text" class="tab-input ng-pristine ng-valid" ng-model="model.name">
                     <span style="height: 28px">
-                    <button class="tab-button" ng-click="project.removeModel(model)">
+                    <button class="tab-button" ng-click="hideModel(model)">
                         <i class="mdi mdi-close"></i>
                         <md-tooltip>Remove Model</md-tooltip>
                     </button>
@@ -58,8 +58,8 @@
         </md-tabs>
     </div>
 
-    <div flex layout-fill class="md-padding" ng-if="project.models.length == 1">
-        <div ng-repeat="model in project.models">
+    <div flex layout-fill class="md-padding" ng-if="project.visibleModels.length == 1">
+        <div ng-repeat="model in project.visibleModels">
             <ng-include src="model.view"></ng-include>
         </div>
     </div>

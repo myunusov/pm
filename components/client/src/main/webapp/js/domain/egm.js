@@ -224,6 +224,10 @@ function EGMStep(type) {
         this.change();
     };
 
+    this.allScenarios = function () {
+        return this.parent.allScenarios();
+    };
+
     this.addScenario = function () {
         return this.parent.addScenario();
     };
@@ -471,6 +475,13 @@ function EGMScenario(id, model) {
     this.findScenario = function (id) {
         return this.model.findScenario(id);
     };
+
+    this.allScenarios = function () {
+        var result = this.model.scenarios.clone();
+        result.remove(this);
+        return result;
+    };
+
 
     this.getResources = function () {
         return this.model.resources;

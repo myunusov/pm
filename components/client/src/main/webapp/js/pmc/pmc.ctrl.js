@@ -15,6 +15,10 @@ controllers.controller('ProjectCtrl', function (
 
     $scope.project = currentProject;
 
+    $scope.hideModel = function(model) {
+        $scope.project.visibleModels.remove(model);
+    };
+
     $scope.newModel = function (ev) {
         $mdDialog.show({
             clickOutsideToClose: true,
@@ -25,12 +29,15 @@ controllers.controller('ProjectCtrl', function (
         })
             .then(function (answer) {
                 var length = $scope.project.models.length;
+                    var model;
                 if (answer === "QNM") {
-                    $scope.project.models.push(modelFactory.qnm("QNM " + length));
+                    model = modelFactory.qnm("QNM " + length);
                 }
                 if (answer === "EGM") {
-                    $scope.project.models.push(modelFactory.egm("SEM " + length));
+                    model = modelFactory.egm("SEM " + length);
                 }
+                $scope.project.addModel(model);
+
             }, function () {
             });
     };
@@ -260,6 +267,8 @@ controllers.controller('MainMenuCtrl', function ($scope,
                                                  project,
                                                  projectService) {
 
+    $scope.project = project;
+
     $scope.frameHeight = window.innerHeight;
 
     $scope.triger = false;
@@ -285,6 +294,21 @@ controllers.controller('MainMenuCtrl', function ($scope,
         $mdSidenav('left').close()
             .then(function () {
                 $log.debug("close LEFT is done");
+            });
+    };
+
+    $scope.openModel = function (model) {
+        project.openModel(model);
+        $mdSidenav('right').close()
+                .then(function () {
+                    $log.debug("close RIGHT is done");
+                });
+    };
+
+    $scope.closeStructure = function () {
+        $mdSidenav('right').close()
+            .then(function () {
+                $log.debug("close RIGHT is done");
             });
     };
 
@@ -576,7 +600,7 @@ controllers.controller('ChartCtrl', function ($scope, currentModel) {
         if ($scope.model !== null) {
             refreshCharts($scope.model);
         }
-    }
+    };
 
     $scope.$watch('$viewContentLoaded', function() {
 
@@ -598,7 +622,7 @@ controllers.controller('ChartCtrl', function ($scope, currentModel) {
             $(window).resize();
         });
 
-    };
+    }
 });
 
 

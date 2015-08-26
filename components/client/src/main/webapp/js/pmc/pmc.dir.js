@@ -23,8 +23,7 @@ dirs.directive('mxTree', function () {
         restrict: 'E',
         controller: 'MxTreeCtrl',
         scope: {
-            steps: '=',
-            node: '='
+            step: '='
         },
         transclude: true,
         link: function(scope, element, attrs, ctrl, transclude) {
@@ -32,7 +31,7 @@ dirs.directive('mxTree', function () {
                 $(clone[1]).html();
             });
         },
-        template: "<mx-branch steps='steps' node='node'></mx-branch>"
+        template: "<mx-branch step='step'></mx-branch>"
     }
 });
 
@@ -43,10 +42,9 @@ dirs.directive('mxBranch', function () {
         replace: true,
         require: '^mxTree',
         scope: {
-            steps: '=',
-            node: '='
+            step: '='
         },
-        template: '<ul><mx-tree-node ng-repeat="step in steps" step="step"></mx-tree-node></ul>'
+        template: '<ul><mx-tree-node ng-repeat="step in step.steps" step="step"></mx-tree-node></ul>'
     };
 });
 
@@ -61,7 +59,7 @@ dirs.directive('mxTreeNode', function ($compile) {
         },
         link: function (scope, element) {
             if (angular.isArray(scope.step.steps)) {
-                element.append("<mx-branch steps='step.steps' node='step'></mx-branch>");
+                element.append("<mx-branch step='step'></mx-branch>");
                 $compile(element.contents())(scope)
             }
 

@@ -115,7 +115,7 @@ angular.module('pmc.services', [])
             },
 
             findRemoteProjects: function () {
-                var result = ProjectDto.query(function (data) {
+                return ProjectDto.query(function (data) {
                     for (var j = 0; j < data.length; j++) {
                         data[j].isLocal = false;
                     }
@@ -123,15 +123,14 @@ angular.module('pmc.services', [])
                     var text = error.statusText ? ". " + error.statusText + ". " : "";
                     messageService.error("Project Repository is not accessible." + text, error.status);
                 });
-                return result;
             },
 
             make: function (id) {
                 saveTempBak();
                 id = id || uuid();
                 var result = new Project("New Project", id);
-                result.models.push(modelFactory.qnm("QNM 0"));
-                result.models.push(modelFactory.egm("SEM 0"));
+                result.addModel(modelFactory.qnm("QNM 0"));
+                result.addModel(modelFactory.egm("SEM 0"));
                 saveAsCurrent(result);
                 messageService.info("New Project is created.");
                 return result;

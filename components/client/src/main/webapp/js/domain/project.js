@@ -6,6 +6,22 @@ function Project(name, id) {
     this.description = "";
     this.models = [];
 
+    this.steps = [
+        {
+            title: "QNM" ,
+            url: "model-group.html",
+            steps: []
+        },
+        {
+            title: "SEM" ,
+            url: "model-group.html",
+            steps: []
+        }
+    ];
+
+    this.visibleModels = [];
+    this.currentModelIndex = 0;
+
     this.createDTO = function (memento) {
         memento.id = this.id;
         memento.name = this.name;
@@ -41,6 +57,23 @@ function Project(name, id) {
 
     this.removeModel = function (model) {
         this.models.remove(model);
+        this.visibleModels.remove(model);
+    };
+
+    this.addModel = function (model) {
+        this.models.push(model);
+        this.visibleModels.push(model);
+    };
+
+    this.openModel = function (model) {
+        for(var i = 0; i < this.visibleModels.length; i++) {
+            if (this.visibleModels[i].id === model.id) {
+                this.currentModelIndex = i;
+                return;
+            }
+        }
+        this.visibleModels.push(model);
+        this.currentModelIndex = this.visibleModels.length - 1;
     };
 
     this.getModel = function (id) {
@@ -59,6 +92,9 @@ function Project(name, id) {
         this.description = project.description;
         this.version = project.version;
         this.models = project.models;
+        this.visibleModels = project.visibleModels;
+        this.currentModelIndex = project.currentModelIndex;
+
         return this;
     };
 
