@@ -74,7 +74,7 @@ function Project(name, id) {
             }
         }
         return null;
-    }
+    };
 
     this.openModel = function (model) {
         for(var i = 0; i < this.visibleModels.length; i++) {
@@ -92,27 +92,24 @@ function Project(name, id) {
         return this.visibleModels[this.currentModelIndex];
     };
 
-    this.sems = function () {
+    this.modelsBy = function(type) {
         var result =[];
         for (var i = 0; i < this.models.length; i++) {
             var model = this.models[i];
-            if (model.type === 'egm') {
+            if (model.type === type) {
                 result.push(model);
             }
         }
         return result;
-    }
+    };
+
+    this.sems = function () {
+        return this.modelsBy('egm');
+    };
 
     this.qnms = function () {
-        var result =[];
-        for (var i = 0; i < this.models.length; i++) {
-            var model = this.models[i];
-            if (model.type === "qnm") {
-                result.push(model);
-            }
-        }
-        return result;
-    }
+        return this.modelsBy('qnm');
+    };
 
 
     this.clone = function (project) {

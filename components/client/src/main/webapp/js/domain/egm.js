@@ -331,8 +331,6 @@ function EGMStep(type) {
 }
 
 function EGMLink() {
-    this.id;
-    this.parent;
     this.scenarioId = null;
     this.scenario = null;
     this._name = "";
@@ -421,7 +419,6 @@ function EGMLink() {
 EGMLink.prototype = new EGMStep("C");
 
 function EGMScenario(id, model) {
-
     this.id = id;
     this.name = "Scenario";
     this.model = model;
@@ -498,8 +495,6 @@ function EGMScenario(id, model) {
 EGMScenario.prototype = new EGMStep("C");
 
 function EGMRoutine() {
-    this.id;
-    this.parent;
     this.name = "Step";
 
     this.rate = 1;
@@ -516,8 +511,6 @@ function EGMRoutine() {
 EGMRoutine.prototype = new EGMStep("R");
 
 function EGMLoop() {
-    this.id;
-    this.parent;
     this.name = "Loop";
 
     this.repeat = 2;
@@ -556,8 +549,6 @@ function EGMLoop() {
 EGMLoop.prototype = new EGMStep("L");
 
 function EGMSwitch() {
-    this.id;
-    this.parent;
     this.name = "Switch";
 
     this.rate = 1;
@@ -600,8 +591,6 @@ function EGMSwitch() {
 EGMSwitch.prototype = new EGMStep("S");
 
 function EGMSplit() {
-    this.id;
-    this.parent;
     this.name = "Split";
 
     this.rate = 1;
@@ -631,8 +620,6 @@ EGMSplit.prototype = new EGMStep("F");
 
 
 function EGMPardo() {
-    this.id;
-    this.parent;
     this.name = "Pardo";
 
     this.rate = 1;
