@@ -163,14 +163,14 @@ public class TrayIconApplication {
     }
 
     public void openBrowser() {
-        String baseUrl = propertiesService.asString("webapp.url", "http://localhost:9090/");
+        String baseUrl = propertiesService.asString("webapp.url", "http://localhost:8080/"); // TODO hardcode
         URI uri = URI.create(baseUrl);
         Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
         if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
             try {
                 desktop.browse(uri);
             } catch (Exception e) {
-                e.printStackTrace();
+                e.printStackTrace(); // TODO
             }
         }
     }
