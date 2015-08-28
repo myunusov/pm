@@ -22,6 +22,8 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
 
 import java.net.URI;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -65,12 +67,24 @@ public class WebServer {
     }
 
     public void stop() {
+        LOGGER.info("Stop Web Server");
         httpServer.shutdownNow();
     }
+
+    public void stopWithDelay(int ms) {
+            Timer timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    LOGGER.info("Stop Web Server");
+                    httpServer.shutdownNow();
+                }
+            }, ms, 0);
+            stop();
+    }
+
 
     public boolean isStarted() {
         return httpServer.isStarted();
     }
-
-
 }

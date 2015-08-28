@@ -1,19 +1,18 @@
 package org.maxur.perfmodel.backend.rest;
 
 import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.maxur.perfmodel.backend.domain.Project;
-import org.maxur.perfmodel.backend.domain.Repository;
-import org.maxur.perfmodel.backend.domain.ValidationException;
 import org.maxur.perfmodel.backend.infrastructure.WebServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
@@ -21,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.maxur.perfmodel.backend.rest.WebException.badRequestException;
-import static org.maxur.perfmodel.backend.rest.WebException.conflictException;
 
 /**
  * @author Maxim Yunusov
@@ -54,7 +52,7 @@ public class ApplicationResource {
             });
             final String status = (String) map.get("status");
             if ("stopped".equals(status)) {
-                webServer.stop();
+                webServer.stopWithDelay(100);
             }
             return Response.status(Response.Status.ACCEPTED).build();
         } catch (IOException e) {
