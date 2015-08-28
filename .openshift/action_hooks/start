@@ -1,0 +1,15 @@
+#!/bin/bash
+# The logic to start up your application should be put in this
+# script. The application will work only if it binds to
+# $OPENSHIFT_INTERNAL_IP:8080
+
+cd $OPENSHIFT_REPO_DIR
+
+if [[ -z "$OPENSHIFT_INTERNAL_IP" ]]; then export OPENSHIFT_INTERNAL_IP="$OPENSHIFT_DIY_IP"; fi
+if [[ -z "$OPENSHIFT_INTERNAL_PORT" ]]; then export OPENSHIFT_INTERNAL_PORT="$OPENSHIFT_DIY_PORT"; fi
+
+JAVA_OPTS="-Xmx1024M -Xms1024M -Xss1M -XX:+UseParallelGC"
+PMC_BIN=assemblies/target/assemblies-2.1-SNAPSHOT
+APP_CLASSPATH=${PMC_BIN}/lib/*:${PMC_BIN}/conf
+
+nohup java ${JAVA_OPTS} -cp "${APP_CLASSPATH}" org.maxur.perfmodel.backend.Launcher > ${OPENSHIFT_DIY_LOG_DIR}/pmc.log 2>&1 &
