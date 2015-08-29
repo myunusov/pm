@@ -22,22 +22,30 @@ package org.maxur.perfmodel.backend.utils;
  */
 public final class OsUtils {
 
-    private static String OS = null;
-
     /**
      * Util's class.
      */
     private OsUtils() {
     }
 
-    public static String getOsName() {
-        if(OS == null) {
-            OS = System.getProperty("os.name");
-        }
-        return OS;
+    private static String getOsName() {
+        return System.getProperty("os.name").toLowerCase();
     }
+
     public static boolean isWindows() {
-        return getOsName().startsWith("Windows");
+        return (getOsName().indexOf("win") >= 0);
+    }
+
+    public static boolean isMac() {
+        return (getOsName().indexOf("mac") >= 0);
+    }
+
+    public static boolean isUnix() {
+        return (getOsName().indexOf("nix") >= 0 || getOsName().indexOf("nux") >= 0 || getOsName().indexOf("aix") > 0 );
+    }
+
+    public static boolean isSolaris() {
+        return (getOsName().indexOf("sunos") >= 0);
     }
 
 }

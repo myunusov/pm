@@ -46,7 +46,7 @@ public class PMObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
     @Override
     public ObjectMapper getContext(Class<?> objectType) {
-        return (types.contains(objectType)) ? context : null;
+        return types.contains(objectType) ? context : null;
     }
 
     private static ObjectMapper createDefaultMapper() {

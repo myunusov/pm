@@ -2,6 +2,7 @@ package org.maxur.perfmodel.backend.rest;
 
 
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.maxur.perfmodel.backend.domain.Project;
@@ -39,10 +40,6 @@ import static org.maxur.perfmodel.backend.rest.WebException.notFoundException;
 public class ProjectResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProjectResource.class);
-
-    private static final String NAME = "name";
-
-    private static final String VERSION = "version";
 
     private static final String ID = "id";
 
@@ -89,23 +86,15 @@ public class ProjectResource {
     @Produces(MediaType.APPLICATION_JSON)
     public synchronized Response save(final String object) {
         try {
-            final ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-            final Map<String,Object> map = mapper.readValue(object, new TypeReference<HashMap<String,Object>>(){
-            });
-
-            final String id = (String) map.get(ID);
-            final String name = (String) map.get(NAME);
-            final Integer version = (Integer) map.get(VERSION);
-            final Project previousProjectVersion = repository.get(name);
-            final Project project;
+            final ProjectDTO dto = ProjectDTO.make(object);
+            final Project previousProjectVersion = repository.get(dto.getId());
             if (previousProjectVersion != null) {
-                project = new Project(id, name, version + 1);
-                project.checkConflictWith(previousProjectVersion);
+                dto.incVersion();
             } else {
-                project = new Project(id, name, 1);
+                dto.resetVersion();
             }
-            map.put(VERSION, project.getVersion());
-            project.setRaw(mapper.writeValueAsString(map));
+            final Project project = dto.assemble();
+            project.checkConflictWith(previousProjectVersion);
             repository.put(project);
             return Response.status(Response.Status.CREATED).entity(project).build();
         } catch (ValidationException e) {
@@ -116,6 +105,52 @@ public class ProjectResource {
             LOGGER.debug(PERFORMANCE_MODEL_IS_NOT_SAVED, e);
             LOGGER.error(PERFORMANCE_MODEL_IS_NOT_SAVED, e);
             throw badRequestException(PERFORMANCE_MODEL_IS_NOT_SAVED, e.getMessage());
+        }
+    }
+
+    private static class ProjectDTO {
+
+        private static final String NAME = "name";
+        private static final String VERSION = "version";
+
+        private final Map<String, Object> map;
+
+        static ProjectDTO make(final String raw) throws IOException {
+            final ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+            final Map<String,Object> map = mapper.readValue(raw, new TypeReference<HashMap<String,Object>>(){
+            });
+            return new ProjectDTO(map);
+        }
+
+        ProjectDTO(final Map<String, Object> map) {
+            this.map = map;
+        }
+
+        String getId() {
+            return (String) map.get(ID);
+        }
+
+        String getName() {
+            return (String) map.get(NAME);
+        }
+
+        Integer getVersion() {
+            return (Integer) map.get(VERSION);
+        }
+
+        void incVersion() {
+            map.put(VERSION, getVersion() + 1);
+        }
+
+        void resetVersion() {
+            map.put(VERSION, 1);
+        }
+
+        Project assemble() throws JsonProcessingException {
+            final ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+            final Project result = new Project(getId(), getName(), getVersion());
+            result.setRaw(mapper.writeValueAsString(map));
+            return result;
         }
     }
 
