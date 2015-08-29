@@ -51,76 +51,48 @@
             </properties>
         </profile>
         <profile>
-            <id>check</id>
-            <activation>
-                <property>
-                    <name>packaging</name>
-                    <value>jar</value>
-                </property>
-            </activation>
+            <id>pitest</id>
             <build>
                 <plugins>
                     <plugin>
-                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-maven</artifactId>
+                        <configuration>
+                            <targetClasses>
+                                <param>org.maxur.perfmodel.*</param>
+                            </targetClasses>
+                            <targetTests>
+                                <param>org.maxur.perfmodel.backend.domain*</param>
+                                <param>org.maxur.perfmodel.backend.rest*</param>
+                            </targetTests>
+                            <mutators>
+                                <mutator>DEFAULTS</mutator>
+                            </mutators>
+                            <outputFormats>
+                                <outputFormat>HTML</outputFormat>
+                                <outputFormat>XML</outputFormat>
+                            </outputFormats>
+                            <threads>4</threads>
+                            <reportsDirectory>${project.build.directory}/pit-reports</reportsDirectory>
+                            <timestampedReports>false</timestampedReports>
+                        </configuration>
                         <executions>
                             <execution>
-                                <id>integration-test</id>
+                                <id>check</id>
+                                <phase>pre-site</phase>
                                 <goals>
-                                    <goal>integration-test</goal>
+                                    <goal>mutationCoverage</goal>
                                 </goals>
                             </execution>
                             <execution>
-                                <id>verify</id>
+                                <id>test</id>
+                                <phase>test</phase>
                                 <goals>
-                                    <goal>verify</goal>
+                                    <goal>mutationCoverage</goal>
                                 </goals>
                             </execution>
                         </executions>
-                        <configuration>
-                            <forkMode>pertest</forkMode>
-                            <encoding>${project.source.encoding}</encoding>
-                        </configuration>
                     </plugin>
-
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <skipTests>false</skipTests>
-                            <testFailureIgnore>true</testFailureIgnore>
-                            <systemProperties>
-                            </systemProperties>
-                        </configuration>
-                    </plugin>
-
-                    <!-- CHECKSTYLE -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-checkstyle-plugin</artifactId>
-                    </plugin>
-
-                    <!-- PMD -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-pmd-plugin</artifactId>
-                    </plugin>
-
-                    <!-- FINDBUGS -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>findbugs-maven-plugin</artifactId>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>javancss-maven-plugin</artifactId>
-                        <configuration>
-                            <failOnViolation>true</failOnViolation>
-                            <ccnLimit>12</ccnLimit>
-                            <ncssLimit>90</ncssLimit>
-                        </configuration>
-                    </plugin>
-
                 </plugins>
             </build>
         </profile>
@@ -354,45 +326,6 @@
                         <include>**/*Spec.java</include>
                     </includes>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.pitest</groupId>
-                <artifactId>pitest-maven</artifactId>
-                <configuration>
-                    <targetClasses>
-                        <param>org.maxur.perfmodel.*</param>
-                    </targetClasses>
-                    <targetTests>
-                        <param>org.maxur.perfmodel.*</param>
-                    </targetTests>
-                    <mutators>
-                        <mutator>ALL</mutator>
-                    </mutators>
-                    <outputFormats>
-                        <outputFormat>HTML</outputFormat>
-                        <outputFormat>XML</outputFormat>
-                    </outputFormats>
-                    <threads>4</threads>
-                    <reportsDirectory>${project.build.directory}/pit-reports</reportsDirectory>
-                    <timestampedReports>false</timestampedReports>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>check</id>
-                        <phase>pre-site</phase>
-                        <goals>
-                            <goal>mutationCoverage</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>mutationCoverage</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
         </plugins>
