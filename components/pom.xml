@@ -16,7 +16,7 @@
 
     <properties>
         <project.root>./../</project.root>
-        <junit.reportsPath>target\surefire-reports</junit.reportsPath>
+        <junit.reportsPath>target/surefire-reports</junit.reportsPath>
     </properties>
 
     <modules>

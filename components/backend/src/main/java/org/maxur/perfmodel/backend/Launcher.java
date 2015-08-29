@@ -70,7 +70,8 @@ public class Launcher {
                     protected void configure() {
                         bind(propertiesService).to(PropertiesService.class);
                         bind(webServer).to(WebServer.class);
-                        bindAsContract(new TypeLiteral<SimpleFileRepository>(){})
+                        bindAsContract(new TypeLiteral<SimpleFileRepository>(){
+                        })
                                 .to(new TypeLiteral<Repository<Project>>(){});
                     }
                 });

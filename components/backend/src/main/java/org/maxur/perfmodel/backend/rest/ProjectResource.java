@@ -115,15 +115,15 @@ public class ProjectResource {
 
         private final Map<String, Object> map;
 
+        ProjectDTO(final Map<String, Object> map) {
+            this.map = map;
+        }
+
         static ProjectDTO make(final String raw) throws IOException {
             final ObjectMapper mapper = new ObjectMapper(new JsonFactory());
             final Map<String,Object> map = mapper.readValue(raw, new TypeReference<HashMap<String,Object>>(){
             });
             return new ProjectDTO(map);
-        }
-
-        ProjectDTO(final Map<String, Object> map) {
-            this.map = map;
         }
 
         String getId() {

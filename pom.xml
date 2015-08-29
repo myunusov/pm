@@ -193,7 +193,7 @@
                             <snapshot>${user.home}/.clover/${groupId}-${artifactId}/clover.snapshot</snapshot>
                             <licenseLocation>${project.root}/clover.license</licenseLocation>
                         </configuration>
-                        <executions>
+<!--                        <executions>
                             <execution>
                                 <id>clover</id>
                                 <goals>
@@ -217,7 +217,7 @@
                                     <goal>instrument</goal>
                                 </goals>
                             </execution>
-                        </executions>
+                        </executions>-->
                     </plugin>
                 </plugins>
             </build>
@@ -403,27 +403,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- Staging only Nexus Pro version-->
-            <!--            <plugin>
-                            <groupId>org.sonatype.plugins</groupId>
-                            <artifactId>nexus-staging-maven-plugin</artifactId>
-                            <version>1.6.5</version>
-                            <executions>
-                                <execution>
-                                    <id>default-deploy</id>
-                                    <phase>deploy</phase>
-                                    <goals>
-                                        <goal>deploy</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                            <extensions>true</extensions>
-                            <configuration>
-                                <serverId>releases</serverId>
-                                <nexusUrl>${nexus.url}</nexusUrl>
-                            </configuration>
-                        </plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

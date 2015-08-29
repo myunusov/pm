@@ -27,6 +27,7 @@
         <jackson.version>2.5.4</jackson.version>
         <resteasy.version>3.0.12.Final</resteasy.version>
         <jmockit.version>1.19</jmockit.version>
+        <groovy.version>2.4.1</groovy.version>
     </properties>
 
     <scm>
@@ -45,13 +46,29 @@
                 <clover.generateXml>true</clover.generateXml>
                 <clover.generateHtml>true</clover.generateHtml>
                 <maven.clover.skip>false</maven.clover.skip>
-
-                <sonar.pitest.reportsDirectory>target/pit-reports</sonar.pitest.reportsDirectory>
-                <sonar.pitest.mode>reuseReport</sonar.pitest.mode>
             </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.atlassian.maven.plugins</groupId>
+                        <artifactId>maven-clover2-plugin</artifactId>
+                        <version>${maven-clover2-plugin.version}</version>
+                        <configuration>
+                            <includes>
+                                <include>**/maxur/**/*.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
         <profile>
             <id>pitest</id>
+            <properties>
+                <sonar.pitest.reportsDirectory>target/pit-reports</sonar.pitest.reportsDirectory>
+                <sonar.pitest.mode>reuseReport</sonar.pitest.mode>
+            </properties>
+
             <build>
                 <plugins>
                     <plugin>
@@ -161,6 +178,26 @@
 
         <!-- Unit Testing -->
         <!-- Mandatory dependencies for using Spock -->
+
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>${groovy.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>3.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.objenesis</groupId>
+            <artifactId>objenesis</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>
@@ -314,16 +351,61 @@
                         </goals>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.gmaven.runtime</groupId>
+                        <artifactId>gmaven-runtime-2.0</artifactId>
+                        <version>1.5</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>org.codehaus.groovy</groupId>
+                                <artifactId>groovy-all</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-all</artifactId>
+                        <version>${groovy.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <!-- Optional plugins for using Spock -->
             <!-- Only required if names of spec classes don't match default Surefire patterns (`*Test` etc.) -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.18.1</version>
                 <configuration>
-                    <useFile>false</useFile>
+                    <useFile>true</useFile>
+                    <skipTests>false</skipTests>
                     <includes>
+                        <!-- By default only files ending in 'Test' will be included, so also include support for Spock style naming convention -->
+                        <!-- Oddly enough for Groovy files, *Spec.groovy does not work, but *Spec.java does -->
+                        <include>**/*Test.java</include>
                         <include>**/*Spec.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>verify</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <forkMode>pertest</forkMode>
+                    <encoding>${project.source.encoding}</encoding>
+                    <includes>
+                        <include>**/*IT.java</include>
                     </includes>
                 </configuration>
             </plugin>

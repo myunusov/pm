@@ -33,19 +33,19 @@ public final class OsUtils {
     }
 
     public static boolean isWindows() {
-        return (getOsName().indexOf("win") >= 0);
+        return getOsName().indexOf("win") >= 0;
     }
 
     public static boolean isMac() {
-        return (getOsName().indexOf("mac") >= 0);
+        return getOsName().indexOf("mac") >= 0;
     }
 
     public static boolean isUnix() {
-        return (getOsName().indexOf("nix") >= 0 || getOsName().indexOf("nux") >= 0 || getOsName().indexOf("aix") > 0 );
+        return getOsName().indexOf("nix") >= 0 || getOsName().indexOf("nux") >= 0 || getOsName().indexOf("aix") > 0;
     }
 
     public static boolean isSolaris() {
-        return (getOsName().indexOf("sunos") >= 0);
+        return getOsName().indexOf("sunos") >= 0;
     }
 
 }
