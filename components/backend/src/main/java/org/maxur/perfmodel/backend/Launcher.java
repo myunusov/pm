@@ -15,18 +15,7 @@
 
 package org.maxur.perfmodel.backend;
 
-import org.glassfish.hk2.api.TypeLiteral;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.maxur.perfmodel.backend.domain.Project;
-import org.maxur.perfmodel.backend.domain.Repository;
-import org.maxur.perfmodel.backend.infrastructure.PropertiesService;
-import org.maxur.perfmodel.backend.infrastructure.SimpleFileRepository;
-import org.maxur.perfmodel.backend.infrastructure.WebServer;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -37,7 +26,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 public final class Launcher {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Launcher.class);
+    private static final Logger LOGGER = getLogger(Launcher.class);
 
     private Launcher() {
     }

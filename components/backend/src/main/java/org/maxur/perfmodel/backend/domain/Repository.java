@@ -30,4 +30,6 @@ public interface Repository<T> {
     T put(T project);
 
     Collection<T> findAll();
+
+    Collection<T> findByName(String name);
 }

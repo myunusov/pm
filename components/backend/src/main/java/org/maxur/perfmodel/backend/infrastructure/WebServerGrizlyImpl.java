@@ -17,23 +17,18 @@ package org.maxur.perfmodel.backend.infrastructure;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.StaticHttpHandler;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
-import org.slf4j.Logger;
 
 import java.net.URI;
 
-import static org.slf4j.LoggerFactory.getLogger;
+import static org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory.createHttpServer;
 
 public class WebServerGrizlyImpl extends WebServer {
-
-    private static final Logger LOGGER = getLogger(WebServerGrizlyImpl.class);
 
     private HttpServer httpServer;
 
     @Override
     protected void launch() {
-        httpServer = GrizzlyHttpServerFactory.createHttpServer(
+        httpServer = createHttpServer(
                 URI.create(baseUrl() + REST_APP_URL),
                 getConfig()
         );

@@ -7,7 +7,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.maxur.perfmodel.backend.domain.Project;
 import org.maxur.perfmodel.backend.domain.Repository;
-import org.maxur.perfmodel.backend.domain.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +64,7 @@ public class ProjectResource {
             LOGGER.error(format(PERFORMANCE_MODEL_IS_NOT_FOUNDED, id));
             throw notFoundException(format(PERFORMANCE_MODEL_IS_NOT_FOUNDED, id));
         }
-        return project.asRaw();
+        return project.getRaw();
     }
 
     @DELETE
@@ -87,24 +86,59 @@ public class ProjectResource {
     public synchronized Response save(final String object) {
         try {
             final ProjectDTO dto = ProjectDTO.make(object);
-            final Project previousProjectVersion = repository.get(dto.getId());
-            if (previousProjectVersion != null) {
+            checkNamesakes(dto);
+            final Project oldProject = repository.get(dto.getId());
+            if (oldProject != null) {
                 dto.incVersion();
             } else {
                 dto.resetVersion();
             }
             final Project project = dto.assemble();
-            project.checkConflictWith(previousProjectVersion);
+            checkConflictWith(oldProject, project);
             repository.put(project);
             return Response.status(Response.Status.CREATED).entity(project).build();
-        } catch (ValidationException e) {
-            LOGGER.debug(PERFORMANCE_MODEL_IS_NOT_SAVED, e);
-            LOGGER.info(PERFORMANCE_MODEL_IS_NOT_SAVED, e.getMessage());
-            throw conflictException(PERFORMANCE_MODEL_IS_NOT_SAVED, e.getMessage());
         } catch (IOException | NumberFormatException e) {
             LOGGER.debug(PERFORMANCE_MODEL_IS_NOT_SAVED, e);
             LOGGER.error(PERFORMANCE_MODEL_IS_NOT_SAVED, e);
             throw badRequestException(PERFORMANCE_MODEL_IS_NOT_SAVED, e.getMessage());
+        }
+    }
+
+    public void checkConflictWith(final Project oldProject, final Project newProject) {
+        if (oldProject == null) {
+            return;
+        }
+        if (!newProject.getId().equals(oldProject.getId())) {
+            throw conflictException(
+                    PERFORMANCE_MODEL_IS_NOT_SAVED,
+                    format("Performance Model '%s' already exists.", newProject.getName())
+            );
+        }
+        if (newProject.getVersion() - 1 != oldProject.getVersion()) {
+            throw conflictException(
+                    PERFORMANCE_MODEL_IS_NOT_SAVED,
+                    format("Performance Model '%s' has already been changed by another user.", newProject.getName())
+            );
+        }
+    }
+
+    private void checkNamesakes(ProjectDTO dto) {
+        final Collection<Project> namesakes = repository.findByName(dto.getName());
+        if (namesakes.size() > 1) {
+            LOGGER.error(PERFORMANCE_MODEL_IS_NOT_SAVED);
+            throw conflictException(
+                    PERFORMANCE_MODEL_IS_NOT_SAVED,
+                    format("More than one object with same name='%s'", dto.getName())
+            );
+        }
+        if (namesakes.size() == 1) {
+            final Project namesake = namesakes.iterator().next();
+            if (!namesake.getId().equals(dto.getId())) {
+                throw conflictException(
+                        PERFORMANCE_MODEL_IS_NOT_SAVED,
+                        format("Performance Model '%s' already exists.", dto.getName())
+                );
+            }
         }
     }
 
