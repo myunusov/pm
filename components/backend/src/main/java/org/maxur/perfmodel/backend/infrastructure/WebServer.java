@@ -18,7 +18,6 @@ package org.maxur.perfmodel.backend.infrastructure;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 

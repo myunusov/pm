@@ -17,6 +17,9 @@ package org.maxur.perfmodel.backend.domain;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.util.Objects;
+
+import static java.util.Objects.equals;
 
 /**
  * @author Maxim Yunusov
@@ -46,18 +49,8 @@ public class Project implements Serializable {
     }
 
 
-    public void checkConflictWith(final Project previousProjectVersion) throws ValidationException {
-        if (previousProjectVersion == null) {
-            return;
-        }
-        if (!id.equals(previousProjectVersion.getId())) {
-            throw new ValidationException(String.format("Performance Model '%s' already exists.", name));
-        }
-        if (version - 1 != previousProjectVersion.getVersion()) {
-            throw new ValidationException(
-                    String.format("Performance Model '%s' has already been changed by another user.", name)
-            );
-        }
+    public static Project lightCopy(final Project project) {
+        return new Project(project.id, project.name, project.version);
     }
 
     public String getName() {
@@ -76,7 +69,24 @@ public class Project implements Serializable {
         this.raw = raw;
     }
 
-    public String asRaw() {
-        return raw;
+    public String getRaw() {
+        return raw == null ? "" : raw;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Project project = (Project) o;
+        return Objects.equals(version, project.version) && Objects.equals(id, project.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, version);
     }
 }

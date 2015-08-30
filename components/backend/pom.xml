@@ -28,6 +28,7 @@
         <resteasy.version>3.0.12.Final</resteasy.version>
         <jmockit.version>1.19</jmockit.version>
         <groovy.version>2.4.1</groovy.version>
+        <cglib.version>3.0</cglib.version>
     </properties>
 
     <scm>
@@ -175,6 +176,26 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>org.iq80.leveldb</groupId>
+            <artifactId>leveldb</artifactId>
+            <version>0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>${cglib.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>${cglib.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>asm</groupId>
+            <artifactId>asm-all</artifactId>
+            <version>3.3.1</version>
+        </dependency>
 
         <!-- Unit Testing -->
         <!-- Mandatory dependencies for using Spock -->
@@ -183,12 +204,6 @@
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
             <version>${groovy.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib-nodep</artifactId>
-            <version>3.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>

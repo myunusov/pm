@@ -187,7 +187,8 @@ class ProjectResourceTest extends Specification {
                 .invoke()
 
         then: "method put of project repository was called"
-        1 * repository.put(_ as Project) >> project;
+        1 * repository.put(_ as Project) >> project
+        1 * repository.findByName('name') >> []
         and: "Project was saved"
         response.hasEntity()
         response.status == 201
@@ -215,8 +216,9 @@ class ProjectResourceTest extends Specification {
                 .invoke()
 
         then: "methods put and get of project repository was called"
-        1 * repository.put(_ as Project) >> project;
-        1 * repository.get('id1') >> project;
+        1 * repository.put(_ as Project) >> project
+        1 * repository.get('id1') >> project
+        1 * repository.findByName('name') >> [project]
         and: "Project was saved"
         response.hasEntity()
         response.status == 201
@@ -271,6 +273,7 @@ class ProjectResourceTest extends Specification {
         then: "methods  get of project repository was called"
         0 * repository.put(_ as Project)
         1 * repository.get('id1') >> project2
+        1 * repository.findByName('name') >> [project2]
 
         and: "Project was not saved"
         response.hasEntity()
@@ -279,6 +282,34 @@ class ProjectResourceTest extends Specification {
 
         and: "server returned eror message from repository"
         message == "[{\"message\":\"Performance Model is not saved\"},{\"message\":\"Performance Model 'name' has already been changed by another user.\"}]"
+    }
+
+    def "should be send error on POST request with ununique name"() {
+
+        setup:
+        repository = Mock(Repository)
+        sut.repository = repository
+        project1 = new Project('id1', 'name', 5)
+        project2 = new Project('id2', 'name', 6)
+
+        when: "send GET request on project"
+        Response response = server
+                .newRequest("/project/id1")
+                .request()
+                .buildPost(Entity.json(project1))
+                .invoke()
+
+        then: "methods  get of project repository was called"
+        0 * repository.put(_ as Project)
+        1 * repository.findByName('name') >> [project2]
+
+        and: "Project was not saved"
+        response.hasEntity()
+        response.status == 409
+        String message = response.readEntity(String.class)
+
+        and: "server returned eror message from repository"
+        message == "[{\"message\":\"Performance Model is not saved\"},{\"message\":\"Performance Model 'name' already exists.\"}]"
     }
 
 }

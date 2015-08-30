@@ -43,7 +43,7 @@ public abstract class Application {
     public abstract boolean isApplicable();
 
     public final void init() {
-        propertiesService = PropertiesService.make("/pm.properties");
+        propertiesService = PropertiesServiceFileImpl.make("/pm.properties");
         webServer = new WebServerGrizlyImpl();
         webServer.init(new RestServiceConfig(makeBinder()), propertiesService);
         onInit();
@@ -67,7 +67,7 @@ public abstract class Application {
             protected void configure() {
                 bind(propertiesService).to(PropertiesService.class);
                 bind(webServer).to(WebServer.class);
-                bindAsContract(new TypeLiteral<SimpleFileRepository>() {
+                bindAsContract(new TypeLiteral<ProjectRepositoryLevelDbImpl>() {
                 })
                         .to(new TypeLiteral<Repository<Project>>() {
                         })
