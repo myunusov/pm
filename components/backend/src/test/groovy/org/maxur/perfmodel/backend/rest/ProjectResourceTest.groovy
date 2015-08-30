@@ -65,13 +65,13 @@ class ProjectResourceTest extends Specification {
         response.hasEntity()
         List<Project> projects = response.readEntity(new GenericType<List<Project>>() {});
         and: "method findAll of project repository was called"
-        1 * repository.findAll() >> Collections.singletonList(project);
+        1 * repository.findAll() >> [Project.lightCopy(project)];
         and: "sevrer returned project from repository"
         projects.size() ==  1
         projects.get(0).id == "id1"
         projects.get(0).name == "name"
         projects.get(0).version == 1
-        projects.get(0).raw == null
+        projects.get(0).raw == ""
     }
 
     def "should be return 404 code by GET request unavailable project"() {

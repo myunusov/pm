@@ -27,7 +27,6 @@ import org.maxur.perfmodel.backend.domain.Repository;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
