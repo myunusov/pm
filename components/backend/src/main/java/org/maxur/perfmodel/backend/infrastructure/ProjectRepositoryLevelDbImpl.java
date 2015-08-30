@@ -98,7 +98,7 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
             return mapper.readValue(value, Project.class);
         } catch (IOException e) {
             LOGGER.error("Cannot read project", e);
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -182,7 +182,7 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
             );
         } catch (IOException e) {
             LOGGER.error("Cannot read project", e);
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
