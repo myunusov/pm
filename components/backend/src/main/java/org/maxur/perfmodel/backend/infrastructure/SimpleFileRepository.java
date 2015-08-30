@@ -70,7 +70,7 @@ public class SimpleFileRepository implements Repository<Project> {
     }
 
     private void read() {
-        final File file = new File(getFileName());
+        final File file = new File(propertiesService.dbPath());
         if (file.exists()) {
             try (
                     FileInputStream fileIn = new FileInputStream(file);
@@ -78,7 +78,7 @@ public class SimpleFileRepository implements Repository<Project> {
             ) {
                 //noinspection unchecked
                 projectMap = (ConcurrentHashMap<String, Project>) in.readObject();
-                LOGGER.info("Persistent Data was be restored from file " + getFileName());
+                LOGGER.info("Persistent Data was be restored from file " + propertiesService.dbPath());
             } catch (IOException | ClassNotFoundException e) {
                 LOGGER.error("Data file is not loaded", e);
             }
@@ -87,18 +87,15 @@ public class SimpleFileRepository implements Repository<Project> {
 
     private void write() {
         try (
-                FileOutputStream fileOut = new FileOutputStream(getFileName());
+                FileOutputStream fileOut = new FileOutputStream(propertiesService.dbPath());
                 ObjectOutputStream out = new ObjectOutputStream(fileOut)
         ) {
             out.writeObject(projectMap);
-            LOGGER.info("Persistent Data was be serialized to file " + getFileName());
+            LOGGER.info("Persistent Data was be serialized to file " + propertiesService.dbPath());
         } catch (IOException e) {
             LOGGER.error("Data file is not created", e);
         }
     }
 
 
-    public String getFileName() {
-        return propertiesService.asString("db.fileName", "data/projects.ser");
-    }
 }

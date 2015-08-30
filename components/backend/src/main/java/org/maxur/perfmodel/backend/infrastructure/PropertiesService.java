@@ -57,14 +57,34 @@ public class PropertiesService {
         return prop;
     }
 
-    public String asString(final String key, final String defaultValue) {
-        Object value = properties.get(key);
-        return value == null ? defaultValue : value.toString();
-    }
-
     public String asString(final String key) {
         return properties.get(key).toString();
     }
 
+    /**
+     * Returns Properties value as string.
+     * If value is not exist returns default value.
+     * It's private method, so all deault values are same.
+     *
+     * @param key property key
+     * @param defaultValue property defaulrt value
+     * @return
+     */
+    private String asString(final String key, final String defaultValue) {
+        Object value = properties.get(key);
+        return value == null ? defaultValue : value.toString();
+    }
 
+
+    public String webAppFolderName() {
+        return asString("webapp.folderName", "webapp/");
+    }
+
+    public String baseUrl() {
+        return asString("webapp.url", "http://localhost:8080/");
+    }
+
+    public String dbPath() {
+        return asString("db.fileName", "data/projects.ser");
+    }
 }

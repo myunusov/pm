@@ -15,68 +15,65 @@
 
 package org.maxur.perfmodel.backend;
 
-import org.maxur.perfmodel.backend.infrastructure.PropertiesService;
-import org.maxur.perfmodel.backend.infrastructure.WebServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Optional;
 
 import static java.lang.String.format;
 import static java.util.Optional.empty;
+import static javax.swing.SwingUtilities.invokeLater;
 import static org.maxur.perfmodel.backend.utils.OsUtils.isWindows;
 
 /**
+ * This class represents Performance Model Calculator Application
+ * It's GUI Implementation with Tray Icon
+ *
  * @author Maxim
  * @version 1.0
  * @since <pre>24.10.2014</pre>
- *
+ * <p>
  * see http://docs.oracle.com/javase/tutorial/displayCode.html?code=http://docs.oracle.com/javase/tutorial/uiswing/examples/misc/TrayIconDemoProject/src/misc/TrayIconDemo.java
  */
-public class TrayIconApplication {
+public class TrayIconApplication extends Application {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TrayIconApplication.class);
 
     public static final String IMG_FAVICON_PATH = "/img/favicon.png";
 
-    private final WebServer webServer;
-    private final PropertiesService propertiesService;
-    private final boolean isReady;
+    TrayIconApplication() {
+    }
 
-    public TrayIconApplication(final WebServer webServer, final PropertiesService propertiesService) {
-        this.webServer = webServer;
-        this.propertiesService = propertiesService;
+    @Override
+    public boolean isApplicable() {
         //Check the SystemTray support
-        isReady = SystemTray.isSupported();
-        if (!isReady) {
-            LOGGER.info("SystemTray is not supported");
-        } else {
-            try {
-                if (isWindows()) {
-                    UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-                } else {
-                    UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-                }
-            } catch (UnsupportedLookAndFeelException | IllegalAccessException
-                    | InstantiationException | ClassNotFoundException ex
-                    ) {
-                LOGGER.error("Tray application is not created", ex);
-            }
-            UIManager.put("swing.boldMetal", Boolean.FALSE);
+        return SystemTray.isSupported();
+    }
+
+    @Override
+    protected void onInit() {
+        try {
+            final String className = isWindows() ?
+                    "com.sun.java.swing.plaf.windows.WindowsLookAndFeel" :
+                    "javax.swing.plaf.metal.MetalLookAndFeel";
+            UIManager.setLookAndFeel(className);
+        } catch (UnsupportedLookAndFeelException | IllegalAccessException
+                | InstantiationException | ClassNotFoundException ex
+                ) {
+            LOGGER.error("Tray application is not created", ex);
         }
+        UIManager.put("swing.boldMetal", Boolean.FALSE);
     }
 
-    public boolean isReady() {
-        return isReady;
-    }
-
-    public void start() {
-        SwingUtilities.invokeLater(this::run);
+    @Override
+    protected void onStart() {
+        invokeLater(this::run);
     }
 
     private void run() {
@@ -86,7 +83,7 @@ public class TrayIconApplication {
         if (image.isPresent()) {
             img = image.get();
         } else {
-            img  = createImageFrom();
+            img = createImageFrom();
             LOGGER.error(format("Resource '%s' is not found", IMG_FAVICON_PATH));
         }
         final TrayIcon trayIcon = new TrayIcon(img);
@@ -121,18 +118,18 @@ public class TrayIconApplication {
         startClientItem.addActionListener(e -> openBrowser());
 
         manageServiceItem.addActionListener(e -> {
-            if (webServer.isStarted()) {
-                webServer.stop();
+            if (webServer().isStarted()) {
+                webServer().stop();
             } else {
-                webServer.restart();
+                webServer().restart();
             }
-            final String label = webServer.isStarted() ? "Stop Service" : "Start Service";
+            final String label = webServer().isStarted() ? "Stop Service" : "Start Service";
             manageServiceItem.setLabel(label);
-            final String message = webServer.isStarted() ? "Web Service was started" : "Web Service was stopped";
+            final String message = webServer().isStarted() ? "Web Service was started" : "Web Service was stopped";
             trayIcon.displayMessage("Performance Model Calculator",
                     message,
                     TrayIcon.MessageType.INFO);
-            startClientItem.setEnabled(webServer.isStarted());
+            startClientItem.setEnabled(webServer().isStarted());
         });
 
         aboutItem.addActionListener(e -> JOptionPane.showMessageDialog(null,
@@ -141,7 +138,7 @@ public class TrayIconApplication {
 
         exitItem.addActionListener(e -> {
             tray.remove(trayIcon);
-            webServer.stop();
+            webServer().stop();
             SystemTray.getSystemTray().remove(trayIcon);
             System.exit(0);
 
@@ -157,20 +154,19 @@ public class TrayIconApplication {
     }
 
     //Obtain the image URL
-    protected static Optional<Image> createImage(String path, String description) {
+    private static Optional<Image> createImage(String path, String description) {
         final URL imageURL = TrayIconApplication.class.getResource(path);
         return imageURL == null ? empty() : Optional.of((new ImageIcon(imageURL, description)).getImage());
     }
 
-    public void openBrowser() {
-        String baseUrl = propertiesService.asString("webapp.url", "http://localhost:8080/");
-        URI uri = URI.create(baseUrl);
+    private void openBrowser() {
+        URI uri = URI.create(propertiesService().baseUrl());
         Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
         if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
             try {
                 desktop.browse(uri);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (IOException e) {
+                LOGGER.error("Cannot open browser", e);
             }
         }
     }

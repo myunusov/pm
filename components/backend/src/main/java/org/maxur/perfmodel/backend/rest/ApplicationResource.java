@@ -42,7 +42,7 @@ public class ApplicationResource {
     }
 
     @PUT
-    @Path("/")
+    @Path("/status")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response action(final String object) {

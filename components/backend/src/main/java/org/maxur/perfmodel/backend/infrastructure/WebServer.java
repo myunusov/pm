@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Maxim Yunusov
+ * Copyright (c) 2015 Maxim Yunusov
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
@@ -15,76 +15,102 @@
 
 package org.maxur.perfmodel.backend.infrastructure;
 
-import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.grizzly.http.server.StaticHttpHandler;
-import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
-import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
 
-import java.net.URI;
+import javax.inject.Inject;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class WebServer {
+/**
+ * This Abstract class represents interface of Web Server.
+ *
+ * @author myunusov
+ * @version 1.0
+ * @since <pre>30.08.2015</pre>
+ */
+public abstract class WebServer {
 
     private static final Logger LOGGER = getLogger(WebServer.class);
 
-    private static final String WEB_APP_URL = "/";
+    protected static final String WEB_APP_URL = "/";
 
-    private static final String REST_APP_URL = "api/";
+    protected static final String REST_APP_URL = "api/";
 
+    private PropertiesService propertiesService;
 
-    private String baseUrl;
+    private RestServiceConfig config;
 
-    private String webappFolderName;
-
-    private HttpServer httpServer;
-    private ResourceConfig config;
-
-    public WebServer(PropertiesService propertiesService) {
-        baseUrl = propertiesService.asString("webapp.url", "http://localhost:9090/");
-        webappFolderName =  propertiesService.asString("webapp.folderName", "webapp/");
-    }
-
-    public void start(final ResourceConfig config) {
-        LOGGER.info("Start Web Server");
+    /**
+     * @param config
+     * @param propertiesService
+     */
+    public void init(final RestServiceConfig config, final PropertiesService propertiesService) {
         this.config = config;
-        launch(config);
-        LOGGER.info("Starting on " + baseUrl);
+        // This injector can Inject on rest request only
+        this.propertiesService = propertiesService;
     }
 
+    /**
+     * Start Web server.
+     */
+    public void start() {
+        LOGGER.info("Start Web Server");
+        launch();
+        LOGGER.info("Starting on " + baseUrl());
+    }
+
+    /**
+     * Restart Web server.
+     */
     public void restart() {
         LOGGER.info("Restart Web Server");
-        launch(config);
-        LOGGER.info("Starting on " + baseUrl);
+        launch();
+        LOGGER.info("Starting on " + baseUrl());
     }
 
-    private void launch(ResourceConfig config) {
-        httpServer = GrizzlyHttpServerFactory.createHttpServer(URI.create(baseUrl + REST_APP_URL), config);
-        httpServer.getServerConfiguration().addHttpHandler(new StaticHttpHandler(webappFolderName), WEB_APP_URL);
-    }
-
+    /**
+     * Stop Web server.
+     */
     public void stop() {
         LOGGER.info("Stop Web Server");
-        httpServer.shutdownNow();
+        shutdown();
     }
 
+    /**
+     * Stop Server after ms milliseconds.
+     * Server must send stop request to client.
+     *
+     * @param ms duration of delay to stop.
+     */
     public void stopWithDelay(int ms) {
-            Timer timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    LOGGER.info("Stop Web Server");
-                    httpServer.shutdownNow();
-                }
-            }, ms, 0);
-            stop();
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                LOGGER.info("Stop Web Server");
+                shutdown();
+            }
+        }, ms, 0);
     }
 
-
-    public boolean isStarted() {
-        return httpServer.isStarted();
+    protected String webAppFolderName() {
+        return propertiesService.webAppFolderName();
     }
+
+    protected String baseUrl() {
+        return propertiesService.baseUrl();
+    }
+
+    public RestServiceConfig getConfig() {
+        return config;
+    }
+
+    protected abstract void launch();
+
+    protected abstract void shutdown();
+
+    public abstract boolean isStarted();
 }

@@ -17,82 +17,46 @@ package org.maxur.perfmodel.backend;
 
 import org.glassfish.hk2.api.TypeLiteral;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.glassfish.jersey.jackson.JacksonFeature;
-import org.glassfish.jersey.server.ResourceConfig;
 import org.maxur.perfmodel.backend.domain.Project;
 import org.maxur.perfmodel.backend.domain.Repository;
 import org.maxur.perfmodel.backend.infrastructure.PropertiesService;
 import org.maxur.perfmodel.backend.infrastructure.SimpleFileRepository;
 import org.maxur.perfmodel.backend.infrastructure.WebServer;
-import org.maxur.perfmodel.backend.rest.PMObjectMapperProvider;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
+ * Performance Model Calculator Standalone Launcher
+ *
  * @author Maxim Yunusov
  * @version 1.0 14.09.2014
  */
-public class Launcher {
+public final class Launcher {
 
-    private static final Logger LOGGER = getLogger(Launcher.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Launcher.class);
 
-    private WebServer webServer;
-
-    private PropertiesService propertiesService;
+    private Launcher() {
+    }
 
     public static void main(String[] args) throws Exception {
-        final Launcher client = new Launcher();
-        client.init();
-        client.run();
+        final Application application = makeApplication();
+        application.init();
+        application.start();
     }
 
-    private void init() {
-        try {
-            propertiesService = PropertiesService.make("/pm.properties");
-            webServer = new WebServer(propertiesService);
-            webServer.start(createApp());
-        } catch (RuntimeException e) {
-            LOGGER.error("System don't initialising", e);
-        }
-    }
-
-    public ResourceConfig createApp() {
-        return new ResourceConfig() {
-            {
-                packages("org.maxur.perfmodel.backend.rest");
-                register(JacksonFeature.class);
-                register(PMObjectMapperProvider.class);
-                register(new AbstractBinder() {
-                    @Override
-                    protected void configure() {
-                        bind(propertiesService).to(PropertiesService.class);
-                        bind(webServer).to(WebServer.class);
-                        bindAsContract(new TypeLiteral<SimpleFileRepository>(){
-                        })
-                                .to(new TypeLiteral<Repository<Project>>(){});
-                    }
-                });
-            }
-        };
-    }
-
-    private void run() throws IOException {
-        final TrayIconApplication trayIconApplication = new TrayIconApplication(webServer, propertiesService);
-        if (trayIconApplication.isReady()) {
-            trayIconApplication.start();
+    private static Application makeApplication() {
+        final TrayIconApplication application = new TrayIconApplication();
+        if (application.isApplicable()) {
+            return application;
         } else {
-            LOGGER.info("Press Enter to stop\n");
-            //noinspection ResultOfMethodCallIgnored
-            System.in.read();
-            done();
+            LOGGER.info("SystemTray is not supported");
         }
+        return new CliApplication();
     }
 
-    private void done() {
-        webServer.stop();
-    }
 
 }
