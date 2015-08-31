@@ -189,8 +189,10 @@ angular.module('pmc.services', [])
             save: function () {
                 var dto = project.createDTO(new ProjectDto());
                 $.jStorage.set(project.id, dto);
+                // Todo is changed ?
                 dto.$save(function (dto) {
                     messageService.info("Project is saved as '" + dto.name + "'.");
+                    project.version = dto.version;
                 }, function (error) {
                     var text = error.statusText ? ". " + error.statusText + ". " : "";
                     messageService.error("Project is not saved." + text, error.status);

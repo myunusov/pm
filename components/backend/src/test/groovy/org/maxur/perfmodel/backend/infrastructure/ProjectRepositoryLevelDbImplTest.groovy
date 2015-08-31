@@ -30,6 +30,7 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
     void setup() {
         propertiesService = Mock(PropertiesService)
         sut = new ProjectRepositoryLevelDbImpl();
+        sut.setPropertiesService(propertiesService);
     }
 
     void cleanup() {
@@ -40,7 +41,7 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
 
     def "test init"() {
         when:
-        sut.setPropertiesService(propertiesService);
+        sut.init()
         then:
         1 * propertiesService.dbPath() >> "./test.db"
         and:
@@ -52,7 +53,7 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
         def project = new Project('id1', 'name1', 1)
         project.setRaw('{}')
         when:
-        sut.setPropertiesService(propertiesService)
+        sut.init()
         sut.put(project)
         then:
         1 * propertiesService.dbPath() >> "./test.db"
@@ -70,7 +71,7 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
         def project = new Project('id2', 'name2', 1)
         project.setRaw('{}')
         when:
-        sut.setPropertiesService(propertiesService)
+        sut.init()
         sut.put(project)
         sut.remove('id2')
         then:
@@ -86,7 +87,7 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
         def project1 = new Project('id3', 'name1', 1)
         def project2 = new Project('id3', 'name2', 2)
         when:
-        sut.setPropertiesService(propertiesService)
+        sut.init()
         sut.put(project1)
         sut.put(project2)
         then:

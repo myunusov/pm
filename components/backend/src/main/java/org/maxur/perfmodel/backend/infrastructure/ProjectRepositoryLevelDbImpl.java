@@ -24,6 +24,8 @@ import org.iq80.leveldb.WriteBatch;
 import org.maxur.perfmodel.backend.domain.Project;
 import org.maxur.perfmodel.backend.domain.Repository;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -55,9 +57,9 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     @Inject
     public void setPropertiesService(PropertiesService propertiesService) {
         this.propertiesService = propertiesService;
-        init();
     }
 
+    @PostConstruct
     public void init() {
         if (db != null) {
             return;
@@ -79,7 +81,7 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
         }
     }
 
-    //TODO must be called on close application
+    @PreDestroy
     public void done() {
         try {
             db.close();
