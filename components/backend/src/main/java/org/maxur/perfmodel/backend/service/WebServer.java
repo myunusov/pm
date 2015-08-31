@@ -13,8 +13,11 @@
  *    limitations under the License.
  */
 
-package org.maxur.perfmodel.backend.infrastructure;
+package org.maxur.perfmodel.backend.service;
 
+import org.glassfish.hk2.api.ServiceLocator;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.maxur.perfmodel.backend.infrastructure.PropertiesService;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
@@ -38,19 +41,11 @@ public abstract class WebServer {
 
     protected static final String REST_APP_URL = "api/";
 
+    @Inject
+    private ServiceLocator serviceLocator;
+
+    @Inject
     private PropertiesService propertiesService;
-
-    private RestServiceConfig config;
-
-    /**
-     * @param config
-     * @param propertiesService
-     */
-    public void init(final RestServiceConfig config, final PropertiesService propertiesService) {
-        this.config = config;
-        // This injector can Inject on rest request only
-        this.propertiesService = propertiesService;
-    }
 
     /**
      * Start Web server.
@@ -103,13 +98,18 @@ public abstract class WebServer {
         return propertiesService.baseUrl();
     }
 
-    public RestServiceConfig getConfig() {
-        return config;
+    protected abstract void launch();
+
+    protected ResourceConfig makeConfig() {
+        return new RestServiceConfig();
     }
 
-    protected abstract void launch();
+    protected ServiceLocator serviceLocator() {
+        return serviceLocator;
+    }
 
     protected abstract void shutdown();
 
     public abstract boolean isStarted();
+
 }

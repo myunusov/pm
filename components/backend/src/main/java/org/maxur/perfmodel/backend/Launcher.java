@@ -15,8 +15,11 @@
 
 package org.maxur.perfmodel.backend;
 
-import org.slf4j.Logger;
-import static org.slf4j.LoggerFactory.getLogger;
+import org.glassfish.hk2.api.ServiceLocator;
+import org.glassfish.hk2.api.ServiceLocatorFactory;
+import org.maxur.perfmodel.backend.service.Application;
+
+import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.bind;
 
 /**
  * Performance Model Calculator Standalone Launcher
@@ -26,26 +29,24 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 public final class Launcher {
 
-    private static final Logger LOGGER = getLogger(Launcher.class);
 
     private Launcher() {
     }
 
     public static void main(String[] args) throws Exception {
-        final Application application = makeApplication();
+        final ServiceLocator locator = makeLocator();
+        final Application application = locator.getService(Application.class);
+        locator.inject(application);
         application.init();
         application.start();
     }
 
-    private static Application makeApplication() {
-        final TrayIconApplication application = new TrayIconApplication();
-        if (application.isApplicable()) {
-            return application;
-        } else {
-            LOGGER.info("SystemTray is not supported");
-        }
-        return new CliApplication();
-    }
 
+    private static ServiceLocator makeLocator() {
+        final ServiceLocatorFactory locatorFactory = ServiceLocatorFactory.getInstance();
+        final ServiceLocator result = locatorFactory.create("PmcLocator");
+        bind(result, new Config());
+        return result;
+    }
 
 }

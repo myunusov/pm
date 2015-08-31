@@ -13,8 +13,9 @@
  *    limitations under the License.
  */
 
-package org.maxur.perfmodel.backend;
+package org.maxur.perfmodel.backend.infrastructure;
 
+import org.maxur.perfmodel.backend.service.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +48,7 @@ public class TrayIconApplication extends Application {
 
     public static final String IMG_FAVICON_PATH = "/img/favicon.png";
 
-    TrayIconApplication() {
+    public TrayIconApplication() {
     }
 
     @Override

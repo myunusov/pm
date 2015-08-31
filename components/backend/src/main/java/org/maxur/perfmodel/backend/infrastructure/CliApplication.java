@@ -13,8 +13,9 @@
  *    limitations under the License.
  */
 
-package org.maxur.perfmodel.backend;
+package org.maxur.perfmodel.backend.infrastructure;
 
+import org.maxur.perfmodel.backend.service.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,7 @@ public final class CliApplication extends Application {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CliApplication.class);
 
-    CliApplication() {
+    public CliApplication() {
     }
 
     @Override

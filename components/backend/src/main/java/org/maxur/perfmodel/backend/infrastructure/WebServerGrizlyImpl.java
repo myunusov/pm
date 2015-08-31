@@ -17,6 +17,7 @@ package org.maxur.perfmodel.backend.infrastructure;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.StaticHttpHandler;
+import org.maxur.perfmodel.backend.service.WebServer;
 
 import java.net.URI;
 
@@ -30,7 +31,8 @@ public class WebServerGrizlyImpl extends WebServer {
     protected void launch() {
         httpServer = createHttpServer(
                 URI.create(baseUrl() + REST_APP_URL),
-                getConfig()
+                makeConfig(),
+                serviceLocator()
         );
         httpServer.getServerConfiguration().addHttpHandler(
                 new StaticHttpHandler(webAppFolderName()),
