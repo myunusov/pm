@@ -15,6 +15,7 @@
 
 package org.maxur.perfmodel.backend.infrastructure;
 
+import org.jvnet.hk2.annotations.Service;
 import org.maxur.perfmodel.backend.service.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,7 @@ import java.io.IOException;
  * @version 1.0
  * @since <pre>30.08.2015</pre>
  */
+@Service
 public final class CliApplication extends Application {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CliApplication.class);

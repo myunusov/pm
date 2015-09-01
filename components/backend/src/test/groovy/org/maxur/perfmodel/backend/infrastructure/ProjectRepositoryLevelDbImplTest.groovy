@@ -30,7 +30,7 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
     void setup() {
         propertiesService = Mock(PropertiesService)
         sut = new ProjectRepositoryLevelDbImpl();
-        sut.setPropertiesService(propertiesService);
+        sut.propertiesService = propertiesService;
     }
 
     void cleanup() {

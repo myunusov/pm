@@ -46,18 +46,16 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
 
     private static final org.slf4j.Logger LOGGER = getLogger(ProjectRepositoryLevelDbImpl.class);
+
     public static final String ROOT_KEY_NAME = "/";
 
     private final ObjectMapper mapper = new ObjectMapper();
 
+    @Inject
     private PropertiesService propertiesService;
 
     private DB db;
 
-    @Inject
-    public void setPropertiesService(PropertiesService propertiesService) {
-        this.propertiesService = propertiesService;
-    }
 
     @PostConstruct
     public void init() {

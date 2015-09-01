@@ -39,19 +39,18 @@ final class Config extends AbstractBinder {
 
     private final PropertiesService propertiesService = PropertiesServiceFileImpl.make("/pm.properties");
 
-    private final WebServer webServer = new WebServerGrizlyImpl();
-
-    private final ApplicationProvider applicationProvider = new ApplicationProvider();
-
     @Override
     protected void configure() {
-        bindFactory(applicationProvider).to(Application.class);
-        bind(propertiesService).to(PropertiesService.class);
-        bind(webServer).to(WebServer.class);
+        bind(propertiesService)
+            .to(PropertiesService.class);
+        bind(WebServerGrizlyImpl.class)
+            .to(WebServer.class)
+            .in(Singleton.class);
         bindAsContract(new TypeLiteral<ProjectRepositoryLevelDbImpl>() {
-        })
-                .to(new TypeLiteral<Repository<Project>>() {
-                })
-                .in(Singleton.class);
+        }).to(new TypeLiteral<Repository<Project>>() {
+        }).in(Singleton.class);
+        bindFactory(ApplicationProvider.class)
+            .to(Application.class)
+            .in(Singleton.class);
     }
 }

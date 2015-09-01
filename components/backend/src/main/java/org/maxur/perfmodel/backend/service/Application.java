@@ -15,12 +15,14 @@
 
 package org.maxur.perfmodel.backend.service;
 
-import org.glassfish.hk2.api.ServiceLocator;
 import org.jvnet.hk2.annotations.Contract;
+import org.maxur.perfmodel.backend.domain.Project;
+import org.maxur.perfmodel.backend.domain.Repository;
 import org.maxur.perfmodel.backend.infrastructure.PropertiesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
@@ -42,10 +44,11 @@ public abstract class Application {
     private WebServer webServer;
 
     @Inject
-    private ServiceLocator locator;
+    private Repository<Project> repository;
 
+
+    @PostConstruct
     public final void init() {
-        locator.inject(webServer);
         onInit();
     }
 
@@ -70,9 +73,9 @@ public abstract class Application {
     }
 
     /**
-     * Returns true if Aplication is applicable.
+     * Returns true if Application is applicable.
      *
-     * @return true if Aplication is applicable
+     * @return true if Application is applicable
      */
     public abstract boolean isApplicable();
 

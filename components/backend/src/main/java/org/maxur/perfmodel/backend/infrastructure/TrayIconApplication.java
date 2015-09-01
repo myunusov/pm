@@ -15,6 +15,7 @@
 
 package org.maxur.perfmodel.backend.infrastructure;
 
+import org.jvnet.hk2.annotations.Service;
 import org.maxur.perfmodel.backend.service.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,7 @@ import static org.maxur.perfmodel.backend.utils.OsUtils.isWindows;
  * <p>
  * see http://docs.oracle.com/javase/tutorial/displayCode.html?code=http://docs.oracle.com/javase/tutorial/uiswing/examples/misc/TrayIconDemoProject/src/misc/TrayIconDemo.java
  */
+@Service
 public class TrayIconApplication extends Application {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TrayIconApplication.class);
