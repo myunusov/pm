@@ -21,8 +21,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.Options;
 import org.iq80.leveldb.WriteBatch;
+import org.jvnet.hk2.annotations.Service;
 import org.maxur.perfmodel.backend.domain.Project;
 import org.maxur.perfmodel.backend.domain.Repository;
+import org.maxur.perfmodel.backend.service.Benchmark;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -43,6 +45,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @version 1.0
  * @since <pre>30.08.2015</pre>
  */
+@Service
 public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
 
     private static final org.slf4j.Logger LOGGER = getLogger(ProjectRepositoryLevelDbImpl.class);
@@ -55,7 +58,6 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     private PropertiesService propertiesService;
 
     private DB db;
-
 
     @PostConstruct
     public void init() {
@@ -91,6 +93,7 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     }
 
     @Override
+    @Benchmark
     public Project get(final String key) {
         String value = asString(db.get(bytes(key)));
         if (value == null) {
@@ -105,6 +108,7 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     }
 
     @Override
+    @Benchmark
     public Project remove(final String key) {
         final Project project;
         final WriteBatch batch = db.createWriteBatch();
@@ -124,6 +128,7 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     }
 
     @Override
+    @Benchmark
     public Project put(final Project project) {
         final WriteBatch batch = db.createWriteBatch();
         try {
@@ -174,6 +179,7 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     }
 
     @Override
+    @Benchmark
     public Collection<Project> findAll() {
         final String value = asString(db.get(bytes(ROOT_KEY_NAME)));
         try {
