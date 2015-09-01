@@ -13,13 +13,14 @@
  *    limitations under the License.
  */
 
-package org.maxur.perfmodel.backend.infrastructure;
+package org.maxur.perfmodel.backend.service;
 
+import org.glassfish.hk2.api.ServiceLocator;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.maxur.perfmodel.backend.infrastructure.PropertiesService;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -38,19 +39,11 @@ public abstract class WebServer {
 
     protected static final String REST_APP_URL = "api/";
 
+    @Inject
+    private ServiceLocator serviceLocator;
+
+    @Inject
     private PropertiesService propertiesService;
-
-    private RestServiceConfig config;
-
-    /**
-     * @param config
-     * @param propertiesService
-     */
-    public void init(final RestServiceConfig config, final PropertiesService propertiesService) {
-        this.config = config;
-        // This injector can Inject on rest request only
-        this.propertiesService = propertiesService;
-    }
 
     /**
      * Start Web server.
@@ -78,23 +71,6 @@ public abstract class WebServer {
         shutdown();
     }
 
-    /**
-     * Stop Server after ms milliseconds.
-     * Server must send stop request to client.
-     *
-     * @param ms duration of delay to stop.
-     */
-    public void stopWithDelay(int ms) {
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                LOGGER.info("Stop Web Server");
-                shutdown();
-            }
-        }, ms, 0);
-    }
-
     protected String webAppFolderName() {
         return propertiesService.webAppFolderName();
     }
@@ -103,13 +79,18 @@ public abstract class WebServer {
         return propertiesService.baseUrl();
     }
 
-    public RestServiceConfig getConfig() {
-        return config;
+    protected abstract void launch();
+
+    protected ResourceConfig makeConfig() {
+        return new RestServiceConfig();
     }
 
-    protected abstract void launch();
+    protected ServiceLocator serviceLocator() {
+        return serviceLocator;
+    }
 
     protected abstract void shutdown();
 
     public abstract boolean isStarted();
+
 }

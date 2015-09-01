@@ -13,8 +13,10 @@
  *    limitations under the License.
  */
 
-package org.maxur.perfmodel.backend;
+package org.maxur.perfmodel.backend.infrastructure;
 
+import org.jvnet.hk2.annotations.Service;
+import org.maxur.perfmodel.backend.service.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,13 +43,16 @@ import static org.maxur.perfmodel.backend.utils.OsUtils.isWindows;
  * <p>
  * see http://docs.oracle.com/javase/tutorial/displayCode.html?code=http://docs.oracle.com/javase/tutorial/uiswing/examples/misc/TrayIconDemoProject/src/misc/TrayIconDemo.java
  */
+@Service
 public class TrayIconApplication extends Application {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TrayIconApplication.class);
 
     public static final String IMG_FAVICON_PATH = "/img/favicon.png";
 
-    TrayIconApplication() {
+    private TrayIcon trayIcon;
+
+    public TrayIconApplication() {
     }
 
     @Override
@@ -86,8 +91,7 @@ public class TrayIconApplication extends Application {
             img = createImageFrom();
             LOGGER.error(format("Resource '%s' is not found", IMG_FAVICON_PATH));
         }
-        final TrayIcon trayIcon = new TrayIcon(img);
-        final SystemTray tray = SystemTray.getSystemTray();
+        trayIcon = new TrayIcon(img);
         trayIcon.setToolTip("Performance Model Calculator");
         trayIcon.setImageAutoSize(true);
 
@@ -106,7 +110,7 @@ public class TrayIconApplication extends Application {
         trayIcon.setPopupMenu(popup);
 
         try {
-            tray.add(trayIcon);
+            SystemTray.getSystemTray().add(trayIcon);
         } catch (AWTException e) {
             LOGGER.debug("TrayIcon could not be added.", e);
             LOGGER.error("TrayIcon could not be added.");
@@ -137,12 +141,13 @@ public class TrayIconApplication extends Application {
 
 
         exitItem.addActionListener(e -> {
-            tray.remove(trayIcon);
-            webServer().stop();
-            SystemTray.getSystemTray().remove(trayIcon);
-            System.exit(0);
-
+            stop();
         });
+    }
+
+    @Override
+    protected void onStop() {
+        SystemTray.getSystemTray().remove(trayIcon);
     }
 
     private static Image createImageFrom() {

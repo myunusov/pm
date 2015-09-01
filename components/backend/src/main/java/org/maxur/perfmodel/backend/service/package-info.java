@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Maxim Yunusov
+ * Copyright (c) 2015 Maxim Yunusov
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
@@ -13,25 +13,9 @@
  *    limitations under the License.
  */
 
-package org.maxur.perfmodel.backend.domain;
-
-import java.util.Collection;
-
 /**
- * @author Maxim Yunusov
- * @version 1.0 07.11.13
+ * Provides the services (application logic) layer classes.
+ *
+ * @since 0.1
  */
-public interface Repository<T> {
-
-    T get(String key);
-
-    T remove(String key);
-
-    T put(T project);
-
-    Collection<T> findAll();
-
-    Collection<T> findByName(String name);
-
-    void stop();
-}
+package org.maxur.perfmodel.backend.service;
