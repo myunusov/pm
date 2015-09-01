@@ -13,17 +13,17 @@
  *    limitations under the License.
  */
 
-package org.maxur.perfmodel.backend;
+package org.maxur.perfmodel.backend.service;
 
-import org.glassfish.hk2.api.TypeLiteral;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.jvnet.hk2.annotations.Contract;
 import org.maxur.perfmodel.backend.domain.Project;
 import org.maxur.perfmodel.backend.domain.Repository;
-import org.maxur.perfmodel.backend.infrastructure.*;
+import org.maxur.perfmodel.backend.infrastructure.PropertiesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Singleton;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
 /**
  * This interface represents Perfomance Model Standalone Application
@@ -32,20 +32,23 @@ import javax.inject.Singleton;
  * @version 1.0
  * @since <pre>30.08.2015</pre>
  */
+@Contract
 public abstract class Application {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
+    @Inject
     private PropertiesService propertiesService;
 
+    @Inject
     private WebServer webServer;
 
-    public abstract boolean isApplicable();
+    @Inject
+    private Repository<Project> repository;
 
+
+    @PostConstruct
     public final void init() {
-        propertiesService = PropertiesServiceFileImpl.make("/pm.properties");
-        webServer = new WebServerGrizlyImpl();
-        webServer.init(new RestServiceConfig(makeBinder()), propertiesService);
         onInit();
     }
 
@@ -57,32 +60,30 @@ public abstract class Application {
 
     public final void stop() {
         webServer.stop();
+        repository.stop();
         onStop();
         LOGGER.info("Performance Model Calculator Server is stoped");
+        System.exit(0);
     }
 
-    private AbstractBinder makeBinder() {
-        return new AbstractBinder() {
-            @Override
-            protected void configure() {
-                bind(propertiesService).to(PropertiesService.class);
-                bind(webServer).to(WebServer.class);
-                bindAsContract(new TypeLiteral<ProjectRepositoryLevelDbImpl>() {
-                })
-                        .to(new TypeLiteral<Repository<Project>>() {
-                        })
-                        .in(Singleton.class);
-            }
-        };
+    public String version() {
+        return this.getClass().getPackage().getImplementationVersion();
     }
 
-    protected PropertiesService propertiesService() {
+    protected final PropertiesService propertiesService() {
         return propertiesService;
     }
 
-    protected WebServer webServer() {
+    protected final  WebServer webServer() {
         return webServer;
     }
+
+    /**
+     * Returns true if Application is applicable.
+     *
+     * @return true if Application is applicable
+     */
+    public abstract boolean isApplicable();
 
     /**
      * Hook on Init

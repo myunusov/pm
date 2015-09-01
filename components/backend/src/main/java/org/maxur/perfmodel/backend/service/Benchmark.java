@@ -13,27 +13,23 @@
  *    limitations under the License.
  */
 
-package org.maxur.perfmodel.backend.infrastructure;
+package org.maxur.perfmodel.backend.service;
 
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.glassfish.jersey.jackson.JacksonFeature;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.maxur.perfmodel.backend.rest.PMObjectMapperProvider;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Rest Service Configuration
+ * This annotation should be put on methods that mark to benchmark.
  *
  * @author myunusov
  * @version 1.0
- * @since <pre>30.08.2015</pre>
+ * @since <pre>01.09.2015</pre>
  */
-public class RestServiceConfig extends ResourceConfig {
-
-    public RestServiceConfig(final AbstractBinder binder) {
-        packages("org.maxur.perfmodel.backend.rest");
-        register(JacksonFeature.class);
-        register(PMObjectMapperProvider.class);
-        register(binder);
-    }
-
+@Retention(RUNTIME)
+@Target({METHOD})
+public @interface Benchmark {
 }
+

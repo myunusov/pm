@@ -288,7 +288,7 @@
         <dependency>
             <groupId>com.ecyrd.speed4j</groupId>
             <artifactId>speed4j</artifactId>
-            <version>0.12</version>
+            <version>0.18</version>
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-api</artifactId>
