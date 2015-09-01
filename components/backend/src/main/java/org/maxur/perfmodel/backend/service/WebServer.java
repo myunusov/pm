@@ -21,8 +21,6 @@ import org.maxur.perfmodel.backend.infrastructure.PropertiesService;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -71,23 +69,6 @@ public abstract class WebServer {
     public void stop() {
         LOGGER.info("Stop Web Server");
         shutdown();
-    }
-
-    /**
-     * Stop Server after ms milliseconds.
-     * Server must send stop request to client.
-     *
-     * @param ms duration of delay to stop.
-     */
-    public void stopWithDelay(int ms) {
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                LOGGER.info("Stop Web Server");
-                shutdown();
-            }
-        }, ms, 0);
     }
 
     protected String webAppFolderName() {

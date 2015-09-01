@@ -17,7 +17,6 @@ package org.maxur.perfmodel.backend;
 
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
-import org.maxur.perfmodel.backend.infrastructure.TrayIconApplication;
 import org.maxur.perfmodel.backend.service.Application;
 
 import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.bind;
@@ -46,7 +45,7 @@ public final class Launcher {
         final ServiceLocatorFactory locatorFactory = ServiceLocatorFactory.getInstance();
         final ServiceLocator locator = locatorFactory.create("PmcLocator");
         bind(locator, new Config());
-        final Application application = locator.createAndInitialize(TrayIconApplication.class);
+        final Application application = locator.getService(Application.class);
         application.start();
     }
 

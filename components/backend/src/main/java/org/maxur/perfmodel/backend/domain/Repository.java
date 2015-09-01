@@ -32,4 +32,6 @@ public interface Repository<T> {
     Collection<T> findAll();
 
     Collection<T> findByName(String name);
+
+    void stop();
 }

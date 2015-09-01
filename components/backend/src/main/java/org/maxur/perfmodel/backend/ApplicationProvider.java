@@ -16,11 +16,14 @@
 package org.maxur.perfmodel.backend;
 
 import org.glassfish.hk2.api.Factory;
+import org.glassfish.hk2.api.ServiceLocator;
 import org.jvnet.hk2.annotations.Service;
 import org.maxur.perfmodel.backend.infrastructure.CliApplication;
 import org.maxur.perfmodel.backend.infrastructure.TrayIconApplication;
 import org.maxur.perfmodel.backend.service.Application;
 import org.slf4j.Logger;
+
+import javax.inject.Inject;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -34,16 +37,28 @@ public class ApplicationProvider implements Factory<Application> {
 
     private static final Logger LOGGER = getLogger(ApplicationProvider.class);
 
+    private Application application;
+
+    @Inject
+    private ServiceLocator locator;
+
     @Override
     public Application provide() {
-        Application application = new TrayIconApplication();
-        if (application.isApplicable()) {
-            return application;
+        if (application == null) {
+            application = make();
+            locator.inject(application);
+        }
+        return application;
+    }
+
+    private Application make() {
+        final Application result = new TrayIconApplication();
+        if (result.isApplicable()) {
+            return result;
         } else {
             LOGGER.info("SystemTray is not supported");
         }
-        application = new CliApplication();
-        return application;
+        return new CliApplication();
     }
 
     @Override

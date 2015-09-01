@@ -34,7 +34,7 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
     }
 
     void cleanup() {
-        sut.done();
+        sut.stop();
         def result = new File("./test.db").deleteDir()
         assert result
     }

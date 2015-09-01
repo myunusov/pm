@@ -50,6 +50,8 @@ public class TrayIconApplication extends Application {
 
     public static final String IMG_FAVICON_PATH = "/img/favicon.png";
 
+    private TrayIcon trayIcon;
+
     public TrayIconApplication() {
     }
 
@@ -89,8 +91,7 @@ public class TrayIconApplication extends Application {
             img = createImageFrom();
             LOGGER.error(format("Resource '%s' is not found", IMG_FAVICON_PATH));
         }
-        final TrayIcon trayIcon = new TrayIcon(img);
-        final SystemTray tray = SystemTray.getSystemTray();
+        trayIcon = new TrayIcon(img);
         trayIcon.setToolTip("Performance Model Calculator");
         trayIcon.setImageAutoSize(true);
 
@@ -109,7 +110,7 @@ public class TrayIconApplication extends Application {
         trayIcon.setPopupMenu(popup);
 
         try {
-            tray.add(trayIcon);
+            SystemTray.getSystemTray().add(trayIcon);
         } catch (AWTException e) {
             LOGGER.debug("TrayIcon could not be added.", e);
             LOGGER.error("TrayIcon could not be added.");
@@ -140,12 +141,13 @@ public class TrayIconApplication extends Application {
 
 
         exitItem.addActionListener(e -> {
-            tray.remove(trayIcon);
-            webServer().stop();
-            SystemTray.getSystemTray().remove(trayIcon);
-            System.exit(0);
-
+            stop();
         });
+    }
+
+    @Override
+    protected void onStop() {
+        SystemTray.getSystemTray().remove(trayIcon);
     }
 
     private static Image createImageFrom() {

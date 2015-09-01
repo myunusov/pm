@@ -67,6 +67,7 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
         try {
             db = factory.open(new File(propertiesService.dbPath()), options);
             makeRoot();
+            LOGGER.info("LevelDb Database is opened");
         } catch (IOException e) {
             LOGGER.error("LeveDb Database is not opened", e);
         }
@@ -80,11 +81,12 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     }
 
     @PreDestroy
-    public void done() {
+    public void stop() {
         try {
             db.close();
+            LOGGER.info("LevelDb Database is closed now");
         } catch (IOException e) {
-            LOGGER.error("LeveDb Database is not closed", e);
+            LOGGER.error("LevelDb Database is not closed", e);
         }
     }
 

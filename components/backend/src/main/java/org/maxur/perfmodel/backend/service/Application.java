@@ -60,8 +60,14 @@ public abstract class Application {
 
     public final void stop() {
         webServer.stop();
+        repository.stop();
         onStop();
         LOGGER.info("Performance Model Calculator Server is stoped");
+        System.exit(0);
+    }
+
+    public String version() {
+        return this.getClass().getPackage().getImplementationVersion();
     }
 
     protected final PropertiesService propertiesService() {
