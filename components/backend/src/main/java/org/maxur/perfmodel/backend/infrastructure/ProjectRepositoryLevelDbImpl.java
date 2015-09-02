@@ -33,6 +33,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -61,6 +63,10 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
 
     private Map<String, Project> folder = new HashMap<>();
 
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private final Lock readLock = lock.readLock();
+    private final Lock writeLock = lock.writeLock();
+
     @SuppressWarnings("unused")
     @Named("db.folderName")
     private String dbFolderName;
@@ -87,9 +93,15 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     }
 
     private void initRootFolder() {
-        folder = loadRootFolder()
-                .stream()
-                .collect(Collectors.toMap(Project::getId, (p) -> p));
+        final Collection<Project> projects = loadRootFolder();
+        writeLock.lock();
+        try {
+            folder = projects
+                    .stream()
+                    .collect(Collectors.toMap(Project::getId, (p) -> p));
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     private Collection<Project> loadRootFolder() {
@@ -111,6 +123,7 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
         }
     }
 
+    @Override
     @PreDestroy
     public void stop() {
         try {
@@ -124,22 +137,28 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     @Override
     @Benchmark
     public Project get(final String key) {
-        final Project project = folder.get(key);
-        if (project == null) {
-            return null;
-        }
-        final String rawData = asString(db.get(bytes(key)));
-        if (rawData == null) {
-            LOGGER.error("Cannot read project");
-            throw new IllegalStateException(format("Raw data for project %s is not founded", project.getName()));
-        }
-        return project.cloneWith(rawData);
+            readLock.lock();
+            final Project project = folder.get(key);
+            readLock.unlock();
+            if (project == null) {
+                return null;
+            }
+            final String rawData = asString(db.get(bytes(key)));
+            if (rawData == null) {
+                LOGGER.error("Cannot read project");
+                throw new IllegalStateException(format("Raw data for project %s is not founded", project.getName()));
+            }
+            return project.cloneWith(rawData);
+
     }
 
     @Override
     @Benchmark
     public Collection<Project> findAll() {
-        return folder.values();
+        readLock.lock();
+        final Collection<Project> values = folder.values();
+        readLock.unlock();
+        return values;
     }
 
     @Override
@@ -155,6 +174,7 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     @Benchmark
     public Project remove(final String key) {
         final Project project = folder.get(key);
+        writeLock.lock();
         try (WriteBatch batch = db.createWriteBatch()) {
             db.delete(bytes(key));
             folder.remove(key);
@@ -163,6 +183,8 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
         } catch (IOException e) {
             LOGGER.error(format("Cannot remove project '%s'", project.getName()), e);
             throw new IllegalStateException(format("Cannot remove project '%s'", project.getName()));
+        } finally {
+            writeLock.unlock();
         }
         return project;
     }
@@ -170,6 +192,7 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     @Override
     @Benchmark
     public Project put(final Project project) {
+        writeLock.lock();
         try (WriteBatch batch = db.createWriteBatch()) {
             db.put(bytes(project.getId()), bytes(project.getRaw()));
             folder.put(project.getId(), project.lightCopy());
@@ -178,6 +201,8 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
         } catch (IOException e) {
             LOGGER.error("Cannot save project '%s'", project.getName(), e);
             throw new IllegalStateException(format("Cannot save project '%s'", project.getName()));
+        }finally {
+            writeLock.unlock();
         }
         return project;
     }
