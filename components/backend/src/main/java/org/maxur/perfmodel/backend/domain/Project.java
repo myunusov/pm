@@ -19,8 +19,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Objects;
 
-import static java.util.Objects.equals;
-
 /**
  * @author Maxim Yunusov
  * @version 1.0 24.11.13
@@ -48,9 +46,14 @@ public class Project implements Serializable {
         this.version = version;
     }
 
+    public Project lightCopy() {
+        return new Project(this.id, this.name, this.version);
+    }
 
-    public static Project lightCopy(final Project project) {
-        return new Project(project.id, project.name, project.version);
+    public Project cloneWith(final String rawData) {
+        final Project result = new Project(this.id, this.name, this.version);
+        result.raw = rawData;
+        return result;
     }
 
     public String getName() {

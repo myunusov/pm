@@ -28,7 +28,8 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
 
     void setup() {
         sut = new ProjectRepositoryLevelDbImpl();
-        sut.propertiesService = propertiesService;
+        sut.dbFolderName = "./test.db"
+        sut.init()
     }
 
     void cleanup() {
@@ -41,9 +42,7 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
         when:
         sut.init()
         then:
-        1 * propertiesService.dbPath() >> "./test.db"
-        and:
-        sut.findAll() == []
+        sut.findAll() as List == []
     }
 
     def "test put"() {
@@ -54,10 +53,8 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
         sut.init()
         sut.put(project)
         then:
-        1 * propertiesService.dbPath() >> "./test.db"
-        and:
         def all = sut.findAll()
-        all == [project]
+        all as List == [project]
         all[0].getRaw() == ''
         and:
         sut.get('id1') == project;
@@ -73,9 +70,7 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
         sut.put(project)
         sut.remove('id2')
         then:
-        1 * propertiesService.dbPath() >> "./test.db"
-        and:
-        sut.findAll() == []
+        sut.findAll() as List == []
         and:
         sut.get('id1') == null
     }
@@ -89,9 +84,7 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
         sut.put(project1)
         sut.put(project2)
         then:
-        1 * propertiesService.dbPath() >> "./test.db"
-        and:
-        sut.findAll() == [project2]
+        sut.findAll() as List == [project2]
         and:
         def project = sut.get('id3')
         project == project2;

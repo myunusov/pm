@@ -15,7 +15,6 @@
 
 package org.maxur.perfmodel.backend.infrastructure;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.iq80.leveldb.DB;
@@ -32,12 +31,14 @@ import javax.inject.Named;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
-import static org.iq80.leveldb.impl.Iq80DBFactory.asString;
-import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
-import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
+import static java.lang.String.format;
+import static java.util.Collections.emptySet;
+import static java.util.stream.Collectors.toSet;
+import static org.iq80.leveldb.impl.Iq80DBFactory.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -58,12 +59,19 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
 
     private DB db;
 
+    private Map<String, Project> folder = new HashMap<>();
+
     @SuppressWarnings("unused")
     @Named("db.folderName")
     private String dbFolderName;
 
     @PostConstruct
     public void init() {
+        initDb();
+        initRootFolder();
+    }
+
+    private void initDb() {
         if (db != null) {
             return;
         }
@@ -71,17 +79,35 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
         options.createIfMissing(true);
         try {
             db = factory.open(new File(dbFolderName), options);
-            makeRoot();
             LOGGER.info("LevelDb Database is opened");
         } catch (IOException e) {
             LOGGER.error("LeveDb Database is not opened", e);
+            throw new IllegalStateException("LeveDb Database is not opened", e);
         }
     }
 
-    private void makeRoot() {
+    private void initRootFolder() {
+        folder = loadRootFolder()
+                .stream()
+                .collect(Collectors.toMap(Project::getId, (p) -> p));
+    }
+
+    private Collection<Project> loadRootFolder() {
         final String value = asString(db.get(bytes(ROOT_KEY_NAME)));
         if (value == null) {
+            LOGGER.info("Root folder is not found and has been recreated");
             db.put(bytes(ROOT_KEY_NAME), bytes("[]"));
+            return emptySet();
+        }
+        try {
+            return mapper.readValue(
+                    value,
+                    new TypeReference<Collection<Project>>(){
+                    }
+            );
+        } catch (IOException e) {
+            LOGGER.error("Cannot read list of projects", e);
+            throw new IllegalStateException("Cannot read list of projects");
         }
     }
 
@@ -98,32 +124,22 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     @Override
     @Benchmark
     public Project get(final String key) {
-        String value = asString(db.get(bytes(key)));
-        if (value == null) {
+        final Project project = folder.get(key);
+        if (project == null) {
             return null;
         }
-        try {
-            return mapper.readValue(value, Project.class);
-        } catch (IOException e) {
-            LOGGER.error("Cannot read project", e);
-            throw new IllegalStateException(e);
+        final String rawData = asString(db.get(bytes(key)));
+        if (rawData == null) {
+            LOGGER.error("Cannot read project");
+            throw new IllegalStateException(format("Raw data for project %s is not founded", project.getName()));
         }
+        return project.cloneWith(rawData);
     }
 
     @Override
     @Benchmark
     public Collection<Project> findAll() {
-        final String value = asString(db.get(bytes(ROOT_KEY_NAME)));
-        try {
-            return mapper.readValue(
-                value,
-                new TypeReference<Collection<Project>>(){
-                }
-            );
-        } catch (IOException e) {
-            LOGGER.error("Cannot read project", e);
-            throw new IllegalStateException(e);
-        }
+        return folder.values();
     }
 
     @Override
@@ -132,25 +148,21 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
         return findAll()
             .stream()
             .filter(project -> project.getName().equals(name))
-            .collect(toList());
+            .collect(toSet());
     }
 
     @Override
     @Benchmark
     public Project remove(final String key) {
-        final Project project;
-        final WriteBatch batch = db.createWriteBatch();
-        try {
-            project = get(key);
-            removeFromDir(key);
+        final Project project = folder.get(key);
+        try (WriteBatch batch = db.createWriteBatch()) {
             db.delete(bytes(key));
+            folder.remove(key);
+            db.put(bytes(ROOT_KEY_NAME), mapper.writeValueAsBytes(folder.values()));
             db.write(batch);
-        } finally {
-            try {
-                batch.close();
-            } catch (IOException e) {
-                LOGGER.error("Cannot close batch", e);
-            }
+        } catch (IOException e) {
+            LOGGER.error(format("Cannot remove project '%s'", project.getName()), e);
+            throw new IllegalStateException(format("Cannot remove project '%s'", project.getName()));
         }
         return project;
     }
@@ -158,52 +170,16 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     @Override
     @Benchmark
     public Project put(final Project project) {
-        final WriteBatch batch = db.createWriteBatch();
-        try {
-            db.put(bytes(project.getId()), mapper.writeValueAsBytes(project));
-            updateInDir(project);
+        try (WriteBatch batch = db.createWriteBatch()) {
+            db.put(bytes(project.getId()), bytes(project.getRaw()));
+            folder.put(project.getId(), project.lightCopy());
+            db.put(bytes(ROOT_KEY_NAME), mapper.writeValueAsBytes(folder.values()));
             db.write(batch);
-        } catch (JsonProcessingException e) {
-            LOGGER.error("Cannot save project", e);
-        } finally {
-            try {
-                batch.close();
-            } catch (IOException e) {
-                LOGGER.error("Cannot close batch", e);
-            }
+        } catch (IOException e) {
+            LOGGER.error("Cannot save project '%s'", project.getName(), e);
+            throw new IllegalStateException(format("Cannot save project '%s'", project.getName()));
         }
         return project;
-    }
-
-    private void updateInDir(Project project) throws JsonProcessingException {
-        final Collection<Project> projects = findAll();
-        Iterator<Project> iterator = projects.iterator();
-        while (iterator.hasNext()) {
-            final Project next = iterator.next();
-            if (next.getId().equals(project.getId())) {
-                iterator.remove();
-                break;
-            }
-        }
-        projects.add(Project.lightCopy(project));
-        db.put(bytes(ROOT_KEY_NAME), mapper.writeValueAsBytes(projects));
-    }
-
-    private void removeFromDir(final String key) {
-        final Collection<Project> projects = findAll();
-        Iterator<Project> iterator = projects.iterator();
-        while (iterator.hasNext()) {
-            final Project next = iterator.next();
-            if (next.getId().equals(key)) {
-                iterator.remove();
-                break;
-            }
-        }
-        try {
-            db.put(bytes(ROOT_KEY_NAME), mapper.writeValueAsBytes(projects));
-        } catch (JsonProcessingException e) {
-            LOGGER.error("Cannot save directory", e);
-        }
     }
 
 

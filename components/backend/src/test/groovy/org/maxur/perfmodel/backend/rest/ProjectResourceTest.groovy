@@ -65,7 +65,7 @@ class ProjectResourceTest extends Specification {
         response.hasEntity()
         List<Project> projects = response.readEntity(new GenericType<List<Project>>() {});
         and: "method findAll of project repository was called"
-        1 * repository.findAll() >> [Project.lightCopy(project)];
+        1 * repository.findAll() >> [project.lightCopy()];
         and: "sevrer returned project from repository"
         projects.size() ==  1
         projects.get(0).id == "id1"
