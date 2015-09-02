@@ -24,19 +24,20 @@ import org.iq80.leveldb.WriteBatch;
 import org.jvnet.hk2.annotations.Service;
 import org.maxur.perfmodel.backend.domain.Project;
 import org.maxur.perfmodel.backend.domain.Repository;
-import org.maxur.perfmodel.backend.service.PropertiesService;
 import org.maxur.perfmodel.backend.service.Benchmark;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
 import static java.util.stream.Collectors.toList;
-import static org.iq80.leveldb.impl.Iq80DBFactory.*;
+import static org.iq80.leveldb.impl.Iq80DBFactory.asString;
+import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
+import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -55,10 +56,11 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    @Inject
-    private PropertiesService propertiesService;
-
     private DB db;
+
+    @SuppressWarnings("unused")
+    @Named("db.folderName")
+    private String dbFolderName;
 
     @PostConstruct
     public void init() {
@@ -68,7 +70,7 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
         final Options options = new Options();
         options.createIfMissing(true);
         try {
-            db = factory.open(new File(propertiesService.dbPath()), options);
+            db = factory.open(new File(dbFolderName), options);
             makeRoot();
             LOGGER.info("LevelDb Database is opened");
         } catch (IOException e) {

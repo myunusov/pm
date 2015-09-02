@@ -22,11 +22,12 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.maxur.perfmodel.backend.service.WebServer;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.net.URI;
 
 import static org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory.createHttpServer;
 
-public class WebServerGrizlyImpl extends WebServer {
+public class WebServerGrizzlyImpl extends WebServer {
 
     private HttpServer httpServer;
 
@@ -36,15 +37,24 @@ public class WebServerGrizlyImpl extends WebServer {
     @Inject
     private ServiceLocator locator;
 
+    @SuppressWarnings("unused")
+    @Named("webapp.folderName")
+    private String webappFolderName;
+
+    @SuppressWarnings("unused")
+    @Named("webapp.url")
+    private String webappUrl;
+
+
     @Override
     protected void launch() {
         httpServer = createHttpServer(
-            URI.create(baseUrl() + REST_APP_URL),
+            URI.create(webappUrl + REST_APP_URL),
             config,
             locator
         );
         httpServer.getServerConfiguration().addHttpHandler(
-            new StaticHttpHandler(webAppFolderName()),
+            new StaticHttpHandler(webappFolderName),
             WEB_APP_URL
         );
     }

@@ -37,14 +37,10 @@ public abstract class Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
     @Inject
-    private PropertiesService propertiesService;
-
-    @Inject
     private WebServer webServer;
 
     @Inject
     private Repository<Project> repository;
-
 
     @PostConstruct
     public final void init() {
@@ -69,9 +65,6 @@ public abstract class Application {
         return this.getClass().getPackage().getImplementationVersion();
     }
 
-    protected final PropertiesService propertiesService() {
-        return propertiesService;
-    }
 
     protected final  WebServer webServer() {
         return webServer;

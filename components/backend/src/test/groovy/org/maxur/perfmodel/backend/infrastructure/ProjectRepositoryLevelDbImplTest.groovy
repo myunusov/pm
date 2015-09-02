@@ -15,7 +15,6 @@
 
 package org.maxur.perfmodel.backend.infrastructure
 import org.maxur.perfmodel.backend.domain.Project
-import org.maxur.perfmodel.backend.service.PropertiesService
 import spock.lang.Specification
 /**
  * @author myunusov
@@ -26,10 +25,8 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
 
     ProjectRepositoryLevelDbImpl sut
 
-    PropertiesService propertiesService
 
     void setup() {
-        propertiesService = Mock(PropertiesService)
         sut = new ProjectRepositoryLevelDbImpl();
         sut.propertiesService = propertiesService;
     }

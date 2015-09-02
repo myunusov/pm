@@ -17,7 +17,7 @@ package org.maxur.perfmodel.backend.service;
 
 import org.slf4j.Logger;
 
-import javax.inject.Inject;
+import javax.inject.Named;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -36,8 +36,9 @@ public abstract class WebServer {
 
     protected static final String REST_APP_URL = "api/";
 
-    @Inject
-    private PropertiesService propertiesService;
+    @SuppressWarnings("unused")
+    @Named("webapp.folderName")
+    private String webappUrl;
 
     /**
      * Start Web server.
@@ -45,7 +46,7 @@ public abstract class WebServer {
     public void start() {
         LOGGER.info("Start Web Server");
         launch();
-        LOGGER.info("Starting on " + baseUrl());
+        LOGGER.info("Starting on " + webappUrl);
     }
 
     /**
@@ -54,7 +55,7 @@ public abstract class WebServer {
     public void restart() {
         LOGGER.info("Restart Web Server");
         launch();
-        LOGGER.info("Starting on " + baseUrl());
+        LOGGER.info("Starting on " + webappUrl);
     }
 
     /**
@@ -63,14 +64,6 @@ public abstract class WebServer {
     public void stop() {
         LOGGER.info("Stop Web Server");
         shutdown();
-    }
-
-    protected String webAppFolderName() {
-        return propertiesService.webAppFolderName();
-    }
-
-    protected String baseUrl() {
-        return propertiesService.baseUrl();
     }
 
 

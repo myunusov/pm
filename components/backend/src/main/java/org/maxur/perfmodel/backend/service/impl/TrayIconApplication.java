@@ -20,6 +20,7 @@ import org.maxur.perfmodel.backend.service.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Named;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -51,6 +52,10 @@ public class TrayIconApplication extends Application {
     public static final String IMG_FAVICON_PATH = "/img/favicon.png";
 
     private TrayIcon trayIcon;
+
+    @SuppressWarnings("unused")
+    @Named("webapp.folderName")
+    private String webappUrl;
 
     public TrayIconApplication() {
     }
@@ -165,7 +170,7 @@ public class TrayIconApplication extends Application {
     }
 
     private void openBrowser() {
-        URI uri = URI.create(propertiesService().baseUrl());
+        URI uri = URI.create(webappUrl);
         Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
         if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
             try {

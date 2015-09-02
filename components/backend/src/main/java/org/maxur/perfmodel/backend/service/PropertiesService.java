@@ -21,11 +21,7 @@ package org.maxur.perfmodel.backend.service;
  * @since <pre>30.08.2015</pre>
  */
 public interface PropertiesService {
+
     String asString(String key);
 
-    String webAppFolderName();
-
-    String baseUrl();
-
-    String dbPath();
 }

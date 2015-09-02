@@ -15,6 +15,7 @@
 
 package org.maxur.perfmodel.backend;
 
+import org.glassfish.hk2.api.InjectionResolver;
 import org.glassfish.hk2.api.InterceptionService;
 import org.glassfish.hk2.api.TypeLiteral;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -23,13 +24,15 @@ import org.maxur.perfmodel.backend.domain.Project;
 import org.maxur.perfmodel.backend.domain.Repository;
 import org.maxur.perfmodel.backend.infrastructure.ProjectRepositoryLevelDbImpl;
 import org.maxur.perfmodel.backend.rest.RestServiceConfig;
-import org.maxur.perfmodel.backend.service.PropertiesService;
-import org.maxur.perfmodel.backend.service.impl.PropertiesServiceFileImpl;
-import org.maxur.perfmodel.backend.service.impl.WebServerGrizlyImpl;
 import org.maxur.perfmodel.backend.service.Application;
+import org.maxur.perfmodel.backend.service.ConfigurationInjectionResolver;
 import org.maxur.perfmodel.backend.service.HK2InterceptionService;
+import org.maxur.perfmodel.backend.service.PropertiesService;
 import org.maxur.perfmodel.backend.service.WebServer;
+import org.maxur.perfmodel.backend.service.impl.PropertiesServiceHoconImpl;
+import org.maxur.perfmodel.backend.service.impl.WebServerGrizzlyImpl;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
@@ -41,19 +44,23 @@ import javax.inject.Singleton;
  */
 final class Config extends AbstractBinder {
 
-    private final PropertiesService propertiesService = PropertiesServiceFileImpl.make("/pm.properties");
-
     @Override
     protected void configure() {
+        bind(ConfigurationInjectionResolver.class)
+            .to(new TypeLiteral<InjectionResolver<Named>>() {
+            })
+            .in(Singleton.class);
+
         bind(RestServiceConfig.class)
             .to(ResourceConfig.class)
             .in(Singleton.class);
         bind(HK2InterceptionService.class)
                 .to(InterceptionService.class)
                 .in(Singleton.class);
-        bind(propertiesService)
-                .to(PropertiesService.class);
-        bind(WebServerGrizlyImpl.class)
+        bind(PropertiesServiceHoconImpl.class)
+                .to(PropertiesService.class)
+                .in(Singleton.class);
+        bind(WebServerGrizzlyImpl.class)
             .to(WebServer.class)
             .in(Singleton.class);
         bindAsContract(new TypeLiteral<ProjectRepositoryLevelDbImpl>() {
