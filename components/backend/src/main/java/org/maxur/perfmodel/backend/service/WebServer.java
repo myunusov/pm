@@ -15,9 +15,6 @@
 
 package org.maxur.perfmodel.backend.service;
 
-import org.glassfish.hk2.api.ServiceLocator;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.maxur.perfmodel.backend.infrastructure.PropertiesService;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
@@ -38,9 +35,6 @@ public abstract class WebServer {
     protected static final String WEB_APP_URL = "/";
 
     protected static final String REST_APP_URL = "api/";
-
-    @Inject
-    private ServiceLocator serviceLocator;
 
     @Inject
     private PropertiesService propertiesService;
@@ -79,15 +73,8 @@ public abstract class WebServer {
         return propertiesService.baseUrl();
     }
 
+
     protected abstract void launch();
-
-    protected ResourceConfig makeConfig() {
-        return new RestServiceConfig();
-    }
-
-    protected ServiceLocator serviceLocator() {
-        return serviceLocator;
-    }
 
     protected abstract void shutdown();
 

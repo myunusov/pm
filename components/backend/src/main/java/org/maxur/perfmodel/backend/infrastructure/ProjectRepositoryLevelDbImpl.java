@@ -24,6 +24,7 @@ import org.iq80.leveldb.WriteBatch;
 import org.jvnet.hk2.annotations.Service;
 import org.maxur.perfmodel.backend.domain.Project;
 import org.maxur.perfmodel.backend.domain.Repository;
+import org.maxur.perfmodel.backend.service.PropertiesService;
 import org.maxur.perfmodel.backend.service.Benchmark;
 
 import javax.annotation.PostConstruct;

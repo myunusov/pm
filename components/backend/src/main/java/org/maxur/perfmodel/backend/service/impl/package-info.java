@@ -13,19 +13,9 @@
  *    limitations under the License.
  */
 
-package org.maxur.perfmodel.backend.infrastructure;
-
 /**
- * @author myunusov
- * @version 1.0
- * @since <pre>30.08.2015</pre>
+ * Provides the services (application logic) layer implementations classes.
+ *
+ * @since 0.1
  */
-public interface PropertiesService {
-    String asString(String key);
-
-    String webAppFolderName();
-
-    String baseUrl();
-
-    String dbPath();
-}
+package org.maxur.perfmodel.backend.service.impl;

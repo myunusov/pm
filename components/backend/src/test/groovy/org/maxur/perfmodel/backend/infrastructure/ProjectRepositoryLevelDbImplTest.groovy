@@ -15,6 +15,7 @@
 
 package org.maxur.perfmodel.backend.infrastructure
 import org.maxur.perfmodel.backend.domain.Project
+import org.maxur.perfmodel.backend.service.PropertiesService
 import spock.lang.Specification
 /**
  * @author myunusov

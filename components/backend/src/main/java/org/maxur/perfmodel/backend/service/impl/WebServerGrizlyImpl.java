@@ -13,12 +13,15 @@
  *    limitations under the License.
  */
 
-package org.maxur.perfmodel.backend.infrastructure;
+package org.maxur.perfmodel.backend.service.impl;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.StaticHttpHandler;
+import org.glassfish.hk2.api.ServiceLocator;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.maxur.perfmodel.backend.service.WebServer;
 
+import javax.inject.Inject;
 import java.net.URI;
 
 import static org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory.createHttpServer;
@@ -27,16 +30,22 @@ public class WebServerGrizlyImpl extends WebServer {
 
     private HttpServer httpServer;
 
+    @Inject
+    private ResourceConfig config;
+
+    @Inject
+    private ServiceLocator locator;
+
     @Override
     protected void launch() {
         httpServer = createHttpServer(
-                URI.create(baseUrl() + REST_APP_URL),
-                makeConfig(),
-                serviceLocator()
+            URI.create(baseUrl() + REST_APP_URL),
+            config,
+            locator
         );
         httpServer.getServerConfiguration().addHttpHandler(
-                new StaticHttpHandler(webAppFolderName()),
-                WEB_APP_URL
+            new StaticHttpHandler(webAppFolderName()),
+            WEB_APP_URL
         );
     }
 

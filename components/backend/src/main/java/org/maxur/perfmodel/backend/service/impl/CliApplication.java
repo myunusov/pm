@@ -13,7 +13,7 @@
  *    limitations under the License.
  */
 
-package org.maxur.perfmodel.backend.infrastructure;
+package org.maxur.perfmodel.backend.service.impl;
 
 import org.jvnet.hk2.annotations.Service;
 import org.maxur.perfmodel.backend.service.Application;

@@ -18,8 +18,8 @@ package org.maxur.perfmodel.backend;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.jvnet.hk2.annotations.Service;
-import org.maxur.perfmodel.backend.infrastructure.CliApplication;
-import org.maxur.perfmodel.backend.infrastructure.TrayIconApplication;
+import org.maxur.perfmodel.backend.service.impl.CliApplication;
+import org.maxur.perfmodel.backend.service.impl.TrayIconApplication;
 import org.maxur.perfmodel.backend.service.Application;
 import org.slf4j.Logger;
 

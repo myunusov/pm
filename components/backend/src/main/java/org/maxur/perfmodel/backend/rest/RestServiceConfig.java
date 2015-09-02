@@ -13,12 +13,11 @@
  *    limitations under the License.
  */
 
-package org.maxur.perfmodel.backend.service;
+package org.maxur.perfmodel.backend.rest;
 
 import org.glassfish.jersey.ServiceLocatorProvider;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.maxur.perfmodel.backend.rest.PMObjectMapperProvider;
 
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
@@ -35,7 +34,7 @@ public class RestServiceConfig extends ResourceConfig {
     public RestServiceConfig() {
         packages("org.maxur.perfmodel.backend.rest");
         register(JacksonFeature.class);
-        register(PMObjectMapperProvider.class);
+        register(PmcObjectMapperProvider.class);
         register(new ServiceLocatorFeature());
     }
 

@@ -13,8 +13,9 @@
  *    limitations under the License.
  */
 
-package org.maxur.perfmodel.backend.infrastructure;
+package org.maxur.perfmodel.backend.service.impl;
 
+import org.maxur.perfmodel.backend.service.PropertiesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

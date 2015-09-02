@@ -18,12 +18,14 @@ package org.maxur.perfmodel.backend;
 import org.glassfish.hk2.api.InterceptionService;
 import org.glassfish.hk2.api.TypeLiteral;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.maxur.perfmodel.backend.domain.Project;
 import org.maxur.perfmodel.backend.domain.Repository;
 import org.maxur.perfmodel.backend.infrastructure.ProjectRepositoryLevelDbImpl;
-import org.maxur.perfmodel.backend.infrastructure.PropertiesService;
-import org.maxur.perfmodel.backend.infrastructure.PropertiesServiceFileImpl;
-import org.maxur.perfmodel.backend.infrastructure.WebServerGrizlyImpl;
+import org.maxur.perfmodel.backend.rest.RestServiceConfig;
+import org.maxur.perfmodel.backend.service.PropertiesService;
+import org.maxur.perfmodel.backend.service.impl.PropertiesServiceFileImpl;
+import org.maxur.perfmodel.backend.service.impl.WebServerGrizlyImpl;
 import org.maxur.perfmodel.backend.service.Application;
 import org.maxur.perfmodel.backend.service.HK2InterceptionService;
 import org.maxur.perfmodel.backend.service.WebServer;
@@ -43,6 +45,9 @@ final class Config extends AbstractBinder {
 
     @Override
     protected void configure() {
+        bind(RestServiceConfig.class)
+            .to(ResourceConfig.class)
+            .in(Singleton.class);
         bind(HK2InterceptionService.class)
                 .to(InterceptionService.class)
                 .in(Singleton.class);

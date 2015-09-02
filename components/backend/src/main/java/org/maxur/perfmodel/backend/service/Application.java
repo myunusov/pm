@@ -18,7 +18,6 @@ package org.maxur.perfmodel.backend.service;
 import org.jvnet.hk2.annotations.Contract;
 import org.maxur.perfmodel.backend.domain.Project;
 import org.maxur.perfmodel.backend.domain.Repository;
-import org.maxur.perfmodel.backend.infrastructure.PropertiesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
