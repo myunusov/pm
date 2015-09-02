@@ -413,6 +413,7 @@ function QNMVisit(clazz, node) {
     this.utilization = new Utilization();
     this.residenceTime = new QNMTime();
     this.throughput = new Throughput();
+    this.meanNumberTasks = new QNMNumber();
 
     this.details = false;
 
@@ -423,7 +424,9 @@ function QNMVisit(clazz, node) {
         'RT': this.residenceTime,
         'XI': this.throughput,
         'V': this.number,
-        'TV': this.totalNumber
+        'TV': this.totalNumber,
+
+        'NI': this.meanNumberTasks
     };
 
     this.expressions = [
@@ -435,10 +438,10 @@ function QNMVisit(clazz, node) {
             ['U'],
             [-1, 'XI', 'S']
         ], this),
-        /*        new Expression([
-         [-1, 'RT', 'XI'],
-         ['N']
-         ], this),*/
+        new Expression([
+            [-1, 'RT', 'XI'],
+            ['NI']
+         ], this),
         new Expression([
             [-1, 'S', 'V'],
             ['D']
@@ -887,13 +890,26 @@ function QNM(name, id) {
         return new Expression(result);
     };
 
+    // N =  SUM(N)
+    this.makeNExp = function (node) {
+        var result = [[-1, new Parameter('TN', node)]];
+        var visits = this.getVisitsByNode(node);
+        for (var j = 0; j < visits.length; j++) {
+            result.push([new Parameter('NI', visits[j])]);
+        }
+        return new Expression(result);
+    };
+
     this.makeExpressions = function () {
         var result = [];
-        for (var j = 0; j < this.nodes.length; j++) {
-            result.push(this.makeUExp(this.nodes[j]));
+        for (var i1 = 0; i1 < this.nodes.length; i1++) {
+            result.push(this.makeNExp(this.nodes[i1]));
         }
-        for (var i = 0; i < this.classes.length; i++) {
-            result.push(this.makeRXNExps(this.classes[i]));
+        for (var i2 = 0; i2 < this.nodes.length; i2++) {
+            result.push(this.makeUExp(this.nodes[i2]));
+        }
+        for (var i3 = 0; i3 < this.classes.length; i3++) {
+            result.push(this.makeRXNExps(this.classes[i3]));
         }
         return result;
     };
