@@ -34,14 +34,23 @@ class ClientSimulation extends Simulation {
 
   val uri1 = """localhost"""
 
-  val scn = scenario("Find All")
+  val scn1 = scenario("Find All")
     .repeat(1000) {
     exec(http("find all")
       .get( """/api/project""")
       .headers(headers_0)
-    )
-      .pause(100 milliseconds)
+    ).pause(100 milliseconds)
+  }
+  val scn2 = scenario("Save")
+    .repeat(1000) {
+    exec(http("save")
+      .post("/api/project/0f7684a6-9477-4a5d-824a-4b7d682074ea")
+      .headers(headers_0)
+      .body(RawFileBody("save.dto"))
+    ).pause(100 milliseconds)
   }
 
-  setUp(scn.inject(atOnceUsers(10))).protocols(httpProtocol)
+
+//  setUp(scn1.inject(atOnceUsers(10))).protocols(httpProtocol)
+  setUp(scn2.inject(atOnceUsers(10))).protocols(httpProtocol)
 }
