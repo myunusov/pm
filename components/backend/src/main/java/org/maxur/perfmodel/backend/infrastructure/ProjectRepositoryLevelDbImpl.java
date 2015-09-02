@@ -112,6 +112,31 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
 
     @Override
     @Benchmark
+    public Collection<Project> findAll() {
+        final String value = asString(db.get(bytes(ROOT_KEY_NAME)));
+        try {
+            return mapper.readValue(
+                value,
+                new TypeReference<Collection<Project>>(){
+                }
+            );
+        } catch (IOException e) {
+            LOGGER.error("Cannot read project", e);
+            throw new IllegalStateException(e);
+        }
+    }
+
+    @Override
+    @Benchmark
+    public Collection<Project> findByName(final String name) {
+        return findAll()
+            .stream()
+            .filter(project -> project.getName().equals(name))
+            .collect(toList());
+    }
+
+    @Override
+    @Benchmark
     public Project remove(final String key) {
         final Project project;
         final WriteBatch batch = db.createWriteBatch();
@@ -181,27 +206,5 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
         }
     }
 
-    @Override
-    @Benchmark
-    public Collection<Project> findAll() {
-        final String value = asString(db.get(bytes(ROOT_KEY_NAME)));
-        try {
-            return mapper.readValue(
-                    value,
-                    new TypeReference<Collection<Project>>(){
-                    }
-            );
-        } catch (IOException e) {
-            LOGGER.error("Cannot read project", e);
-            throw new IllegalStateException(e);
-        }
-    }
 
-    @Override
-    public Collection<Project> findByName(final String name) {
-        return findAll()
-                .stream()
-                .filter(project -> project.getName().equals(name))
-                .collect(toList());
-    }
 }
