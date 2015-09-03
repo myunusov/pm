@@ -41,13 +41,21 @@ class ClientSimulation extends Simulation {
       .headers(headers_0)
     ).pause(100 milliseconds)
   }
+
+  val iterations = 1000
+
   val scn2 = scenario("Save")
-    .repeat(1000) {
-    exec(http("save")
-      .post("/api/project/0f7684a6-9477-4a5d-824a-4b7d682074ea")
-      .headers(headers_0)
-      .body(RawFileBody("save.dto"))
-    ).pause(100 milliseconds)
+    .repeat(iterations, "index") {
+      exec(http("save")
+        .post("""/api/project/id""")
+        .headers(headers_0)
+        .body(StringBody(_ => body))
+      ).pause(100 milliseconds)
+  }
+
+  def body: String = {
+    """{ "raw": "FAKE", "id": "%s", "name": "%s", "version": %d }"""
+      .format(java.util.UUID.randomUUID.toString, java.util.UUID.randomUUID.toString, 1)
   }
 
 

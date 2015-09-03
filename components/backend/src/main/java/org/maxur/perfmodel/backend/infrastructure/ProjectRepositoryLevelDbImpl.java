@@ -31,15 +31,14 @@ import javax.inject.Named;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
-import static java.util.Collections.emptySet;
-import static java.util.stream.Collectors.toSet;
+import static java.util.Collections.*;
 import static org.iq80.leveldb.impl.Iq80DBFactory.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -61,7 +60,7 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
 
     private DB db;
 
-    private Map<String, Project> folder = new HashMap<>();
+    private Map<String, Project> folder = new ConcurrentHashMap<>();
 
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private final Lock readLock = lock.readLock();
@@ -155,19 +154,30 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     @Override
     @Benchmark
     public Collection<Project> findAll() {
+        final Collection<Project> values;
         readLock.lock();
-        final Collection<Project> values = folder.values();
-        readLock.unlock();
+        try {
+            values = folder.values();
+        } finally {
+            readLock.unlock();
+        }
         return values;
     }
 
     @Override
     @Benchmark
     public Collection<Project> findByName(final String name) {
-        return findAll()
-            .stream()
-            .filter(project -> project.getName().equals(name))
-            .collect(toSet());
+        readLock.lock();
+        try {
+            for (Project project : folder.values()) {
+                if (project.getName().equals(name)) {
+                    return singleton(project);
+                }
+            }
+        } finally {
+            readLock.unlock();
+        }
+        return emptyList();
     }
 
     @Override
