@@ -127,6 +127,7 @@ function EGMStep(type) {
     this.rate = 1;
     this.repeat = 1;
     this.steps = [];
+    this.contribution = {};
 
     this.types = {
         "R": {type: EGMRoutine, title: "Basic"},
@@ -269,14 +270,14 @@ function EGMStep(type) {
         this.updateRеps();
         this.recalc();
         this.onUpdate();
-    }
+    };
 
     this.updateId = function (newId) {
         this.id = newId || this.id;
         for (var i = 0; i < this.steps.length;) {
             this.steps[i].updateId(this.id + "." + ++i);
         }
-    }
+    };
 
     this.updateRеps = function(parentReps) {
         this.reps = parentReps || 1;
@@ -285,7 +286,7 @@ function EGMStep(type) {
         for (var i = 0; i < this.steps.length; i++) {
             this.steps[i].updateRеps(this.reps);
         }
-    }
+    };
 
     this.recalc = function() {
         if (this.isLeaf()) {
@@ -294,13 +295,14 @@ function EGMStep(type) {
         } else {
             for (var i = 0; i < this.steps.length; i++) {
                 this.steps[i].recalc();
+                this.calcContributions();
             }
             this.best.clear();
             this.avg.clear();
             this.worst.clear();
             this.updateChildren();
         }
-    }
+    };
 
     this.updateChildren = function () {
         for (var i = 0; i < this.steps.length; i++) {
@@ -318,6 +320,25 @@ function EGMStep(type) {
         this.best.add(step.best);
         this.avg.add(step.avg);
         this.worst.add(step.worst);
+    };
+
+    this.calcContributions = function () {
+        if (isLeaf()) {
+            this.contribution  = {
+                this : this.avg.values
+            }
+        } else {
+            this.contribution  = {};
+            for (var i = 0; i < this.steps.length; i++) {
+                var step = this.steps[i];
+                for (var key in step.contribution) {
+                    if (step.contribution.hasOwnProperty(key)) {
+                        this.contribution[key] = step.contribution[key];
+                    }
+                }
+            }
+        }
+
     };
 
     this.isParent = function () {
