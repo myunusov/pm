@@ -179,8 +179,10 @@ dirs.directive('mxTreeNodeContent', function () {
                         if (e.stopPropagation)
                             e.stopPropagation();
                         cleanDragClasses(this);
-                        var Y = event.layerY - $(event.target).position().top;
-                        var pos = Math.floor(Y / ($(event.target).height() / 3));
+                        var pos = calcDragPos(el, e);
+                        if (pos < 0) {
+                            return false;
+                        }
                         switch (pos) {
                             case 2:
                                 if (typeof scope.step.dropAfter == 'function') {

@@ -24,6 +24,10 @@
 
 /*alerts*/
 
+.bottleneck {
+    color: #ff8a80 !important;
+}
+
 .error {
     background-color: #e57373;
     margin: 5px;

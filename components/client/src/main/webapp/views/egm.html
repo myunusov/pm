@@ -112,12 +112,12 @@
                                     <md-card>
                                         <div class="frame">
                                             <table class="resources">
-                                                <col style="width: 80px">
+                                                <col style="width: 90px">
                                                 <col style="width: 200px">
                                                 <col>
                                                 <thead>
                                                 <tr>
-                                                    <th colspan="2">Step</th>
+                                                    <th colspan="2">Processing Step</th>
                                                     <th ng-repeat="resource in model.resources">
                                                         {{resource.name}}
                                                     </th>
@@ -137,8 +137,10 @@
                                                                ng-model="step.avg.values[resource.id]"
                                                                ng-change="step.change()"
                                                                ng-show="step.isLeaf()"
-                                                               class="input input-small simplebox quantity">
-                                                        <span ng-hide="step.isLeaf()">
+                                                               class="input input-small simplebox quantity"
+                                                               ng-class="scenario.clazz(resource.id, step.id)">
+                                                        <span ng-hide="step.isLeaf()"
+                                                              ng-class="scenario.clazz(resource.id, step.id)">
                                                             {{step.avg.values[resource.id]}} ({{step.best.values[resource.id]}} - {{step.worst.values[resource.id]}})
                                                         </span>
                                                     </td>
