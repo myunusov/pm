@@ -77,11 +77,10 @@
                         <artifactId>pitest-maven</artifactId>
                         <configuration>
                             <targetClasses>
-                                <param>org.maxur.perfmodel.*</param>
+                                <param>org.maxur.perfmodel.backend.*</param>
                             </targetClasses>
                             <targetTests>
-                                <param>org.maxur.perfmodel.backend.domain*</param>
-                                <param>org.maxur.perfmodel.backend.rest*</param>
+                                <param>org.maxur.perfmodel.backend.utils*</param>
                             </targetTests>
                             <mutators>
                                 <mutator>DEFAULTS</mutator>

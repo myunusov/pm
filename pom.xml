@@ -247,6 +247,7 @@
                     <groupId>io.takari.maven.plugins</groupId>
                     <artifactId>takari-lifecycle-plugin</artifactId>
                     <extensions>true</extensions>
+                    <version>1.11.10</version>
                 </plugin>
 
                 <plugin>
