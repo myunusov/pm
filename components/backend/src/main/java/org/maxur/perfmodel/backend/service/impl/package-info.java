@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Maxim Yunusov
+ * Copyright (c) 2015 Maxim Yunusov
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
@@ -13,17 +13,9 @@
  *    limitations under the License.
  */
 
-package org.maxur.perfmodel.backend.domain;
-
 /**
- * @author Maxim Yunusov
- * @version 1.0 24.11.13
+ * Provides the services (application logic) layer implementations classes.
+ *
+ * @since 0.1
  */
-public class ValidationException extends Exception {
-
-    private static final long serialVersionUID = -8101843196828276782L;
-
-    public ValidationException(String message) {
-        super(message);
-    }
-}
+package org.maxur.perfmodel.backend.service.impl;

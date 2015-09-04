@@ -1,0 +1,6 @@
+#!/bin/bash
+# The logic to stop your application should be put in this script.
+if [[ -z "$OPENSHIFT_INTERNAL_IP" ]]; then export OPENSHIFT_INTERNAL_IP="$OPENSHIFT_DIY_IP"; fi
+if [[ -z "$OPENSHIFT_INTERNAL_PORT" ]]; then export OPENSHIFT_INTERNAL_PORT="$OPENSHIFT_DIY_PORT"; fi
+
+curl -H 'Content-Type: application/json' -X PUT -d '{"status":"stopped"}' http://${OPENSHIFT_INTERNAL_IP}:${OPENSHIFT_INTERNAL_PORT}/api/application/status

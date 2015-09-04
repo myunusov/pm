@@ -1,4 +1,4 @@
-describe('pmc', function() {
+describe('PMC Application', function() {
 
     var module;
 

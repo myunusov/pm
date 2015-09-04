@@ -2,6 +2,8 @@
 <div class="frame">
     <table flex class="nodes qnm">
         <thead>
+        <col data-ng-repeat="type in nodeTypes"/>
+        <col width="35px"/>
         <tr>
             <td colspan="{{nodeTypes.length + 1}}">
                 <div flex class="framehdr">
@@ -20,7 +22,7 @@
             </td>
         </tr>
         <tr>
-            <th ng-repeat="type in nodeTypes">
+            <th data-ng-repeat="type in nodeTypes">
                 {{type.title}}
                 <md-tooltip>{{type.tooltip }}</md-tooltip>
             </th>
@@ -30,7 +32,7 @@
         <tbody>
         <tr ng-repeat="center in model.nodes">
             <td nowrap="nowrap" ng-repeat="type in nodeTypes" ng-init="prop=center.all[type.id]">
-                <input type="text"
+                <input type="{{type.type}}"
                        aria-label="Property {{type.title}}"
                        class="tab-input simplebox quantity {{prop.state}}"
                        ng-change="change(type.id, center)"
@@ -38,7 +40,7 @@
                        ng-model="prop.text">
                 <md-menu>
                     <button aria-label="Select Unit" class="md-icon-button" ng-click="$mdOpenMenu()">
-                        {{prop.unit.title}}
+                        {{prop.unit.shortTitle}}
                     </button>
                     <md-menu-content width="1">
                         <md-menu-item ng-repeat="unit in prop.availableUnits()">

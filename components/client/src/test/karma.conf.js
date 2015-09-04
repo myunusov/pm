@@ -4,7 +4,7 @@ module.exports = function (config) {
         // base path, that will be used to resolve files and exclude
         basePath: '../../',
 
-        frameworks: ['jasmine', 'commonjs'],
+        frameworks: ['jasmine'],
 
         // list of files / patterns to load in the browser
         files: [
@@ -18,8 +18,7 @@ module.exports = function (config) {
         exclude: [],
 
         preprocessors: {
-            'src/main/webapp/js/**/*.js': ['commonjs', 'coverage'],
-            'src/test/unit/**/*.js': ['commonjs']
+            'src/main/webapp/js/**/*.js': ['coverage']
         },
 
         // use dots reporter, as travis terminal does not support escaping sequences
@@ -86,7 +85,6 @@ module.exports = function (config) {
             'karma-firefox-launcher',
             'karma-junit-reporter',
             'karma-phantomjs-launcher',
-            'karma-commonjs',
             'karma-coverage'
         ]
 

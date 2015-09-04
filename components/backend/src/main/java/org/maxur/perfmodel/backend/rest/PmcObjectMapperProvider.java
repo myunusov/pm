@@ -33,12 +33,12 @@ import java.util.Set;
  * @since <pre>11/25/13</pre>
  */
 @Provider
-public class PMObjectMapperProvider implements ContextResolver<ObjectMapper> {
+public class PmcObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
     private final ObjectMapper context;
     private final Set<Class<?>> types;
 
-    public PMObjectMapperProvider() throws JAXBException{
+    public PmcObjectMapperProvider() throws JAXBException{
         final Class<?>[] cTypes = {Project.class, Incident.class};
         this.types = new HashSet<>(Arrays.asList(cTypes));
         this.context = createDefaultMapper();
@@ -46,7 +46,7 @@ public class PMObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
     @Override
     public ObjectMapper getContext(Class<?> objectType) {
-        return (types.contains(objectType)) ? context : null;
+        return types.contains(objectType) ? context : null;
     }
 
     private static ObjectMapper createDefaultMapper() {

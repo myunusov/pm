@@ -1,5 +1,7 @@
 <div class="frame">
     <table class="classes qnm" flex>
+        <col data-ng-repeat="type in classTypes"/>
+        <col width="35px"/>
         <thead>
         <tr>
             <td colspan="{{classTypes.length + 1}}">
@@ -21,17 +23,17 @@
             </td>
         </tr>
         <tr>
-            <th ng-repeat="type in classTypes">
+            <th data-ng-repeat="type in classTypes">
                 {{type.title}}
                 <md-tooltip>{{type.tooltip }}</md-tooltip>
             </th>
-            <th style="width:15px;"></th>
+            <th style="width:5px;"></th>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat="center in model.classes">
             <td nowrap="nowrap" ng-repeat="type in classTypes" ng-init="prop=center.all[type.id]">
-                <input type="text"
+                <input type="{{type.type}}"
                        aria-label="Property {{type.title}}"
                        class="input input-small simplebox quantity {{prop.state}}"
                        ng-change="change(type.id, center)"

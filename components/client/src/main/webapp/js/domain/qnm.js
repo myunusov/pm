@@ -6,6 +6,14 @@ function QNMUnit(id, title, rate, pattern) {
     this.rate = rate || 1;
     this.pattern = pattern || "\\d*[\\., \\,]?\\d*";
 
+
+    Object.defineProperty(this, 'shortTitle', {
+        get: function () {
+            return this.title;
+        }
+    });
+
+
     this.equals = function (other) {
         if (!other) {
             return null;
@@ -191,6 +199,29 @@ function QNMName(value) {
     });
 }
 
+
+function QNMNodeName(value) {
+    this.value = value;
+    this.units = [
+        new QNMUnit('cpu', 'CPU'),
+        new QNMUnit('disk', 'Disk'),
+        new QNMUnit('hdd', 'HDD'),
+        new QNMUnit('ssd', 'SSD')
+    ];
+
+    this.unit = new QNMUnit('▾');
+
+    this.availableUnits = function () {
+        return this.units;
+    };
+
+    this.setUnit = function (newValue) {
+        this.text = newValue.title;
+    };
+
+}
+QNMNodeName.prototype = new QNMName();
+
 function Throughput(value) {
     this.value = value;
     this._text = value;
@@ -333,7 +364,7 @@ QNMClass.prototype = new QNMCenter();
 
 function QNMNode(id, name) {
     this.id = id;
-    this.name = new QNMName(name || "Node " + id);
+    this.name = new QNMNodeName(name || "Node " + id);
     this.nodeNumber = new QNMNumber(1);
     this.utilization = new Utilization();
     this.meanNumberTasks = new QNMNumber();
@@ -379,10 +410,10 @@ function QNMVisit(clazz, node) {
     this.serviceTime.unit = this.serviceTime.units[0];
     this.serviceDemands = new QNMTime();
     this.serviceDemands.unit = this.serviceDemands.units[0];
-    this.utilization = new Utilization(0);         // XXX Workaround
-    this.utilization.calculated = true;
+    this.utilization = new Utilization();
     this.residenceTime = new QNMTime();
     this.throughput = new Throughput();
+    this.meanNumberTasks = new QNMNumber();
 
     this.details = false;
 
@@ -393,7 +424,9 @@ function QNMVisit(clazz, node) {
         'RT': this.residenceTime,
         'XI': this.throughput,
         'V': this.number,
-        'TV': this.totalNumber
+        'TV': this.totalNumber,
+
+        'NI': this.meanNumberTasks
     };
 
     this.expressions = [
@@ -405,10 +438,10 @@ function QNMVisit(clazz, node) {
             ['U'],
             [-1, 'XI', 'S']
         ], this),
-        /*        new Expression([
-         [-1, 'RT', 'XI'],
-         ['N']
-         ], this),*/
+        new Expression([
+            [-1, 'RT', 'XI'],
+            ['NI']
+         ], this),
         new Expression([
             [-1, 'S', 'V'],
             ['D']
@@ -857,13 +890,26 @@ function QNM(name, id) {
         return new Expression(result);
     };
 
+    // N =  SUM(N)
+    this.makeNExp = function (node) {
+        var result = [[-1, new Parameter('TN', node)]];
+        var visits = this.getVisitsByNode(node);
+        for (var j = 0; j < visits.length; j++) {
+            result.push([new Parameter('NI', visits[j])]);
+        }
+        return new Expression(result);
+    };
+
     this.makeExpressions = function () {
         var result = [];
-        for (var j = 0; j < this.nodes.length; j++) {
-            result.push(this.makeUExp(this.nodes[j]));
+        for (var i1 = 0; i1 < this.nodes.length; i1++) {
+            result.push(this.makeNExp(this.nodes[i1]));
         }
-        for (var i = 0; i < this.classes.length; i++) {
-            result.push(this.makeRXNExps(this.classes[i]));
+        for (var i2 = 0; i2 < this.nodes.length; i2++) {
+            result.push(this.makeUExp(this.nodes[i2]));
+        }
+        for (var i3 = 0; i3 < this.classes.length; i3++) {
+            result.push(this.makeRXNExps(this.classes[i3]));
         }
         return result;
     };
@@ -902,6 +948,20 @@ function QNM(name, id) {
         return new Calculator(fields, expressions);
     };
 
+    this.cleanCalcFields = function () {
+        [this.classes, this.visits, this.nodes].each(
+            function (u) {
+                var all = u.getAll();
+                for (var j = 0; j < all.length; j++) {
+                    if (all[j].calculated) {
+                        all[j].text = undefined;
+                        all[j].calculated = false;
+                    }
+                }
+            }
+        );
+    };
+
     this.recalculate = function () {
         var calculator = this.makeCalculator();
         if (!calculator) {
@@ -935,6 +995,3 @@ function QNM(name, id) {
     };
 
 }
-
-
-

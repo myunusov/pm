@@ -15,82 +15,39 @@
 
 package org.maxur.perfmodel.backend;
 
-import org.glassfish.hk2.api.TypeLiteral;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.glassfish.jersey.jackson.JacksonFeature;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.maxur.perfmodel.backend.domain.Project;
-import org.maxur.perfmodel.backend.domain.Repository;
-import org.maxur.perfmodel.backend.infrastructure.PropertiesService;
-import org.maxur.perfmodel.backend.infrastructure.SimpleFileRepository;
-import org.maxur.perfmodel.backend.infrastructure.WebServer;
-import org.maxur.perfmodel.backend.rest.PMObjectMapperProvider;
-import org.slf4j.Logger;
+import org.glassfish.hk2.api.ServiceLocator;
+import org.glassfish.hk2.api.ServiceLocatorFactory;
+import org.maxur.perfmodel.backend.service.Application;
 
-import java.io.IOException;
-
-import static org.slf4j.LoggerFactory.getLogger;
+import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.bind;
 
 /**
+ * Performance Model Calculator Standalone Launcher.
+ *
  * @author Maxim Yunusov
  * @version 1.0 14.09.2014
  */
-public class Launcher {
+public final class Launcher {
 
-    private static final Logger LOGGER = getLogger(Launcher.class);
+    /**
+     * Utils class.
+     */
+    private Launcher() {
+    }
 
-    private WebServer webServer;
-
-    private PropertiesService propertiesService;
-
+    /**
+     * Command line entry point. This method kicks off the building of a application  object
+     * and executes it.
+     *
+     * @param args - arguments of command.
+     */
     public static void main(String[] args) throws Exception {
-        final Launcher client = new Launcher();
-        client.init();
-        client.run();
+        final ServiceLocatorFactory locatorFactory = ServiceLocatorFactory.getInstance();
+        final ServiceLocator locator = locatorFactory.create("PmcLocator");
+        bind(locator, new Config());
+        final Application application = locator.getService(Application.class);
+        application.start();
     }
 
-    private void init() {
-        try {
-            propertiesService = PropertiesService.make("/pm.properties");
-            webServer = new WebServer(propertiesService);
-            webServer.start(createApp());
-        } catch (RuntimeException e) {
-            LOGGER.error("System don't initialising", e);
-        }
-    }
-
-    public ResourceConfig createApp() {
-        return new ResourceConfig() {
-            {
-                packages("org.maxur.perfmodel.backend.rest");
-                register(JacksonFeature.class);
-                register(PMObjectMapperProvider.class);
-                register(new AbstractBinder() {
-                    @Override
-                    protected void configure() {
-                        bind(propertiesService).to(PropertiesService.class);
-                        bindAsContract(new TypeLiteral<SimpleFileRepository>(){})
-                                .to(new TypeLiteral<Repository<Project>>(){});
-                    }
-                });
-            }
-        };
-    }
-
-    private void run() throws IOException {
-        final TrayIconApplication trayIconApplication = new TrayIconApplication(webServer, propertiesService);
-        if (trayIconApplication.isReady()) {
-            trayIconApplication.start();
-        } else {
-            System.out.println("Press Enter to stop\n");
-            //noinspection ResultOfMethodCallIgnored
-            System.in.read();
-            done();
-        }
-    }
-
-    private void done() {
-        webServer.stop();
-    }
 
 }

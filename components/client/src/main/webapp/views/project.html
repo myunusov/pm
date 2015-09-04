@@ -14,38 +14,59 @@
 
 <section ng-if="project.id">
 
-    <md-content md-theme="docs-dark" >
+    <md-content md-theme="docs-dark">
         <form name="projectForm" layout-padding layout="row" layout-sm="column">
             <md-input-container flex-sm="100" flex="40">
                 <label>Project</label>
                 <input ng-model="project.name" md-maxlength="50" required name="name">
             </md-input-container>
-            <md-input-container flex-sm="100" flex="55">
-                <label>Description</label>
-                <input ng-model="project.description">
-            </md-input-container>
+            <!--            <md-input-container flex-sm="100" flex="55">
+                            <label>Description</label>
+                            <input ng-model="project.description">
+                        </md-input-container>-->
         </form>
     </md-content>
 
-    <md-button class="md-fab md-primary"
+    <md-fab-speed-dial md-open="false" md-direction="left" class="md-scale" style="position: absolute; right: 24px; margin-top: -30px">
+        <md-fab-trigger>
+            <md-button aria-label="menu" class="md-fab md-primary">
+                <md-icon md-svg-src="img/icons/menu.svg"></md-icon>
+            </md-button>
+        </md-fab-trigger>
+        <md-fab-actions>
+            <md-button aria-label="New Model" class="md-fab md-raised md-primary md-mini" ng-click="newModel($event)" >
+                <md-icon class="mdi mdi-plus"></md-icon>
+            </md-button>
+            <md-button aria-label="chart" ng-show="model().type === 'qnm'"
+                       class="md-fab md-raised md-primary md-mini" href="#chart/{{project.id}}/{{model().id}}">
+                <md-icon class="mdi mdi-chart-line"></md-icon>
+            </md-button>
+            <md-button aria-label="compare" ng-show="model().type === 'qnm'"
+                       class="md-fab md-raised md-primary md-mini" ng-click="addToCompare(model())">
+                <md-icon class="mdi mdi-compare"></md-icon>
+            </md-button>
+        </md-fab-actions>
+    </md-fab-speed-dial>
+
+<!--    <md-button class="md-fab md-primary"
                ng-click="newModel($event)"
                aria-label="New Model" style="position: absolute; right: 24px; margin-top: -30px">
         <md-icon class="mdi mdi-plus"
                  style="font-size: 36px; height: 36px; width: 36px;"
                 ></md-icon>
-    </md-button>
+    </md-button>-->
 
 </section>
 
 <section flex ng-if="project.id">
 
-    <div flex layout-fill class="md-padding" ng-if="project.models.length > 1">
-        <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect md-dynamic-height>
-            <md-tab ng-repeat="model in project.models">
+    <div flex layout-fill class="md-padding" ng-if="project.visibleModels.length > 1">
+        <md-tabs md-selected="project.currentModelIndex" md-border-bottom md-autoselect md-dynamic-height>
+            <md-tab ng-repeat="model in project.visibleModels">
                 <md-tab-label>
                     <input type="text" class="tab-input ng-pristine ng-valid" ng-model="model.name">
                     <span style="height: 28px">
-                    <button class="tab-button" ng-click="project.removeModel(model)">
+                    <button class="tab-button" ng-click="hideModel(model)">
                         <i class="mdi mdi-close"></i>
                         <md-tooltip>Remove Model</md-tooltip>
                     </button>
@@ -55,11 +76,24 @@
                     <ng-include src="model.view"></ng-include>
                 </md-tab-body>
             </md-tab>
+            <md-tab>
+                <md-tab-label>
+                    <span style="height: 28px">
+                        <button class="tab-button" ng-click="newModel($event)">
+                            <i class="mdi mdi-plus"></i>
+                            <md-tooltip>Add Model</md-tooltip>
+                        </button>
+                    </span>
+                </md-tab-label>
+                <md-tab-body>
+
+                </md-tab-body>
+            </md-tab>
         </md-tabs>
     </div>
 
-    <div flex layout-fill class="md-padding" ng-if="project.models.length == 1">
-        <div ng-repeat="model in project.models">
+    <div flex layout-fill class="md-padding" ng-if="project.visibleModels.length == 1">
+        <div ng-repeat="model in project.visibleModels">
             <ng-include src="model.view"></ng-include>
         </div>
     </div>

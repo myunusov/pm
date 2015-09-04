@@ -23,8 +23,12 @@
 
         <slf4j.version>1.7.5</slf4j.version>
         <logback.version>1.0.13</logback.version>
-        <jersey.version>2.13</jersey.version>
-        <jackson.version>2.3.2</jackson.version>
+        <jersey.version>2.21</jersey.version>
+        <jackson.version>2.5.4</jackson.version>
+        <resteasy.version>3.0.12.Final</resteasy.version>
+        <jmockit.version>1.19</jmockit.version>
+        <groovy.version>2.4.1</groovy.version>
+        <cglib.version>3.0</cglib.version>
     </properties>
 
     <scm>
@@ -43,82 +47,70 @@
                 <clover.generateXml>true</clover.generateXml>
                 <clover.generateHtml>true</clover.generateHtml>
                 <maven.clover.skip>false</maven.clover.skip>
-
-                <sonar.pitest.reportsDirectory>target/pit-reports</sonar.pitest.reportsDirectory>
-                <sonar.pitest.mode>reuseReport</sonar.pitest.mode>
             </properties>
-        </profile>
-        <profile>
-            <id>check</id>
-            <activation>
-                <property>
-                    <name>packaging</name>
-                    <value>jar</value>
-                </property>
-            </activation>
             <build>
                 <plugins>
                     <plugin>
-                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <groupId>com.atlassian.maven.plugins</groupId>
+                        <artifactId>maven-clover2-plugin</artifactId>
+                        <version>${maven-clover2-plugin.version}</version>
+                        <configuration>
+                            <includes>
+                                <include>**/maxur/**/*.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>pitest</id>
+            <properties>
+                <sonar.pitest.reportsDirectory>target/pit-reports</sonar.pitest.reportsDirectory>
+                <sonar.pitest.mode>reuseReport</sonar.pitest.mode>
+            </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-maven</artifactId>
+                        <configuration>
+                            <targetClasses>
+                                <param>org.maxur.perfmodel.*</param>
+                            </targetClasses>
+                            <targetTests>
+                                <param>org.maxur.perfmodel.backend.domain*</param>
+                                <param>org.maxur.perfmodel.backend.rest*</param>
+                            </targetTests>
+                            <mutators>
+                                <mutator>DEFAULTS</mutator>
+                            </mutators>
+                            <outputFormats>
+                                <outputFormat>HTML</outputFormat>
+                                <outputFormat>XML</outputFormat>
+                            </outputFormats>
+                            <threads>4</threads>
+                            <reportsDirectory>${project.build.directory}/pit-reports</reportsDirectory>
+                            <timestampedReports>false</timestampedReports>
+                        </configuration>
                         <executions>
                             <execution>
-                                <id>integration-test</id>
+                                <id>check</id>
+                                <phase>pre-site</phase>
                                 <goals>
-                                    <goal>integration-test</goal>
+                                    <goal>mutationCoverage</goal>
                                 </goals>
                             </execution>
                             <execution>
-                                <id>verify</id>
+                                <id>test</id>
+                                <phase>test</phase>
                                 <goals>
-                                    <goal>verify</goal>
+                                    <goal>mutationCoverage</goal>
                                 </goals>
                             </execution>
                         </executions>
-                        <configuration>
-                            <forkMode>pertest</forkMode>
-                            <encoding>${project.source.encoding}</encoding>
-                        </configuration>
                     </plugin>
-
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <skipTests>false</skipTests>
-                            <testFailureIgnore>true</testFailureIgnore>
-                            <systemProperties>
-                            </systemProperties>
-                        </configuration>
-                    </plugin>
-
-                    <!-- CHECKSTYLE -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-checkstyle-plugin</artifactId>
-                    </plugin>
-
-                    <!-- PMD -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-pmd-plugin</artifactId>
-                    </plugin>
-
-                    <!-- FINDBUGS -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>findbugs-maven-plugin</artifactId>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>javancss-maven-plugin</artifactId>
-                        <configuration>
-                            <failOnViolation>true</failOnViolation>
-                            <ccnLimit>12</ccnLimit>
-                            <ncssLimit>90</ncssLimit>
-                        </configuration>
-                    </plugin>
-
                 </plugins>
             </build>
         </profile>
@@ -156,22 +148,53 @@
                     <artifactId>jackson-annotations</artifactId>
                     <groupId>com.fasterxml.jackson.core</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>jackson-core</artifactId>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jackson-jaxrs-base</artifactId>
+                    <groupId>com.fasterxml.jackson.jaxrs</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
             <version>${jackson.version}</version>
         </dependency>
-
-
-        <!-- Unit Testing -->
-        <!-- Mandatory dependencies for using Spock -->
         <dependency>
-            <groupId>org.spockframework</groupId>
-            <artifactId>spock-core</artifactId>
-            <version>1.0-groovy-2.4</version>
-            <scope>test</scope>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+            <version>${jackson.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jackson-annotations</artifactId>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.iq80.leveldb</groupId>
+            <artifactId>leveldb</artifactId>
+            <version>0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>${cglib.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>${cglib.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>asm</groupId>
+            <artifactId>asm-all</artifactId>
+            <version>3.3.1</version>
         </dependency>
 
         <!-- Logging -->
@@ -199,7 +222,7 @@
         <dependency>
             <groupId>com.ecyrd.speed4j</groupId>
             <artifactId>speed4j</artifactId>
-            <version>0.12</version>
+            <version>0.18</version>
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-api</artifactId>
@@ -207,6 +230,81 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- hocon -->
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+            <version>1.3.0</version>
+        </dependency>
+
+        <!-- Unit Testing -->
+        <!-- Mandatory dependencies for using Spock -->
+
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>${groovy.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.objenesis</groupId>
+            <artifactId>objenesis</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.spockframework</groupId>
+            <artifactId>spock-core</artifactId>
+            <version>1.0-groovy-2.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jmockit</groupId>
+            <artifactId>jmockit</artifactId>
+            <version>${jmockit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <version>${resteasy.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson2-provider</artifactId>
+            <version>${resteasy.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jackson-annotations</artifactId>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jackson-jaxrs-json-provider</artifactId>
+                    <groupId>com.fasterxml.jackson.jaxrs</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jackson-core</artifactId>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jackson-databind</artifactId>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                </exclusion>
+            </exclusions>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>tjws</artifactId>
+            <version>${resteasy.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+
     </dependencies>
 
     <build>
@@ -277,57 +375,63 @@
                         </goals>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.gmaven.runtime</groupId>
+                        <artifactId>gmaven-runtime-2.0</artifactId>
+                        <version>1.5</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>org.codehaus.groovy</groupId>
+                                <artifactId>groovy-all</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-all</artifactId>
+                        <version>${groovy.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <!-- Optional plugins for using Spock -->
             <!-- Only required if names of spec classes don't match default Surefire patterns (`*Test` etc.) -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.18.1</version>
                 <configuration>
-                    <useFile>false</useFile>
+                    <useFile>true</useFile>
+                    <skipTests>false</skipTests>
                     <includes>
+                        <!-- By default only files ending in 'Test' will be included, so also include support for Spock style naming convention -->
+                        <!-- Oddly enough for Groovy files, *Spec.groovy does not work, but *Spec.java does -->
+                        <include>**/*Test.java</include>
                         <include>**/*Spec.java</include>
                     </includes>
                 </configuration>
             </plugin>
-
             <plugin>
-                <groupId>org.pitest</groupId>
-                <artifactId>pitest-maven</artifactId>
-                <configuration>
-                    <targetClasses>
-                        <param>org.maxur.perfmodel.*</param>
-                    </targetClasses>
-                    <targetTests>
-                        <param>org.maxur.perfmodel.*</param>
-                    </targetTests>
-                    <mutators>
-                        <mutator>ALL</mutator>
-                    </mutators>
-                    <outputFormats>
-                        <outputFormat>HTML</outputFormat>
-                        <outputFormat>XML</outputFormat>
-                    </outputFormats>
-                    <threads>4</threads>
-                    <reportsDirectory>${project.build.directory}/pit-reports</reportsDirectory>
-                    <timestampedReports>false</timestampedReports>
-                </configuration>
+                <artifactId>maven-failsafe-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>check</id>
-                        <phase>pre-site</phase>
+                        <id>verify</id>
                         <goals>
-                            <goal>mutationCoverage</goal>
+                            <goal>verify</goal>
                         </goals>
                     </execution>
                     <execution>
-                        <id>test</id>
-                        <phase>test</phase>
                         <goals>
-                            <goal>mutationCoverage</goal>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <forkMode>pertest</forkMode>
+                    <encoding>${project.source.encoding}</encoding>
+                    <includes>
+                        <include>**/*IT.java</include>
+                    </includes>
+                </configuration>
             </plugin>
 
         </plugins>

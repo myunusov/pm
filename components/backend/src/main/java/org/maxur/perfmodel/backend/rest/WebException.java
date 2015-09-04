@@ -40,7 +40,8 @@ public final class WebException extends WebApplicationException {
         super(Response
                 .status(status)
                 .type(APPLICATION_JSON)
-                .entity(new GenericEntity<List<Incident>>(makeIncident(messages)) {})
+                .entity(new GenericEntity<List<Incident>>(makeIncident(messages)) {
+                })
                 .build());
     }
 

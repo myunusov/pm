@@ -15,6 +15,14 @@ controllers.controller('ProjectCtrl', function (
 
     $scope.project = currentProject;
 
+    $scope.model = function() {
+        return $scope.project.getCurrentModel();
+    };
+
+    $scope.hideModel = function(model) {
+        $scope.project.visibleModels.remove(model);
+    };
+
     $scope.newModel = function (ev) {
         $mdDialog.show({
             clickOutsideToClose: true,
@@ -24,13 +32,17 @@ controllers.controller('ProjectCtrl', function (
             targetEvent: ev
         })
             .then(function (answer) {
-                var length = $scope.project.models.length;
+                var model;
                 if (answer === "QNM") {
-                    $scope.project.models.push(modelFactory.qnm("QNM " + length));
+                    model = modelFactory.qnm("QNM " + $scope.project.qnms().length);
+                } else if (answer === "EGM") {
+                    model = modelFactory.egm("SEM " + $scope.project.sems().length);
+                } else {
+                    $scope.project.currentModelIndex = $scope.project.visibleModels.length - 1;
+                    return;
                 }
-                if (answer === "EGM") {
-                    $scope.project.models.push(modelFactory.egm("SEM " + length));
-                }
+                $scope.project.addModel(model);
+
             }, function () {
             });
     };
@@ -56,30 +68,6 @@ controllers.controller('ProjectCtrl', function (
 
 controllers.controller('EGMCtrl', function ($scope) {
 
-    $scope.moveAfter = function(itemId, nodeId) {
-        var nodeStepId = nodeId.substring(4);
-        var itemStepId = itemId.substring(4);
-        if (nodeStepId.indexOf(itemStepId) === 0) {
-            return false;
-        }
-        var node = $scope.model.findById(nodeStepId);
-        var item = $scope.model.findById(itemStepId);
-        item.moveAfter(node);
-        $scope.$apply();
-     };
-
-    $scope.moveAtFirst = function(itemId, nodeId) {
-        var nodeStepId = nodeId.substring(4);
-        var itemStepId = itemId.substring(4);
-        if (nodeStepId.indexOf(itemStepId) === 0) {
-            return false;
-        }
-        var node = $scope.model.findById(nodeStepId);
-        var item = $scope.model.findById(itemStepId);
-        item.moveAtFirst(node);
-        $scope.$apply();
-    };
-
     $scope.addResource = function () {
         $scope.model.addResource();
     };
@@ -104,21 +92,25 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         {
             id: "NAME",
             title: "Name",
+            type: "text",
             tooltip: "Node Name"
         },
         {
             id: "NN",
             title: "Number",
+            type: "number",
             tooltip: "Number of Node instances"
         },
         {
             id: "U",
             title: "Utilization",
+            type: "text",
             tooltip: "Total Utilization (U)"
         },
         {
             id: "TN",
-            title: "Number of Tasks",
+            title: "Queue Length",
+            type: "text",
             tooltip: "Mean Number of Tasks in Queue (N)"
         }
     ];
@@ -127,26 +119,31 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         {
             id: "NAME",
             title: "Name",
+            type: "text",
             tooltip: "Class Name"
         },
         {
             id: "M",
             title: "Number of Users",
+            type: "number",
             tooltip: "Number of Users (Terminals)(M)"
         },
         {
             id: "Z",
             title: "Think Time",
+            type: "text",
             tooltip: "Think Time (Z)"
         },
         {
             id: "X",
             title: "Throughput",
+            type: "text",
             tooltip: "Throughput per Class (X0)"
         },
         {
             id: "R",
             title: "Response Time",
+            type: "text",
             tooltip: "Response Time per Class (R)"
         }
     ];
@@ -155,11 +152,13 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         {
             id: "TV",
             title: "Visits",
+            type: "number",
             tooltip: "Number of Visits per Request (Vi)"
         },
         {
             id: "XI",
             title: "Throughput",
+            type: "text",
             tooltip: "Throughput per class (Xi)"
         },
         {
@@ -170,6 +169,7 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         {
             id: "D",
             title: "Demands",
+            type: "text",
             tooltip: "Service Demands per class (Di)"
         },
         {
@@ -180,6 +180,7 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         {
             id: "RT",
             title: "Residence Time",
+            type: "text",
             tooltip: "Residence Time per class (RTi)"
         }
     ];
@@ -187,31 +188,37 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         {
             id: "V",
             title: "Visits",
+            type: "number",
             tooltip: "Number of Visits per Request (Vi)"
         },
         {
             id: "XI",
             title: "Throughput",
+            type: "text",
             tooltip: "Throughput per class (Xi)"
         },
         {
             id: "S",
             title: "Service Time",
+            type: "text",
             tooltip: "Service Time per class (Si)"
         },
         {
             id: "D",
             title: "Service Demands",
+            type: "text",
             tooltip: "Service Demands per class (Di)"
         },
         {
             id: "U",
             title: "Utilization",
+            type: "text",
             tooltip: "Utilization per class (Ui)"
         },
         {
             id: "RT",
             title: "Residence Time",
+            type: "text",
             tooltip: "Residence Time per class (RTi)"
         }
 
@@ -231,11 +238,13 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
 
     $scope.addNode = function () {
         $scope.model.addNode();
+        $scope.model.cleanCalcFields();
         $scope.model.recalculate();
     };
 
     $scope.addClass = function () {
         $scope.model.addClass();
+        $scope.model.cleanCalcFields();
         $scope.model.recalculate();
     };
 
@@ -247,16 +256,7 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         } else {
             return;
         }
-        $scope.model.recalculate();
-    };
-
-    $scope.removeNode = function (node) {
-        $scope.model.removeNode(node);
-        $scope.model.recalculate();
-    };
-
-    $scope.removeClass = function (clazz) {
-        $scope.model.removeClass(clazz);
+        $scope.model.cleanCalcFields();
         $scope.model.recalculate();
     };
 
@@ -271,6 +271,8 @@ controllers.controller('MainMenuCtrl', function ($scope,
                                                  compareProvider,
                                                  project,
                                                  projectService) {
+
+    $scope.project = project;
 
     $scope.frameHeight = window.innerHeight;
 
@@ -297,6 +299,21 @@ controllers.controller('MainMenuCtrl', function ($scope,
         $mdSidenav('left').close()
             .then(function () {
                 $log.debug("close LEFT is done");
+            });
+    };
+
+    $scope.openModel = function (model) {
+        project.openModel(model);
+        $mdSidenav('right').close()
+                .then(function () {
+                    $log.debug("close RIGHT is done");
+                });
+    };
+
+    $scope.closeStructure = function () {
+        $mdSidenav('right').close()
+            .then(function () {
+                $log.debug("close RIGHT is done");
             });
     };
 
@@ -558,16 +575,13 @@ controllers.controller('ProjectListCtrl', function (
 
     $scope.remove = function (prj) {
         // TODO confirmation or undo
-        if (prj.isLocal) {
-            $.jStorage.deleteKey(prj.id);
-            remove(localProjects, prj.id);
-        } else {
+        if (!prj.isLocal) {
             projectService.remove(prj.id);
             // TODO on success only
             remove(remoteProjects, prj.id);
-            $.jStorage.deleteKey(prj.id);
-            remove(localProjects, prj.id);
         }
+        $.jStorage.deleteKey(prj.id);
+        remove(localProjects, prj.id);
         // TODO on success only
         if (project.id === prj.id) {
             var id = uuid();
@@ -591,7 +605,7 @@ controllers.controller('ChartCtrl', function ($scope, currentModel) {
         if ($scope.model !== null) {
             refreshCharts($scope.model);
         }
-    }
+    };
 
     $scope.$watch('$viewContentLoaded', function() {
 
@@ -613,7 +627,7 @@ controllers.controller('ChartCtrl', function ($scope, currentModel) {
             $(window).resize();
         });
 
-    };
+    }
 });
 
 

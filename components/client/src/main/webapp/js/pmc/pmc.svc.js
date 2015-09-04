@@ -93,6 +93,14 @@ angular.module('pmc.services', [])
             }
         }
 
+        function saveAsCurrent(currentProject) {
+            if (currentProject && currentProject.id) {
+                var dto = currentProject.createDTO(new ProjectDto());
+                $.jStorage.set(currentProject.id, dto);
+                $.jStorage.setTTL(currentProject.id, 1800000);
+            }
+        }
+
         return {
 
             findLocalProjects: function () {
@@ -107,7 +115,7 @@ angular.module('pmc.services', [])
             },
 
             findRemoteProjects: function () {
-                var result = ProjectDto.query(function (data) {
+                return ProjectDto.query(function (data) {
                     for (var j = 0; j < data.length; j++) {
                         data[j].isLocal = false;
                     }
@@ -115,15 +123,15 @@ angular.module('pmc.services', [])
                     var text = error.statusText ? ". " + error.statusText + ". " : "";
                     messageService.error("Project Repository is not accessible." + text, error.status);
                 });
-                return result;
             },
 
             make: function (id) {
                 saveTempBak();
                 id = id || uuid();
                 var result = new Project("New Project", id);
-                result.models.push(modelFactory.qnm("QNM 0"));
-                result.models.push(modelFactory.egm("SEM 0"));
+                result.addModel(modelFactory.qnm("QNM 0"));
+                result.addModel(modelFactory.egm("SEM 0"));
+                saveAsCurrent(result);
                 messageService.info("New Project is created.");
                 return result;
             },
@@ -145,10 +153,13 @@ angular.module('pmc.services', [])
                     var text = error.statusText ? ". " + error.statusText + ". " : "";
                     messageService.error("Project is not loaded." + text, error.status);
                 });
+                saveAsCurrent(project);
                 return project;
             },
             load: function (prj) {
-                saveTempBak();
+                if (project && project.id !== prj.id) {
+                    saveTempBak();
+                }
                 var dto;
                 if (prj.islocal) {
                     dto = $.jStorage.get(prj.id);
@@ -163,6 +174,7 @@ angular.module('pmc.services', [])
                         messageService.error("Project is not loaded." + text, error.status);
                     });
                 }
+                saveAsCurrent(project);
                 return project;
             },
             remove: function (id) {
@@ -176,9 +188,11 @@ angular.module('pmc.services', [])
             },
             save: function () {
                 var dto = project.createDTO(new ProjectDto());
-                $.jStorage.set(project.id, dto);
+                // Todo is changed ?
                 dto.$save(function (dto) {
                     messageService.info("Project is saved as '" + dto.name + "'.");
+                    project.version = dto.version;
+                    $.jStorage.set(project.id, dto);
                 }, function (error) {
                     var text = error.statusText ? ". " + error.statusText + ". " : "";
                     messageService.error("Project is not saved." + text, error.status);

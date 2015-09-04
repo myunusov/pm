@@ -190,28 +190,6 @@ function EGMStep(type) {
         return null;
     };
 
-    this.moveAtFirst = function (step) {
-        this.removeSelf();
-        var parent = step;
-        this.parent = parent;
-        if (parent.isSwitch()) {
-            this.rate = 0.5;
-        }
-        parent.steps.splice(0, 0, this);
-        this.change();
-    };
-
-    this.moveAfter = function (step) {
-        this.removeSelf();
-        var parent = step.parent;
-        this.parent = parent;
-        if (parent.isSwitch()) {
-            this.rate = 0.5;
-        }
-        parent.steps.splice(parent.steps.indexOf(step) + 1, 0, this);
-        this.change();
-    };
-
     this.removeStep = function (step) {
         this.steps.remove(step);
         this.change();
@@ -219,6 +197,36 @@ function EGMStep(type) {
 
     this.removeSelf = function () {
         this.parent.removeStep(this);
+    };
+
+    this.isChild = function(step) {
+        return this.id.indexOf(step.id) === 0;
+    };
+
+    this.dragOver = function (step) {
+        return step instanceof EGMStep && !this.isChild(step);
+    };
+
+    this.dropBefore = function (step) {
+        this.parent.insert(step, this.parent.steps.indexOf(this));
+    };
+
+    this.dropAfter = function (step) {
+        this.parent.insert(step, this.parent.steps.indexOf(this) + 1);
+    };
+
+    this.dropIn = function (step) {
+        this.insert(step, 0);
+    };
+
+    this.insert = function (step, pos) {
+        step.removeSelf();
+        step.parent = this;
+        if (this.isSwitch()) {
+            step.rate = 0.5;
+        }
+        this.steps.splice(pos, 0, step);
+        this.change();
     };
 
 
@@ -230,6 +238,10 @@ function EGMStep(type) {
         }
         this.steps.push(step);
         this.change();
+    };
+
+    this.allScenarios = function () {
+        return this.parent.allScenarios();
     };
 
     this.addScenario = function () {
@@ -348,10 +360,6 @@ function EGMStep(type) {
         return this.parent && this.parent.isSwitch();
     };
 
-    this.getClass = function () {
-        return (this.isParent() ? " parent-li" : "" + " last-child") + (this.inconsistent ? " invalid" : "");
-    };
-
     this.theme = function () {
         return this.inconsistent ? " md-warn" : this.iscompleted ? "md-primary" : "md-accent";
     };
@@ -359,8 +367,6 @@ function EGMStep(type) {
 }
 
 function EGMLink() {
-    this.id;
-    this.parent;
     this.scenarioId = null;
     this.scenario = null;
     this._name = "";
@@ -447,7 +453,6 @@ function EGMLink() {
 EGMLink.prototype = new EGMStep("C");
 
 function EGMScenario(id, model) {
-
     this.id = id;
     this.name = "Scenario";
     this.model = model;
@@ -502,6 +507,13 @@ function EGMScenario(id, model) {
         return this.model.findScenario(id);
     };
 
+    this.allScenarios = function () {
+        var result = this.model.scenarios.clone();
+        result.remove(this);
+        return result;
+    };
+
+
     this.getResources = function () {
         return this.model.resources;
     };
@@ -517,8 +529,6 @@ function EGMScenario(id, model) {
 EGMScenario.prototype = new EGMStep("C");
 
 function EGMRoutine() {
-    this.id;
-    this.parent;
     this.name = "Step";
 
     this.rate = 1;
@@ -535,8 +545,6 @@ function EGMRoutine() {
 EGMRoutine.prototype = new EGMStep("R");
 
 function EGMLoop() {
-    this.id;
-    this.parent;
     this.name = "Loop";
 
     this.repeat = 2;
@@ -575,8 +583,6 @@ function EGMLoop() {
 EGMLoop.prototype = new EGMStep("L");
 
 function EGMSwitch() {
-    this.id;
-    this.parent;
     this.name = "Switch";
 
     this.rate = 1;
@@ -619,8 +625,6 @@ function EGMSwitch() {
 EGMSwitch.prototype = new EGMStep("S");
 
 function EGMSplit() {
-    this.id;
-    this.parent;
     this.name = "Split";
 
     this.rate = 1;
@@ -650,8 +654,6 @@ EGMSplit.prototype = new EGMStep("F");
 
 
 function EGMPardo() {
-    this.id;
-    this.parent;
     this.name = "Pardo";
 
     this.rate = 1;
