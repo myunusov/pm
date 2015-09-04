@@ -191,7 +191,7 @@
                             <generateXml>true</generateXml>
                             <alwaysReport>true</alwaysReport>
                             <jdk>${project.source.compile}</jdk>
-                            <snapshot>${user.home}/.clover/${groupId}-${artifactId}/clover.snapshot</snapshot>
+                            <snapshot>${user.home}/.clover/${project.groupId}-${project.artifactId}/clover.snapshot</snapshot>
                             <licenseLocation>${project.root}/clover.license</licenseLocation>
                         </configuration>
 <!--                        <executions>
@@ -242,6 +242,12 @@
     <build>
         <pluginManagement>
             <plugins>
+
+                <plugin>
+                    <groupId>io.takari.maven.plugins</groupId>
+                    <artifactId>takari-lifecycle-plugin</artifactId>
+                    <extensions>true</extensions>
+                </plugin>
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -315,6 +321,11 @@
 
                 <plugin>
                     <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>2.18.1</version>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.18.1</version>
                 </plugin>
 
