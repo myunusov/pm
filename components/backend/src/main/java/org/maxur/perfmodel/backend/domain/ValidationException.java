@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Maxim Yunusov
+ * Copyright (c) 2015 Maxim Yunusov
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
@@ -15,24 +15,24 @@
 
 package org.maxur.perfmodel.backend.domain;
 
-import java.util.Collection;
-import java.util.Optional;
+import static java.lang.String.format;
 
 /**
- * @author Maxim Yunusov
- * @version 1.0 07.11.13
+ * @author myunusov
+ * @version 1.0
+ * @since <pre>08.09.2015</pre>
  */
-public interface Repository<T> {
+public class ValidationException extends Exception {
 
-    Optional<T> get(String key);
+    private static final long serialVersionUID = 8538245899720208225L;
 
-    T remove(String key);
-
-    T put(T value);
-
-    Optional<T> findByName(String name);
-
-    Collection<T> findAll();
-
-    void stop();
+    /**
+     * Create Validation Exception.
+     * <p/>
+     * @param message message template.
+     * @param args Arguments referenced by the format specifiers in the format string.
+     */
+    public ValidationException(final String message, final String... args) {
+        super(format(message, args));
+    }
 }

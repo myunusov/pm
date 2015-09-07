@@ -15,9 +15,9 @@
 
 package org.maxur.perfmodel.backend.infrastructure;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.iq80.leveldb.DB;
+import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.Options;
 import org.iq80.leveldb.WriteBatch;
 import org.jvnet.hk2.annotations.Service;
@@ -28,17 +28,12 @@ import org.maxur.perfmodel.backend.service.Benchmark;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Named;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.Optional;
 
 import static java.lang.String.format;
-import static java.util.Collections.*;
 import static org.iq80.leveldb.impl.Iq80DBFactory.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -54,17 +49,9 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
 
     private static final org.slf4j.Logger LOGGER = getLogger(ProjectRepositoryLevelDbImpl.class);
 
-    public static final String ROOT_KEY_NAME = "/";
-
     private final ObjectMapper mapper = new ObjectMapper();
 
     private DB db;
-
-    private Map<String, Project> folder = new ConcurrentHashMap<>();
-
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-    private final Lock readLock = lock.readLock();
-    private final Lock writeLock = lock.writeLock();
 
     @SuppressWarnings("unused")
     @Named("db.folderName")
@@ -73,7 +60,6 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     @PostConstruct
     public void init() {
         initDb();
-        initRootFolder();
     }
 
     private void initDb() {
@@ -91,37 +77,6 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
         }
     }
 
-    private void initRootFolder() {
-        final Collection<Project> projects = loadRootFolder();
-        writeLock.lock();
-        try {
-            folder = projects
-                    .stream()
-                    .collect(Collectors.toMap(Project::getId, (p) -> p));
-        } finally {
-            writeLock.unlock();
-        }
-    }
-
-    private Collection<Project> loadRootFolder() {
-        final String value = asString(db.get(bytes(ROOT_KEY_NAME)));
-        if (value == null) {
-            LOGGER.info("Root folder is not found and has been recreated");
-            db.put(bytes(ROOT_KEY_NAME), bytes("[]"));
-            return emptySet();
-        }
-        try {
-            return mapper.readValue(
-                    value,
-                    new TypeReference<Collection<Project>>(){
-                    }
-            );
-        } catch (IOException e) {
-            LOGGER.error("Cannot read list of projects", e);
-            throw new IllegalStateException("Cannot read list of projects");
-        }
-    }
-
     @Override
     @PreDestroy
     public void stop() {
@@ -135,86 +90,91 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
 
     @Override
     @Benchmark
-    public Project get(final String key) {
-            readLock.lock();
-            final Project project = folder.get(key);
-            readLock.unlock();
-            if (project == null) {
-                return null;
-            }
-            final String rawData = asString(db.get(bytes(key)));
-            if (rawData == null) {
-                LOGGER.error("Cannot read project");
-                throw new IllegalStateException(format("Raw data for project %s is not founded", project.getName()));
-            }
-            return project.cloneWith(rawData);
-
+    public Optional<Project> get(final String key) {
+        try {
+            return Optional.<Project>of(objectFrom(db.get(bytes(key))));
+        } catch (IOException | ClassNotFoundException e) {
+            throw new IllegalStateException(format("Cannot find project by name '%s'", key));
+        }
     }
 
     @Override
     @Benchmark
     public Collection<Project> findAll() {
-        final Collection<Project> values;
-        readLock.lock();
-        try {
-            values = folder.values();
-        } finally {
-            readLock.unlock();
+        final Collection<Project> values = new HashSet<>();
+        try (DBIterator iterator = db.iterator()) {
+            for(iterator.seek(bytes("ROOT/")); iterator.hasNext(); iterator.next()) {
+                final String key = asString(iterator.peekNext().getKey());
+                if (key.startsWith("ROOT/")) {
+                    values.add(objectFrom(iterator.peekNext().getValue()));
+                } else {
+                    break;
+                }
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new IllegalStateException("Cannot get all projects", e);
         }
         return values;
     }
 
     @Override
     @Benchmark
-    public Collection<Project> findByName(final String name) {
-        readLock.lock();
+    public Optional<Project> findByName(final String name) {
         try {
-            for (Project project : folder.values()) {
-                if (project.getName().equals(name)) {
-                    return singleton(project);
-                }
-            }
-        } finally {
-            readLock.unlock();
+            return Optional.<Project>of(objectFrom(db.get(bytes("ROOT/" + name))));
+        } catch (IOException | ClassNotFoundException e) {
+            throw new IllegalStateException(format("Cannot find project by name '%s'", name));
         }
-        return emptyList();
     }
 
     @Override
     @Benchmark
     public Project remove(final String key) {
-        final Project project = folder.get(key);
-        writeLock.lock();
+        final Project project;
         try (WriteBatch batch = db.createWriteBatch()) {
+            project = objectFrom(db.get(bytes(key)));
             db.delete(bytes(key));
-            folder.remove(key);
-            db.put(bytes(ROOT_KEY_NAME), mapper.writeValueAsBytes(folder.values()));
+            db.delete(bytes(fullName(project)));
             db.write(batch);
-        } catch (IOException e) {
-            LOGGER.error(format("Cannot remove project '%s'", project.getName()), e);
-            throw new IllegalStateException(format("Cannot remove project '%s'", project.getName()));
-        } finally {
-            writeLock.unlock();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new IllegalStateException(format("Cannot remove project '%s'", key));
         }
         return project;
     }
 
     @Override
     @Benchmark
-    public Project put(final Project project) {
-        writeLock.lock();
+    public Project put(final Project value) {
         try (WriteBatch batch = db.createWriteBatch()) {
-            db.put(bytes(project.getId()), bytes(project.getRaw()));
-            folder.put(project.getId(), project.lightCopy());
-            db.put(bytes(ROOT_KEY_NAME), mapper.writeValueAsBytes(folder.values()));
+            db.put(bytes(value.getId()), bytesFrom(value));
+            db.put(bytes(fullName(value)), bytesFrom(value.brief()));
             db.write(batch);
         } catch (IOException e) {
-            LOGGER.error("Cannot save project '%s'", project.getName(), e);
-            throw new IllegalStateException(format("Cannot save project '%s'", project.getName()));
-        }finally {
-            writeLock.unlock();
+            LOGGER.error("Cannot save project '%s'", value.getName(), e);
+            throw new IllegalStateException(format("Cannot save project '%s'", value.getName()));
         }
-        return project;
+        return value;
+    }
+
+    private String fullName(final Project project) {
+        return "ROOT/" + project.getName();
+    }
+
+    public static byte[] bytesFrom(final Serializable object) throws IOException {
+        try (
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                ObjectOutput out = new ObjectOutputStream(bos)
+        ) {
+            out.writeObject(object);
+            return bos.toByteArray();
+        }
+    }
+
+    public static <T> T objectFrom(final byte[] bytes) throws IOException, ClassNotFoundException {
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes); ObjectInput in = new ObjectInputStream(bis)) {
+            //noinspection unchecked
+            return (T) in.readObject();
+        }
     }
 
 

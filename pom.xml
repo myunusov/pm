@@ -27,6 +27,9 @@
 
         <project.source.compile>1.8</project.source.compile>
         <project.target.compile>1.8</project.target.compile>
+
+        <jsondoc.version>1.2.4</jsondoc.version>
+
         <site.deploy.url/>
 
         <sonar.artifact.path>${project.root}/assemblies/target/assemblies-${project.version}.zip</sonar.artifact.path>

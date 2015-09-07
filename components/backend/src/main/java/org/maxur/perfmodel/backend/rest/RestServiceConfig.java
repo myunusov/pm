@@ -32,7 +32,7 @@ import javax.ws.rs.core.FeatureContext;
 public class RestServiceConfig extends ResourceConfig {
 
     public RestServiceConfig() {
-        packages("org.maxur.perfmodel.backend.rest");
+        packages("org.maxur.perfmodel.backend.rest.resources");
         register(JacksonFeature.class);
         register(PmcObjectMapperProvider.class);
         register(new ServiceLocatorFeature());

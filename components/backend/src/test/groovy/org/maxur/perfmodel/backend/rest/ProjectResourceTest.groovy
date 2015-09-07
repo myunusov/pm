@@ -16,6 +16,7 @@
 package org.maxur.perfmodel.backend.rest
 import org.maxur.perfmodel.backend.domain.Project
 import org.maxur.perfmodel.backend.domain.Repository
+import org.maxur.perfmodel.backend.rest.resources.ProjectResource
 import spock.lang.Specification
 
 import javax.ws.rs.client.Entity

@@ -309,12 +309,6 @@
             <scope>test</scope>
         </dependency>
 
-
-        <dependency>
-            <groupId>org.jsondoc</groupId>
-            <artifactId>jsondoc-ui</artifactId>
-            <version>1.2.4</version>
-        </dependency>
         <dependency>
             <groupId>org.jsondoc</groupId>
             <artifactId>jsondoc-core</artifactId>
@@ -461,48 +455,33 @@
                 </configuration>
             </plugin>
 
+
+
             <plugin>
                 <groupId>org.jsondoc</groupId>
                 <artifactId>jsondoc-maven-plugin</artifactId>
-                <version>1.2.4</version>
-                <configuration>
-                    <version>1.1</version>
-                    <basePath>http://localhost:8080/api</basePath>
-                    <packages>
-                        <package>org.maxur.perfmodel.backend.rest</package>
-                    </packages>
-                    <outputFile>${project.build.directory}/jsondoc-ui/jsondoc.json</outputFile>
-                    <scanner>org.jsondoc.core.scanner.DefaultJSONDocScanner</scanner>
-                    <playgroundEnabled>true</playgroundEnabled> <!-- optional -->
-                    <displayMethodAs>URI</displayMethodAs> <!-- optional -->
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${jsondoc.version}</version>
                 <executions>
                     <execution>
-                        <id>unpack</id>
-                        <phase>process-resources</phase>
+                        <id>generate-jsondoc</id>
+                        <phase>package</phase>
                         <goals>
-                            <goal>unpack</goal>
+                            <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.jsondoc</groupId>
-                                    <artifactId>jsondoc-ui</artifactId>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>${project.build.directory}/jsondoc-ui</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
+                            <version>1.1</version>
+                            <basePath>http://127.0.0.1:8080/api</basePath>
+                            <packages>
+                                <package>org.maxur.perfmodel.backend.rest</package>
+                            </packages>
+                            <outputFile>${project.build.directory}/jsondoc-ui/jsondoc.json</outputFile>
+                            <scanner>org.jsondoc.core.scanner.DefaultJSONDocScanner</scanner>
+                            <playgroundEnabled>true</playgroundEnabled> <!-- optional -->
+                            <displayMethodAs>URI</displayMethodAs> <!-- optional -->
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
 
     </build>

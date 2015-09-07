@@ -18,7 +18,9 @@
         <project.root>./..</project.root>
         <release.repositoryId>myunusov/pm</release.repositoryId>
         <release.artifact>${project.basedir}/target/assemblies-${project.version}.zip</release.artifact>
+        <jsondoc.path>jsondoc.json</jsondoc.path>
     </properties>
+
 
     <profiles>
         <profile>
@@ -183,6 +185,41 @@
             <artifactId>client</artifactId>
             <version>2.1-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.jsondoc</groupId>
+            <artifactId>jsondoc-ui</artifactId>
+            <version>${jsondoc.version}</version>
+        </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jsondoc</groupId>
+                                    <artifactId>jsondoc-ui</artifactId>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/jsondoc-ui</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

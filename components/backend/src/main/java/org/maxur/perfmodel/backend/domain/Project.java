@@ -15,20 +15,17 @@
 
 package org.maxur.perfmodel.backend.domain;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author Maxim Yunusov
  * @version 1.0 24.11.13
  */
-@XmlRootElement
 public class Project implements Serializable {
 
-    private static final long serialVersionUID = -5236202133124299315L;
-
-    private String raw;
+    private static final long serialVersionUID = -8859706675434765594L;
 
     private String id;
 
@@ -36,24 +33,55 @@ public class Project implements Serializable {
 
     private int version;
 
-    @SuppressWarnings("UnusedDeclaration")
-    public Project() {
-    }
+    private String description;
 
-    public Project(final String id, final String name, final int version) {
+    private String models;
+
+    private String view;
+
+    public Project(final String id, final String name, final int version, final String description) {
         this.id = id;
         this.name = name;
         this.version = version;
+        this.description = description;
     }
-
-    public Project lightCopy() {
-        return new Project(this.id, this.name, this.version);
-    }
+/*
 
     public Project cloneWith(final String rawData) {
         final Project result = new Project(this.id, this.name, this.version);
         result.raw = rawData;
         return result;
+    }*/
+
+    public Project brief() {
+        return new Project(this.id, this.name, this.version, this.description);
+    }
+
+    public Project saveWith(final Repository<Project> repository) throws ValidationException {
+        checkNamesakes(repository, name);
+        final Optional<Project> result = repository.get(id);
+        checkConflictWith(result);
+        this.version = result.isPresent() ? this.version + 1 : 1;
+        repository.put(this);
+        return this;
+    }
+
+    public void checkConflictWith(final Optional<Project> oldProject) throws ValidationException {
+        if (oldProject.isPresent()) {
+            if (this.version != oldProject.get().version) {
+                throw new ValidationException("Performance Model '%s' has already been changed by another user.", name);
+            }
+        }
+    }
+
+    private void checkNamesakes(final Repository<Project> repository, final String name) throws ValidationException {
+        final Optional<Project> namesakes = repository.findByName(name);
+        if (namesakes.isPresent()) {
+            final Project namesake = namesakes.get();
+            if (!namesake.getId().equals(id)) {
+                throw new ValidationException("Performance Model '%s' already exists.", name);
+            }
+        }
     }
 
     public String getName() {
@@ -68,13 +96,26 @@ public class Project implements Serializable {
         return version;
     }
 
-    public void setRaw(String raw) {
-        this.raw = raw;
+    public String getDescription() {
+        return description;
     }
 
-    public String getRaw() {
-        return raw == null ? "" : raw;
+    public String getModels() {
+        return models;
     }
+
+    public String getView() {
+        return view;
+    }
+
+    public void setModels(final String models) {
+        this.models = models;
+    }
+
+    public void setView(final String view) {
+        this.view = view;
+    }
+
 
     @Override
     public boolean equals(Object o) {

@@ -47,7 +47,7 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
 
     def "test put"() {
         given:
-        def project = new Project('id1', 'name1', 1)
+        def project = new Project('id1', 'name1', 1, "")
         project.setRaw('{}')
         when:
         sut.init()
@@ -63,7 +63,7 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
 
     def "test remove"() {
         given:
-        def project = new Project('id2', 'name2', 1)
+        def project = new Project('id2', 'name2', 1, "")
         project.setRaw('{}')
         when:
         sut.init()
@@ -77,8 +77,8 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
 
     def "test rename"() {
         given:
-        def project1 = new Project('id3', 'name1', 1)
-        def project2 = new Project('id3', 'name2', 2)
+        def project1 = new Project('id3', 'name1', 1, "")
+        def project2 = new Project('id3', 'name2', 2, "")
         when:
         sut.init()
         sut.put(project1)

@@ -18,11 +18,12 @@ function Project(name, id) {
         memento.description = this.description;
         memento.models = createArrayDTO(this.models);
 
-        memento.visibleModels = [];
+        memento.view = {};
+        memento.view.visibleModels = [];
         for(var i = 0; i < this.visibleModels.length; i++) {
-            memento.visibleModels.push(this.visibleModels[i].id);
+            memento.view.visibleModels.push(this.visibleModels[i].id);
         }
-        memento.currentModelIndex = this.currentModelIndex;
+        memento.view.currentModelIndex = this.currentModelIndex;
 
         return memento;
     };
@@ -34,6 +35,7 @@ function Project(name, id) {
         this.description = memento.description;
         this.models = [];
         this.visibleModels = [];
+        this.currentModelIndex = memento.views.currentModelIndex;
         for (var i = 0; i < memento.models.length; i++) {
             var model;
             if (memento.models[i].type === "qnm") {
@@ -49,12 +51,11 @@ function Project(name, id) {
             }
             model.setDTO(memento.models[i]);
             this.models.push(model);
-            for(var j = 0; j < memento.visibleModels.length; j++) {
-                if (memento.visibleModels[j] === model.id)
+            for(var j = 0; j < memento.view.visibleModels.length; j++) {
+                if (memento.view.visibleModels[j] === model.id)
                 this.visibleModels.push(model);
             }
         }
-        this.currentModelIndex = memento.currentModelIndex;
     };
 
     this.removeModel = function (model) {
