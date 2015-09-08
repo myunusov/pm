@@ -15,7 +15,6 @@
 
 package org.maxur.perfmodel.backend.infrastructure;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.Options;
@@ -28,13 +27,23 @@ import org.maxur.perfmodel.backend.service.Benchmark;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Named;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 
 import static java.lang.String.format;
-import static org.iq80.leveldb.impl.Iq80DBFactory.*;
+import static org.iq80.leveldb.impl.Iq80DBFactory.asString;
+import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
+import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -49,7 +58,7 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
 
     private static final org.slf4j.Logger LOGGER = getLogger(ProjectRepositoryLevelDbImpl.class);
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    public static final String ROOT_PREFIX = "/";
 
     private DB db;
 
@@ -92,7 +101,7 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     @Benchmark
     public Optional<Project> get(final String key) {
         try {
-            return Optional.<Project>of(objectFrom(db.get(bytes(key))));
+            return Optional.<Project>ofNullable(objectFrom(db.get(bytes(key))));
         } catch (IOException | ClassNotFoundException e) {
             throw new IllegalStateException(format("Cannot find project by name '%s'", key));
         }
@@ -103,9 +112,9 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     public Collection<Project> findAll() {
         final Collection<Project> values = new HashSet<>();
         try (DBIterator iterator = db.iterator()) {
-            for(iterator.seek(bytes("ROOT/")); iterator.hasNext(); iterator.next()) {
+            for(iterator.seek(bytes(ROOT_PREFIX)); iterator.hasNext(); iterator.next()) {
                 final String key = asString(iterator.peekNext().getKey());
-                if (key.startsWith("ROOT/")) {
+                if (key.startsWith(ROOT_PREFIX)) {
                     values.add(objectFrom(iterator.peekNext().getValue()));
                 } else {
                     break;
@@ -121,7 +130,7 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     @Benchmark
     public Optional<Project> findByName(final String name) {
         try {
-            return Optional.<Project>of(objectFrom(db.get(bytes("ROOT/" + name))));
+            return Optional.<Project>ofNullable(objectFrom(db.get(bytes(fullName(name)))));
         } catch (IOException | ClassNotFoundException e) {
             throw new IllegalStateException(format("Cannot find project by name '%s'", name));
         }
@@ -134,7 +143,7 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
         try (WriteBatch batch = db.createWriteBatch()) {
             project = objectFrom(db.get(bytes(key)));
             db.delete(bytes(key));
-            db.delete(bytes(fullName(project)));
+            db.delete(bytes(fullName(project.getName())));
             db.write(batch);
         } catch (IOException | ClassNotFoundException e) {
             throw new IllegalStateException(format("Cannot remove project '%s'", key));
@@ -146,21 +155,29 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     @Benchmark
     public Project put(final Project value) {
         try (WriteBatch batch = db.createWriteBatch()) {
+            final Project prevProject = objectFrom(db.get(bytes(value.getId())));
+            final boolean mustBeRenamed = prevProject != null && !prevProject.getName().equals(value.getName());
+            if (mustBeRenamed) {
+                db.delete(bytes(fullName(prevProject.getName())));
+            }
             db.put(bytes(value.getId()), bytesFrom(value));
-            db.put(bytes(fullName(value)), bytesFrom(value.brief()));
+            db.put(bytes(fullName(value.getName())), bytesFrom(value.brief()));
             db.write(batch);
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             LOGGER.error("Cannot save project '%s'", value.getName(), e);
             throw new IllegalStateException(format("Cannot save project '%s'", value.getName()));
         }
         return value;
     }
 
-    private String fullName(final Project project) {
-        return "ROOT/" + project.getName();
+    private String fullName(final String name) {
+        return ROOT_PREFIX + name;
     }
 
     public static byte[] bytesFrom(final Serializable object) throws IOException {
+        if (object == null) {
+            return null;
+        }
         try (
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 ObjectOutput out = new ObjectOutputStream(bos)
@@ -171,6 +188,9 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     }
 
     public static <T> T objectFrom(final byte[] bytes) throws IOException, ClassNotFoundException {
+        if (bytes == null) {
+            return null;
+        }
         try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes); ObjectInput in = new ObjectInputStream(bis)) {
             //noinspection unchecked
             return (T) in.readObject();

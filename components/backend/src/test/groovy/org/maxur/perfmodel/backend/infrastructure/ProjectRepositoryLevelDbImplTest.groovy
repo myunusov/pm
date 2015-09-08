@@ -48,23 +48,27 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
     def "test put"() {
         given:
         def project = new Project('id1', 'name1', 1, "")
-        project.setRaw('{}')
+        project.setView('{}')
+        project.setModels('[]')
         when:
         sut.init()
         sut.put(project)
         then:
         def all = sut.findAll()
         all as List == [project]
-        all[0].getRaw() == ''
+        all[0].getView() == null
+        all[0].getModels() == null
         and:
-        sut.get('id1') == project;
-        project.getRaw() == '{}'
+        sut.get('id1').get() == project;
+        project.getView() == '{}'
+        project.getModels() == '[]'
     }
 
     def "test remove"() {
         given:
         def project = new Project('id2', 'name2', 1, "")
-        project.setRaw('{}')
+        project.setView('{}')
+        project.setModels('[]')
         when:
         sut.init()
         sut.put(project)
@@ -72,7 +76,7 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
         then:
         sut.findAll() as List == []
         and:
-        sut.get('id1') == null
+        !sut.get('id1').isPresent()
     }
 
     def "test rename"() {
@@ -87,8 +91,8 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
         sut.findAll() as List == [project2]
         and:
         def project = sut.get('id3')
-        project == project2;
-        project.name == 'name2'
+        project.get() == project2
+        project.get().name == 'name2'
     }
 
 }

@@ -39,6 +39,10 @@ public class Project implements Serializable {
 
     private String view;
 
+    @SuppressWarnings("unused")
+    public Project() {
+    }
+
     public Project(final String id, final String name, final int version, final String description) {
         this.id = id;
         this.name = name;
@@ -132,5 +136,14 @@ public class Project implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id, version);
+    }
+
+    @Override
+    public String toString() {
+        return "Project{" +
+            "id='" + id + '\'' +
+            ", name='" + name + '\'' +
+            ", version=" + version +
+            '}';
     }
 }

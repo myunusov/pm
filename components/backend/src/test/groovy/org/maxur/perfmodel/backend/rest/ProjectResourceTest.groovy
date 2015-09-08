@@ -52,8 +52,9 @@ class ProjectResourceTest extends Specification {
         setup:
         repository = Mock(Repository)
         sut.repository = repository
-        project = new Project('id1', 'name', 1)
-        project.setRaw("rawJson")
+        project = new Project('id1', 'name', 1, "")
+        project.setView("{}")
+        project.setModels("[]")
 
         when: "send GET request on project"
         Response response = server
@@ -66,13 +67,14 @@ class ProjectResourceTest extends Specification {
         response.hasEntity()
         List<Project> projects = response.readEntity(new GenericType<List<Project>>() {});
         and: "method findAll of project repository was called"
-        1 * repository.findAll() >> [project.lightCopy()];
+        1 * repository.findAll() >> [project];
         and: "sevrer returned project from repository"
         projects.size() ==  1
         projects.get(0).id == "id1"
         projects.get(0).name == "name"
         projects.get(0).version == 1
-        projects.get(0).raw == ""
+        projects.get(0).view == "{}"
+        projects.get(0).models == "[]"
     }
 
     def "should be return 404 code by GET request unavailable project"() {
@@ -89,7 +91,7 @@ class ProjectResourceTest extends Specification {
                 .invoke();
 
         then: "method get of project repository was called"
-        1 * repository.get("invalid") >> null;
+        1 * repository.get("invalid") >> Optional.empty();
         and: "Project was not returned"
         response.status == 404
         String rawProject = response.readEntity(String.class);
@@ -102,8 +104,9 @@ class ProjectResourceTest extends Specification {
         setup:
         repository = Mock(Repository)
         sut.repository = repository
-        project = new Project('id1', 'name', 1)
-        project.setRaw("rawJson")
+        project = new Project('id1', 'name', 1, "")
+        project.setView("{}")
+        project.setModels("[]")
 
         when: "send GET request on project"
         Response response = server
@@ -113,14 +116,14 @@ class ProjectResourceTest extends Specification {
                 .invoke()
 
         then: "method get of project repository was called"
-        1 * repository.get("id1") >> project;
+        1 * repository.get("id1") >> Optional.of(project)
         and: "Project was returned"
         response.hasEntity()
         response.status == 200
         String rawProject = response.readEntity(String.class);
 
         and: "server returned project from repository"
-        rawProject == "rawJson"
+        rawProject == """{"id":"id1","name":"name","version":1,"description":"","models":"[]","view":"{}"}"""
     }
 
     def "should be delete project by DELETE request"() {
@@ -128,8 +131,9 @@ class ProjectResourceTest extends Specification {
         setup:
         repository = Mock(Repository)
         sut.repository = repository
-        project = new Project('id1', 'name', 1)
-        project.setRaw("rawJson")
+        project = new Project('id1', 'name', 1, "")
+        project.setView("{}")
+        project.setModels("[]")
 
         when: "send GET request on project"
         Response response = server
@@ -177,8 +181,9 @@ class ProjectResourceTest extends Specification {
         setup:
         repository = Mock(Repository)
         sut.repository = repository
-        project = new Project('id1', 'name', 5)
-        project.setRaw("rawJson")
+        project = new Project('id1', 'name', 5, "")
+        project.setView("{}")
+        project.setModels("[]")
 
         when: "send GET request on project"
         Response response = server
@@ -188,6 +193,7 @@ class ProjectResourceTest extends Specification {
                 .invoke()
 
         then: "method put of project repository was called"
+        1 * repository.get('id1') >> Optional.empty()
         1 * repository.put(_ as Project) >> project
         1 * repository.findByName('name') >> []
         and: "Project was saved"
@@ -206,8 +212,9 @@ class ProjectResourceTest extends Specification {
         setup:
         repository = Mock(Repository)
         sut.repository = repository
-        project = new Project('id1', 'name', 5)
-        project.setRaw("rawJson")
+        project = new Project('id1', 'name', 5, "")
+        project.setView("{}")
+        project.setModels("[]")
 
         when: "send GET request on project"
         Response response = server
@@ -218,7 +225,7 @@ class ProjectResourceTest extends Specification {
 
         then: "methods put and get of project repository was called"
         1 * repository.put(_ as Project) >> project
-        1 * repository.get('id1') >> project
+        1 * repository.get('id1') >> Optional.of(project)
         1 * repository.findByName('name') >> [project]
         and: "Project was saved"
         response.hasEntity()
@@ -236,8 +243,9 @@ class ProjectResourceTest extends Specification {
         setup:
         repository = Mock(Repository)
         sut.repository = repository
-        project = new Project('id1', 'name', 5)
-        project.setRaw("rawJson")
+        project = new Project('id1', 'name', 5, "")
+        project.setView("{}")
+        project.setModels("[]")
 
         when: "send GET request on project"
         Response response = server
@@ -253,7 +261,7 @@ class ProjectResourceTest extends Specification {
         String message = response.readEntity(String.class)
 
         and: "server returned eror message from repository"
-        message == "[{\"message\":\"Performance Model is not saved\"},{\"message\":\"Unexpected character ('I' (code 73)): was expecting double-quote to start field name\\n at [Source: {Invalid JSON}; line: 1, column: 3]\"}]"
+        message.contains("Unexpected character ('I'")
     }
 
     def "should be send error on colision POST request"() {
@@ -261,8 +269,8 @@ class ProjectResourceTest extends Specification {
         setup:
         repository = Mock(Repository)
         sut.repository = repository
-        project1 = new Project('id1', 'name', 5)
-        project2 = new Project('id1', 'name', 3)
+        project1 = new Project('id1', 'name', 5, "")
+        project2 = new Project('id1', 'name', 3, "")
 
         when: "send GET request on project"
         Response response = server
@@ -273,7 +281,7 @@ class ProjectResourceTest extends Specification {
 
         then: "methods  get of project repository was called"
         0 * repository.put(_ as Project)
-        1 * repository.get('id1') >> project2
+        1 * repository.get('id1') >> Optional.of(project2)
         1 * repository.findByName('name') >> [project2]
 
         and: "Project was not saved"
@@ -290,8 +298,8 @@ class ProjectResourceTest extends Specification {
         setup:
         repository = Mock(Repository)
         sut.repository = repository
-        project1 = new Project('id1', 'name', 5)
-        project2 = new Project('id2', 'name', 6)
+        project1 = new Project('id1', 'name', 5, "")
+        project2 = new Project('id2', 'name', 6, "")
 
         when: "send GET request on project"
         Response response = server
