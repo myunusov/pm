@@ -27,23 +27,13 @@ import org.maxur.perfmodel.backend.service.Benchmark;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Named;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 
 import static java.lang.String.format;
-import static org.iq80.leveldb.impl.Iq80DBFactory.asString;
-import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
-import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
+import static org.iq80.leveldb.impl.Iq80DBFactory.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -103,6 +93,7 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
         try {
             return Optional.<Project>ofNullable(objectFrom(db.get(bytes(key))));
         } catch (IOException | ClassNotFoundException e) {
+            LOGGER.error(format("Cannot find project by id '%s'", key), e);
             throw new IllegalStateException(format("Cannot find project by name '%s'", key));
         }
     }
@@ -115,12 +106,14 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
             for(iterator.seek(bytes(ROOT_PREFIX)); iterator.hasNext(); iterator.next()) {
                 final String key = asString(iterator.peekNext().getKey());
                 if (key.startsWith(ROOT_PREFIX)) {
-                    values.add(objectFrom(iterator.peekNext().getValue()));
+                    final byte[] value = iterator.peekNext().getValue();
+                    values.add(objectFrom(value));
                 } else {
                     break;
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
+            LOGGER.error("Cannot get all projects", e);
             throw new IllegalStateException("Cannot get all projects", e);
         }
         return values;
@@ -132,6 +125,7 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
         try {
             return Optional.<Project>ofNullable(objectFrom(db.get(bytes(fullName(name)))));
         } catch (IOException | ClassNotFoundException e) {
+            LOGGER.error(format("Cannot find project by name '%s'", name), e);
             throw new IllegalStateException(format("Cannot find project by name '%s'", name));
         }
     }
@@ -146,6 +140,7 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
             db.delete(bytes(fullName(project.getName())));
             db.write(batch);
         } catch (IOException | ClassNotFoundException e) {
+            LOGGER.error(format("Cannot remove project '%s'", key), e);
             throw new IllegalStateException(format("Cannot remove project '%s'", key));
         }
         return project;

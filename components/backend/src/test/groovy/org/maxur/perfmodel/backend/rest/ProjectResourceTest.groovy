@@ -16,6 +16,7 @@
 package org.maxur.perfmodel.backend.rest
 import org.maxur.perfmodel.backend.domain.Project
 import org.maxur.perfmodel.backend.domain.Repository
+import org.maxur.perfmodel.backend.rest.dto.ProjectDto
 import org.maxur.perfmodel.backend.rest.resources.ProjectResource
 import spock.lang.Specification
 
@@ -53,8 +54,6 @@ class ProjectResourceTest extends Specification {
         repository = Mock(Repository)
         sut.repository = repository
         project = new Project('id1', 'name', 1, "")
-        project.setView("{}")
-        project.setModels("[]")
 
         when: "send GET request on project"
         Response response = server
@@ -65,7 +64,7 @@ class ProjectResourceTest extends Specification {
 
         then: "Project List was returned"
         response.hasEntity()
-        List<Project> projects = response.readEntity(new GenericType<List<Project>>() {});
+        List<ProjectDto> projects = response.readEntity(new GenericType<List<ProjectDto>>() {});
         and: "method findAll of project repository was called"
         1 * repository.findAll() >> [project];
         and: "sevrer returned project from repository"
@@ -73,8 +72,8 @@ class ProjectResourceTest extends Specification {
         projects.get(0).id == "id1"
         projects.get(0).name == "name"
         projects.get(0).version == 1
-        projects.get(0).view == "{}"
-        projects.get(0).models == "[]"
+        projects.get(0).view == null
+        projects.get(0).models == null
     }
 
     def "should be return 404 code by GET request unavailable project"() {
@@ -123,7 +122,7 @@ class ProjectResourceTest extends Specification {
         String rawProject = response.readEntity(String.class);
 
         and: "server returned project from repository"
-        rawProject == """{"id":"id1","name":"name","version":1,"description":"","models":"[]","view":"{}"}"""
+        rawProject == """{"id":"id1","name":"name","version":1,"description":"","models":[],"view":{}}"""
     }
 
     def "should be delete project by DELETE request"() {
@@ -147,7 +146,8 @@ class ProjectResourceTest extends Specification {
         and: "Project was deleted"
         response.hasEntity()
         response.status == 200
-        Project project = response.readEntity(Project.class);
+        String raw = response.readEntity(String.class);
+        ProjectDto project = response.readEntity(ProjectDto.class);
 
         and: "server returned project from repository"
         project.id == "id1"

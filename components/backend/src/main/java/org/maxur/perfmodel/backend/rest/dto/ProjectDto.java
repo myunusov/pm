@@ -15,6 +15,7 @@
 
 package org.maxur.perfmodel.backend.rest.dto;
 
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import org.jsondoc.core.annotation.ApiObject;
 import org.jsondoc.core.annotation.ApiObjectField;
 import org.maxur.perfmodel.backend.domain.Project;
@@ -45,9 +46,11 @@ public class ProjectDto implements Serializable {
     private String description;
 
     @ApiObjectField(required = false, description = "The Serialized presentation of the object's models")
+    @JsonRawValue
     private String models;
 
     @ApiObjectField(required = false, description = "The Serialized presentation of the object's view")
+    @JsonRawValue
     private String view;
 
     @SuppressWarnings("UnusedDeclaration")
