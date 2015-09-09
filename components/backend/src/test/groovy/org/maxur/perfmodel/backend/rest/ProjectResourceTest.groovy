@@ -54,6 +54,8 @@ class ProjectResourceTest extends Specification {
         repository = Mock(Repository)
         sut.repository = repository
         project = new Project('id1', 'name', 1, "")
+        project.setView("{}")
+        project.setModels("[]")
 
         when: "send GET request on project"
         Response response = server
@@ -72,8 +74,8 @@ class ProjectResourceTest extends Specification {
         projects.get(0).id == "id1"
         projects.get(0).name == "name"
         projects.get(0).version == 1
-        projects.get(0).view == null
-        projects.get(0).models == null
+        projects.get(0).view == "{}"
+        projects.get(0).models == "[]"
     }
 
     def "should be return 404 code by GET request unavailable project"() {
@@ -94,7 +96,7 @@ class ProjectResourceTest extends Specification {
         and: "Project was not returned"
         response.status == 404
         String rawProject = response.readEntity(String.class);
-        rawProject == "[{\"message\":\"Performance Model 'invalid' is not founded\"}]"
+        rawProject == "[{\"message\":\"Project 'invalid' is not founded\"}]"
     }
 
 
@@ -142,11 +144,10 @@ class ProjectResourceTest extends Specification {
                 .invoke()
 
         then: "method remove of project repository was called"
-        1 * repository.remove("id1") >> project;
+        1 * repository.remove("id1") >> Optional.of(project);
         and: "Project was deleted"
         response.hasEntity()
         response.status == 200
-        String raw = response.readEntity(String.class);
         ProjectDto project = response.readEntity(ProjectDto.class);
 
         and: "server returned project from repository"
@@ -169,11 +170,11 @@ class ProjectResourceTest extends Specification {
                 .invoke()
 
         then: "method get of project repository was called"
-        1 * repository.remove("invalid") >> null;
+        1 * repository.remove("invalid") >> Optional.empty();
         and: "Project was not returned"
         response.status == 404
         String message = response.readEntity(String.class);
-        message == "[{\"message\":\"Performance Model 'invalid' is not founded\"}]"
+        message == "[{\"message\":\"Project 'invalid' is not founded\"}]"
     }
 
     def "should be save new project by POST request"() {
@@ -194,12 +195,12 @@ class ProjectResourceTest extends Specification {
 
         then: "method put of project repository was called"
         1 * repository.get('id1') >> Optional.empty()
-        1 * repository.put(_ as Project) >> project
+        1 * repository.put(_ as Project) >> Optional.of(project)
         1 * repository.findByName('name') >> []
         and: "Project was saved"
         response.hasEntity()
         response.status == 201
-        Project project = response.readEntity(Project.class);
+        ProjectDto project = response.readEntity(ProjectDto.class)
 
         and: "server returned project from repository"
         project.id == "id1"
@@ -224,13 +225,13 @@ class ProjectResourceTest extends Specification {
                 .invoke()
 
         then: "methods put and get of project repository was called"
-        1 * repository.put(_ as Project) >> project
+        1 * repository.put(_ as Project) >> Optional.of(project)
         1 * repository.get('id1') >> Optional.of(project)
         1 * repository.findByName('name') >> [project]
         and: "Project was saved"
         response.hasEntity()
         response.status == 201
-        Project project = response.readEntity(Project.class);
+        ProjectDto project = response.readEntity(ProjectDto.class);
 
         and: "server returned project from repository"
         project.id == "id1"

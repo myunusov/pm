@@ -16,17 +16,23 @@
 package org.maxur.perfmodel.backend.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonRawValue;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.jsondoc.core.annotation.ApiObject;
 import org.jsondoc.core.annotation.ApiObjectField;
 import org.maxur.perfmodel.backend.domain.Project;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author Maxim Yunusov
  * @version 1.0 24.11.13
  */
+@SuppressWarnings("unused")
 @XmlRootElement
 @ApiObject(name = "Project")
 public class ProjectDto implements Serializable {
@@ -64,38 +70,51 @@ public class ProjectDto implements Serializable {
         this.description = description;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     public String getId() {
         return id;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+
     public String getName() {
         return name;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     public int getVersion() {
         return version;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     public String getDescription() {
         return description;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     public String getModels() {
         return models;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     public String getView() {
         return view;
     }
 
+    public void setModels(final JsonNode models) {
+        this.models = models == null ? null : models.toString();
+    }
+
+    public void setView(final JsonNode view) {
+        this.view = view == null ? null : view.toString();
+    }
+
     /**
-     * Create Full DTO by Project.
+     * Creation method. Create DTO List by Project List.
+     * <p/>
+     * @param all list of Projects.
+     * @return project's dto List.
+     */
+    public static List<ProjectDto> dtoList(final Collection<Project> all) {
+        return all.stream().map(ProjectDto::dto).collect(toList());
+    }
+
+    /**
+     * Creation method. Create Full DTO by Project.
      * <p/>
      * @param project domain object 'Project'.
      * @return project's dto.

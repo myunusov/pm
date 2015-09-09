@@ -17,10 +17,11 @@ import javax.ws.rs.core.Response;
 import java.util.Collection;
 import java.util.Optional;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.lang.String.format;
-import static java.util.stream.Collectors.toList;
 import static org.maxur.perfmodel.backend.rest.WebException.*;
 import static org.maxur.perfmodel.backend.rest.dto.ProjectDto.dto;
+import static org.maxur.perfmodel.backend.rest.dto.ProjectDto.dtoList;
 
 
 /**
@@ -34,12 +35,6 @@ public class ProjectResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProjectResource.class);
 
-    private static final String ID = "id";
-
-    private static final String PERFORMANCE_MODEL_IS_NOT_FOUNDED = "Performance Model '%s' is not founded";
-
-    private static final String PERFORMANCE_MODEL_IS_NOT_SAVED = "Performance Model is not saved";
-
     @Inject
     private Repository<Project> repository;
 
@@ -52,9 +47,8 @@ public class ProjectResource {
             produces = { MediaType.APPLICATION_JSON },
             responsestatuscode = "200 - OK"
     )
-    public @ApiResponseObject
-    Collection<ProjectDto> findAll() {
-        return repository.findAll().stream().map(ProjectDto::dto).collect(toList());
+    public @ApiResponseObject Collection<ProjectDto> findAll() {
+        return dtoList(repository.findAll());
     }
 
     @GET
@@ -73,14 +67,12 @@ public class ProjectResource {
     })
     public @ApiResponseObject ProjectDto load(
             @ApiPathParam(name = "id", description = "The project identifier")
-            @PathParam(ID) String id
+            @PathParam("id") String id
     ) {
+        checkIdIsNotNull(id);
         final Optional<Project> result = repository.get(id);
-        if (result.isPresent()) {
-            return dto(result.get());
-        }
-        LOGGER.error(format(PERFORMANCE_MODEL_IS_NOT_FOUNDED, id));
-        throw notFoundException(format(PERFORMANCE_MODEL_IS_NOT_FOUNDED, id));
+        checkResult(id, result);
+        return dto(result.get());
     }
 
     @DELETE
@@ -99,14 +91,12 @@ public class ProjectResource {
     })
     public @ApiResponseObject ProjectDto delete(
             @ApiPathParam(name = "id", description = "The project identifier")
-            @PathParam(ID) String id
+            @PathParam("id") String id
     ) {
-        final Project project = repository.remove(id);
-        if (project == null) {
-            LOGGER.error(format(PERFORMANCE_MODEL_IS_NOT_FOUNDED, id));
-            throw notFoundException(format(PERFORMANCE_MODEL_IS_NOT_FOUNDED, id));
-        }
-        return dto(project);
+        checkIdIsNotNull(id);
+        final Optional<Project> result = repository.remove(id);
+        checkResult(id, result);
+        return dto(result.get());
     }
 
     @POST
@@ -126,18 +116,41 @@ public class ProjectResource {
             @ApiError(code="400", description="Bad request")
     })
     public synchronized @ApiResponseObject Response save(
+            @ApiPathParam(name = "id", description = "The project identifier")
+            @PathParam("id") String id,
             @ApiBodyObject final ProjectDto dto
     ) {
         try {
+            checkIdIsNotNull(id);
             final Project project = dto.assemble();
             final Project result = project.saveWith(repository);
-            return Response.status(Response.Status.CREATED).entity(dto(result)).build();
+            return created(result);
         } catch (NumberFormatException e) {
-            LOGGER.error(PERFORMANCE_MODEL_IS_NOT_SAVED, e);
-            throw badRequestException(PERFORMANCE_MODEL_IS_NOT_SAVED, e.getMessage());
+            LOGGER.error("Performance Model is not saved", e);
+            throw badRequestException("Performance Model is not saved", e.getMessage());
         } catch (ValidationException e) {
-            LOGGER.error(PERFORMANCE_MODEL_IS_NOT_SAVED, e);
-            throw conflictException(PERFORMANCE_MODEL_IS_NOT_SAVED, e.getMessage());
+            LOGGER.error("Performance Model is not saved", e);
+            throw conflictException("Performance Model is not saved", e.getMessage());
+        }
+    }
+
+    private Response created(final Project result) {
+        return Response.status(Response.Status.CREATED).entity(dto(result)).build();
+    }
+
+    private void checkIdIsNotNull(final String id) {
+        if (isNullOrEmpty(id)) {
+            final String msg = "Bad get request. 'Id' must not be null";
+            LOGGER.error(msg);
+            throw notFoundException(msg);
+        }
+    }
+
+    private void checkResult(final String id, final Optional<Project> result) {
+        if (!result.isPresent()) {
+            final String msg = format("Project '%s' is not founded", id);
+            LOGGER.error(msg);
+            throw notFoundException(msg);
         }
     }
 

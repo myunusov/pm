@@ -26,9 +26,9 @@ public interface Repository<T> {
 
     Optional<T> get(String key);
 
-    T remove(String key);
+    Optional<T> remove(String key);
 
-    T put(T value);
+    Optional<T> put(T value);
 
     Optional<T> findByName(String name);
 

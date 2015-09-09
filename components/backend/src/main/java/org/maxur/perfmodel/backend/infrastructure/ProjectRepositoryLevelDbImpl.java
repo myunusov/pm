@@ -132,10 +132,15 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
 
     @Override
     @Benchmark
-    public Project remove(final String key) {
+    public Optional<Project> remove(final String key) {
         final Project project;
         try (WriteBatch batch = db.createWriteBatch()) {
             project = objectFrom(db.get(bytes(key)));
+/*
+            if (project == null) {
+
+            }
+*/
             db.delete(bytes(key));
             db.delete(bytes(fullName(project.getName())));
             db.write(batch);
@@ -143,12 +148,12 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
             LOGGER.error(format("Cannot remove project '%s'", key), e);
             throw new IllegalStateException(format("Cannot remove project '%s'", key));
         }
-        return project;
+        return Optional.of(project);
     }
 
     @Override
     @Benchmark
-    public Project put(final Project value) {
+    public Optional<Project> put(final Project value) {
         try (WriteBatch batch = db.createWriteBatch()) {
             final Project prevProject = objectFrom(db.get(bytes(value.getId())));
             final boolean mustBeRenamed = prevProject != null && !prevProject.getName().equals(value.getName());
@@ -162,7 +167,7 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
             LOGGER.error("Cannot save project '%s'", value.getName(), e);
             throw new IllegalStateException(format("Cannot save project '%s'", value.getName()));
         }
-        return value;
+        return Optional.of(value);
     }
 
     private String fullName(final String name) {

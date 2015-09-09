@@ -195,6 +195,11 @@
             <artifactId>asm-all</artifactId>
             <version>3.3.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>16.0.1</version>
+        </dependency>
 
         <!-- Logging -->
         <dependency>
