@@ -4,7 +4,7 @@ package org.maxur.perfmodel.backend.rest.resources;
 import org.jsondoc.core.annotation.*;
 import org.jsondoc.core.pojo.ApiVerb;
 import org.maxur.perfmodel.backend.domain.Project;
-import org.maxur.perfmodel.backend.domain.Repository;
+import org.maxur.perfmodel.backend.domain.ProjectRepository;
 import org.maxur.perfmodel.backend.domain.ValidationException;
 import org.maxur.perfmodel.backend.rest.dto.ProjectDto;
 import org.slf4j.Logger;
@@ -33,10 +33,12 @@ import static org.maxur.perfmodel.backend.rest.dto.ProjectDto.dtoList;
 @ApiVersion(since = "1.0")
 public class ProjectResource {
 
+    private static final String PROJECT_IS_NOT_SAVED = "Project is not saved";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ProjectResource.class);
 
     @Inject
-    private Repository<Project> repository;
+    private ProjectRepository repository;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -123,14 +125,14 @@ public class ProjectResource {
         try {
             checkIdIsNotNull(id);
             final Project project = dto.assemble();
-            final Project result = project.saveWith(repository);
-            return created(result);
+            final Optional<Project> result = repository.put(project);
+            return created(result.get());
         } catch (NumberFormatException e) {
-            LOGGER.error("Performance Model is not saved", e);
-            throw badRequestException("Performance Model is not saved", e.getMessage());
+            LOGGER.error(PROJECT_IS_NOT_SAVED, e);
+            throw badRequestException(PROJECT_IS_NOT_SAVED, e.getMessage());
         } catch (ValidationException e) {
-            LOGGER.error("Performance Model is not saved", e);
-            throw conflictException("Performance Model is not saved", e.getMessage());
+            LOGGER.error(PROJECT_IS_NOT_SAVED, e);
+            throw conflictException(PROJECT_IS_NOT_SAVED, e.getMessage());
         }
     }
 

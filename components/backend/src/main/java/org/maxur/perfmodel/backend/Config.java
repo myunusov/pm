@@ -20,15 +20,11 @@ import org.glassfish.hk2.api.InterceptionService;
 import org.glassfish.hk2.api.TypeLiteral;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.maxur.perfmodel.backend.domain.Project;
-import org.maxur.perfmodel.backend.domain.Repository;
+import org.maxur.perfmodel.backend.domain.ProjectRepository;
+import org.maxur.perfmodel.backend.infrastructure.DataSourceLevelDbImpl;
 import org.maxur.perfmodel.backend.infrastructure.ProjectRepositoryLevelDbImpl;
 import org.maxur.perfmodel.backend.rest.RestServiceConfig;
-import org.maxur.perfmodel.backend.service.Application;
-import org.maxur.perfmodel.backend.service.ConfigurationInjectionResolver;
-import org.maxur.perfmodel.backend.service.HK2InterceptionService;
-import org.maxur.perfmodel.backend.service.PropertiesService;
-import org.maxur.perfmodel.backend.service.WebServer;
+import org.maxur.perfmodel.backend.service.*;
 import org.maxur.perfmodel.backend.service.impl.PropertiesServiceHoconImpl;
 import org.maxur.perfmodel.backend.service.impl.WebServerGrizzlyImpl;
 
@@ -47,13 +43,12 @@ final class Config extends AbstractBinder {
     @Override
     protected void configure() {
         bind(ConfigurationInjectionResolver.class)
-            .to(new TypeLiteral<InjectionResolver<Named>>() {
-            })
-            .in(Singleton.class);
-
+                .to(new TypeLiteral<InjectionResolver<Named>>() {
+                })
+                .in(Singleton.class);
         bind(RestServiceConfig.class)
-            .to(ResourceConfig.class)
-            .in(Singleton.class);
+                .to(ResourceConfig.class)
+                .in(Singleton.class);
         bind(HK2InterceptionService.class)
                 .to(InterceptionService.class)
                 .in(Singleton.class);
@@ -61,13 +56,16 @@ final class Config extends AbstractBinder {
                 .to(PropertiesService.class)
                 .in(Singleton.class);
         bind(WebServerGrizzlyImpl.class)
-            .to(WebServer.class)
-            .in(Singleton.class);
-        bindAsContract(new TypeLiteral<ProjectRepositoryLevelDbImpl>() {
-        }).to(new TypeLiteral<Repository<Project>>() {
-        }).in(Singleton.class);
+                .to(WebServer.class)
+                .in(Singleton.class);
+        bind(DataSourceLevelDbImpl.class)
+                .to(DataSource.class)
+                .in(Singleton.class);
+        bind(ProjectRepositoryLevelDbImpl.class)
+                .to(ProjectRepository.class)
+                .in(Singleton.class);
         bindFactory(ApplicationProvider.class)
-            .to(Application.class)
-            .in(Singleton.class);
+                .to(Application.class)
+                .in(Singleton.class);
     }
 }

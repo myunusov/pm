@@ -61,33 +61,6 @@ public class Project implements Serializable {
         return new Project(this.id, this.name, this.version, this.description);
     }
 
-    public Project saveWith(final Repository<Project> repository) throws ValidationException {
-        checkNamesakes(repository, name);
-        final Optional<Project> result = repository.get(id);
-        checkConflictWith(result);
-        this.version = result.isPresent() ? this.version + 1 : 1;
-        repository.put(this);
-        return this;
-    }
-
-    public void checkConflictWith(final Optional<Project> oldProject) throws ValidationException {
-        if (oldProject.isPresent()) {
-            if (this.version != oldProject.get().version) {
-                throw new ValidationException("Performance Model '%s' has already been changed by another user.", name);
-            }
-        }
-    }
-
-    private void checkNamesakes(final Repository<Project> repository, final String name) throws ValidationException {
-        final Optional<Project> namesakes = repository.findByName(name);
-        if (namesakes.isPresent()) {
-            final Project namesake = namesakes.get();
-            if (!namesake.getId().equals(id)) {
-                throw new ValidationException("Performance Model '%s' already exists.", name);
-            }
-        }
-    }
-
     public String getName() {
         return name;
     }
@@ -120,6 +93,23 @@ public class Project implements Serializable {
         this.view = view;
     }
 
+    public void incVersion() {
+        this.version++;
+    }
+
+    public void checkNamesakes(final Optional<Project> namesake) throws ValidationException {
+        if (namesake.isPresent()) {
+            if (!namesake.get().getId().equals(id)) {
+                throw new ValidationException("Another project with name '%s' already exists.", name);
+            }
+        }
+    }
+
+    public void checkConflictWith(final Optional<Project> oldProject) throws ValidationException {
+        if (version != oldProject.get().version) {
+            throw new ValidationException("Project '%s' has been changed by another user.", name);
+        }
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -141,9 +131,9 @@ public class Project implements Serializable {
     @Override
     public String toString() {
         return "Project{" +
-            "id='" + id + '\'' +
-            ", name='" + name + '\'' +
-            ", version=" + version +
-            '}';
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", version=" + version +
+                '}';
     }
 }

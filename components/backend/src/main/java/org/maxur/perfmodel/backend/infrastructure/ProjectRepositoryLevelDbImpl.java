@@ -15,25 +15,20 @@
 
 package org.maxur.perfmodel.backend.infrastructure;
 
-import org.iq80.leveldb.DB;
-import org.iq80.leveldb.DBIterator;
-import org.iq80.leveldb.Options;
 import org.iq80.leveldb.WriteBatch;
 import org.jvnet.hk2.annotations.Service;
 import org.maxur.perfmodel.backend.domain.Project;
-import org.maxur.perfmodel.backend.domain.Repository;
+import org.maxur.perfmodel.backend.domain.ProjectRepository;
+import org.maxur.perfmodel.backend.domain.ValidationException;
 import org.maxur.perfmodel.backend.service.Benchmark;
+import org.slf4j.Logger;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.inject.Named;
-import java.io.*;
+import javax.inject.Inject;
+import java.io.IOException;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Optional;
 
 import static java.lang.String.format;
-import static org.iq80.leveldb.impl.Iq80DBFactory.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -44,158 +39,99 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @since <pre>30.08.2015</pre>
  */
 @Service
-public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
+public class ProjectRepositoryLevelDbImpl implements ProjectRepository {
 
-    private static final org.slf4j.Logger LOGGER = getLogger(ProjectRepositoryLevelDbImpl.class);
+    private static final Logger LOGGER = getLogger(ProjectRepositoryLevelDbImpl.class);
 
     public static final String ROOT_PREFIX = "/";
 
-    private DB db;
-
-    @SuppressWarnings("unused")
-    @Named("db.folderName")
-    private String dbFolderName;
-
-    @PostConstruct
-    public void init() {
-        initDb();
-    }
-
-    private void initDb() {
-        if (db != null) {
-            return;
-        }
-        final Options options = new Options();
-        options.createIfMissing(true);
-        try {
-            db = factory.open(new File(dbFolderName), options);
-            LOGGER.info("LevelDb Database is opened");
-        } catch (IOException e) {
-            LOGGER.error("LeveDb Database is not opened", e);
-            throw new IllegalStateException("LeveDb Database is not opened", e);
-        }
-    }
-
-    @Override
-    @PreDestroy
-    public void stop() {
-        try {
-            db.close();
-            LOGGER.info("LevelDb Database is closed now");
-        } catch (IOException e) {
-            LOGGER.error("LevelDb Database is not closed", e);
-        }
-    }
+    @Inject
+    private DataSourceLevelDbImpl dataSource;
 
     @Override
     @Benchmark
     public Optional<Project> get(final String key) {
         try {
-            return Optional.<Project>ofNullable(objectFrom(db.get(bytes(key))));
+            return dataSource.get(key);
         } catch (IOException | ClassNotFoundException e) {
-            LOGGER.error(format("Cannot find project by id '%s'", key), e);
-            throw new IllegalStateException(format("Cannot find project by name '%s'", key));
+            return throwError(e, "Cannot find project by id '%s'", key);
         }
     }
 
     @Override
     @Benchmark
     public Collection<Project> findAll() {
-        final Collection<Project> values = new HashSet<>();
-        try (DBIterator iterator = db.iterator()) {
-            for(iterator.seek(bytes(ROOT_PREFIX)); iterator.hasNext(); iterator.next()) {
-                final String key = asString(iterator.peekNext().getKey());
-                if (key.startsWith(ROOT_PREFIX)) {
-                    final byte[] value = iterator.peekNext().getValue();
-                    values.add(objectFrom(value));
-                } else {
-                    break;
-                }
-            }
+        try {
+            return dataSource.findAllByPrefix(ROOT_PREFIX);
         } catch (IOException | ClassNotFoundException e) {
-            LOGGER.error("Cannot get all projects", e);
-            throw new IllegalStateException("Cannot get all projects", e);
+            return throwError(e, "Cannot get all projects");
         }
-        return values;
     }
 
     @Override
     @Benchmark
     public Optional<Project> findByName(final String name) {
         try {
-            return Optional.<Project>ofNullable(objectFrom(db.get(bytes(fullName(name)))));
+            return dataSource.get(path(name));
         } catch (IOException | ClassNotFoundException e) {
-            LOGGER.error(format("Cannot find project by name '%s'", name), e);
-            throw new IllegalStateException(format("Cannot find project by name '%s'", name));
+            return throwError(e, "Cannot find project by name '%s'", name);
         }
     }
 
     @Override
     @Benchmark
     public Optional<Project> remove(final String key) {
-        final Project project;
-        try (WriteBatch batch = db.createWriteBatch()) {
-            project = objectFrom(db.get(bytes(key)));
+        try (WriteBatch batch = dataSource.createWriteBatch()) {
+            final Optional<Project> result = dataSource.get(key);
 /*
-            if (project == null) {
+            if (!result.isPresent()) {
 
             }
 */
-            db.delete(bytes(key));
-            db.delete(bytes(fullName(project.getName())));
-            db.write(batch);
+            dataSource.delete(key);
+            dataSource.delete(path(result.get().getName()));
+            dataSource.commit(batch);
+            return result;
         } catch (IOException | ClassNotFoundException e) {
-            LOGGER.error(format("Cannot remove project '%s'", key), e);
-            throw new IllegalStateException(format("Cannot remove project '%s'", key));
+            return throwError(e, "Cannot remove project '%s'", key);
         }
-        return Optional.of(project);
+
     }
+
 
     @Override
     @Benchmark
-    public Optional<Project> put(final Project value) {
-        try (WriteBatch batch = db.createWriteBatch()) {
-            final Project prevProject = objectFrom(db.get(bytes(value.getId())));
-            final boolean mustBeRenamed = prevProject != null && !prevProject.getName().equals(value.getName());
-            if (mustBeRenamed) {
-                db.delete(bytes(fullName(prevProject.getName())));
+    public Optional<Project> put(final Project value) throws ValidationException {
+        final String id = value.getId();
+        final String newName = value.getName();
+        try (WriteBatch batch = dataSource.createWriteBatch()) {
+            value.checkNamesakes(findByName(newName));
+            final Optional<Project> prev = dataSource.get(id);
+            if (prev.isPresent()) {
+                value.checkConflictWith(prev);
+                value.incVersion();
+                final boolean mustBeRenamed = !prev.get().getName().equals(newName);
+                if (mustBeRenamed) {
+                    dataSource.delete(path(prev.get().getName()));
+                }
             }
-            db.put(bytes(value.getId()), bytesFrom(value));
-            db.put(bytes(fullName(value.getName())), bytesFrom(value.brief()));
-            db.write(batch);
+            dataSource.put(id, value);
+            dataSource.put(path(newName), value.brief());
+            dataSource.commit(batch);
+            return Optional.of(value);
         } catch (IOException | ClassNotFoundException e) {
-            LOGGER.error("Cannot save project '%s'", value.getName(), e);
-            throw new IllegalStateException(format("Cannot save project '%s'", value.getName()));
+            return throwError(e, "Cannot save project '%s'", newName);
         }
-        return Optional.of(value);
     }
 
-    private String fullName(final String name) {
+    private String path(final String name) {
         return ROOT_PREFIX + name;
     }
 
-    public static byte[] bytesFrom(final Serializable object) throws IOException {
-        if (object == null) {
-            return null;
-        }
-        try (
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                ObjectOutput out = new ObjectOutputStream(bos)
-        ) {
-            out.writeObject(object);
-            return bos.toByteArray();
-        }
+    private static <T> T throwError(final Exception e, final String message, final String... args) {
+        final String msg = format(message, args);
+        LOGGER.error(msg, e);
+        throw new IllegalStateException(msg, e);
     }
-
-    public static <T> T objectFrom(final byte[] bytes) throws IOException, ClassNotFoundException {
-        if (bytes == null) {
-            return null;
-        }
-        try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes); ObjectInput in = new ObjectInputStream(bis)) {
-            //noinspection unchecked
-            return (T) in.readObject();
-        }
-    }
-
 
 }

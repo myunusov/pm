@@ -16,8 +16,6 @@
 package org.maxur.perfmodel.backend.service;
 
 import org.jvnet.hk2.annotations.Contract;
-import org.maxur.perfmodel.backend.domain.Project;
-import org.maxur.perfmodel.backend.domain.Repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +38,7 @@ public abstract class Application {
     private WebServer webServer;
 
     @Inject
-    private Repository<Project> repository;
+    private DataSource dataSource;
 
     @PostConstruct
     public final void init() {
@@ -55,7 +53,7 @@ public abstract class Application {
 
     public final void stop() {
         webServer.stop();
-        repository.stop();
+        dataSource.stop();
         onStop();
         LOGGER.info("Performance Model Calculator Server is stoped");
         System.exit(0);

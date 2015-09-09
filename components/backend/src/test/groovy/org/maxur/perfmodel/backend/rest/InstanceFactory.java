@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Maxim Yunusov
+ * Copyright (c) 2015 Maxim Yunusov
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
@@ -13,25 +13,29 @@
  *    limitations under the License.
  */
 
-package org.maxur.perfmodel.backend.domain;
-
-import java.util.Collection;
-import java.util.Optional;
+package org.maxur.perfmodel.backend.rest;
 
 /**
- * @author Maxim Yunusov
- * @version 1.0 07.11.13
+ * @author myunusov
+ * @version 1.0
+ * @since <pre>09.09.2015</pre>
  */
-public interface Repository<T> {
+class InstanceFactory<T> implements org.glassfish.hk2.api.Factory<T> {
 
-    Optional<T> get(String key);
+    private static Object instance;
 
-    Optional<T> remove(String key);
+    public void set(T service) {
+        instance = service;
+    }
 
-    Optional<T> put(T value) throws ValidationException;
+    @Override
+    public void dispose(T t) {
+    }
 
-    Optional<T> findByName(String name);
+    @Override
+    public T provide() {
+        //noinspection unchecked
+        return (T) instance;
+    }
 
-    Collection<T> findAll();
-
- }
+}

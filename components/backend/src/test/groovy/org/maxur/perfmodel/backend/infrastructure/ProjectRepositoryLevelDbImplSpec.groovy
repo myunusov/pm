@@ -21,26 +21,29 @@ import spock.lang.Specification
  * @version 1.0
  * @since <pre>30.08.2015</pre>
  */
-class ProjectRepositoryLevelDbImplTest extends Specification {
+class ProjectRepositoryLevelDbImplSpec extends Specification {
 
     ProjectRepositoryLevelDbImpl sut
 
+    DataSourceLevelDbImpl ds
 
     void setup() {
         sut = new ProjectRepositoryLevelDbImpl();
-        sut.dbFolderName = "./test.db"
-        sut.init()
+        ds = new DataSourceLevelDbImpl();
+        sut.dataSource = ds
+        ds.dbFolderName = "./test.db"
+        ds.init()
     }
 
     void cleanup() {
-        sut.stop();
+        ds.stop();
         def result = new File("./test.db").deleteDir()
         assert result
     }
 
     def "test init"() {
         when:
-        sut.init()
+        ds.init()
         then:
         sut.findAll() as List == []
     }
@@ -51,7 +54,6 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
         project.setView('{}')
         project.setModels('[]')
         when:
-        sut.init()
         sut.put(project)
         then:
         def all = sut.findAll()
@@ -70,7 +72,6 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
         project.setView('{}')
         project.setModels('[]')
         when:
-        sut.init()
         sut.put(project)
         sut.remove('id2')
         then:
@@ -82,9 +83,8 @@ class ProjectRepositoryLevelDbImplTest extends Specification {
     def "test rename"() {
         given:
         def project1 = new Project('id3', 'name1', 1, "")
-        def project2 = new Project('id3', 'name2', 2, "")
+        def project2 = new Project('id3', 'name2', 1, "")
         when:
-        sut.init()
         sut.put(project1)
         sut.put(project2)
         then:

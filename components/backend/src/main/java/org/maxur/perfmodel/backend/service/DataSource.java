@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Maxim Yunusov
+ * Copyright (c) 2015 Maxim Yunusov
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
@@ -13,25 +13,17 @@
  *    limitations under the License.
  */
 
-package org.maxur.perfmodel.backend.domain;
-
-import java.util.Collection;
-import java.util.Optional;
+package org.maxur.perfmodel.backend.service;
 
 /**
- * @author Maxim Yunusov
- * @version 1.0 07.11.13
+ * @author myunusov
+ * @version 1.0
+ * @since <pre>10.09.2015</pre>
  */
-public interface Repository<T> {
+public interface DataSource {
 
-    Optional<T> get(String key);
+    void init();
 
-    Optional<T> remove(String key);
+    void stop();
 
-    Optional<T> put(T value) throws ValidationException;
-
-    Optional<T> findByName(String name);
-
-    Collection<T> findAll();
-
- }
+}
