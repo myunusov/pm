@@ -117,7 +117,7 @@ public class ProjectResource {
             @ApiError(code="404", description="Project not found"),
             @ApiError(code="400", description="Bad request")
     })
-    public synchronized @ApiResponseObject Response save(
+    public @ApiResponseObject Response save(
             @ApiPathParam(name = "id", description = "The project identifier")
             @PathParam("id") String id,
             @ApiBodyObject final ProjectDto dto

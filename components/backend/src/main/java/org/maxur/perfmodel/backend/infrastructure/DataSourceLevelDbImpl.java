@@ -20,6 +20,7 @@ import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.Options;
 import org.iq80.leveldb.WriteBatch;
 import org.iq80.leveldb.impl.Iq80DBFactory;
+import org.maxur.perfmodel.backend.service.Benchmark;
 import org.maxur.perfmodel.backend.service.DataSource;
 import org.slf4j.Logger;
 
@@ -74,10 +75,14 @@ public class DataSourceLevelDbImpl implements DataSource {
         }
     }
 
-    public <T> Optional<T> get(String key) throws IOException, ClassNotFoundException {
+    @Override
+    @Benchmark
+    public <T> Optional<T> get(final String key) throws IOException, ClassNotFoundException {
         return Optional.<T>ofNullable(objectFrom(db.get(bytes(key))));
     }
 
+    @Override
+    @Benchmark
     public <T> Collection<T> findAllByPrefix(final String prefix) throws IOException, ClassNotFoundException {
         final Collection<T> values = new HashSet<>();
         try (DBIterator iterator = db.iterator()) {
@@ -93,19 +98,27 @@ public class DataSourceLevelDbImpl implements DataSource {
         return values;
     }
 
+    @Override
+    @Benchmark
     public void delete(String key) {
         db.delete(bytes(key));
     }
 
+    @Override
+    @Benchmark
     public WriteBatch createWriteBatch() {
         return db.createWriteBatch();
     }
 
+    @Override
+    @Benchmark
     public void commit(WriteBatch batch) {
         db.write(batch);
     }
 
-    void put(final String key, final Serializable value) throws IOException {
+    @Override
+    @Benchmark
+    public void put(final String key, final Serializable value) throws IOException {
         db.put(bytes(key), bytesFrom(value));
     }
 

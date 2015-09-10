@@ -195,34 +195,6 @@ class ProjectResourceSpec extends AbstractRestSpec {
         dto.version == 5
     }
 
-    def "should be save existen project by POST request"() {
-
-        setup:
-        def project = new Project('id1', 'name', 5, "")
-        project.setView("{}")
-        project.setModels("[]")
-        provider.set(Mock(ProjectRepository) {
-            1 * get("id1") >> Optional.of(project)
-            1 * put(_ as Project) >> Optional.of(project)
-            1 * findByName('name') >> [project]
-        })
-
-        when: "send GET request on project"
-        Response response = target("/project/id1")
-                .request()
-                .buildPost(Entity.json(project))
-                .invoke()
-
-        then: "Project was saved"
-        response.hasEntity()
-        response.status == 201
-        ProjectDto dto = response.readEntity(ProjectDto);
-
-        and: "server returned project from repository"
-        dto.id == "id1"
-        dto.name == "name"
-        dto.version == 6
-    }
 
     def "should be send error on bad POST request"() {
 
@@ -249,57 +221,5 @@ class ProjectResourceSpec extends AbstractRestSpec {
         message.contains("Unexpected character ('I'")
     }
 
-    def "should be send error on collision POST request"() {
-
-        setup:
-        def project1 = new Project('id1', 'name', 5, "")
-        def project2 = new Project('id1', 'name', 3, "")
-        provider.set(Mock(ProjectRepository) {
-            1 * put(_ as Project) >> Optional.of(project2)
-            1 * get('id1') >> Optional.of(project2)
-            1 * findByName('name') >> [project2]
-        })
-
-        when: "send GET request on project"
-        Response response = target("/project/id1")
-                .request()
-                .buildPost(Entity.json(project1))
-                .invoke()
-
-        then: "Project is not saved"
-        response.hasEntity()
-        response.status == 409
-        String message = response.readEntity(String.class)
-
-        and: "server returned eror message from repository"
-        message == "[{\"message\":\"Project is not saved\"},{\"message\":\"Project with name 'name' has been changed by another user.\"}]"
-    }
-
-    def "should be send error on POST request with ununique name"() {
-
-        setup:
-        def project1 = new Project('id1', 'name', 5, "")
-        def project2 = new Project('id2', 'name', 6, "")
-        provider.set(Mock(ProjectRepository) {
-            1 * put(_ as Project)
-            1 * findByName('name') >> [project2]
-        })
-
-        when: "send GET request on project"
-        Response response = target("/project/id1")
-                .request()
-                .buildPost(Entity.json(project1))
-                .invoke()
-
-        then: "methods  get of project repository was called"
-
-        and: "Project was not saved"
-        response.hasEntity()
-        response.status == 409
-        String message = response.readEntity(String.class)
-
-        and: "server returned eror message from repository"
-        message == "[{\"message\":\"Project is not saved\"},{\"message\":\"Project with name 'name' already exists.\"}]"
-    }
 
 }

@@ -46,7 +46,7 @@ public class BenchmarkMethodInterceptor implements MethodInterceptor {
     public Object invoke(MethodInvocation invocation) throws Throwable {
         final Method method = invocation.getMethod();
         final StopWatch stopWatch = stopWatchFactory.getStopWatch();
-        final String className = method.getClass().getSimpleName();
+        final String className = method.getDeclaringClass().getSimpleName();
         final String methodName = method.getName();
         try {
             Object result = invocation.proceed();

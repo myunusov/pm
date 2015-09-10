@@ -21,6 +21,7 @@ import org.maxur.perfmodel.backend.domain.Project;
 import org.maxur.perfmodel.backend.domain.ProjectRepository;
 import org.maxur.perfmodel.backend.domain.ValidationException;
 import org.maxur.perfmodel.backend.service.Benchmark;
+import org.maxur.perfmodel.backend.service.DataSource;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
@@ -46,7 +47,7 @@ public class ProjectRepositoryLevelDbImpl implements ProjectRepository {
     public static final String ROOT_PREFIX = "/";
 
     @Inject
-    private DataSourceLevelDbImpl dataSource;
+    private DataSource dataSource;
 
     @Override
     @Benchmark

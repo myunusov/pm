@@ -15,6 +15,13 @@
 
 package org.maxur.perfmodel.backend.service;
 
+import org.iq80.leveldb.WriteBatch;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Optional;
+
 /**
  * @author myunusov
  * @version 1.0
@@ -26,4 +33,15 @@ public interface DataSource {
 
     void stop();
 
+    <T> Optional<T> get(String key) throws IOException, ClassNotFoundException;
+
+    <T> Collection<T> findAllByPrefix(String prefix) throws IOException, ClassNotFoundException;
+
+    void delete(String key);
+
+    WriteBatch createWriteBatch();
+
+    void commit(WriteBatch batch);
+
+    void put(String key, Serializable value) throws IOException;
 }

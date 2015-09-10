@@ -54,11 +54,18 @@ class ClientSimulation extends Simulation {
   }
 
   def body: String = {
-    """{ "raw": "FAKE", "id": "%s", "name": "%s", "version": %d }"""
+    """{
+      |  "description": "",
+      |  "id": "%s",
+      |  "models": [],
+      |  "name": "%s",
+      |  "version": 1,
+      |  "view": {}
+      |}""".stripMargin
       .format(java.util.UUID.randomUUID.toString, java.util.UUID.randomUUID.toString, 1)
   }
 
 
-//  setUp(scn1.inject(atOnceUsers(10))).protocols(httpProtocol)
-  setUp(scn2.inject(atOnceUsers(10))).protocols(httpProtocol)
+  setUp(scn1.inject(atOnceUsers(10)), scn2.inject(atOnceUsers(10))).protocols(httpProtocol)
+
 }
