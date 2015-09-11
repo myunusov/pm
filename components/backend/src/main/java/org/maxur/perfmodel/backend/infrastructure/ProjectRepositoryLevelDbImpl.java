@@ -17,9 +17,9 @@ package org.maxur.perfmodel.backend.infrastructure;
 
 import org.iq80.leveldb.WriteBatch;
 import org.jvnet.hk2.annotations.Service;
+import org.maxur.perfmodel.backend.domain.ConflictException;
 import org.maxur.perfmodel.backend.domain.Project;
 import org.maxur.perfmodel.backend.domain.ProjectRepository;
-import org.maxur.perfmodel.backend.domain.ValidationException;
 import org.maxur.perfmodel.backend.service.Benchmark;
 import org.maxur.perfmodel.backend.service.DataSource;
 import org.slf4j.Logger;
@@ -102,7 +102,7 @@ public class ProjectRepositoryLevelDbImpl implements ProjectRepository {
 
     @Override
     @Benchmark
-    public Optional<Project> put(final Project value) throws ValidationException {
+    public Optional<Project> put(final Project value) throws ConflictException {
         final String id = value.getId();
         final String newName = value.getName();
         try (WriteBatch batch = dataSource.createWriteBatch()) {

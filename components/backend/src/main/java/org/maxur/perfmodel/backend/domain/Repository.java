@@ -28,7 +28,7 @@ public interface Repository<T> {
 
     Optional<T> remove(String key);
 
-    Optional<T> put(T value) throws ValidationException;
+    Optional<T> put(T value) throws ConflictException;
 
     Optional<T> findByName(String name);
 

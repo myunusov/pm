@@ -22,7 +22,7 @@ import static java.lang.String.format;
  * @version 1.0
  * @since <pre>08.09.2015</pre>
  */
-public class ValidationException extends Exception {
+public class ConflictException extends Exception {
 
     private static final long serialVersionUID = 8538245899720208225L;
 
@@ -32,7 +32,7 @@ public class ValidationException extends Exception {
      * @param message message template.
      * @param args Arguments referenced by the format specifiers in the format string.
      */
-    public ValidationException(final String message, final String... args) {
+    public ConflictException(final String message, final String... args) {
         super(format(message, args));
     }
 }

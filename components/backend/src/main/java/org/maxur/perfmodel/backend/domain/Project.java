@@ -97,17 +97,17 @@ public class Project implements Serializable {
         this.version++;
     }
 
-    public void checkNamesakes(final Optional<Project> namesake) throws ValidationException {
+    public void checkNamesakes(final Optional<Project> namesake) throws ConflictException {
         if (namesake.isPresent()) {
             if (!namesake.get().getId().equals(id)) {
-                throw new ValidationException("Another project with name '%s' already exists.", name);
+                throw new ConflictException("Another project with name '%s' already exists.", name);
             }
         }
     }
 
-    public void checkConflictWith(final Optional<Project> oldProject) throws ValidationException {
+    public void checkConflictWith(final Optional<Project> oldProject) throws ConflictException {
         if (version != oldProject.get().version) {
-            throw new ValidationException("Project '%s' has been changed by another user.", name);
+            throw new ConflictException("Project '%s' has been changed by another user.", name);
         }
     }
 

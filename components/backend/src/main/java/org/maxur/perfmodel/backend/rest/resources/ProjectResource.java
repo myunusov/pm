@@ -3,9 +3,9 @@ package org.maxur.perfmodel.backend.rest.resources;
 
 import org.jsondoc.core.annotation.*;
 import org.jsondoc.core.pojo.ApiVerb;
+import org.maxur.perfmodel.backend.domain.ConflictException;
 import org.maxur.perfmodel.backend.domain.Project;
 import org.maxur.perfmodel.backend.domain.ProjectRepository;
-import org.maxur.perfmodel.backend.domain.ValidationException;
 import org.maxur.perfmodel.backend.rest.dto.ProjectDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,7 +130,7 @@ public class ProjectResource {
         } catch (NumberFormatException e) {
             LOGGER.error(PROJECT_IS_NOT_SAVED, e);
             throw badRequestException(PROJECT_IS_NOT_SAVED, e.getMessage());
-        } catch (ValidationException e) {
+        } catch (ConflictException e) {
             LOGGER.error(PROJECT_IS_NOT_SAVED, e);
             throw conflictException(PROJECT_IS_NOT_SAVED, e.getMessage());
         }

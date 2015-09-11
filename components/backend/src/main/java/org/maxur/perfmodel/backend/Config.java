@@ -61,6 +61,9 @@ final class Config extends AbstractBinder {
         bind(DataSourceLevelDbImpl.class)
                 .to(DataSource.class)
                 .in(Singleton.class);
+        bind(DataSourceLevelDbImpl.class)
+                .to(Database.class)
+                .in(Singleton.class);
         bind(ProjectRepositoryLevelDbImpl.class)
                 .to(ProjectRepository.class)
                 .in(Singleton.class);

@@ -17,6 +17,10 @@ package org.maxur.perfmodel.backend.domain;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.util.List;
+
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author Maxim Yunusov
@@ -34,8 +38,12 @@ public class Incident implements Serializable {
     public Incident() {
     }
 
-    public Incident(String message) {
+    public Incident(final String message) {
         this.message = message;
+    }
+
+    public static List<Incident> incidents(final String... messages) {
+        return stream(messages).map(Incident::new).collect(toList());
     }
 
     @SuppressWarnings("UnusedDeclaration")

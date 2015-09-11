@@ -20,13 +20,11 @@ import org.maxur.perfmodel.backend.domain.Incident;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.CONFLICT;
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import static javax.ws.rs.core.Response.Status.*;
+import static org.maxur.perfmodel.backend.domain.Incident.incidents;
 
 /**
  * @author Maxim Yunusov
@@ -40,17 +38,9 @@ public final class WebException extends WebApplicationException {
         super(Response
                 .status(status)
                 .type(APPLICATION_JSON)
-                .entity(new GenericEntity<List<Incident>>(makeIncident(messages)) {
+                .entity(new GenericEntity<List<Incident>>(incidents(messages)) {
                 })
                 .build());
-    }
-
-    private static List<Incident> makeIncident(String[] messages) {
-        final List<Incident> result = new ArrayList<>();
-        for (String message : messages) {
-            result.add(new Incident(message));
-        }
-        return result;
     }
 
     public static WebException notFoundException(final String... errors) {

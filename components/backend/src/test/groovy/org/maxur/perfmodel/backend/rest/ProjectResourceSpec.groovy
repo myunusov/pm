@@ -15,6 +15,7 @@
 
 package org.maxur.perfmodel.backend.rest
 import org.glassfish.hk2.utilities.binding.AbstractBinder
+import org.maxur.perfmodel.backend.domain.ConflictException
 import org.maxur.perfmodel.backend.domain.Project
 import org.maxur.perfmodel.backend.domain.ProjectRepository
 import org.maxur.perfmodel.backend.rest.dto.ProjectDto
@@ -196,12 +197,9 @@ class ProjectResourceSpec extends AbstractRestSpec {
     }
 
 
-    def "should be send error on bad POST request"() {
+    def "should be send error 400 on bad POST request"() {
 
         setup:
-        def project = new Project('id1', 'name', 5, "")
-        project.setView("{}")
-        project.setModels("[]")
         provider.set(Mock(ProjectRepository) {
             0 * put(_ as Project)
         })
@@ -217,9 +215,57 @@ class ProjectResourceSpec extends AbstractRestSpec {
         response.status == 400
         String message = response.readEntity(String)
 
-        and: "server returned eror message from repository"
+        and: "server returned error message from repository"
         message.contains("Unexpected character ('I'")
     }
 
+    def "should be send error 409 after conflict on POST request"() {
 
+        setup:
+        def project = new Project('id1', 'name', 5, "")
+        project.setView("{}")
+        project.setModels("[]")
+        provider.set(Mock(ProjectRepository) {
+            1 * put(_ as Project) >> { throw new ConflictException("Error") }
+        })
+
+        when: "send GET request on project"
+        Response response = target("/project/id1")
+                .request()
+                .buildPost(Entity.json(project))
+                .invoke()
+
+        then: "Project was not saved"
+        response.hasEntity()
+        response.status == 409
+        String message = response.readEntity(String)
+
+        and: "server returned error message from repository"
+        """[{"message":"Project is not saved"},{"message":"Error"}]""" == message
+    }
+
+    def "should be send error 500 after system error on POST request"() {
+
+        setup:
+        def project = new Project('id1', 'name', 5, "")
+        project.setView("{}")
+        project.setModels("[]")
+        provider.set(Mock(ProjectRepository) {
+            1 * put(_ as Project) >> { throw new RuntimeException("Critical Error") }
+        })
+
+        when: "send GET request on project"
+        Response response = target("/project/id1")
+                .request()
+                .buildPost(Entity.json(project))
+                .invoke()
+
+        then: "Project was not saved"
+        response.hasEntity()
+        response.status == 500
+        String message = response.readEntity(String)
+
+        and: "server returned error message from repository"
+        """[{"message":"System error"},{"message":"Critical Error"}]""" == message
+    }
 }
