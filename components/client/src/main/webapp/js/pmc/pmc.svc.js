@@ -36,28 +36,30 @@ angular.module('pmc.services', [])
         }
 
         return {
-            error: function (message, errorcode) {
-                var result = "";
-                if (message instanceof Array) {
-                    for (var i = 0; i < message.length; i++) {
-                        result += " " + message[i];
-                    }
-                } else {
-                    result += " " + message;
-                }
-                if (errorcode) {
-                    result += " " + getMessageBy(errorcode);
-                }
+            oneError: function (msg) {
                 $mdToast.show({
                     controller: 'ToastCtrl',
                     template: '<md-toast class="md-warn" style="background-color: #e57373">\n' +
-                    '<span flex>' + result + '</span>\n' +
+                    '<span flex>' + msg + '</span>\n' +
                     '<md-button aria-label="Close Toast" ng-click="closeToast()">\n' +
                     '<i class="mdi mdi-close"></i>\n' +
                     '</md-button>\n</md-toast>',
                     hideDelay: 6000,
                     position: getToastPosition()
                 });
+            },
+            error: function (message, errorcode) {
+                var result = "";
+                if (message instanceof Array) {
+                    for (var i = 0; i < message.length; i++) {
+                        this.oneError(message[i]);
+                    }
+                } else {
+                    this.oneError(message);
+                }
+                if (errorcode) {
+                    this.oneError(getMessageBy(errorcode));
+                }
             },
             info: function (message) {
                 $mdToast.show({
