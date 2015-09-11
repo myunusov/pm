@@ -84,14 +84,11 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     public Optional<Project> remove(final String key) {
         try (WriteBatch batch = dataSource.createWriteBatch()) {
             final Optional<Project> result = dataSource.get(key);
-/*
-            if (!result.isPresent()) {
-
+            if (result.isPresent()) {
+                dataSource.delete(key);
+                dataSource.delete(path(result.get().getName()));
+                dataSource.commit(batch);
             }
-*/
-            dataSource.delete(key);
-            dataSource.delete(path(result.get().getName()));
-            dataSource.commit(batch);
             return result;
         } catch (IOException | ClassNotFoundException e) {
             return throwError(e, "Cannot remove project '%s'", key);
