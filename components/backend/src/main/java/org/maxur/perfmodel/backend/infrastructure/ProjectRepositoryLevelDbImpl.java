@@ -19,7 +19,7 @@ import org.iq80.leveldb.WriteBatch;
 import org.jvnet.hk2.annotations.Service;
 import org.maxur.perfmodel.backend.domain.ConflictException;
 import org.maxur.perfmodel.backend.domain.Project;
-import org.maxur.perfmodel.backend.domain.ProjectRepository;
+import org.maxur.perfmodel.backend.domain.Repository;
 import org.maxur.perfmodel.backend.service.Benchmark;
 import org.maxur.perfmodel.backend.service.DataSource;
 import org.slf4j.Logger;
@@ -40,7 +40,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @since <pre>30.08.2015</pre>
  */
 @Service
-public class ProjectRepositoryLevelDbImpl implements ProjectRepository {
+public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
 
     private static final Logger LOGGER = getLogger(ProjectRepositoryLevelDbImpl.class);
 

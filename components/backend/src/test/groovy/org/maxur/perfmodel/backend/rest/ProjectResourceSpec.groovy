@@ -14,12 +14,15 @@
  */
 
 package org.maxur.perfmodel.backend.rest
+
+import org.glassfish.hk2.api.TypeLiteral
 import org.glassfish.hk2.utilities.binding.AbstractBinder
 import org.maxur.perfmodel.backend.domain.ConflictException
 import org.maxur.perfmodel.backend.domain.Project
-import org.maxur.perfmodel.backend.domain.ProjectRepository
+import org.maxur.perfmodel.backend.domain.Repository
 import org.maxur.perfmodel.backend.rest.dto.ProjectDto
 import org.maxur.perfmodel.backend.rest.resources.ProjectResource
+import org.spockframework.gentyref.TypeToken
 import spock.lang.Shared
 
 import javax.ws.rs.client.Entity
@@ -35,7 +38,7 @@ import static java.util.Optional.empty
 class ProjectResourceSpec extends AbstractRestSpec {
 
     @Shared
-    InstanceFactory<ProjectRepository> provider  = provider()
+    InstanceFactory<Repository<Project>> provider  = provider()
 
     @Override
     Class[] resources() {
@@ -47,7 +50,9 @@ class ProjectResourceSpec extends AbstractRestSpec {
         return new AbstractBinder() {
             @Override
             protected void configure() {
-                bindFactory(provider).to(ProjectRepository);
+                bindFactory(provider)
+                        .to(new TypeLiteral<Repository<Project>>() {
+                });
             }
         }
     }
@@ -58,7 +63,7 @@ class ProjectResourceSpec extends AbstractRestSpec {
         def project = new Project('id1', 'name', 1, "")
         project.setView("{}")
         project.setModels("[]")
-        provider.set(Mock(ProjectRepository) {
+        provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
             1 * findAll() >> [project];
         })
         when: "send GET request on project"
@@ -82,7 +87,7 @@ class ProjectResourceSpec extends AbstractRestSpec {
     def "should be return 404 code by GET request unavailable project"() {
 
         setup:
-        provider.set(Mock(ProjectRepository) {
+        provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
             1 * get("invalid") >> empty();
         })
 
@@ -106,7 +111,7 @@ class ProjectResourceSpec extends AbstractRestSpec {
         project.setView("{}")
         project.setModels("[]")
 
-        provider.set(Mock(ProjectRepository) {
+        provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
             1 * get("id1") >> Optional.of(project);
         })
 
@@ -129,7 +134,7 @@ class ProjectResourceSpec extends AbstractRestSpec {
         def project = new Project('id1', 'name', 1, "")
         project.setView("{}")
         project.setModels("[]")
-        provider.set(Mock(ProjectRepository) {
+        provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
             1 * remove("id1") >> Optional.of(project);
         })
 
@@ -153,7 +158,7 @@ class ProjectResourceSpec extends AbstractRestSpec {
     def "should be return 404 code by DELETE request unavailable project"() {
 
         setup:
-        provider.set(Mock(ProjectRepository) {
+        provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
             1 * remove("invalid") >> empty();
         })
 
@@ -175,7 +180,7 @@ class ProjectResourceSpec extends AbstractRestSpec {
         def project = new Project('id1', 'name', 5, "")
         project.setView("{}")
         project.setModels("[]")
-        provider.set(Mock(ProjectRepository) {
+        provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
             1 * put(_ as Project) >> Optional.of(project)
         })
 
@@ -200,7 +205,7 @@ class ProjectResourceSpec extends AbstractRestSpec {
     def "should be send error 400 on bad POST request"() {
 
         setup:
-        provider.set(Mock(ProjectRepository) {
+        provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
             0 * put(_ as Project)
         })
 
@@ -225,7 +230,7 @@ class ProjectResourceSpec extends AbstractRestSpec {
         def project = new Project('id1', 'name', 5, "")
         project.setView("{}")
         project.setModels("[]")
-        provider.set(Mock(ProjectRepository) {
+        provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
             1 * put(_ as Project) >> { throw new ConflictException("Error") }
         })
 
@@ -250,7 +255,7 @@ class ProjectResourceSpec extends AbstractRestSpec {
         def project = new Project('id1', 'name', 5, "")
         project.setView("{}")
         project.setModels("[]")
-        provider.set(Mock(ProjectRepository) {
+        provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
             1 * put(_ as Project) >> { throw new RuntimeException("Critical Error") }
         })
 

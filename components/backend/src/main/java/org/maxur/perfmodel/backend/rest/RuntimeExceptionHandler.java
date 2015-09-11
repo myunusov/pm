@@ -16,6 +16,7 @@
 package org.maxur.perfmodel.backend.rest;
 
 import org.maxur.perfmodel.backend.domain.Incident;
+import org.slf4j.Logger;
 
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
@@ -25,6 +26,7 @@ import java.util.List;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import static org.maxur.perfmodel.backend.domain.Incident.incidents;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author myunusov
@@ -33,8 +35,11 @@ import static org.maxur.perfmodel.backend.domain.Incident.incidents;
  */
 public class RuntimeExceptionHandler implements ExceptionMapper<RuntimeException> {
 
+    private static final Logger LOGGER = getLogger(RuntimeExceptionHandler.class);
+
     @Override
     public Response toResponse(RuntimeException exception) {
+        LOGGER.error(exception.getMessage(), exception);
         return Response
                 .status(INTERNAL_SERVER_ERROR)
                 .type(APPLICATION_JSON)
