@@ -85,7 +85,14 @@ angular.module('pmc.services', [])
 
     .service('projectService', function ($resource, project, messageService, modelFactory) {
 
-        var ProjectDto = $resource('/api/project/:projectId', {projectId: '@id'});
+        var ProjectDto = $resource('/api/project/:projectId', {}, {
+            'update': {method: 'PUT', params: {projectId: '@id'}},
+            'create': {method: 'POST', params: {}},
+            'get':    {method:'GET', params: {projectId: '@id'}},
+            'query':  {method:'GET', isArray:true},
+            'remove': {method:'DELETE', params: {projectId: '@id'}},
+            'delete': {method:'DELETE', params: {projectId: '@id'}}
+        });
 
         function saveTempBak() {
             if (project && project.id) {
@@ -190,16 +197,35 @@ angular.module('pmc.services', [])
             },
             save: function () {
                 var dto = project.createDTO(new ProjectDto());
+
+                if (dto.version === 0)
+                    dto.$create(function (dto) {
+                        onSuccess(dto);
+                    }, function (error) {
+                        onError(error);
+                    });
+
+                if (dto.version !== 0)
                 // Todo is changed ?
-                dto.$save(function (dto) {
+                    dto.$update({projectId: dto.id}, function (dto) {
+                        onSuccess(dto);
+                    }, function (error) {
+                        onError(error);
+                    });
+
+                function onSuccess(dto) {
                     messageService.info("Project is saved as '" + dto.name + "'.");
                     project.version = dto.version;
                     $.jStorage.set(project.id, dto);
-                }, function (error) {
+                }
+
+                function onError(error) {
                     var text = error.statusText ? ". " + error.statusText + ". " : "";
                     messageService.error("Project is not saved." + text, error.status);
-                });
+                }
+
             }
+
         };
     })
 

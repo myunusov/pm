@@ -25,11 +25,12 @@ import org.maxur.perfmodel.backend.rest.resources.ProjectResource
 import org.spockframework.gentyref.TypeToken
 import spock.lang.Shared
 
-import javax.ws.rs.client.Entity
 import javax.ws.rs.core.GenericType
 import javax.ws.rs.core.Response
 
 import static java.util.Optional.empty
+import static javax.ws.rs.client.Entity.json
+
 /**
  * @author myunusov
  * @version 1.0
@@ -185,9 +186,9 @@ class ProjectResourceSpec extends AbstractRestSpec {
         })
 
         when: "send GET request on project"
-        Response response = target("/project/id1")
+        Response response = target("/project")
                 .request()
-                .buildPost(Entity.json(project))
+                .buildPost(json(project))
                 .invoke()
 
         then: "Project was saved"
@@ -210,9 +211,9 @@ class ProjectResourceSpec extends AbstractRestSpec {
         })
 
         when: "send GET request on project"
-        Response response = target("/project/id1")
+        Response response = target("/project")
                 .request()
-                .buildPost(Entity.json("{Invalid JSON}"))
+                .buildPost(json("{Invalid JSON}"))
                 .invoke()
 
         then: "Project was not saved"
@@ -235,9 +236,9 @@ class ProjectResourceSpec extends AbstractRestSpec {
         })
 
         when: "send GET request on project"
-        Response response = target("/project/id1")
+        Response response = target("/project")
                 .request()
-                .buildPost(Entity.json(project))
+                .buildPost(json(project))
                 .invoke()
 
         then: "Project was not saved"
@@ -260,9 +261,9 @@ class ProjectResourceSpec extends AbstractRestSpec {
         })
 
         when: "send GET request on project"
-        Response response = target("/project/id1")
+        Response response = target("/project")
                 .request()
-                .buildPost(Entity.json(project))
+                .buildPost(json(project))
                 .invoke()
 
         then: "Project was not saved"
@@ -273,4 +274,107 @@ class ProjectResourceSpec extends AbstractRestSpec {
         and: "server returned error message from repository"
         """[{"message":"System error"},{"message":"Critical Error"}]""" == message
     }
+
+
+    def "should be update project by PUT request"() {
+
+        setup:
+        def project1 = new Project('id1', 'name', 5, "")
+        def project2 = new Project('id1', 'name', 6, "")
+        project1.setView("{}")
+        project1.setModels("[]")
+        provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
+            1 * put(_ as Project) >> Optional.of(project2)
+        })
+
+        when: "send GET request on project"
+        Response response = target("/project/id1")
+                .request()
+                .buildPut(json(project1))
+                .invoke()
+
+        then: "Project was saved"
+        response.hasEntity()
+        response.status == 200
+        ProjectDto dto = response.readEntity(ProjectDto)
+
+        and: "server returned project from repository"
+        dto.id == "id1"
+        dto.name == "name"
+        dto.version == 6
+    }
+
+
+    def "should be send error 400 on bad PUT request"() {
+
+        setup:
+        provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
+            0 * put(_ as Project)
+        })
+
+        when: "send GET request on project"
+        Response response = target("/project/id1")
+                .request()
+                .buildPut(json("{Invalid JSON}"))
+                .invoke()
+
+        then: "Project was not saved"
+        response.hasEntity()
+        response.status == 400
+        String message = response.readEntity(String)
+
+        and: "server returned error message from repository"
+        message.contains("Unexpected character ('I'")
+    }
+
+    def "should be send error 409 after conflict on PUT request"() {
+
+        setup:
+        def project = new Project('id1', 'name', 5, "")
+        project.setView("{}")
+        project.setModels("[]")
+        provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
+            1 * put(_ as Project) >> { throw new ConflictException("Error") }
+        })
+
+        when: "send GET request on project"
+        Response response = target("/project/id1")
+                .request()
+                .buildPut(json(project))
+                .invoke()
+
+        then: "Project was not saved"
+        response.hasEntity()
+        response.status == 409
+        String message = response.readEntity(String)
+
+        and: "server returned error message from repository"
+        """[{"message":"Project is not saved"},{"message":"Error"}]""" == message
+    }
+
+    def "should be send error 500 after system error on Put request"() {
+
+        setup:
+        def project = new Project('id1', 'name', 5, "")
+        project.setView("{}")
+        project.setModels("[]")
+        provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
+            1 * put(_ as Project) >> { throw new RuntimeException("Critical Error") }
+        })
+
+        when: "send GET request on project"
+        Response response = target("/project/id1")
+                .request()
+                .buildPut(json(project))
+                .invoke()
+
+        then: "Project was not saved"
+        response.hasEntity()
+        response.status == 500
+        String message = response.readEntity(String)
+
+        and: "server returned error message from repository"
+        """[{"message":"System error"},{"message":"Critical Error"}]""" == message
+    }
+
 }

@@ -49,6 +49,9 @@ public class ProjectResource {
             produces = { MediaType.APPLICATION_JSON },
             responsestatuscode = "200 - OK"
     )
+    @ApiErrors(apierrors={
+            @ApiError(code="500", description="Application critical error")
+    })
     public @ApiResponseObject Collection<ProjectDto> findAll() {
         return dtoList(repository.findAll());
     }
@@ -64,8 +67,9 @@ public class ProjectResource {
             responsestatuscode = "200 - OK"
     )
     @ApiErrors(apierrors={
+            @ApiError(code="400", description="Bad request"),
             @ApiError(code="404", description="Project not found"),
-            @ApiError(code="400", description="Bad request")
+            @ApiError(code="500", description="Application critical error")
     })
     public @ApiResponseObject ProjectDto load(
             @ApiPathParam(name = "id", description = "The project identifier")
@@ -88,8 +92,9 @@ public class ProjectResource {
             responsestatuscode = "200 - OK"
     )
     @ApiErrors(apierrors={
+            @ApiError(code="400", description="Bad request"),
             @ApiError(code="404", description="Project not found"),
-            @ApiError(code="400", description="Bad request")
+            @ApiError(code="500", description="Application critical error")
     })
     public @ApiResponseObject ProjectDto delete(
             @ApiPathParam(name = "id", description = "The project identifier")
@@ -102,6 +107,39 @@ public class ProjectResource {
     }
 
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiMethod(
+            path = "/project",
+            verb = ApiVerb.POST,
+            description = "Create new project version by project's identifier",
+            produces = { MediaType.APPLICATION_JSON },
+            consumes = { MediaType.APPLICATION_JSON },
+            responsestatuscode = "201 - Created"
+    )
+    @ApiErrors(apierrors={
+            @ApiError(code="400", description="Bad request"),
+            @ApiError(code="404", description="Project not found"),
+            @ApiError(code="500", description="Application critical error")
+    })
+    public @ApiResponseObject Response create(
+            @ApiBodyObject final ProjectDto dto
+    ) {
+        try {
+            final Project project = dto.assemble();
+            checkIdIsNotNull(dto.getId());
+            final Optional<Project> result = repository.put(project);
+            return created(result.get());
+        } catch (NumberFormatException e) {
+            LOGGER.error(PROJECT_IS_NOT_SAVED, e);
+            throw badRequestException(PROJECT_IS_NOT_SAVED, e.getMessage());
+        } catch (ConflictException e) {
+            LOGGER.error(PROJECT_IS_NOT_SAVED);
+            throw conflictException(PROJECT_IS_NOT_SAVED, e.getMessage());
+        }
+    }
+
+    @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -111,13 +149,14 @@ public class ProjectResource {
             description = "Create new project version by project's identifier",
             produces = { MediaType.APPLICATION_JSON },
             consumes = { MediaType.APPLICATION_JSON },
-            responsestatuscode = "201 - OK"
+            responsestatuscode = "200 - OK"
     )
     @ApiErrors(apierrors={
+            @ApiError(code="400", description="Bad request"),
             @ApiError(code="404", description="Project not found"),
-            @ApiError(code="400", description="Bad request")
+            @ApiError(code="500", description="Application critical error")
     })
-    public @ApiResponseObject Response save(
+    public @ApiResponseObject ProjectDto update(
             @ApiPathParam(name = "id", description = "The project identifier")
             @PathParam("id") String id,
             @ApiBodyObject final ProjectDto dto
@@ -126,12 +165,12 @@ public class ProjectResource {
             checkIdIsNotNull(id);
             final Project project = dto.assemble();
             final Optional<Project> result = repository.put(project);
-            return created(result.get());
+            return dto(result.get());
         } catch (NumberFormatException e) {
             LOGGER.error(PROJECT_IS_NOT_SAVED, e);
             throw badRequestException(PROJECT_IS_NOT_SAVED, e.getMessage());
         } catch (ConflictException e) {
-            LOGGER.error(PROJECT_IS_NOT_SAVED, e);
+            LOGGER.error(PROJECT_IS_NOT_SAVED);
             throw conflictException(PROJECT_IS_NOT_SAVED, e.getMessage());
         }
     }
