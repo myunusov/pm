@@ -182,7 +182,7 @@ class ProjectResourceSpec extends AbstractRestSpec {
         project.setView("{}")
         project.setModels("[]")
         provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
-            1 * put(_ as Project) >> Optional.of(project)
+            1 * add(_ as Project) >> Optional.of(project)
         })
 
         when: "send GET request on project"
@@ -207,7 +207,7 @@ class ProjectResourceSpec extends AbstractRestSpec {
 
         setup:
         provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
-            0 * put(_ as Project)
+            0 * add(_ as Project)
         })
 
         when: "send GET request on project"
@@ -232,7 +232,7 @@ class ProjectResourceSpec extends AbstractRestSpec {
         project.setView("{}")
         project.setModels("[]")
         provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
-            1 * put(_ as Project) >> { throw new ConflictException("Error") }
+            1 * add(_ as Project) >> { throw new ConflictException("Error") }
         })
 
         when: "send GET request on project"
@@ -257,7 +257,7 @@ class ProjectResourceSpec extends AbstractRestSpec {
         project.setView("{}")
         project.setModels("[]")
         provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
-            1 * put(_ as Project) >> { throw new RuntimeException("Critical Error") }
+            1 * add(_ as Project) >> { throw new RuntimeException("Critical Error") }
         })
 
         when: "send GET request on project"
@@ -284,7 +284,7 @@ class ProjectResourceSpec extends AbstractRestSpec {
         project1.setView("{}")
         project1.setModels("[]")
         provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
-            1 * put(_ as Project) >> Optional.of(project2)
+            1 * amend(_ as Project) >> Optional.of(project2)
         })
 
         when: "send GET request on project"
@@ -309,7 +309,7 @@ class ProjectResourceSpec extends AbstractRestSpec {
 
         setup:
         provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
-            0 * put(_ as Project)
+            0 * add(_ as Project)
         })
 
         when: "send GET request on project"
@@ -334,7 +334,7 @@ class ProjectResourceSpec extends AbstractRestSpec {
         project.setView("{}")
         project.setModels("[]")
         provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
-            1 * put(_ as Project) >> { throw new ConflictException("Error") }
+            1 * amend(_ as Project) >> { throw new ConflictException("Error") }
         })
 
         when: "send GET request on project"
@@ -359,7 +359,7 @@ class ProjectResourceSpec extends AbstractRestSpec {
         project.setView("{}")
         project.setModels("[]")
         provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
-            1 * put(_ as Project) >> { throw new RuntimeException("Critical Error") }
+            1 * amend(_ as Project) >> { throw new RuntimeException("Critical Error") }
         })
 
         when: "send GET request on project"

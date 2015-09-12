@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static java.lang.String.format;
+import static java.util.Optional.empty;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -96,23 +97,42 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
 
     }
 
-
     @Override
     @Benchmark
-    public Optional<Project> put(final Project value) throws ConflictException {
+    public Optional<Project> add(final Project value) throws ConflictException {
         final String id = value.getId();
         final String newName = value.getName();
         try (WriteBatch batch = dataSource.createWriteBatch()) {
+            value.checkUniqueId(dataSource.get(id));
             value.checkNamesakes(findByName(newName));
+            value.makeVersion();
+            dataSource.put(id, value);
+            dataSource.put(path(newName), value.brief());
+            dataSource.commit(batch);
+            return Optional.of(value);
+        } catch (IOException | ClassNotFoundException e) {
+            return throwError(e, "Cannot save project '%s'", newName);
+        }
+    }
+
+    @Override
+    @Benchmark
+    // idempotent
+    public Optional<Project> amend(final Project value) throws ConflictException  {
+        final String id = value.getId();
+        final String newName = value.getName();
+        try (WriteBatch batch = dataSource.createWriteBatch()) {
             final Optional<Project> prev = dataSource.get(id);
-            if (prev.isPresent()) {
-                value.checkConflictWith(prev);
-                value.incVersion();
-                final boolean mustBeRenamed = !prev.get().getName().equals(newName);
-                if (mustBeRenamed) {
-                    dataSource.delete(path(prev.get().getName()));
-                }
+            if (!prev.isPresent()) {
+                return empty();
             }
+            value.checkConflictWith(prev);
+            final boolean mustBeRenamed = !prev.get().getName().equals(newName);
+            if (mustBeRenamed) {
+                value.checkNamesakes(findByName(newName));
+                dataSource.delete(path(prev.get().getName()));
+            }
+            value.incVersion();
             dataSource.put(id, value);
             dataSource.put(path(newName), value.brief());
             dataSource.commit(batch);

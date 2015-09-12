@@ -97,16 +97,32 @@ public class Project implements Serializable {
         this.version++;
     }
 
+    public void makeVersion() {
+        this.version = 1;
+    }
+
+
+    public void checkUniqueId(Optional<Project> otherWithSameId) throws ConflictException {
+        if (otherWithSameId.isPresent()) {
+            // XXX if projects are identical ignore it
+            throw new ConflictException("Another project with same id '%s' already exists.", id);
+        }
+    }
+
     public void checkNamesakes(final Optional<Project> namesake) throws ConflictException {
         if (namesake.isPresent()) {
             if (!namesake.get().getId().equals(id)) {
-                throw new ConflictException("Another project with name '%s' already exists.", name);
+                throw new ConflictException("Another project with same '%s' already exists.", name);
             }
         }
     }
 
-    public void checkConflictWith(final Optional<Project> oldProject) throws ConflictException {
-        if (version != oldProject.get().version) {
+    public void checkConflictWith(final Optional<Project> prevVersionOfThisProject) throws ConflictException {
+        // idempotent
+        if (version == prevVersionOfThisProject.get().version - 1) {
+            // XXX if projects are identical ignore it
+        }
+        if (version != prevVersionOfThisProject.get().version) {
             throw new ConflictException("Project '%s' has been changed by another user.", name);
         }
     }
@@ -136,4 +152,5 @@ public class Project implements Serializable {
                 ", version=" + version +
                 '}';
     }
+
 }

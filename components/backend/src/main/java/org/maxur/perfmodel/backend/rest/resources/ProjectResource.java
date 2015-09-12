@@ -128,13 +128,13 @@ public class ProjectResource {
         try {
             final Project project = dto.assemble();
             checkIdIsNotNull(dto.getId());
-            final Optional<Project> result = repository.put(project);
+            final Optional<Project> result = repository.add(project);
             return created(result.get());
         } catch (NumberFormatException e) {
             LOGGER.error(PROJECT_IS_NOT_SAVED, e);
             throw badRequestException(PROJECT_IS_NOT_SAVED, e.getMessage());
         } catch (ConflictException e) {
-            LOGGER.error(PROJECT_IS_NOT_SAVED);
+            LOGGER.error(format("%s: %s", PROJECT_IS_NOT_SAVED, e.getMessage()));
             throw conflictException(PROJECT_IS_NOT_SAVED, e.getMessage());
         }
     }
@@ -164,13 +164,13 @@ public class ProjectResource {
         try {
             checkIdIsNotNull(id);
             final Project project = dto.assemble();
-            final Optional<Project> result = repository.put(project);
+            final Optional<Project> result = repository.amend(project);
             return dto(result.get());
         } catch (NumberFormatException e) {
             LOGGER.error(PROJECT_IS_NOT_SAVED, e);
             throw badRequestException(PROJECT_IS_NOT_SAVED, e.getMessage());
         } catch (ConflictException e) {
-            LOGGER.error(PROJECT_IS_NOT_SAVED);
+            LOGGER.error(format("%s: %s", PROJECT_IS_NOT_SAVED, e.getMessage()));
             throw conflictException(PROJECT_IS_NOT_SAVED, e.getMessage());
         }
     }

@@ -20,6 +20,9 @@ import org.maxur.perfmodel.backend.domain.Project
 import org.maxur.perfmodel.backend.domain.Repository
 import org.maxur.perfmodel.backend.service.DataSource
 import spock.lang.Specification
+
+import static java.util.Optional.empty
+
 /**
  * @author myunusov
  * @version 1.0
@@ -43,16 +46,16 @@ class ProjectRepositoryLevelDbImplSpec extends Specification {
         sut.findAll() as List == []
     }
 
-    def "test put new"() {
+    def "test add"() {
         given:
         def project = new Project('id1', 'name1', 1, "")
         project.setView('{}')
         project.setModels('[]')
         when:
-        def result = sut.put(project)
+        def result = sut.add(project)
         then:
-        1 * ds.get("/name1") >> Optional.empty()
-        1 * ds.get("id1") >> Optional.empty()
+        1 * ds.get("/name1") >> empty()
+        1 * ds.get("id1") >> empty()
         1 * ds.put("/name1", project)
         1 * ds.put("id1", project) >> {
             key, value -> assert (value.version == 1)
@@ -62,15 +65,49 @@ class ProjectRepositoryLevelDbImplSpec extends Specification {
         result.get().version == 1
     }
 
-    def "test put old"() {
+    def "test add with uninique id"() {
+        given:
+        def project1 = new Project('id1', 'name1', 1, "")
+        def project2 = new Project('id1', 'name2', 1, "")
+        project1.setView('{}')
+        project1.setModels('[]')
+        when:
+        sut.add(project1)
+        then:
+        1 * ds.get("id1") >> Optional.of(project2)
+        0 * ds.put("/name1", _)
+        0 * ds.put("id1", _)
+        and:
+        ConflictException ex = thrown()
+        ex.message == 'Another project with same id \'id1\' already exists.'
+    }
+
+    def "test add with uninique name"() {
+        given:
+        def project1 = new Project('id1', 'name1', 1, "")
+        def project2 = new Project('id2', 'name1', 1, "")
+        project1.setView('{}')
+        project1.setModels('[]')
+        when:
+        sut.add(project1)
+        then:
+        1 * ds.get("id1") >> empty()
+        1 * ds.get("/name1") >> Optional.of(project2)
+        0 * ds.put("/name1", _)
+        0 * ds.put("id1", _)
+        and:
+        ConflictException ex = thrown()
+        ex.message == 'Another project with same \'name1\' already exists.'
+    }
+
+    def "test amend"() {
         given:
         def project = new Project('id1', 'name1', 1, "")
         project.setView('{}')
         project.setModels('[]')
         when:
-        def result = sut.put(project)
+        def result = sut.amend(project)
         then:
-        1 * ds.get("/name1") >> Optional.of(project)
         1 * ds.get("id1") >> Optional.of(project)
         1 * ds.put("/name1", project)
         1 * ds.put("id1", project) >> {
@@ -81,33 +118,15 @@ class ProjectRepositoryLevelDbImplSpec extends Specification {
         result.get().version == 2
     }
 
-    def "test put namesake"() {
+    def "test amend with conflict"() {
         given:
         def project1 = new Project('id1', 'name1', 1, "")
         project1.setView('{}')
         project1.setModels('[]')
-        def project2 = new Project('id2', 'name1', 1, "")
+        def project2 = new Project('id1', 'name1', 3, "")
         when:
-        sut.put(project1)
+        sut.amend(project1)
         then:
-        1 * ds.get("/name1") >> Optional.of(project2)
-        0 * ds.put("/name1", _)
-        0 * ds.put("id1", _)
-        and:
-        ConflictException ex = thrown()
-        ex.message == 'Another project with name \'name1\' already exists.'
-    }
-
-    def "test put with conflict"() {
-        given:
-        def project1 = new Project('id1', 'name1', 1, "")
-        project1.setView('{}')
-        project1.setModels('[]')
-        def project2 = new Project('id1', 'name1', 2, "")
-        when:
-        sut.put(project1)
-        then:
-        1 * ds.get("/name1") >> Optional.of(project2)
         1 * ds.get("id1") >> Optional.of(project2)
         0 * ds.put("/name1", _)
         0 * ds.put("id1", _)
@@ -116,15 +135,15 @@ class ProjectRepositoryLevelDbImplSpec extends Specification {
         ex.message == 'Project \'name1\' has been changed by another user.'
     }
 
-    def "test rename"() {
+    def "test amend with rename"() {
         given:
         def project1 = new Project('id1', 'name1', 1, "")
         def project2 = new Project('id1', 'name2', 1, "")
         when:
-        def result = sut.put(project1)
+        def result = sut.amend(project1)
         then:
-        1 * ds.get("/name1") >> Optional.of(project2)
         1 * ds.get("id1") >> Optional.of(project2)
+        1 * ds.get("/name1") >> empty()
         1 * ds.put("/name1", project1)
         1 * ds.put("id1", project1) >> {
             key, value -> assert (value.name == 'name1')
@@ -133,7 +152,27 @@ class ProjectRepositoryLevelDbImplSpec extends Specification {
         result.get() == project1
     }
 
-    def "test remove"() {
+
+    def "test amend with rename and namesake"() {
+        given:
+        def project1 = new Project('id1', 'name2', 1, "")
+        project1.setView('{}')
+        project1.setModels('[]')
+        def project2 = new Project('id1', 'name1', 1, "")
+        def project3 = new Project('id2', 'name2', 1, "")
+        when:
+        sut.amend(project1)
+        then:
+        1 * ds.get("id1") >> Optional.of(project2)
+        1 * ds.get("/name2") >> Optional.of(project3)
+        0 * ds.put("/name1", _)
+        0 * ds.put("id1", _)
+        and:
+        ConflictException ex = thrown()
+        ex.message == 'Another project with same \'name2\' already exists.'
+    }
+
+   def "test remove"() {
         given:
         def project = new Project('id1', 'name1', 1, "")
         project.setView('{}')
@@ -156,7 +195,7 @@ class ProjectRepositoryLevelDbImplSpec extends Specification {
         when:
         def result = sut.remove('id1')
         then:
-        1 * ds.get("id1") >> Optional.empty()
+        1 * ds.get("id1") >> empty()
         0 * ds.delete(_)
         0 * ds.delete(_)
         and:
