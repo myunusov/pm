@@ -103,7 +103,11 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
         final String id = value.getId();
         final String newName = value.getName();
         try (WriteBatch batch = dataSource.createWriteBatch()) {
-            value.checkUniqueId(dataSource.get(id));
+            final Optional<Project> other = dataSource.get(id);
+            if (value.isSame(other)) {
+                return other;
+            }
+            value.checkUniqueId(other);
             value.checkNamesakes(findByName(newName));
             value.makeVersion();
             dataSource.put(id, value);
@@ -121,10 +125,15 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
     public Optional<Project> amend(final Project value) throws ConflictException  {
         final String id = value.getId();
         final String newName = value.getName();
+        value.incVersion();
+
         try (WriteBatch batch = dataSource.createWriteBatch()) {
             final Optional<Project> prev = dataSource.get(id);
             if (!prev.isPresent()) {
                 return empty();
+            }
+            if (value.isSame(prev)) {
+                return prev;
             }
             value.checkConflictWith(prev);
             final boolean mustBeRenamed = !prev.get().getName().equals(newName);
@@ -132,7 +141,6 @@ public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
                 value.checkNamesakes(findByName(newName));
                 dataSource.delete(path(prev.get().getName()));
             }
-            value.incVersion();
             dataSource.put(id, value);
             dataSource.put(path(newName), value.brief());
             dataSource.commit(batch);

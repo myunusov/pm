@@ -65,7 +65,7 @@ class ProjectRepositoryLevelDbImplSpec extends Specification {
         result.get().version == 1
     }
 
-    def "test add with uninique id"() {
+    def "test add with non-unique id"() {
         given:
         def project1 = new Project('id1', 'name1', 1, "")
         def project2 = new Project('id1', 'name2', 1, "")
@@ -82,7 +82,29 @@ class ProjectRepositoryLevelDbImplSpec extends Specification {
         ex.message == 'Another project with same id \'id1\' already exists.'
     }
 
-    def "test add with uninique name"() {
+    def "test add same project"() {
+        given:
+        def project1 = new Project('id1', 'name1', 1, "")
+        project1.setView('{}')
+        project1.setModels('[]')
+        def project2 = new Project('id1', 'name1', 1, "")
+        project2.setView('{}')
+        project2.setModels('[]')
+        when:
+        def result = sut.add(project1)
+        then:
+        1 * ds.get("id1") >> Optional.of(project2)
+        0 * ds.put("/name1", project1)
+        0 * ds.put("id1", project1) >> {
+            key, value -> assert (value.version == 1)
+        }
+        and:
+        result.get() == project1
+        result.get().version == 1
+    }
+
+
+    def "test add with non-unique name"() {
         given:
         def project1 = new Project('id1', 'name1', 1, "")
         def project2 = new Project('id2', 'name1', 1, "")
@@ -102,19 +124,42 @@ class ProjectRepositoryLevelDbImplSpec extends Specification {
 
     def "test amend"() {
         given:
-        def project = new Project('id1', 'name1', 1, "")
-        project.setView('{}')
-        project.setModels('[]')
+        def project1 = new Project('id1', 'name1', 1, "ddd")
+        project1.setView('{}')
+        project1.setModels('[]')
+
+        def project2 = new Project('id1', 'name1', 1, "")
+        project2.setView('{}')
+        project2.setModels('[]')
         when:
-        def result = sut.amend(project)
+        def result = sut.amend(project1)
         then:
-        1 * ds.get("id1") >> Optional.of(project)
-        1 * ds.put("/name1", project)
-        1 * ds.put("id1", project) >> {
+        1 * ds.get("id1") >> Optional.of(project2)
+        1 * ds.put("/name1", project1)
+        1 * ds.put("id1", project1) >> {
             key, value -> assert (value.version == 2)
         }
         and:
-        result.get() == project
+        result.get() == project1
+        result.get().version == 2
+    }
+
+    def "amend must be idempotent operation"() {
+        given:
+        def project1 = new Project('id1', 'name1', 1, "")
+        project1.setView('{}')
+        project1.setModels('[]')
+        def project2 = new Project('id1', 'name1', 2, "")
+        project2.setView('{}')
+        project2.setModels('[]')
+        when:
+        def result = sut.amend(project1)
+        then:
+        1 * ds.get("id1") >> Optional.of(project2)
+        0 * ds.put("/name1", project1)
+        0 * ds.put("id1", project1)
+        and:
+        result.get() == project1
         result.get().version == 2
     }
 

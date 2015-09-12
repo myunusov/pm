@@ -101,12 +101,23 @@ public class Project implements Serializable {
         this.version = 1;
     }
 
-
     public void checkUniqueId(Optional<Project> otherWithSameId) throws ConflictException {
         if (otherWithSameId.isPresent()) {
-            // XXX if projects are identical ignore it
             throw new ConflictException("Another project with same id '%s' already exists.", id);
         }
+    }
+
+    public boolean isSame(final Optional<Project> other) {
+        if (!other.isPresent()) {
+            return false;
+        }
+        Project project = other.get();
+        return Objects.equals(id, project.id)
+                && Objects.equals(this.name, project.name)
+                && this.version == project.version
+                && Objects.equals(this.description, project.description)
+                && Objects.equals(this.models, project.models)
+                && Objects.equals(this.view, project.view);
     }
 
     public void checkNamesakes(final Optional<Project> namesake) throws ConflictException {
@@ -118,12 +129,10 @@ public class Project implements Serializable {
     }
 
     public void checkConflictWith(final Optional<Project> prevVersionOfThisProject) throws ConflictException {
-        // idempotent
-        if (version == prevVersionOfThisProject.get().version - 1) {
-            // XXX if projects are identical ignore it
-        }
-        if (version != prevVersionOfThisProject.get().version) {
-            throw new ConflictException("Project '%s' has been changed by another user.", name);
+        if (prevVersionOfThisProject.isPresent()) {
+            if (version - 1 != prevVersionOfThisProject.get().version) {
+                throw new ConflictException("Project '%s' has been changed by another user.", name);
+            }
         }
     }
 
