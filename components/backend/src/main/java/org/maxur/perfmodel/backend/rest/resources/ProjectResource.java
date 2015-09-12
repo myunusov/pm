@@ -165,6 +165,7 @@ public class ProjectResource {
             checkIdIsNotNull(id);
             final Project project = dto.assemble();
             final Optional<Project> result = repository.amend(project);
+            checkResult(id, result);
             return dto(result.get());
         } catch (NumberFormatException e) {
             LOGGER.error(PROJECT_IS_NOT_SAVED, e);

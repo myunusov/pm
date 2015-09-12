@@ -305,6 +305,31 @@ class ProjectResourceSpec extends AbstractRestSpec {
     }
 
 
+    def "should be send error 404 after not found on PUT request"() {
+
+        given:
+        def project = new Project('id1', 'name', 5, "")
+        project.setView("{}")
+        project.setModels("[]")
+
+        provider.set(Mock(type: new TypeToken<Repository<Project>>(){}.type) {
+            1 * amend(_ as Project) >> empty()
+        })
+
+        when: "send GET request on project"
+        Response response = target("/project/id1")
+                .request()
+                .buildPut(json(project))
+                .invoke()
+
+        then: "Project was not saved"
+        response.hasEntity()
+        response.status == 404
+        String message = response.readEntity(String)
+        and: "server returned not found error message"
+        message == """[{"message":"Project 'id1' is not founded"}]"""
+    }
+
     def "should be send error 400 on bad PUT request"() {
 
         setup:
