@@ -4,22 +4,20 @@
 
 var controllers = angular.module('pmc.controllers', []);
 
-controllers.controller('ProjectCtrl', function (
-        $scope,
-        $log,
-        $mdDialog,
-        modelFactory,
-        compareProvider,
-        currentProject
-) {
+controllers.controller('ProjectCtrl', function ($scope,
+                                                $log,
+                                                $mdDialog,
+                                                modelFactory,
+                                                compareProvider,
+                                                currentProject) {
 
     $scope.project = currentProject;
 
-    $scope.model = function() {
+    $scope.model = function () {
         return $scope.project.getCurrentModel();
     };
 
-    $scope.hideModel = function(model) {
+    $scope.hideModel = function (model) {
         $scope.project.visibleModels.remove(model);
     };
 
@@ -305,9 +303,9 @@ controllers.controller('MainMenuCtrl', function ($scope,
     $scope.openModel = function (model) {
         project.openModel(model);
         $mdSidenav('right').close()
-                .then(function () {
-                    $log.debug("close RIGHT is done");
-                });
+            .then(function () {
+                $log.debug("close RIGHT is done");
+            });
     };
 
     $scope.closeStructure = function () {
@@ -409,7 +407,51 @@ controllers.controller('MainMenuCtrl', function ($scope,
 
 });
 
+function ComparableKind(models) {
+
+    this.units = [new QNMUnit('abs', 'by Absolute values')];
+    this.unit = this.unit || this.units[0];
+
+    for (var i = 0; i < models.length; i++) {
+        var m = models[i];
+        this.units.push(new QNMUnit(m.id, 'in Relation to ' + m.name));
+    }
+
+    this.availableUnits = function () {
+        var result = [];
+        for (var i = 0; i < this.units.length; i++) {
+            if (this.units[i].id !== this.unit.id) {
+                result.push(this.units[i]);
+            }
+        }
+        return result;
+    };
+
+    this.createDTO = function () {
+        return this.unit.id;
+    };
+
+    this.setDTO = function (dto) {
+        for (var i = 0; i < this.units.length; i++) {
+            if (this.units[i].id === dto) {
+                this.unit = this.units[i]
+            }
+        }
+    };
+
+    this.setUnit = function (newValue) {
+        this.unit = newValue;
+    };
+}
+
 controllers.controller('ComparatorCtrl', function ($scope, $mdDialog, compareProvider) {
+
+    $scope.kind = new ComparableKind(compareProvider.models());
+
+    $scope.setKind = function (kind) {
+        $scope.kind.setUnit(kind);
+        $scope.info = $scope.resolve();
+    };
 
     $scope.hide = function () {
         $mdDialog.hide();
@@ -427,7 +469,7 @@ controllers.controller('ComparatorCtrl', function ($scope, $mdDialog, comparePro
         return compareProvider.models();
     };
 
-    $scope.classes = function (index) {
+    $scope.classes = function () {
         var models = compareProvider.models();
         var result = [];
         models.each(
@@ -442,24 +484,75 @@ controllers.controller('ComparatorCtrl', function ($scope, $mdDialog, comparePro
         return result.unique();
     };
 
-    $scope.info = function (model1, model2, cname) {
-        var c1, c2;
-        model1.classes.each(
-            function (c) {
-                if (c.name.value === cname) {
-                    c1 = c;
-                }
-            });
-        model2.classes.each(
-            function (c) {
-                if (c.name.value === cname) {
+    $scope.cell = function (model, clazz) {
+        if ($scope.kind.unit.id === "abs") {
+            return absolute(clazz);
+        } else {
+            var baseModel = modelById($scope.kind.unit.id);
+            var baseClazz = classByName(baseModel, clazz.name.value);
+            return relative(baseClazz, clazz)
+        }
+    };
 
-                    c2 = c;
-                }
-            });
-        if (c1 && c2)
-            return new ComparedItem(c1, c2);
-        else return new function () {
+    $scope.resolve = function () {
+        var result = {};
+        var models = compareProvider.models();
+        for (var i = 0; i < models.length; i++) {
+            var m = models[i];
+            result[m.id] = {};
+            for (var j = 0; j < m.classes.length; j++) {
+                var c = m.classes[j];
+                var v = {};
+                var f = $scope.cell(m, c);
+                v["rAsString"] = f.rAsString();
+                v["xAsString"] = f.xAsString();
+                v["rClass"] = f.rClass();
+                v["xClass"] = f.xClass();
+                result[m.id][c.name.value] = v;
+            }
+        }
+        return result;
+    };
+
+    $scope.info = $scope.resolve();
+
+    $scope.cells = function (mid, cname) {
+        var result = $scope.info[mid][cname];
+        return !result ?
+        {
+            "rAsString": "",
+            "xAsString": "",
+            "rClass" : "non",
+            "xClass" : "non"
+        }:
+        result;
+    };
+
+    function classByName(model, cname) {
+        for (var i = 0; i < model.classes.length; i++) {
+            if (model.classes[i].name.value === cname) {
+                return model.classes[i];
+            }
+        }
+        return null;
+    }
+
+    function modelById(id) {
+        var models = compareProvider.models();
+        for (var i = 0; i < models.length; i++) {
+            if (models[i].id === id) {
+                return models[i];
+            }
+        }
+        return null;
+    }
+
+    function formatNumber(value) {
+        return Math.round(value) === value ? Math.round(value) : parseFloat(value).toPrecision(3);
+    }
+
+    function emptyInfo() {
+        return new function () {
             this.rAsString = function () {
                 return "X";
             };
@@ -473,8 +566,31 @@ controllers.controller('ComparatorCtrl', function ($scope, $mdDialog, comparePro
                 return "non";
             };
         };
-    };
+    }
 
+    function absolute(clazz) {
+        return new function () {
+            this.rAsString = function () {
+                return "R:" + formatNumber(clazz.responseTime.value) + " " + clazz.responseTime.unit.title;
+            };
+            this.xAsString = function () {
+                return "X:" + formatNumber(clazz.throughput.value) + " " + clazz.throughput.unit.title;
+            };
+            this.rClass = function () {
+                return "abs";
+            };
+            this.xClass = function () {
+                return "abs";
+            };
+        };
+    }
+
+    function relative(baseClazz, clazz) {
+        if (baseClazz)
+            return new ComparedItem(baseClazz, clazz);
+        else
+            return emptyInfo();
+    }
 
     function ComparedItem(class1, class2) {
 
@@ -539,14 +655,12 @@ controllers.controller('ComparatorCtrl', function ($scope, $mdDialog, comparePro
 });
 
 
-controllers.controller('ProjectListCtrl', function (
-    $scope,
-    $location,
-    localProjects,
-    remoteProjects,
-    project,
-    projectService
-) {
+controllers.controller('ProjectListCtrl', function ($scope,
+                                                    $location,
+                                                    localProjects,
+                                                    remoteProjects,
+                                                    project,
+                                                    projectService) {
 
     $scope.localProjects = localProjects;
     $scope.remoteProjects = remoteProjects;
@@ -607,10 +721,10 @@ controllers.controller('ChartCtrl', function ($scope, currentModel) {
         }
     };
 
-    $scope.$watch('$viewContentLoaded', function() {
+    $scope.$watch('$viewContentLoaded', function () {
 
         if ($scope.model !== null) {
-            setTimeout(function() {
+            setTimeout(function () {
                 refreshCharts($scope.model);
             }, 100);
         }

@@ -51,14 +51,13 @@ function ChartBuilder(qnm) {
                 borderWidth: 0
             }
         };
-    };
+    }
 
     function calcPointsNumber() {
         var sum = 0;
         for (var i = 0; i < qnm.nodes.length; i++) {
             var n = qnm.nodes[i];
-            var nn = parseFloat(n.nodeNumber.value);
-            sum += nn;
+            sum += parseFloat(n.nodeNumber.value);
         }
         return sum > 8 ? sum + 2 : 10;
     }
@@ -81,7 +80,7 @@ function ChartBuilder(qnm) {
             });
         }
         return result;
-    };
+    }
 
     function calcDataFor (clazz, method) {
         var result = [];
@@ -94,7 +93,7 @@ function ChartBuilder(qnm) {
             }
         }
         return result;
-    };
+    }
 
 }
 
