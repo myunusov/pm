@@ -59,7 +59,6 @@ class ProjectResourceSpec extends AbstractRestSpec {
     }
 
     def "should be return projects by GET request"() {
-
         setup:
         def project = new Project('id1', 'name', 1, "")
         project.setView("{}")

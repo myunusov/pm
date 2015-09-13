@@ -3,13 +3,9 @@ package org.maxur.perfmodel.backend.rest.resources;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.jsondoc.core.annotation.Api;
-import org.jsondoc.core.annotation.ApiMethod;
-import org.jsondoc.core.annotation.ApiResponseObject;
-import org.jsondoc.core.annotation.ApiVersion;
+import org.jsondoc.core.annotation.*;
 import org.jsondoc.core.pojo.ApiVerb;
 import org.maxur.perfmodel.backend.service.Application;
-import org.maxur.perfmodel.backend.utils.DateTimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.maxur.perfmodel.backend.rest.WebException.badRequestException;
+import static org.maxur.perfmodel.backend.utils.DateTimeUtils.schedule;
 
 /**
  * @author Maxim Yunusov
@@ -48,6 +45,9 @@ public class ApplicationResource {
         produces = { MediaType.APPLICATION_JSON },
         responsestatuscode = "200 - OK"
     )
+    @ApiErrors(apierrors={
+            @ApiError(code="500", description="Application critical error")
+    })
     public @ApiResponseObject String getVersion() {
         return application.version();
     }
@@ -56,14 +56,29 @@ public class ApplicationResource {
     @Path("/status")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response action(final String object) {
+    @ApiMethod(
+            path = "/application/status",
+            verb = ApiVerb.PUT,
+            description = "Sets a application status to stopped",
+            produces = { MediaType.APPLICATION_JSON },
+            consumes = { MediaType.APPLICATION_JSON },
+            responsestatuscode = "200 - OK"
+    )
+    @ApiErrors(apierrors={
+            @ApiError(code="500", description="Application critical error")
+    })
+    public Response action(@ApiBodyObject final String object) {
         try {
             final ObjectMapper mapper = new ObjectMapper(new JsonFactory());
             final Map<String, Object> map = mapper.readValue(object, new TypeReference<HashMap<String, Object>>() {
             });
             final String status = (String) map.get("status");
-            if ("stopped".equals(status)) {
-                DateTimeUtils.schedule(application::stop, 100);
+            switch (status) {
+                case "stopped":
+                    schedule(application::stop, 100);
+                    break;
+                default:
+                    throw badRequestException("Status '%s' is not valid", status);
             }
             return Response.status(Response.Status.ACCEPTED).build();
         } catch (IOException e) {

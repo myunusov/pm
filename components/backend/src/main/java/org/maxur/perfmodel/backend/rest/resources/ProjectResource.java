@@ -145,7 +145,7 @@ public class ProjectResource {
     @Produces(MediaType.APPLICATION_JSON)
     @ApiMethod(
             path = "/project/{id}",
-            verb = ApiVerb.POST,
+            verb = ApiVerb.PUT,
             description = "Create new project version by project's identifier",
             produces = { MediaType.APPLICATION_JSON },
             consumes = { MediaType.APPLICATION_JSON },
