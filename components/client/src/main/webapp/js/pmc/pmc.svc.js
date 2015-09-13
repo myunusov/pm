@@ -98,7 +98,9 @@ angular.module('pmc.services', [])
             result.view.comparableModels = [];
             var models = compareProvider.models();
             for (var i = 0; i < models.length; i++) {
-                result.view.comparableModels.push(models[i].id);
+                if (models[i] != null) {
+                    result.view.comparableModels.push(models[i].id);
+                }
             }
             return result;
         }
@@ -111,7 +113,10 @@ angular.module('pmc.services', [])
             }
             compareProvider.clean();
             for (var i = 0; i < models.length; i++) {
-                compareProvider.add(project.findModelById(models[i]));
+                var model = project.findModelById(models[i]);
+                if (model != null) {
+                    compareProvider.add(model);
+                }
             }
         }
 
