@@ -97,7 +97,7 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         },
         {
             id: "NN",
-            title: "Number",
+            title: "No. of Nodes",
             type: "number",
             tooltip: "Number of Node instances"
         },
@@ -124,7 +124,7 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         },
         {
             id: "M",
-            title: "Number of Users",
+            title: "No. of Users",
             type: "number",
             tooltip: "Number of Users (Terminals)(M)"
         },
@@ -167,7 +167,7 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
             tooltip: "Service Time per class (Si)"
         },
         {
-            id: "D",
+            id: "TD",
             title: "Demands",
             type: "text",
             tooltip: "Service Demands per class (Di)"

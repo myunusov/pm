@@ -524,7 +524,7 @@ md-fab-toolbar.md-left md-fab-trigger.align-with-text {
         content: "Name";
     }
     .nodes td:nth-of-type(2):before {
-        content: "Number";
+        content: "No.";
     }
     .nodes td:nth-of-type(3):before {
         content: "U (full)";

@@ -410,6 +410,9 @@ function QNMVisit(clazz, node) {
     this.serviceTime.unit = this.serviceTime.units[0];
     this.serviceDemands = new QNMTime();
     this.serviceDemands.unit = this.serviceDemands.units[0];
+    this.totalDemands = new QNMTime();
+    this.totalDemands.unit = this.serviceDemands.units[0];
+
     this.utilization = new Utilization();
     this.residenceTime = new QNMTime();
     this.throughput = new Throughput();
@@ -425,6 +428,7 @@ function QNMVisit(clazz, node) {
         'XI': this.throughput,
         'V': this.number,
         'TV': this.totalNumber,
+        'TD': this.totalDemands,
 
         'NI': this.meanNumberTasks
     };
@@ -449,6 +453,10 @@ function QNMVisit(clazz, node) {
         new Expression([
             [-1, 'TV'],
             ['V', new Parameter('NN', this.node)]
+        ], this),
+        new Expression([
+            [-1, 'TD'],
+            ['D', new Parameter('NN', this.node)]
         ], this),
         // RT = S/(1 - SUM(U)) ->  RT = S + SUM(U * RT)
         new Expression([
