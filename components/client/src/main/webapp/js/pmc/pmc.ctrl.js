@@ -444,7 +444,7 @@ function ComparableKind(models) {
     };
 }
 
-controllers.controller('ComparatorCtrl', function ($scope, $mdDialog, compareProvider) {
+controllers.controller('ComparatorCtrl', function ($scope, compareProvider) {
 
     $scope.kind = new ComparableKind(compareProvider.models());
 
@@ -453,16 +453,8 @@ controllers.controller('ComparatorCtrl', function ($scope, $mdDialog, comparePro
         $scope.info = $scope.resolve();
     };
 
-    $scope.hide = function () {
-        $mdDialog.hide();
-    };
-
-    $scope.cancel = function () {
-        $mdDialog.cancel();
-    };
-
-    $scope.answer = function (answer) {
-        $mdDialog.hide(answer);
+    $scope.remove = function (model) {
+        compareProvider.remove(model);
     };
 
     $scope.models = function () {

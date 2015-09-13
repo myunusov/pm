@@ -3,14 +3,17 @@
         <md-card>
             <md-card-content style="padding: 2px">
                 <div class="frame" flex="100">
-                    <table class="compare" ng-init="models=models()">
+                    <table class="compare" ng-init="models=models()" style="width: 100%">
                         <tr>
                             <td colspan="{{models.length + 1}}">
                                 <div class="framehdr" layout="row" layout-align="space-between start" flex="100">
-                                    <div>
-                                        <i class="mdi mdi-compare"></i>&nbsp;Compare Models
+                                    <div style="height: 25px">
+                                        <i class="mdi mdi-compare"></i>
                                     </div>
-                                    <div>
+                                    <div style="height: 25px">
+                                        &nbsp;Compare Models
+                                    </div>
+                                    <div style="height: 25px">
                                         <md-menu>
                                             <button aria-label="Select Comparable Type"
                                                     class="md-icon-button"
@@ -44,6 +47,14 @@
                         <tr>
                             <th ng-repeat="model in models">
                                 {{model.name}}
+                <span style="height: 28px">
+                    <button class="hdrbutton"
+                            aria-label="Remove Model {{model.name}}"
+                            ng-click="remove(model)">
+                        <i class="mdi mdi-close"></i>
+                        <md-tooltip>Remove Model</md-tooltip>
+                    </button>
+                </span>
                             </th>
                         </tr>
                         <tr ng-repeat="className in classes()">
@@ -63,6 +74,9 @@
                                 </table>
                             </td>
                         </tr>
+                        </tbody>
+                        <tbody ng-if="models.length < 2">
+                        <tr><td>You needs add new models to compare</td></tr>
                         </tbody>
                     </table>
                 </div>
