@@ -313,4 +313,58 @@ describe('QN Model', function() {
 
     });
 
+
+    /*
+     A client/server system is monitored for one hour.
+     During this time, the utilization of a certain disk is measured to be 50%.
+     Each request makes an average of two accesses to this disk, which has an average service time equal to 25 msec.
+     Considering that there are 150 clients and that the average think time is 10 sec,
+     what is the average response time?
+
+     The known quantities are:
+     Udisk = 0.5, Vdisk = 2, Sdisk = 0.025 sec, M = 150, and Z = 10 sec.
+     From the Utilization Law,
+
+     Thus,
+     Xdisk = 0.5/0.025 = 20 requests/sec.
+     From the Forced Flow Law,
+
+     Finally, from the Interactive Response Time Law,
+     R = 5 sec.
+     */
+    it("should be resolved for closed model", function () {
+        qnm.addClass();
+        qnm.addNode();
+        qnm.init();
+
+        qnm.kind.unit = qnm.kind.units[1];
+
+        var request = qnm.classes[0];
+        var disk = qnm.nodes[0];
+        var visit = qnm.getVisitBy(request, disk);
+
+        visit.all["U"].text = 50;
+        expect (qnm.calculate(new Parameter("U", visit))).toEqual(true);
+        expect (qnm.valid()).toEqual(true);
+
+        visit.all["V"].text = 2;
+        expect (qnm.calculate(new Parameter("V", visit))).toEqual(true);
+        expect (qnm.valid()).toEqual(true);
+
+        visit.all["S"].text = 25;
+        expect (qnm.calculate(new Parameter("S", visit))).toEqual(true);
+        expect (qnm.valid()).toEqual(true);
+
+        request.all["M"].text = 150;
+        expect (qnm.calculate(new Parameter("M", request))).toEqual(true);
+        expect (qnm.valid()).toEqual(true);
+
+        request.all["Z"].text = 10;
+        expect (qnm.calculate(new Parameter("Z", request))).toEqual(true);
+        expect (qnm.valid()).toEqual(true);
+
+
+        expect (request.all["R"].text).toEqual(5);
+    });
+
 });

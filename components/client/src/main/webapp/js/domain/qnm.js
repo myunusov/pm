@@ -362,28 +362,36 @@ function QNMClass(id, modelKind, name) {
     this.thinkTime = new QNMTime();
     this.userNumber = new QNMNumber();
     this.responseTime = new QNMTime();
+    this.residenceTime = new QNMTime();
 
     this.all = {
         'NAME': this.name,
         'M': this.userNumber,
         'Z': this.thinkTime,
         'X': this.throughput,
-        'R': this.responseTime
+        'R': this.responseTime,
+        'RT': this.residenceTime
     };
 
-    this.expressions = [
-        modelKind.isOpen() ?
-            new Expression([
-                ['Z', 'X'],
-                [-1, 'M']
-            ], this)
-            :
+    this.expressions = function(){
+        return modelKind.isOpen() ?
+            [
+                new Expression([
+                    ['Z', 'X'],
+                    [-1, 'M']
+                ], this),
+                new Expression([
+                    ['RT'],
+                    [-1, 'R']
+                ], this)
+            ] : [
             new Expression([
                 ['R', 'X'],
                 ['Z', 'X'],
                 [-1, 'M']
             ], this)
-    ];
+        ];
+    };
 
     this.equals = function (other) {
         if (!other) {
@@ -410,18 +418,21 @@ function QNMNode(id, name) {
         'N': this.meanNumberTasks,
         'TN': this.totalMeanNumberTasks
     };
-    this.expressions = [
-        new Expression([
-            [-1, 'TN'],
-            ['N', 'NN']
-        ], this),
-        // N = (1 - U)/U => U + U * N = N
-        new Expression([
-            ['U'],
-            [-1, 'N'],
-            ['U', 'N']
-        ], this)
-    ];
+
+    this.expressions = function() {
+        return [
+            new Expression([
+                [-1, 'TN'],
+                ['N', 'NN']
+            ], this),
+            // N = (1 - U)/U => U + U * N = N
+            new Expression([
+                ['U'],
+                [-1, 'N'],
+                ['U', 'N']
+            ], this)
+        ];
+    };
 
     this.equals = function (other) {
         if (!other) {
@@ -466,38 +477,40 @@ function QNMVisit(clazz, node) {
         'NI': this.meanNumberTasks
     };
 
-    this.expressions = [
-        new Expression([
-            ['V', new Parameter('X', this.clazz)],
-            [-1, 'XI']
-        ], this),
-        new Expression([
-            ['U'],
-            [-1, 'XI', 'S']
-        ], this),
-        new Expression([
-            [-1, 'RT', 'XI'],
-            ['NI']
-        ], this),
-        new Expression([
-            [-1, 'S', 'V'],
-            ['D']
-        ], this),
-        new Expression([
-            [-1, 'TV'],
-            ['V', new Parameter('NN', this.node)]
-        ], this),
-        new Expression([
-            [-1, 'TD'],
-            ['D', new Parameter('NN', this.node)]
-        ], this),
-        // RT = S/(1 - SUM(U)) ->  RT = S + SUM(U * RT)
-        new Expression([
-            [-1, 'RT'],
-            ['S'],
-            [new Parameter('U', this.node), 'RT']
-        ], this)
-    ];
+    this.expressions = function() {
+        return [
+            new Expression([
+                ['V', new Parameter('X', this.clazz)],
+                [-1, 'XI']
+            ], this),
+            new Expression([
+                ['U'],
+                [-1, 'XI', 'S']
+            ], this),
+            new Expression([
+                [-1, 'RT', 'XI'],
+                ['NI']
+            ], this),
+            new Expression([
+                [-1, 'S', 'V'],
+                ['D']
+            ], this),
+            new Expression([
+                [-1, 'TV'],
+                ['V', new Parameter('NN', this.node)]
+            ], this),
+            new Expression([
+                [-1, 'TD'],
+                ['D', new Parameter('NN', this.node)]
+            ], this),
+            // RT = S/(1 - SUM(U)) ->  RT = S + SUM(U * RT)
+            new Expression([
+                [-1, 'RT'],
+                ['S'],
+                [new Parameter('U', this.node), 'RT']
+            ], this)
+        ];
+    };
 
     this.doCreateDTO = function (result) {
         result.clazz = this.clazz.id;
@@ -916,7 +929,7 @@ function QNM(name, id) {
     // R = SUM(RT * V)
     this.makeRXNExps = function (clazz) {
         var result = [
-            [new Parameter('R', clazz)]
+            [new Parameter('RT', clazz)]
         ];
         var visits = this.getVisitsByClass(clazz);
         for (var j = 0; j < visits.length; j++) {
@@ -959,11 +972,11 @@ function QNM(name, id) {
         return result;
     };
 
-    this.getExpressions = function () {
+    this.expressions = function () {
         var expressions = this.makeExpressions();
         [this.classes, this.visits, this.nodes].each(
             function (u) {
-                expressions = expressions.concat(u.expressions);
+                expressions = expressions.concat(u.expressions());
             }
         );
         return expressions;
@@ -986,7 +999,7 @@ function QNM(name, id) {
         if (!fields) {
             return null;
         }
-        var expressions = this.getExpressions();
+        var expressions = this.expressions();
         if (!expressions) {
             return null;
         }
