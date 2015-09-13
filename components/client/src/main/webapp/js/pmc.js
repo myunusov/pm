@@ -7,6 +7,7 @@ var pmc = angular.module(
     [
         'ui.router',
         'ngResource',
+        'ngSanitize',
         'ngMaterial',
 
         'pmc.services',

@@ -6,9 +6,10 @@
   "license": "APACHE2_0",
   "private": true,
   "dependencies": {
-    "angular": "1.4.x",
-    "angular-mocks": "1.4.x",
-    "angular-resource": "1.4.x",
+    "angular": "~1.4.x",
+    "angular-mocks": "~1.4.x",
+    "angular-resource": "~1.4.x",
+    "angular-sanitize": "~1.4.x",
     "angular-animate": "1.4.x",
     "angular-ui-router": "~0.2.15",
     "angular-material": "~0.10.1",

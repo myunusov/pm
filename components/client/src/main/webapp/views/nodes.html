@@ -23,7 +23,7 @@
         </tr>
         <tr>
             <th data-ng-repeat="type in nodeTypes">
-                {{type.title}}
+                <span data-ng-bind="type.title"></span>
                 <md-tooltip>{{type.tooltip }}</md-tooltip>
             </th>
             <th></th>

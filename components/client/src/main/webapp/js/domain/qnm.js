@@ -222,6 +222,44 @@ function QNMNodeName(value) {
 }
 QNMNodeName.prototype = new QNMName();
 
+function QNMModelKind() {
+    this.units = [
+        new QNMUnit('open', 'Open Queuing Networks'),
+        new QNMUnit('closed', 'Closed Queuing Networks')
+    ];
+    this.unit = this.unit || this.units[0];
+
+    this.availableUnits = function () {
+        var result = [];
+        for (var i = 0; i < this.units.length; i++) {
+            if (!this.units[i].equals(this.unit)) {
+                result.push(this.units[i]);
+            }
+        }
+        return result;
+    };
+
+    this.isOpen = function () {
+        return this.unit.id === 'open';
+    };
+
+    this.createDTO = function () {
+        return this.unit.id;
+    };
+
+    this.setDTO = function (dto) {
+        for (var i = 0; i < this.units.length; i++) {
+            if (this.units[i].id === dto) {
+                this.unit = this.units[i]
+            }
+        }
+    };
+
+    this.setUnit = function (newValue) {
+        this.unit = newValue;
+    };
+}
+
 function Throughput(value) {
     this.value = value;
     this._text = value;
@@ -316,10 +354,9 @@ function QNMCenter() {
 
 }
 
-function QNMClass(id, name) {
+function QNMClass(id, modelKind, name) {
     this.id = id;
     this.name = new QNMName(name || "Class " + id);
-    this.isOpen = true;
 
     this.throughput = new Throughput();
     this.thinkTime = new QNMTime();
@@ -335,22 +372,18 @@ function QNMClass(id, name) {
     };
 
     this.expressions = [
-        new Expression([
-            ['R', 'X'],
-            ['Z', 'X'],
-            [-1, 'M']
-        ], this)
+        modelKind.isOpen() ?
+            new Expression([
+                ['Z', 'X'],
+                [-1, 'M']
+            ], this)
+            :
+            new Expression([
+                ['R', 'X'],
+                ['Z', 'X'],
+                [-1, 'M']
+            ], this)
     ];
-
-    this.open = function () {
-        this.isOpen = true;
-        this.thinkTime.value = null;
-        this.userNumber.value = null;
-    };
-
-    this.close = function () {
-        this.isOpen = false;
-    };
 
     this.equals = function (other) {
         if (!other) {
@@ -445,7 +478,7 @@ function QNMVisit(clazz, node) {
         new Expression([
             [-1, 'RT', 'XI'],
             ['NI']
-         ], this),
+        ], this),
         new Expression([
             [-1, 'S', 'V'],
             ['D']
@@ -669,6 +702,7 @@ function QNM(name, id) {
     this.id = id;
     this.name = name;
     this.type = "qnm";
+    this.kind = new QNMModelKind();
     this.view = "views/qnm.html";
     this.classes = [];
     this.nodes = [];
@@ -683,6 +717,7 @@ function QNM(name, id) {
         memento.id = this.id;
         memento.name = this.name;
         memento.type = "qnm";
+        memento.kind = this.kind.createDTO();
         memento.classNo = classNo;
         memento.nodeNo = nodeNo;
         memento.changedFields = createArrayDTO(changedFields);
@@ -695,12 +730,14 @@ function QNM(name, id) {
     this.setDTO = function (memento) {
         this.id = memento.id;
         this.name = memento.name;
+        this.kind.setDTO(memento.kind);
         classNo = memento.classNo;
         nodeNo = memento.nodeNo;
         this.classes = [];
         for (var i1 = 0; i1 < memento.classes.length; i1++) {
             var clazz = new QNMClass(
                 memento.classes[i1].id,
+                this.kind,
                 memento.classes[i1].name
             );
             clazz.setDTO(memento.classes[i1]);
@@ -761,7 +798,7 @@ function QNM(name, id) {
     };
 
     this.addClass = function () {
-        var clazz = new QNMClass(++classNo);
+        var clazz = new QNMClass(++classNo, this.kind);
         this.classes.push(clazz);
         changedFields = changedFields.concat(clazz.getSignificance());
         for (var i = 0; i < this.nodes.length; i++) {
