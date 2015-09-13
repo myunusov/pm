@@ -1052,4 +1052,10 @@ function QNM(name, id) {
         return this.recalculate();
     };
 
+    this.setKind = function(kind) {
+        this.kind.setUnit(kind);
+        return this.recalculate();
+    };
+
+
 }
