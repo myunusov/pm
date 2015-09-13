@@ -62,6 +62,10 @@
     color: #F44336 !important;
 }
 
+.abs {
+    color: #000 !important;
+}
+
 
 li .over-top {
     border-top-width: 1px;
@@ -394,7 +398,7 @@ md-fab-toolbar.md-left md-fab-trigger.align-with-text {
 
 /* Zebra striping */
 
-
+/*
 .compare tr:nth-of-type(odd) {
     background: #eee;
 }
@@ -402,6 +406,10 @@ md-fab-toolbar.md-left md-fab-trigger.align-with-text {
 .compare tr:nth-of-type(odd) .simplebox {
     background-color: #eee;
 }
+
+.compare tr:nth-of-type(odd) td {
+    background-color: #eee;
+}*/
 
 .compare td, th {
     padding: 6px;
@@ -414,7 +422,6 @@ md-fab-toolbar.md-left md-fab-trigger.align-with-text {
     font-weight: bold;
     text-align: center;
 }
-
 
 .compare td, th {
     text-align: left;
