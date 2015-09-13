@@ -21,7 +21,6 @@ import org.maxur.perfmodel.backend.domain.Incident;
 import org.maxur.perfmodel.backend.domain.Project;
 
 import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.Provider;
 import javax.xml.bind.JAXBException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -32,7 +31,6 @@ import java.util.Set;
  * @version 1.0
  * @since <pre>11/25/13</pre>
  */
-@Provider
 public class PmcObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
     private final ObjectMapper context;

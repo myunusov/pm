@@ -23,10 +23,12 @@ import org.maxur.perfmodel.backend.service.WebServer;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.ext.Provider;
 import java.net.URI;
 
 import static org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory.createHttpServer;
 
+@Provider
 public class WebServerGrizzlyImpl extends WebServer {
 
     private HttpServer httpServer;

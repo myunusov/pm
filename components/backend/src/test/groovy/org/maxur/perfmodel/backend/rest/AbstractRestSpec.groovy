@@ -51,6 +51,8 @@ abstract class AbstractRestSpec extends Specification {
                     }
                     register(JacksonFeature.class)
                     register(PmcObjectMapperProvider.class)
+                    register(RuntimeExceptionHandler.class)
+
                 }
             }
         }

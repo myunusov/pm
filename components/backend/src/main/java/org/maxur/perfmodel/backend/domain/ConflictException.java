@@ -15,10 +15,24 @@
 
 package org.maxur.perfmodel.backend.domain;
 
+import static java.lang.String.format;
+
 /**
  * @author myunusov
  * @version 1.0
- * @since <pre>09.09.2015</pre>
+ * @since <pre>08.09.2015</pre>
  */
-public interface ProjectRepository extends Repository<Project> {
+public class ConflictException extends Exception {
+
+    private static final long serialVersionUID = 8538245899720208225L;
+
+    /**
+     * Create Validation Exception.
+     * <p/>
+     * @param message message template.
+     * @param args Arguments referenced by the format specifiers in the format string.
+     */
+    public ConflictException(final String message, final String... args) {
+        super(format(message, args));
+    }
 }

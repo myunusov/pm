@@ -13,26 +13,16 @@
  *    limitations under the License.
  */
 
-package org.maxur.perfmodel.backend.domain;
-
-import static java.lang.String.format;
+package org.maxur.perfmodel.backend.service;
 
 /**
  * @author myunusov
  * @version 1.0
- * @since <pre>08.09.2015</pre>
+ * @since <pre>11.09.2015</pre>
  */
-public class ValidationException extends Exception {
+public interface Database {
 
-    private static final long serialVersionUID = 8538245899720208225L;
+    void init();
 
-    /**
-     * Create Validation Exception.
-     * <p/>
-     * @param message message template.
-     * @param args Arguments referenced by the format specifiers in the format string.
-     */
-    public ValidationException(final String message, final String... args) {
-        super(format(message, args));
-    }
+    void stop();
 }

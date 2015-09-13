@@ -47,7 +47,7 @@ class ClientSimulation extends Simulation {
   val scn2 = scenario("Save")
     .repeat(iterations, "index") {
       exec(http("save")
-        .post("""/api/project/id""")
+        .post("""/api/project""")
         .headers(headers_0)
         .body(StringBody(_ => body))
       ).pause(100 milliseconds)

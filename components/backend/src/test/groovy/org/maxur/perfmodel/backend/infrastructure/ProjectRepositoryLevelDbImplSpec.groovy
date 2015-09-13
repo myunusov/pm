@@ -14,8 +14,15 @@
  */
 
 package org.maxur.perfmodel.backend.infrastructure
+
+import org.maxur.perfmodel.backend.domain.ConflictException
 import org.maxur.perfmodel.backend.domain.Project
+import org.maxur.perfmodel.backend.domain.Repository
+import org.maxur.perfmodel.backend.service.DataSource
 import spock.lang.Specification
+
+import static java.util.Optional.empty
+
 /**
  * @author myunusov
  * @version 1.0
@@ -23,76 +30,222 @@ import spock.lang.Specification
  */
 class ProjectRepositoryLevelDbImplSpec extends Specification {
 
-    ProjectRepositoryLevelDbImpl sut
-
-    DataSourceLevelDbImpl ds
+    Repository<Project> sut
+    DataSource ds
 
     void setup() {
         sut = new ProjectRepositoryLevelDbImpl();
-        ds = new DataSourceLevelDbImpl();
+        ds = Mock(DataSource);
         sut.dataSource = ds
-        ds.dbFolderName = "./test.db"
-        ds.init()
-    }
-
-    void cleanup() {
-        ds.stop();
-        def result = new File("./test.db").deleteDir()
-        assert result
     }
 
     def "test init"() {
         when:
-        ds.init()
+        1 * ds.findAllByPrefix("/") >> []
         then:
         sut.findAll() as List == []
     }
 
-    def "test put"() {
+    def "test add"() {
         given:
         def project = new Project('id1', 'name1', 1, "")
         project.setView('{}')
         project.setModels('[]')
         when:
-        sut.put(project)
+        def result = sut.add(project)
         then:
-        def all = sut.findAll()
-        all as List == [project]
-        all[0].getView() == null
-        all[0].getModels() == null
+        1 * ds.get("/name1") >> empty()
+        1 * ds.get("id1") >> empty()
+        1 * ds.put("/name1", project)
+        1 * ds.put("id1", project) >> {
+            key, value -> assert (value.version == 1)
+        }
         and:
-        sut.get('id1').get() == project;
-        project.getView() == '{}'
-        project.getModels() == '[]'
+        result.get() == project
+        result.get().version == 1
     }
 
-    def "test remove"() {
+    def "test add with non-unique id"() {
         given:
-        def project = new Project('id2', 'name2', 1, "")
+        def project1 = new Project('id1', 'name1', 1, "")
+        def project2 = new Project('id1', 'name2', 1, "")
+        project1.setView('{}')
+        project1.setModels('[]')
+        when:
+        sut.add(project1)
+        then:
+        1 * ds.get("id1") >> Optional.of(project2)
+        0 * ds.put("/name1", _)
+        0 * ds.put("id1", _)
+        and:
+        ConflictException ex = thrown()
+        ex.message == 'Another project with same id \'id1\' already exists.'
+    }
+
+    def "test add same project"() {
+        given:
+        def project1 = new Project('id1', 'name1', 1, "")
+        project1.setView('{}')
+        project1.setModels('[]')
+        def project2 = new Project('id1', 'name1', 1, "")
+        project2.setView('{}')
+        project2.setModels('[]')
+        when:
+        def result = sut.add(project1)
+        then:
+        1 * ds.get("id1") >> Optional.of(project2)
+        0 * ds.put("/name1", project1)
+        0 * ds.put("id1", project1) >> {
+            key, value -> assert (value.version == 1)
+        }
+        and:
+        result.get() == project1
+        result.get().version == 1
+    }
+
+
+    def "test add with non-unique name"() {
+        given:
+        def project1 = new Project('id1', 'name1', 1, "")
+        def project2 = new Project('id2', 'name1', 1, "")
+        project1.setView('{}')
+        project1.setModels('[]')
+        when:
+        sut.add(project1)
+        then:
+        1 * ds.get("id1") >> empty()
+        1 * ds.get("/name1") >> Optional.of(project2)
+        0 * ds.put("/name1", _)
+        0 * ds.put("id1", _)
+        and:
+        ConflictException ex = thrown()
+        ex.message == 'Another project with same \'name1\' already exists.'
+    }
+
+    def "test amend"() {
+        given:
+        def project1 = new Project('id1', 'name1', 1, "ddd")
+        project1.setView('{}')
+        project1.setModels('[]')
+
+        def project2 = new Project('id1', 'name1', 1, "")
+        project2.setView('{}')
+        project2.setModels('[]')
+        when:
+        def result = sut.amend(project1)
+        then:
+        1 * ds.get("id1") >> Optional.of(project2)
+        1 * ds.put("/name1", project1)
+        1 * ds.put("id1", project1) >> {
+            key, value -> assert (value.version == 2)
+        }
+        and:
+        result.get() == project1
+        result.get().version == 2
+    }
+
+    def "amend must be idempotent operation"() {
+        given:
+        def project1 = new Project('id1', 'name1', 1, "")
+        project1.setView('{}')
+        project1.setModels('[]')
+        def project2 = new Project('id1', 'name1', 2, "")
+        project2.setView('{}')
+        project2.setModels('[]')
+        when:
+        def result = sut.amend(project1)
+        then:
+        1 * ds.get("id1") >> Optional.of(project2)
+        0 * ds.put("/name1", project1)
+        0 * ds.put("id1", project1)
+        and:
+        result.get() == project1
+        result.get().version == 2
+    }
+
+    def "test amend with conflict"() {
+        given:
+        def project1 = new Project('id1', 'name1', 1, "")
+        project1.setView('{}')
+        project1.setModels('[]')
+        def project2 = new Project('id1', 'name1', 3, "")
+        when:
+        sut.amend(project1)
+        then:
+        1 * ds.get("id1") >> Optional.of(project2)
+        0 * ds.put("/name1", _)
+        0 * ds.put("id1", _)
+        and:
+        ConflictException ex = thrown()
+        ex.message == 'Project \'name1\' has been changed by another user.'
+    }
+
+    def "test amend with rename"() {
+        given:
+        def project1 = new Project('id1', 'name1', 1, "")
+        def project2 = new Project('id1', 'name2', 1, "")
+        when:
+        def result = sut.amend(project1)
+        then:
+        1 * ds.get("id1") >> Optional.of(project2)
+        1 * ds.get("/name1") >> empty()
+        1 * ds.put("/name1", project1)
+        1 * ds.put("id1", project1) >> {
+            key, value -> assert (value.name == 'name1')
+        }
+        and:
+        result.get() == project1
+    }
+
+
+    def "test amend with rename and namesake"() {
+        given:
+        def project1 = new Project('id1', 'name2', 1, "")
+        project1.setView('{}')
+        project1.setModels('[]')
+        def project2 = new Project('id1', 'name1', 1, "")
+        def project3 = new Project('id2', 'name2', 1, "")
+        when:
+        sut.amend(project1)
+        then:
+        1 * ds.get("id1") >> Optional.of(project2)
+        1 * ds.get("/name2") >> Optional.of(project3)
+        0 * ds.put("/name1", _)
+        0 * ds.put("id1", _)
+        and:
+        ConflictException ex = thrown()
+        ex.message == 'Another project with same \'name2\' already exists.'
+    }
+
+   def "test remove"() {
+        given:
+        def project = new Project('id1', 'name1', 1, "")
         project.setView('{}')
         project.setModels('[]')
         when:
-        sut.put(project)
-        sut.remove('id2')
+        def result = sut.remove('id1')
         then:
-        sut.findAll() as List == []
+        1 * ds.get("id1") >> Optional.of(project)
+        1 * ds.delete("id1")
+        1 * ds.delete("/name1")
         and:
-        !sut.get('id1').isPresent()
+        result.get() == project
     }
 
-    def "test rename"() {
+    def "test remove if project is absent"() {
         given:
-        def project1 = new Project('id3', 'name1', 1, "")
-        def project2 = new Project('id3', 'name2', 1, "")
+        def project = new Project('id1', 'name1', 1, "")
+        project.setView('{}')
+        project.setModels('[]')
         when:
-        sut.put(project1)
-        sut.put(project2)
+        def result = sut.remove('id1')
         then:
-        sut.findAll() as List == [project2]
+        1 * ds.get("id1") >> empty()
+        0 * ds.delete(_)
+        0 * ds.delete(_)
         and:
-        def project = sut.get('id3')
-        project.get() == project2
-        project.get().name == 'name2'
+        !result.isPresent()
     }
+
 
 }

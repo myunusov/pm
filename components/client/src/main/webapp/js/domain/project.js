@@ -35,7 +35,7 @@ function Project(name, id) {
         this.description = memento.description;
         this.models = [];
         this.visibleModels = [];
-        this.currentModelIndex = memento.views.currentModelIndex;
+        this.currentModelIndex = memento.view.currentModelIndex;
         for (var i = 0; i < memento.models.length; i++) {
             var model;
             if (memento.models[i].type === "qnm") {

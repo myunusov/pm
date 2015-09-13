@@ -51,11 +51,11 @@ public class ProjectDto implements Serializable {
     @ApiObjectField(required = false, description = "The project description")
     private String description;
 
-    @ApiObjectField(required = false, description = "The Serialized presentation of the object's models")
+    @ApiObjectField(required = false, description = "The Serialized presentation of the object's models", format="[]")
     @JsonRawValue
     private String models;
 
-    @ApiObjectField(required = false, description = "The Serialized presentation of the object's view")
+    @ApiObjectField(required = false, description = "The Serialized presentation of the object's view", format="{}")
     @JsonRawValue
     private String view;
 

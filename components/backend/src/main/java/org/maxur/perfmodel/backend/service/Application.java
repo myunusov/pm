@@ -38,7 +38,7 @@ public abstract class Application {
     private WebServer webServer;
 
     @Inject
-    private DataSource dataSource;
+    private Database db;
 
     @PostConstruct
     public final void init() {
@@ -53,7 +53,7 @@ public abstract class Application {
 
     public final void stop() {
         webServer.stop();
-        dataSource.stop();
+        db.stop();
         onStop();
         LOGGER.info("Performance Model Calculator Server is stoped");
         System.exit(0);

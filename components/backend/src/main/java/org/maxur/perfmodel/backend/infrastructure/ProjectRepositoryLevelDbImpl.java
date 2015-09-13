@@ -17,9 +17,9 @@ package org.maxur.perfmodel.backend.infrastructure;
 
 import org.iq80.leveldb.WriteBatch;
 import org.jvnet.hk2.annotations.Service;
+import org.maxur.perfmodel.backend.domain.ConflictException;
 import org.maxur.perfmodel.backend.domain.Project;
-import org.maxur.perfmodel.backend.domain.ProjectRepository;
-import org.maxur.perfmodel.backend.domain.ValidationException;
+import org.maxur.perfmodel.backend.domain.Repository;
 import org.maxur.perfmodel.backend.service.Benchmark;
 import org.maxur.perfmodel.backend.service.DataSource;
 import org.slf4j.Logger;
@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static java.lang.String.format;
+import static java.util.Optional.empty;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -40,7 +41,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @since <pre>30.08.2015</pre>
  */
 @Service
-public class ProjectRepositoryLevelDbImpl implements ProjectRepository {
+public class ProjectRepositoryLevelDbImpl implements Repository<Project> {
 
     private static final Logger LOGGER = getLogger(ProjectRepositoryLevelDbImpl.class);
 
@@ -84,14 +85,11 @@ public class ProjectRepositoryLevelDbImpl implements ProjectRepository {
     public Optional<Project> remove(final String key) {
         try (WriteBatch batch = dataSource.createWriteBatch()) {
             final Optional<Project> result = dataSource.get(key);
-/*
-            if (!result.isPresent()) {
-
+            if (result.isPresent()) {
+                dataSource.delete(key);
+                dataSource.delete(path(result.get().getName()));
+                dataSource.commit(batch);
             }
-*/
-            dataSource.delete(key);
-            dataSource.delete(path(result.get().getName()));
-            dataSource.commit(batch);
             return result;
         } catch (IOException | ClassNotFoundException e) {
             return throwError(e, "Cannot remove project '%s'", key);
@@ -99,22 +97,49 @@ public class ProjectRepositoryLevelDbImpl implements ProjectRepository {
 
     }
 
-
     @Override
     @Benchmark
-    public Optional<Project> put(final Project value) throws ValidationException {
+    public Optional<Project> add(final Project value) throws ConflictException {
         final String id = value.getId();
         final String newName = value.getName();
         try (WriteBatch batch = dataSource.createWriteBatch()) {
+            final Optional<Project> other = dataSource.get(id);
+            if (value.isSame(other)) {
+                return other;
+            }
+            value.checkUniqueId(other);
             value.checkNamesakes(findByName(newName));
+            value.makeVersion();
+            dataSource.put(id, value);
+            dataSource.put(path(newName), value.brief());
+            dataSource.commit(batch);
+            return Optional.of(value);
+        } catch (IOException | ClassNotFoundException e) {
+            return throwError(e, "Cannot save project '%s'", newName);
+        }
+    }
+
+    @Override
+    @Benchmark
+    // idempotent
+    public Optional<Project> amend(final Project value) throws ConflictException  {
+        final String id = value.getId();
+        final String newName = value.getName();
+        value.incVersion();
+
+        try (WriteBatch batch = dataSource.createWriteBatch()) {
             final Optional<Project> prev = dataSource.get(id);
-            if (prev.isPresent()) {
-                value.checkConflictWith(prev);
-                value.incVersion();
-                final boolean mustBeRenamed = !prev.get().getName().equals(newName);
-                if (mustBeRenamed) {
-                    dataSource.delete(path(prev.get().getName()));
-                }
+            if (!prev.isPresent()) {
+                return empty();
+            }
+            if (value.isSame(prev)) {
+                return prev;
+            }
+            value.checkConflictWith(prev);
+            final boolean mustBeRenamed = !prev.get().getName().equals(newName);
+            if (mustBeRenamed) {
+                value.checkNamesakes(findByName(newName));
+                dataSource.delete(path(prev.get().getName()));
             }
             dataSource.put(id, value);
             dataSource.put(path(newName), value.brief());

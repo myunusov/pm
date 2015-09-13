@@ -29,10 +29,6 @@ import java.util.Optional;
  */
 public interface DataSource {
 
-    void init();
-
-    void stop();
-
     <T> Optional<T> get(String key) throws IOException, ClassNotFoundException;
 
     <T> Collection<T> findAllByPrefix(String prefix) throws IOException, ClassNotFoundException;

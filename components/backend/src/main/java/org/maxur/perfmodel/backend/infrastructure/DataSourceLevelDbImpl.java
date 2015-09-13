@@ -22,6 +22,7 @@ import org.iq80.leveldb.WriteBatch;
 import org.iq80.leveldb.impl.Iq80DBFactory;
 import org.maxur.perfmodel.backend.service.Benchmark;
 import org.maxur.perfmodel.backend.service.DataSource;
+import org.maxur.perfmodel.backend.service.Database;
 import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
@@ -36,7 +37,7 @@ import static org.iq80.leveldb.impl.Iq80DBFactory.asString;
 import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class DataSourceLevelDbImpl implements DataSource {
+public class DataSourceLevelDbImpl implements DataSource, Database {
 
     private static final Logger LOGGER = getLogger(DataSourceLevelDbImpl.class);
 

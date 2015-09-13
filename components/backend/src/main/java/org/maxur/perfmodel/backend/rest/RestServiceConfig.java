@@ -35,6 +35,7 @@ public class RestServiceConfig extends ResourceConfig {
         packages("org.maxur.perfmodel.backend.rest.resources");
         register(JacksonFeature.class);
         register(PmcObjectMapperProvider.class);
+        register(RuntimeExceptionHandler.class);
         register(new ServiceLocatorFeature());
     }
 

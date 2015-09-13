@@ -97,17 +97,42 @@ public class Project implements Serializable {
         this.version++;
     }
 
-    public void checkNamesakes(final Optional<Project> namesake) throws ValidationException {
+    public void makeVersion() {
+        this.version = 1;
+    }
+
+    public void checkUniqueId(Optional<Project> otherWithSameId) throws ConflictException {
+        if (otherWithSameId.isPresent()) {
+            throw new ConflictException("Another project with same id '%s' already exists.", id);
+        }
+    }
+
+    public boolean isSame(final Optional<Project> other) {
+        if (!other.isPresent()) {
+            return false;
+        }
+        Project project = other.get();
+        return Objects.equals(id, project.id)
+                && Objects.equals(this.name, project.name)
+                && this.version == project.version
+                && Objects.equals(this.description, project.description)
+                && Objects.equals(this.models, project.models)
+                && Objects.equals(this.view, project.view);
+    }
+
+    public void checkNamesakes(final Optional<Project> namesake) throws ConflictException {
         if (namesake.isPresent()) {
             if (!namesake.get().getId().equals(id)) {
-                throw new ValidationException("Another project with name '%s' already exists.", name);
+                throw new ConflictException("Another project with same '%s' already exists.", name);
             }
         }
     }
 
-    public void checkConflictWith(final Optional<Project> oldProject) throws ValidationException {
-        if (version != oldProject.get().version) {
-            throw new ValidationException("Project '%s' has been changed by another user.", name);
+    public void checkConflictWith(final Optional<Project> prevVersionOfThisProject) throws ConflictException {
+        if (prevVersionOfThisProject.isPresent()) {
+            if (version - 1 != prevVersionOfThisProject.get().version) {
+                throw new ConflictException("Project '%s' has been changed by another user.", name);
+            }
         }
     }
 
@@ -136,4 +161,5 @@ public class Project implements Serializable {
                 ", version=" + version +
                 '}';
     }
+
 }

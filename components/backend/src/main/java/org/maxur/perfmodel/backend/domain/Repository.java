@@ -28,10 +28,11 @@ public interface Repository<T> {
 
     Optional<T> remove(String key);
 
-    Optional<T> put(T value) throws ValidationException;
+    Optional<T> add(T value) throws ConflictException;
+
+    Optional<T> amend(T value) throws ConflictException;
 
     Optional<T> findByName(String name);
 
     Collection<T> findAll();
-
- }
+}

@@ -36,28 +36,30 @@ angular.module('pmc.services', [])
         }
 
         return {
-            error: function (message, errorcode) {
-                var result = "";
-                if (message instanceof Array) {
-                    for (var i = 0; i < message.length; i++) {
-                        result += " " + message[i];
-                    }
-                } else {
-                    result += " " + message;
-                }
-                if (errorcode) {
-                    result += " " + getMessageBy(errorcode);
-                }
+            oneError: function (msg) {
                 $mdToast.show({
                     controller: 'ToastCtrl',
                     template: '<md-toast class="md-warn" style="background-color: #e57373">\n' +
-                    '<span flex>' + result + '</span>\n' +
+                    '<span flex>' + msg + '</span>\n' +
                     '<md-button aria-label="Close Toast" ng-click="closeToast()">\n' +
                     '<i class="mdi mdi-close"></i>\n' +
                     '</md-button>\n</md-toast>',
                     hideDelay: 6000,
                     position: getToastPosition()
                 });
+            },
+            error: function (message, errorcode) {
+                var result = "";
+                if (message instanceof Array) {
+                    for (var i = 0; i < message.length; i++) {
+                        this.oneError(message[i]);
+                    }
+                } else {
+                    this.oneError(message);
+                }
+                if (errorcode) {
+                    this.oneError(getMessageBy(errorcode));
+                }
             },
             info: function (message) {
                 $mdToast.show({
@@ -83,7 +85,14 @@ angular.module('pmc.services', [])
 
     .service('projectService', function ($resource, project, messageService, modelFactory) {
 
-        var ProjectDto = $resource('/api/project/:projectId', {projectId: '@id'});
+        var ProjectDto = $resource('/api/project/:projectId', {}, {
+            'update': {method: 'PUT', params: {projectId: '@id'}},
+            'create': {method: 'POST', params: {}},
+            'get':    {method:'GET', params: {projectId: '@id'}},
+            'query':  {method:'GET', isArray:true},
+            'remove': {method:'DELETE', params: {projectId: '@id'}},
+            'delete': {method:'DELETE', params: {projectId: '@id'}}
+        });
 
         function saveTempBak() {
             if (project && project.id) {
@@ -188,16 +197,35 @@ angular.module('pmc.services', [])
             },
             save: function () {
                 var dto = project.createDTO(new ProjectDto());
+
+                if (dto.version === 0)
+                    dto.$create(function (dto) {
+                        onSuccess(dto);
+                    }, function (error) {
+                        onError(error);
+                    });
+
+                if (dto.version !== 0)
                 // Todo is changed ?
-                dto.$save(function (dto) {
+                    dto.$update({projectId: dto.id}, function (dto) {
+                        onSuccess(dto);
+                    }, function (error) {
+                        onError(error);
+                    });
+
+                function onSuccess(dto) {
                     messageService.info("Project is saved as '" + dto.name + "'.");
                     project.version = dto.version;
                     $.jStorage.set(project.id, dto);
-                }, function (error) {
+                }
+
+                function onError(error) {
                     var text = error.statusText ? ". " + error.statusText + ". " : "";
                     messageService.error("Project is not saved." + text, error.status);
-                });
+                }
+
             }
+
         };
     })
 
