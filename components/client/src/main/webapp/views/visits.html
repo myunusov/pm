@@ -23,7 +23,7 @@
             <th>Node</th>
             <th>Class</th>
             <th data-ng-repeat="type in totalVisitTypes">
-                {{type.title}}
+                <span data-ng-bind="type.title"></span>
                 <md-tooltip>{{type.tooltip }}</md-tooltip>
             </th>
         </tr>

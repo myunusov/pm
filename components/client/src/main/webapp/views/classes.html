@@ -5,26 +5,50 @@
         <thead>
         <tr>
             <td colspan="{{classTypes.length + 1}}">
-                <div flex class="framehdr">
-                    <i class="mdi mdi-account-network"></i>
-                    Classes
-                    <button ng-click="addClass()">
-                        <i class="mdi mdi-plus"></i>
-                        <md-tooltip>
-                            Add new Class
-                        </md-tooltip>
-                    </button>
-                    <!--
-                        <button ng-click="">
-                            <i class="mdi mdi-settings"></i>
+                <div flex layout="row" layout-align="space-between start" class="framehdr">
+                    <div>
+                        <i class="mdi mdi-account-network"></i>
+                        Classes
+                    </div>
+                    <div>
+                        <md-menu>
+                            <button aria-label="Select Model Type"
+                                    class="md-icon-button"
+                                    ng-click="$mdOpenMenu()">
+                                {{model.kind.unit.title}}
+                            </button>
+                            <md-menu-content width="1">
+                                <md-menu-item ng-repeat="kind in model.kind.availableUnits()">
+                                    <md-button aria-label="Select Model Type" ng-click="model.kind.setUnit(kind)"
+                                               style="height: 31px;">
+                                        {{kind.title}}
+                                    </md-button>
+                                </md-menu-item>
+                            </md-menu-content>
+                        </md-menu>
+                    </div>
+
+                    <div>
+<!--
+                                            <button ng-click="">
+                                                <i class="mdi mdi-settings"></i>
+                                            </button>
+-->
+
+                        <button ng-click="addClass()">
+                            <i class="mdi mdi-plus"></i>
+                            <md-tooltip>
+                                Add new Class
+                            </md-tooltip>
                         </button>
-                    -->
+                    </div>
+
                 </div>
             </td>
         </tr>
         <tr>
             <th data-ng-repeat="type in classTypes">
-                {{type.title}}
+                <span data-ng-bind="type.title"></span>
                 <md-tooltip>{{type.tooltip }}</md-tooltip>
             </th>
             <th style="width:5px;"></th>
@@ -69,17 +93,15 @@
 </div>
 
 
-
-
 <!--<div class="framehdr">
     <i class="icon icon-user"></i>
     Classes
     <button class="hdrbutton" ng-click="addClass()" tooltip-placement="left" tooltip="Add new Class">
         <i class="icon-plus"></i>
     </button>-->
-    <!--                    <button class="hdrbutton" ng-click="">
-                            <i class="icon-cog"></i>
-                        </button>-->
+<!--                    <button class="hdrbutton" ng-click="">
+                        <i class="icon-cog"></i>
+                    </button>-->
 <!--</div>
 <div class="frame">
     <table class="classes">
