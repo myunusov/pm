@@ -49,7 +49,6 @@ angular.module('pmc.services', [])
                 });
             },
             error: function (message, errorcode) {
-                var result = "";
                 if (message instanceof Array) {
                     for (var i = 0; i < message.length; i++) {
                         this.oneError(message[i]);
@@ -83,7 +82,7 @@ angular.module('pmc.services', [])
         }
     })
 
-    .service('projectService', function ($resource, project, messageService, modelFactory) {
+    .service('projectService', function ($resource, project, messageService, modelFactory, compareProvider) {
 
         var ProjectDto = $resource('/api/project/:projectId', {}, {
             'update': {method: 'PUT', params: {projectId: '@id'}},
@@ -94,9 +93,32 @@ angular.module('pmc.services', [])
             'delete': {method:'DELETE', params: {projectId: '@id'}}
         });
 
+        function createDTO(prj) {
+            var result = prj.createDTO(new ProjectDto());
+            result.view.comparableModels = [];
+            var models = compareProvider.models();
+            for (var i = 0; i < models.length; i++) {
+                result.view.comparableModels.push(models[i].id);
+            }
+            return result;
+        }
+
+        function setDTO(dto) {
+            project.setDTO(dto);
+            var models = dto.view.comparableModels;
+            if (!models) {
+                return;
+            }
+            compareProvider.clean();
+            for (var i = 0; i < models.length; i++) {
+                compareProvider.add(project.findModelById(models[i]));
+            }
+        }
+
+
         function saveTempBak() {
             if (project && project.id) {
-                var dto = project.createDTO(new ProjectDto());
+                var dto = createDTO(project);
                 $.jStorage.set(project.id, dto);
                 $.jStorage.setTTL(project.id, 1800000);
             }
@@ -104,7 +126,7 @@ angular.module('pmc.services', [])
 
         function saveAsCurrent(currentProject) {
             if (currentProject && currentProject.id) {
-                var dto = currentProject.createDTO(new ProjectDto());
+                var dto = createDTO(currentProject);
                 $.jStorage.set(currentProject.id, dto);
                 $.jStorage.setTTL(currentProject.id, 1800000);
             }
@@ -141,6 +163,7 @@ angular.module('pmc.services', [])
                 result.addModel(modelFactory.qnm("QNM 0"));
                 result.addModel(modelFactory.egm("SEM 0"));
                 saveAsCurrent(result);
+                compareProvider.clean();
                 messageService.info("New Project is created.");
                 return result;
             },
@@ -151,11 +174,11 @@ angular.module('pmc.services', [])
                 saveTempBak();
                 var dto = $.jStorage.get(id);
                 if (dto) {
-                    project.setDTO(dto);
+                    setDTO(dto);
                     return project;
                 }
                 dto = ProjectDto.get({projectId: id}, function () {
-                    project.setDTO(dto);
+                    setDTO(dto);
                     messageService.info("Project '" + dto.name + "' is loaded.");
                     $.jStorage.set(project.id, dto);
                 }, function (error) {
@@ -172,10 +195,10 @@ angular.module('pmc.services', [])
                 var dto;
                 if (prj.islocal) {
                     dto = $.jStorage.get(prj.id);
-                    project.setDTO(dto);
+                    setDTO(dto);
                 } else {
                     dto = ProjectDto.get({projectId: prj.id}, function () {
-                        project.setDTO(dto);
+                        setDTO(dto);
                         messageService.info("Project '" + dto.name + "' is loaded.");
                         $.jStorage.set(project.id, dto);
                     }, function (error) {
@@ -196,7 +219,8 @@ angular.module('pmc.services', [])
                 });
             },
             save: function () {
-                var dto = project.createDTO(new ProjectDto());
+                saveTempBak();
+                var dto = createDTO(project);
 
                 if (dto.version === 0)
                     dto.$create(function (dto) {
@@ -242,6 +266,9 @@ angular.module('pmc.services', [])
             },
             remove: function (model) {
                 models.remove(model);
+            },
+            clean: function () {
+                models = [];
             }
         }
     })
