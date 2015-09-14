@@ -150,34 +150,40 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         {
             id: "TV",
             title: "Visits",
+            stitle: "V(i)",
             type: "number",
             tooltip: "Number of Visits per Request (Vi)"
         },
         {
             id: "XI",
             title: "Throughput",
+            stitle: "X(i)",
             type: "text",
             tooltip: "Throughput per class (Xi)"
         },
         {
             id: "S",
             title: "Service Time",
+            stitle: "S(i)",
             tooltip: "Service Time per class (Si)"
         },
         {
             id: "TD",
             title: "Demands",
+            stitle: "D(i)",
             type: "text",
             tooltip: "Service Demands per class (Di)"
         },
         {
             id: "U",
             title: "Utilization",
+            stitle: "U(i)",
             tooltip: "Utilization per class (Ui)"
         },
         {
             id: "RT",
             title: "Residence Time",
+            stitle: "RT(i)",
             type: "text",
             tooltip: "Residence Time per class (RTi)"
         }
@@ -186,36 +192,42 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         {
             id: "V",
             title: "Visits",
+            stitle: "V(i)",
             type: "number",
             tooltip: "Number of Visits per Request (Vi)"
         },
         {
             id: "XI",
             title: "Throughput",
+            stitle: "X(i)",
             type: "text",
             tooltip: "Throughput per class (Xi)"
         },
         {
             id: "S",
             title: "Service Time",
+            stitle: "S(i)",
             type: "text",
             tooltip: "Service Time per class (Si)"
         },
         {
             id: "D",
             title: "Service Demands",
+            stitle: "D(i)",
             type: "text",
             tooltip: "Service Demands per class (Di)"
         },
         {
             id: "U",
             title: "Utilization",
+            stitle: "U(i)",
             type: "text",
             tooltip: "Utilization per class (Ui)"
         },
         {
             id: "RT",
             title: "Residence Time",
+            stitle: "RT(i)",
             type: "text",
             tooltip: "Residence Time per class (RTi)"
         }

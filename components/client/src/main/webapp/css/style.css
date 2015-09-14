@@ -272,6 +272,34 @@ md-fab-toolbar.md-left md-fab-trigger.align-with-text {
 }
 
 
+/* TABLE */
+.table .hdr {
+    background: #e3e3e3;
+    color: #333;
+    font-weight: bold;
+    padding: 6px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+.table .cell {
+    padding: 6px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+.table .fst {
+    padding: 6px;
+    text-align: left;
+}
+
+
+.table  {
+    padding: 6px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
 /* CHART */
 
 .bounds-chart {
@@ -461,17 +489,25 @@ md-fab-toolbar.md-left md-fab-trigger.align-with-text {
     background-color: #eee;
 }
 
-.qnm th {
+.qnm .hdr, th {
     background: #e3e3e3;
     color: #333;
     font-weight: bold;
 }
 
-.qnm td, th {
+.qnm .cell, .hdr, td, th {
     padding: 6px;
     border: 1px solid #ccc;
     text-align: left;
 }
+
+.qnm  {
+    padding: 6px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+
 
 
 /* Landscape phone to portrait tablet */
