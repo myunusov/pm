@@ -56,7 +56,8 @@
                        class="input input-small simplebox quantity {{prop.state}}"
                        ng-change="change(type.id, center)"
                        ng-pattern="prop.pattern"
-                       ng-model="prop.text">
+                       ng-model="prop.text"
+                       ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }">
 
                 <md-menu>
                     <button aria-label="Select Unit" class="md-icon-button" ng-click="$mdOpenMenu()">
@@ -84,7 +85,8 @@
                        class="input input-small simplebox quantity {{prop.state}}"
                        ng-change="change(type.id, center)"
                        ng-pattern="prop.pattern"
-                       ng-model="prop.text">
+                       ng-model="prop.text"
+                       ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }">
 
                 <md-menu>
                     <button aria-label="Select Unit" class="md-icon-button" ng-click="$mdOpenMenu()">
