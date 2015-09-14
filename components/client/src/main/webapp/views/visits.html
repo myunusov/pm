@@ -8,35 +8,19 @@
             </button>
         -->
     </div>
-    <div flex ng-init="colWidth = 100/(totalVisitTypes.length + 1) - 5">
+    <div flex ng-init="colWidth = 95/(totalVisitTypes.length + 1)">
         <div hide-sm layout="row">
-            <div class="hdr" flex="5"></div>
             <div class="hdr" flex="{{colWidth}}">Node / Class</div>
             <div class="hdr" data-ng-repeat="type in totalVisitTypes" flex="{{colWidth}}">
                 <span hide-md data-ng-bind="type.title" ></span>
                 <span hide show-md data-ng-bind="type.stitle" ></span>
                 <md-tooltip>{{type.tooltip }}</md-tooltip>
             </div>
+            <div class="hdr" flex="5"></div>
         </div>
 
         <div ng-repeat="center in model.visits" layout="column">
             <div flex layout="row" layout-sm="column">
-                <div flex="5" flex-sm="100" class="hdr">
-                <span style="height: 28px;padding: 0" ng-show="center.hasDetails()">
-                    <button class="hdrbutton"
-                            ng-click="center.showDetails()"
-                            ng-hide="center.details">
-                        <i class="mdi mdi-menu-right" style="font-size: 24px;height: 24px"></i>
-                        <md-tooltip>"Show Details"</md-tooltip>
-                    </button>
-                    <button class="hdrbutton"
-                            ng-click="center.hideDetails()"
-                            ng-show="center.details">
-                        <i class="mdi mdi-menu-down" style="font-size: 24px;height: 24px"></i>
-                        <md-tooltip>"Hide Details"</md-tooltip>
-                    </button>
-                </span>
-                </div>
                 <div flex="{{colWidth}}" class="cell">{{center.node.name.value}} / {{center.clazz.name.value}}</div>
                 <div flex="{{colWidth}}" class="cell" ng-repeat="type in totalVisitTypes"
                      ng-init="prop=center.all[type.id]" layout="row" layout-align="space-between start">
@@ -63,12 +47,25 @@
                         </md-menu-content>
                     </md-menu>
                 </div>
+                <div flex="5" flex-sm="100" class="hdr">
+                <span style="height: 28px;padding: 0" ng-show="center.hasDetails()">
+                    <button class="hdrbutton"
+                            ng-click="center.showDetails()"
+                            ng-hide="center.details">
+                        <i class="mdi mdi-menu-right" style="font-size: 24px;height: 24px"></i>
+                        <md-tooltip>"Show Details"</md-tooltip>
+                    </button>
+                    <button class="hdrbutton"
+                            ng-click="center.hideDetails()"
+                            ng-show="center.details">
+                        <i class="mdi mdi-menu-down" style="font-size: 24px;height: 24px"></i>
+                        <md-tooltip>"Hide Details"</md-tooltip>
+                    </button>
+                </span>
+                </div>
             </div>
 
             <div flex layout="row" layout-sm="column" ng-show="center.isDetails()">
-                <div flex="5" flex-sm="100" class="hdr">
-                     &#x2715{{center.node.nodeNumber.value}}
-                </div>
                 <div flex="{{colWidth}}" class="cell">{{center.node.name.value}} / {{center.clazz.name.value}}</div>
                 <div flex="{{colWidth}}" class="cell" ng-repeat="type in visitTypes" ng-init="prop=center.all[type.id]"
                      layout="row" layout-align="space-between start">
@@ -94,6 +91,9 @@
                             </md-menu-item>
                         </md-menu-content>
                     </md-menu>
+                </div>
+                <div flex="5" flex-sm="100" class="hdr">
+                    &#x2715{{center.node.nodeNumber.value}}
                 </div>
             </div>
         </div>

@@ -90,24 +90,28 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         {
             id: "NAME",
             title: "Name",
+            stitle: "Name",
             type: "text",
             tooltip: "Node Name"
         },
         {
             id: "NN",
             title: "No. of Nodes",
+            stitle: "No.",
             type: "number",
             tooltip: "Number of Node instances"
         },
         {
             id: "U",
             title: "Utilization",
+            stitle: "U",
             type: "text",
             tooltip: "Total Utilization (U)"
         },
         {
             id: "TN",
             title: "Queue Length",
+            stitle: "N",
             type: "text",
             tooltip: "Mean Number of Tasks in Queue (N)"
         }
@@ -117,30 +121,35 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         {
             id: "NAME",
             title: "Name",
+            stitle: "Name",
             type: "text",
             tooltip: "Class Name"
         },
         {
             id: "M",
             title: "No. of Users",
+            stitle: "M",
             type: "number",
             tooltip: "Number of Users (Terminals)(M)"
         },
         {
             id: "Z",
             title: "Think Time",
+            stitle: "Z",
             type: "text",
             tooltip: "Think Time (Z)"
         },
         {
             id: "X",
             title: "Throughput",
+            stitle: "X",
             type: "text",
             tooltip: "Throughput per Class (X0)"
         },
         {
             id: "R",
             title: "Response Time",
+            stitle: "R",
             type: "text",
             tooltip: "Response Time per Class (R)"
         }

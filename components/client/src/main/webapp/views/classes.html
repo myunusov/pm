@@ -1,96 +1,87 @@
-<div class="frame">
-    <table class="classes qnm" flex>
-        <col data-ng-repeat="type in classTypes"/>
-        <col width="35px"/>
-        <thead>
-        <tr>
-            <td colspan="{{classTypes.length + 1}}">
-                <div flex layout="row" layout-align="space-between start" class="framehdr">
-                    <div>
-                        <i class="mdi mdi-account-network"></i>
-                        Classes
-                    </div>
-                    <div>
-                        <md-menu>
-                            <button aria-label="Select Model Type"
-                                    class="md-icon-button"
-                                    ng-click="$mdOpenMenu()">
-                                {{model.kind.unit.title}}
-                            </button>
-                            <md-menu-content width="1">
-                                <md-menu-item ng-repeat="kind in model.kind.availableUnits()">
-                                    <md-button aria-label="Select Model Type" ng-click="model.setKind(kind)"
-                                               style="height: 31px;">
-                                        {{kind.title}}
-                                    </md-button>
-                                </md-menu-item>
-                            </md-menu-content>
-                        </md-menu>
-                    </div>
+<div layout="column" class="frame table">
+    <div flex class="framehdr" layout="row" layout-align="space-between start">
+        <div>
+        <i class="mdi mdi-account-network"></i>Classes
+        </div>
+        <div>
+            <md-menu>
+                <button aria-label="Select Model Type"
+                        class="md-icon-button"
+                        ng-click="$mdOpenMenu()">
+                    {{model.kind.unit.title}}
+                </button>
+                <md-menu-content width="1">
+                    <md-menu-item ng-repeat="kind in model.kind.availableUnits()">
+                        <md-button aria-label="Select Model Type" ng-click="model.setKind(kind)"
+                                   style="height: 31px;">
+                            {{kind.title}}
+                        </md-button>
+                    </md-menu-item>
+                </md-menu-content>
+            </md-menu>
+        </div>
+        <button ng-click="addClass()">
+            <i class="mdi mdi-plus"></i>
+            <md-tooltip>
+                Add new Class
+            </md-tooltip>
+        </button>
 
-                    <div>
-<!--
-                                            <button ng-click="">
-                                                <i class="mdi mdi-settings"></i>
-                                            </button>
--->
-
-                        <button ng-click="addClass()">
-                            <i class="mdi mdi-plus"></i>
-                            <md-tooltip>
-                                Add new Class
-                            </md-tooltip>
-                        </button>
-                    </div>
-
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <th data-ng-repeat="type in classTypes">
-                <span data-ng-bind="type.title"></span>
+        <!--
+            <button ng-click="">
+                <i class="mdi mdi-settings"></i>
+            </button>
+        -->
+    </div>
+    <div flex ng-init="colWidth = (95/classTypes.length)">
+        <div hide-sm layout="row">
+            <div class="hdr" data-ng-repeat="type in classTypes" flex="{{colWidth}}">
+                <span hide-md data-ng-bind="type.title" ></span>
+                <span hide show-md data-ng-bind="type.stitle" ></span>
                 <md-tooltip>{{type.tooltip }}</md-tooltip>
-            </th>
-            <th style="width:5px;"></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="center in model.classes">
-            <td nowrap="nowrap" ng-repeat="type in classTypes" ng-init="prop=center.all[type.id]">
-                <input type="{{type.type}}"
-                       aria-label="Property {{type.title}}"
-                       class="input input-small simplebox quantity {{prop.state}}"
-                       ng-change="change(type.id, center)"
-                       ng-pattern="prop.pattern"
-                       ng-model="prop.text"
-                       ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }"
-                        >
+            </div>
+            <div class="hdr" flex="5"></div>
+        </div>
 
-                <md-menu>
-                    <button aria-label="Select Unit" class="md-icon-button" ng-click="$mdOpenMenu()">
-                        {{prop.unit.title}}
-                    </button>
-                    <md-menu-content width="1">
-                        <md-menu-item ng-repeat="unit in prop.availableUnits()">
-                            <md-button aria-label="Select Unit" ng-click="prop.setUnit(unit)" style="height: 31px;">
-                                {{unit.title}}
-                            </md-button>
-                        </md-menu-item>
-                    </md-menu-content>
-                </md-menu>
-
-            </td>
-            <td nowrap="nowrap">
-                <span style="height: 28px">
+        <div ng-repeat="center in model.classes" layout="column">
+            <div flex layout="row" layout-sm="column">
+                <div flex="{{colWidth}}" class="cell" ng-repeat="type in classTypes"
+                     ng-init="prop=center.all[type.id]" layout="row" layout-align="space-between start">
+                    <b><span class="fst" data-ng-bind="type.stitle" hide-gt-sm flex="50"></span></b>
+                    <label>
+                        <input type="{{type.type}}"
+                               aria-label="Property {{type.title}}"
+                               class="input input-small simplebox quantity {{prop.state}}"
+                               ng-change="change(type.id, center)"
+                               ng-pattern="prop.pattern"
+                               ng-model="prop.text"
+                               ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }">
+                    </label>
+                    <md-menu style="padding: 0">
+                        <button aria-label="Select Unit" class="md-icon-button" ng-click="$mdOpenMenu()">
+                            {{prop.unit.title}}
+                        </button>
+                        <md-menu-content width="1">
+                            <md-menu-item ng-repeat="unit in prop.availableUnits()">
+                                <md-button aria-label="Select Unit" ng-click="prop.setUnit(unit)" style="height: 31px;">
+                                    {{unit.title}}
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
+                </div>
+                <div flex="5" flex-sm="100" class="hdr" style="padding: 0">
+                <span style="height: 28px; padding: 0">
                     <button class="hdrbutton" ng-click="remove(center)">
-                        <i class="mdi mdi-close"></i>
-                        <md-tooltip>Remove Node</md-tooltip>
+                        <i class="mdi mdi-close" style="font-size: 24px;height: 24px"></i>
+                        <md-tooltip>Remove Class</md-tooltip>
                     </button>
                 </span>
-            </td>
-        </tr>
+                </div>
+            </div>
 
-        </tbody>
-    </table>
+        </div>
+    </div>
 </div>
+
 
