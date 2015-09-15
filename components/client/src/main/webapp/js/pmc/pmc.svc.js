@@ -82,42 +82,33 @@ angular.module('pmc.services', [])
         }
     })
 
-    .service('projectService', function ($resource, project, messageService, modelFactory, compareProvider) {
+    .provider('presentationModel', function () {
+        var presentationModel = new PresentationModel();
+        this.$get = function () {
+            return presentationModel;
+        }
+    })
+
+    .service('projectService', function ($resource, project, messageService, modelFactory, presentationModel) {
 
         var ProjectDto = $resource('/api/project/:projectId', {}, {
             'update': {method: 'PUT', params: {projectId: '@id'}},
             'create': {method: 'POST', params: {}},
-            'get':    {method:'GET', params: {projectId: '@id'}},
-            'query':  {method:'GET', isArray:true},
-            'remove': {method:'DELETE', params: {projectId: '@id'}},
-            'delete': {method:'DELETE', params: {projectId: '@id'}}
+            'get': {method: 'GET', params: {projectId: '@id'}},
+            'query': {method: 'GET', isArray: true},
+            'remove': {method: 'DELETE', params: {projectId: '@id'}},
+            'delete': {method: 'DELETE', params: {projectId: '@id'}}
         });
 
         function createDTO(prj) {
             var result = prj.createDTO(new ProjectDto());
-            result.view.comparableModels = [];
-            var models = compareProvider.models();
-            for (var i = 0; i < models.length; i++) {
-                if (models[i] != null) {
-                    result.view.comparableModels.push(models[i].id);
-                }
-            }
+            result.view = presentationModel.createDTO();
             return result;
         }
 
         function setDTO(dto) {
             project.setDTO(dto);
-            var models = dto.view.comparableModels;
-            if (!models) {
-                return;
-            }
-            compareProvider.clean();
-            for (var i = 0; i < models.length; i++) {
-                var model = project.findModelById(models[i]);
-                if (model != null) {
-                    compareProvider.add(model);
-                }
-            }
+            presentationModel.setDTO(dto.view, project);
         }
 
         function saveTempBak() {
@@ -167,7 +158,7 @@ angular.module('pmc.services', [])
                 result.addModel(modelFactory.qnm("QNM 0"));
                 result.addModel(modelFactory.egm("SEM 0"));
                 saveAsCurrent(result);
-                compareProvider.clean();
+                presentationModel.init(result.models);
                 messageService.info("New Project is created.");
                 return result;
             },
@@ -257,25 +248,7 @@ angular.module('pmc.services', [])
         };
     })
 
-    .service('compareProvider', function () {
 
-        var models = [];
-        return {
-            models: function () {
-                return models;
-            },
-            add: function (model) {
-                models.push(model);
-                models = models.unique();
-            },
-            remove: function (model) {
-                models.remove(model);
-            },
-            clean: function () {
-                models = [];
-            }
-        }
-    })
 
     .factory('modelFactory', function () {
         return {

@@ -60,9 +60,9 @@
 
 <section flex ng-if="project.id">
 
-    <div flex layout-fill class="md-padding" ng-if="project.visibleModels.length > 1">
-        <md-tabs md-selected="project.currentModelIndex" md-border-bottom md-autoselect md-dynamic-height>
-            <md-tab ng-repeat="model in project.visibleModels">
+    <div flex layout-fill class="md-padding" ng-if="models().length > 1">
+        <md-tabs md-selected="presentationModel.currentModelIndex" md-border-bottom md-autoselect md-dynamic-height>
+            <md-tab ng-repeat="model in models()">
                 <md-tab-label>
                     <input type="text" class="tab-input ng-pristine ng-valid" ng-model="model.name">
                     <span style="height: 28px">
@@ -92,8 +92,8 @@
         </md-tabs>
     </div>
 
-    <div flex layout-fill class="md-padding" ng-if="project.visibleModels.length == 1">
-        <div ng-repeat="model in project.visibleModels">
+    <div flex layout-fill class="md-padding" ng-if="models().length == 1">
+        <div ng-repeat="model in models()">
             <ng-include src="model.view"></ng-include>
         </div>
     </div>
