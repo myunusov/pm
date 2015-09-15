@@ -16,7 +16,7 @@
                 <span hide show-md data-ng-bind="type.stitle" ></span>
                 <md-tooltip>{{type.tooltip }}</md-tooltip>
             </div>
-            <div class="hdr" flex="5"></div>
+            <div class="act"></div>
         </div>
 
         <div ng-repeat="center in model.visits" layout="column">
@@ -47,7 +47,7 @@
                         </md-menu-content>
                     </md-menu>
                 </div>
-                <div flex="5" flex-sm="100" class="hdr">
+                <div flex-sm="100" class="act">
                 <span style="height: 28px;padding: 0" ng-show="center.hasDetails()">
                     <button class="hdrbutton"
                             ng-click="center.showDetails()"
@@ -92,7 +92,7 @@
                         </md-menu-content>
                     </md-menu>
                 </div>
-                <div flex="5" flex-sm="100" class="hdr">
+                <div class="act">
                     &#x2715{{center.node.nodeNumber.value}}
                 </div>
             </div>
