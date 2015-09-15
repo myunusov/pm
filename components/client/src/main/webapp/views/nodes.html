@@ -1,66 +1,64 @@
-
-<div class="frame">
-    <table flex class="nodes qnm">
-        <thead>
-        <col data-ng-repeat="type in nodeTypes"/>
-        <col width="35px"/>
-        <tr>
-            <td colspan="{{nodeTypes.length + 1}}">
-                <div flex class="framehdr">
-                        <i class="mdi mdi-harddisk"></i>
-                        Nodes
-                        <button ng-click="addNode()">
-                            <i class="mdi mdi-plus"></i>
-                            <md-tooltip>Add new Node</md-tooltip>
-                        </button>
-                        <!--
-                            <button ng-click="">
-                                <i class="mdi mdi-settings"></i>
-                            </button>
-                        -->
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <th data-ng-repeat="type in nodeTypes">
-                <span data-ng-bind="type.title"></span>
+<div layout="column" class="frame table">
+    <div flex class="framehdr">
+        <i class="mdi mdi-harddisk"></i>
+        Nodes
+        <button ng-click="addNode()">
+            <i class="mdi mdi-plus"></i>
+            <md-tooltip>Add new Node</md-tooltip>
+        </button>
+        <!--
+            <button ng-click="">
+                <i class="mdi mdi-settings"></i>
+            </button>
+        -->
+    </div>
+    <div flex ng-init="colWidth = (95/nodeTypes.length)">
+        <div hide-sm layout="row">
+            <div class="hdr" data-ng-repeat="type in nodeTypes" flex="{{colWidth}}">
+                <span hide-md data-ng-bind="type.title" ></span>
+                <span hide show-md data-ng-bind="type.stitle" ></span>
                 <md-tooltip>{{type.tooltip }}</md-tooltip>
-            </th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="center in model.nodes">
-            <td nowrap="nowrap" ng-repeat="type in nodeTypes" ng-init="prop=center.all[type.id]">
-                <input type="{{type.type}}"
-                       aria-label="Property {{type.title}}"
-                       class="tab-input simplebox quantity {{prop.state}}"
-                       ng-change="change(type.id, center)"
-                       ng-pattern="prop.pattern"
-                       ng-model="prop.text">
-                <md-menu>
-                    <button aria-label="Select Unit" class="md-icon-button" ng-click="$mdOpenMenu()">
-                        {{prop.unit.shortTitle}}
-                    </button>
-                    <md-menu-content width="1">
-                        <md-menu-item ng-repeat="unit in prop.availableUnits()">
-                            <md-button aria-label="Select Unit" ng-click="prop.setUnit(unit)" style="height: 31px;">
-                                {{unit.title}}
-                            </md-button>
-                        </md-menu-item>
-                    </md-menu-content>
-                </md-menu>
-            </td>
-            <td nowrap="nowrap">
-                <span style="height: 28px">
+            </div>
+            <div class="act"></div>
+        </div>
+
+        <div ng-repeat="center in model.nodes" layout="column">
+            <div flex layout="row" layout-sm="column">
+                <div flex="{{colWidth}}" class="cell" ng-repeat="type in nodeTypes"
+                     ng-init="prop=center.all[type.id]" layout="row" layout-align="space-between start">
+                    <b><span class="fst" data-ng-bind="type.stitle" hide-gt-sm flex="50"></span></b>
+                    <label>
+                        <input type="{{type.type}}"
+                               aria-label="Property {{type.title}}"
+                               class="input input-small simplebox quantity {{prop.state}}"
+                               ng-change="change(type.id, center)"
+                               ng-pattern="prop.pattern"
+                               ng-model="prop.text"
+                               ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }">
+                    </label>
+                    <md-menu style="padding: 0">
+                        <button aria-label="Select Unit" class="md-icon-button" ng-click="$mdOpenMenu()">
+                            {{prop.unit.title}}
+                        </button>
+                        <md-menu-content width="1">
+                            <md-menu-item ng-repeat="unit in prop.availableUnits()">
+                                <md-button aria-label="Select Unit" ng-click="prop.setUnit(unit)" style="height: 31px;">
+                                    {{unit.title}}
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
+                </div>
+                <div flex-sm="100" class="act">
+                <span style="height: 28px; padding: 0">
                     <button class="hdrbutton" ng-click="remove(center)">
-                        <i class="mdi mdi-close"></i>
+                        <i class="mdi mdi-close" style="font-size: 24px;height: 24px"></i>
                         <md-tooltip>Remove Node</md-tooltip>
                     </button>
                 </span>
-            </td>
-        </tr>
+                </div>
+            </div>
 
-        </tbody>
-    </table>
+        </div>
+    </div>
 </div>

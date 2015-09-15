@@ -272,6 +272,45 @@ md-fab-toolbar.md-left md-fab-trigger.align-with-text {
 }
 
 
+/* TABLE */
+.table .hdr {
+    background: #e3e3e3;
+    color: #333;
+    font-weight: bold;
+    padding: 6px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+.table .cell {
+    padding: 6px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+.table .act {
+    background: #e3e3e3;
+    color: #333;
+    font-weight: bold;
+    padding: 6px;
+    border: 1px solid #ccc;
+    text-align: center;
+    width: 30px;
+}
+
+.table .fst {
+    padding: 6px;
+    text-align: left;
+}
+
+
+
+.table  {
+    padding: 6px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
 /* CHART */
 
 .bounds-chart {
@@ -461,131 +500,44 @@ md-fab-toolbar.md-left md-fab-trigger.align-with-text {
     background-color: #eee;
 }
 
-.qnm th {
+.qnm .hdr, th {
     background: #e3e3e3;
     color: #333;
     font-weight: bold;
 }
 
-.qnm td, th {
+.qnm .cell, .hdr, td, th {
+    padding: 6px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+.qnm  {
     padding: 6px;
     border: 1px solid #ccc;
     text-align: left;
 }
 
 
+
+
 /* Landscape phone to portrait tablet */
 @media (max-width: 600px) {
+
+    .table .act {
+        background: #e3e3e3;
+        color: #333;
+        font-weight: bold;
+        padding: 6px;
+        border: 1px solid #ccc;
+        text-align: right;
+        width: 100%;
+    }
 
     .container {
         margin: 0;
     }
 
-
-    .qnm table {
-        width: 100%;
-        display: block;
-    }
-
-    /* Force table to not be like tables anymore */
-    .qnm table, thead, tbody, th, td, tr {
-        display: block;
-    }
-
-    /* Hide table headers (but not display: none;, for accessibility) */
-    .qnm thead tr {
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-    }
-
-    .qnm tr {
-        border: 1px solid #ccc;
-    }
-
-    .qnm td {
-        /* Behave  like a "row" */
-        border: 1px solid #eee;
-        position: relative;
-        padding-left: 50%;
-    }
-
-    .qnm td:before {
-        /* Now like a table header */
-        position: absolute;
-        /* Top/left values mimic padding */
-        top: 6px;
-        left: 6px;
-        width: 45%;
-        padding-right: 10px;
-        white-space: nowrap;
-        font-weight: bold;
-    }
-
-    /*
-    Label the data
-    */
-
-
-    .nodes td:nth-of-type(1):before {
-        content: "Name";
-    }
-    .nodes td:nth-of-type(2):before {
-        content: "No.";
-    }
-    .nodes td:nth-of-type(3):before {
-        content: "U (full)";
-    }
-    .nodes td:nth-of-type(4):before {
-        content: "N(I)";
-    }
-
-
-    .classes td:nth-of-type(1):before {
-        content: "Name";
-    }
-    .classes td:nth-of-type(2):before {
-        content: "M";
-    }
-    .classes td:nth-of-type(3):before {
-        content: "Z";
-    }
-    .classes td:nth-of-type(4):before {
-        content: "X";
-    }
-    .classes td:nth-of-type(5):before {
-        content: "R";
-    }
-    .classes td:nth-of-type(6):before {
-    }
-
-    .visits td:nth-of-type(1):before {
-        content: "Details";
-    }
-    .visits td:nth-of-type(2):before {
-        content: "Node";
-    }
-    .visits td:nth-of-type(3):before {
-        content: "Class";
-    }
-    .visits td:nth-of-type(4):before {
-        content: "V(I)";
-    }
-    .visits td:nth-of-type(5):before {
-        content: "X(I)";
-    }
-    .visits td:nth-of-type(6):before {
-        content: "S(I)";
-    }
-    .visits td:nth-of-type(7):before {
-        content: "D(I)";
-    }
-    .visits td:nth-of-type(8):before {
-        content: "U(I)";
-    }
-    .visits td:nth-of-type(9):before {
-        content: "RT(I)";
-    }
 
 }
 

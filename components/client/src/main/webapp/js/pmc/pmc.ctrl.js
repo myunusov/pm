@@ -90,24 +90,28 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         {
             id: "NAME",
             title: "Name",
+            stitle: "Name",
             type: "text",
             tooltip: "Node Name"
         },
         {
             id: "NN",
             title: "No. of Nodes",
+            stitle: "No.",
             type: "number",
             tooltip: "Number of Node instances"
         },
         {
             id: "U",
             title: "Utilization",
+            stitle: "U",
             type: "text",
             tooltip: "Total Utilization (U)"
         },
         {
             id: "TN",
             title: "Queue Length",
+            stitle: "N",
             type: "text",
             tooltip: "Mean Number of Tasks in Queue (N)"
         }
@@ -117,30 +121,35 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         {
             id: "NAME",
             title: "Name",
+            stitle: "Name",
             type: "text",
             tooltip: "Class Name"
         },
         {
             id: "M",
             title: "No. of Users",
+            stitle: "M",
             type: "number",
             tooltip: "Number of Users (Terminals)(M)"
         },
         {
             id: "Z",
             title: "Think Time",
+            stitle: "Z",
             type: "text",
             tooltip: "Think Time (Z)"
         },
         {
             id: "X",
             title: "Throughput",
+            stitle: "X",
             type: "text",
             tooltip: "Throughput per Class (X0)"
         },
         {
             id: "R",
             title: "Response Time",
+            stitle: "R",
             type: "text",
             tooltip: "Response Time per Class (R)"
         }
@@ -150,34 +159,40 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         {
             id: "TV",
             title: "Visits",
+            stitle: "V(i)",
             type: "number",
             tooltip: "Number of Visits per Request (Vi)"
         },
         {
             id: "XI",
             title: "Throughput",
+            stitle: "X(i)",
             type: "text",
             tooltip: "Throughput per class (Xi)"
         },
         {
             id: "S",
             title: "Service Time",
+            stitle: "S(i)",
             tooltip: "Service Time per class (Si)"
         },
         {
             id: "TD",
             title: "Demands",
+            stitle: "D(i)",
             type: "text",
             tooltip: "Service Demands per class (Di)"
         },
         {
             id: "U",
             title: "Utilization",
+            stitle: "U(i)",
             tooltip: "Utilization per class (Ui)"
         },
         {
             id: "RT",
             title: "Residence Time",
+            stitle: "RT(i)",
             type: "text",
             tooltip: "Residence Time per class (RTi)"
         }
@@ -186,36 +201,42 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         {
             id: "V",
             title: "Visits",
+            stitle: "V(i)",
             type: "number",
             tooltip: "Number of Visits per Request (Vi)"
         },
         {
             id: "XI",
             title: "Throughput",
+            stitle: "X(i)",
             type: "text",
             tooltip: "Throughput per class (Xi)"
         },
         {
             id: "S",
             title: "Service Time",
+            stitle: "S(i)",
             type: "text",
             tooltip: "Service Time per class (Si)"
         },
         {
             id: "D",
             title: "Service Demands",
+            stitle: "D(i)",
             type: "text",
             tooltip: "Service Demands per class (Di)"
         },
         {
             id: "U",
             title: "Utilization",
+            stitle: "U(i)",
             type: "text",
             tooltip: "Utilization per class (Ui)"
         },
         {
             id: "RT",
             title: "Residence Time",
+            stitle: "RT(i)",
             type: "text",
             tooltip: "Residence Time per class (RTi)"
         }

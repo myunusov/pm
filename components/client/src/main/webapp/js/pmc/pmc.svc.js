@@ -6,8 +6,8 @@ angular.module('pmc.services', [])
 
     .service('messageService', function ($mdToast) {
         var toastPosition = {
-            bottom: true,
-            top: false,
+            bottom: false,
+            top: true,
             left: true,
             right: false
         };
@@ -119,7 +119,6 @@ angular.module('pmc.services', [])
                 }
             }
         }
-
 
         function saveTempBak() {
             if (project && project.id) {

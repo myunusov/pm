@@ -1,36 +1,53 @@
-<div class="frame">
-    <table class="visits qnm" flex>
-        <thead>
-        <col width="35px"/>
-        <col/>
-        <col/>
-        <col data-ng-repeat="type in totalVisitTypes"/>
-        <tr>
-            <td colspan="{{totalVisitTypes.length + 3}}">
-                <div flex class="framehdr">
-                    <i class="mdi mdi-clock-fast"></i>
-                    Visits
-                    <!--
-                        <button ng-click="">
-                            <i class="mdi mdi-settings"></i>
-                        </button>
-                    -->
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <th><i class="mdi mdi-leaf"></i></th>
-            <th>Node</th>
-            <th>Class</th>
-            <th data-ng-repeat="type in totalVisitTypes">
-                <span data-ng-bind="type.title"></span>
+<div layout="column" class="frame table">
+    <div flex class="framehdr">
+        <i class="mdi mdi-clock-fast"></i>
+        Visits
+        <!--
+            <button ng-click="">
+                <i class="mdi mdi-settings"></i>
+            </button>
+        -->
+    </div>
+    <div flex ng-init="colWidth = 95/(totalVisitTypes.length + 1)">
+        <div hide-sm layout="row">
+            <div class="hdr" flex="{{colWidth}}">Node / Class</div>
+            <div class="hdr" data-ng-repeat="type in totalVisitTypes" flex="{{colWidth}}">
+                <span hide-md data-ng-bind="type.title" ></span>
+                <span hide show-md data-ng-bind="type.stitle" ></span>
                 <md-tooltip>{{type.tooltip }}</md-tooltip>
-            </th>
-        </tr>
-        </thead>
-        <tbody ng-repeat="center in model.visits">
-        <tr>
-            <td nowrap="nowrap" rowspan="{{center.node.nodeNumber.value}}">
+            </div>
+            <div class="act"></div>
+        </div>
+
+        <div ng-repeat="center in model.visits" layout="column">
+            <div flex layout="row" layout-sm="column">
+                <div flex="{{colWidth}}" class="cell">{{center.node.name.value}} / {{center.clazz.name.value}}</div>
+                <div flex="{{colWidth}}" class="cell" ng-repeat="type in totalVisitTypes"
+                     ng-init="prop=center.all[type.id]" layout="row" layout-align="space-between start">
+                    <b><span class="fst" data-ng-bind="type.stitle" hide-gt-sm flex="50"></span></b>
+                    <label>
+                        <input type="{{type.type}}"
+                               aria-label="Property {{type.title}}"
+                               class="input input-small simplebox quantity {{prop.state}}"
+                               ng-change="change(type.id, center)"
+                               ng-pattern="prop.pattern"
+                               ng-model="prop.text"
+                               ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }">
+                    </label>
+                    <md-menu style="padding: 0">
+                        <button aria-label="Select Unit" class="md-icon-button" ng-click="$mdOpenMenu()">
+                            {{prop.unit.title}}
+                        </button>
+                        <md-menu-content width="1">
+                            <md-menu-item ng-repeat="unit in prop.availableUnits()">
+                                <md-button aria-label="Select Unit" ng-click="prop.setUnit(unit)" style="height: 31px;">
+                                    {{unit.title}}
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
+                </div>
+                <div flex-sm="100" class="act">
                 <span style="height: 28px;padding: 0" ng-show="center.hasDetails()">
                     <button class="hdrbutton"
                             ng-click="center.showDetails()"
@@ -45,64 +62,42 @@
                         <md-tooltip>"Hide Details"</md-tooltip>
                     </button>
                 </span>
-            </td>
+                </div>
+            </div>
 
-            <td>{{center.node.name.value}}<span ng-show="visit.node.nodeNumber.value > 1">({{visit.node.nodeNumber.value}})</span></td>
-            <td>{{center.clazz.name.value}}</td>
-
-            <td nowrap="nowrap" ng-repeat="type in totalVisitTypes" ng-init="prop=center.all[type.id]">
-                <input type="{{type.type}}"
-                       aria-label="Property {{type.title}}"
-                       class="input input-small simplebox quantity {{prop.state}}"
-                       ng-change="change(type.id, center)"
-                       ng-pattern="prop.pattern"
-                       ng-model="prop.text">
-
-                <md-menu>
-                    <button aria-label="Select Unit" class="md-icon-button" ng-click="$mdOpenMenu()">
-                        {{prop.unit.title}}
-                    </button>
-                    <md-menu-content width="1">
-                        <md-menu-item ng-repeat="unit in prop.availableUnits()">
-                            <md-button aria-label="Select Unit" ng-click="prop.setUnit(unit)" style="height: 31px;">
-                                {{unit.title}}
-                            </md-button>
-                        </md-menu-item>
-                    </md-menu-content>
-                </md-menu>
-
-            </td>
-        </tr>
-
-        <tr ng-show="center.isDetails()">
-            <td>{{center.node.name.value}} &#x2715 {{center.node.nodeNumber.value}}</td>
-            <td>{{center.clazz.name.value}}</td>
-
-            <td nowrap="nowrap" ng-repeat="type in visitTypes" ng-init="prop=center.all[type.id]">
-                <input type="text"
-                       aria-label="Property {{type.title}}"
-                       class="input input-small simplebox quantity {{prop.state}}"
-                       ng-change="change(type.id, center)"
-                       ng-pattern="prop.pattern"
-                       ng-model="prop.text">
-
-                <md-menu>
-                    <button aria-label="Select Unit" class="md-icon-button" ng-click="$mdOpenMenu()">
-                        {{prop.unit.title}}
-                    </button>
-                    <md-menu-content width="1">
-                        <md-menu-item ng-repeat="unit in prop.availableUnits()">
-                            <md-button aria-label="Select Unit" ng-click="prop.setUnit(unit)" style="height: 31px;">
-                                {{unit.title}}
-                            </md-button>
-                        </md-menu-item>
-                    </md-menu-content>
-                </md-menu>
-
-            </td>
-        </tr>
-
-        </tbody>
-    </table>
+            <div flex layout="row" layout-sm="column" ng-show="center.isDetails()">
+                <div flex="{{colWidth}}" class="cell">{{center.node.name.value}} / {{center.clazz.name.value}}</div>
+                <div flex="{{colWidth}}" class="cell" ng-repeat="type in visitTypes" ng-init="prop=center.all[type.id]"
+                     layout="row" layout-align="space-between start">
+                    <b><span class="fst" data-ng-bind="type.stitle" hide-gt-sm flex="50"></span></b>
+                    <label>
+                        <input type="text"
+                               aria-label="Property {{type.title}}"
+                               class="input input-small simplebox quantity {{prop.state}}"
+                               ng-change="change(type.id, center)"
+                               ng-pattern="prop.pattern"
+                               ng-model="prop.text"
+                               ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }">
+                    </label>
+                    <md-menu style="padding: 0">
+                        <button aria-label="Select Unit" class="md-icon-button" ng-click="$mdOpenMenu()">
+                            {{prop.unit.title}}
+                        </button>
+                        <md-menu-content width="1">
+                            <md-menu-item ng-repeat="unit in prop.availableUnits()">
+                                <md-button aria-label="Select Unit" ng-click="prop.setUnit(unit)" style="height: 31px;">
+                                    {{unit.title}}
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
+                </div>
+                <div class="act">
+                    &#x2715{{center.node.nodeNumber.value}}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
 
