@@ -20,7 +20,7 @@ controllers.controller('ProjectCtrl', function ($scope,
     };
 
     $scope.model = function () {
-        return presentationModel.getCurrentModel();
+        return presentationModel.currentModel();
     };
 
     $scope.hideModel = function (model) {
@@ -249,6 +249,8 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         }
 
     ];
+
+    $scope.modeId = 0;
 
     $scope.change = function (fieldName, center) {
         var model = $scope.model;
@@ -741,9 +743,7 @@ controllers.controller('ToastCtrl', function ($scope, $mdToast) {
     }
 });
 
-controllers.controller('ChartCtrl', function ($scope, currentModel) {
-
-    $scope.model = currentModel;
+controllers.controller('ChartCtrl', function ($scope) {
 
     $scope.refresh = function () {
         if ($scope.model !== null) {

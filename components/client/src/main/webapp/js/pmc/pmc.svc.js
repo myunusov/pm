@@ -149,8 +149,8 @@ angular.module('pmc.services', [])
                 var result = new Project("New Project", id);
                 result.addModel(modelFactory.qnm("QNM 0"));
                 result.addModel(modelFactory.egm("SEM 0"));
-                saveAsCurrent(result);
                 presentationModel.init(result.models);
+                saveToLocal(result);
                 messageService.info("New Project is created.");
                 return result;
             },
@@ -171,7 +171,7 @@ angular.module('pmc.services', [])
                     var text = error.statusText ? ". " + error.statusText + ". " : "";
                     messageService.error("Project is not loaded." + text, error.status);
                 });
-                saveAsCurrent(project);
+                saveToLocal(project);
                 return project;
             },
             load: function (prj) {

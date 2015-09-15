@@ -37,7 +37,7 @@ function PresentationModel() {
         this.compareModels = selectModelsByIds(project, view.compareModels);
         this.visibleModels = selectModelsByIds(project, view.visibleModels);
     };
-    this.getCurrentModel = function () {
+    this.currentModel = function () {
         return this.visibleModels[this.currentModelIndex];
     };
     this.addCompareModel = function (model) {
