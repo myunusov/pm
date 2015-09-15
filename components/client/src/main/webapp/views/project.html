@@ -37,10 +37,6 @@
             <md-button aria-label="New Model" class="md-fab md-raised md-primary md-mini" ng-click="newModel($event)" >
                 <md-icon class="mdi mdi-plus"></md-icon>
             </md-button>
-            <md-button aria-label="chart" ng-show="model().type === 'qnm'"
-                       class="md-fab md-raised md-primary md-mini" href="#chart/{{project.id}}/{{model().id}}">
-                <md-icon class="mdi mdi-chart-line"></md-icon>
-            </md-button>
             <md-button aria-label="compare" ng-show="model().type === 'qnm'"
                        class="md-fab md-raised md-primary md-mini" ng-click="addToCompare(model())">
                 <md-icon class="mdi mdi-compare"></md-icon>
@@ -60,9 +56,9 @@
 
 <section flex ng-if="project.id">
 
-    <div flex layout-fill class="md-padding" ng-if="project.visibleModels.length > 1">
-        <md-tabs md-selected="project.currentModelIndex" md-border-bottom md-autoselect md-dynamic-height>
-            <md-tab ng-repeat="model in project.visibleModels">
+    <div flex layout-fill class="md-padding" ng-if="models().length > 1">
+        <md-tabs md-selected="presentationModel.currentModelIndex" md-stretch-tabs="mobile" md-border-bottom md-autoselect md-dynamic-height>
+            <md-tab ng-repeat="model in models()">
                 <md-tab-label>
                     <input type="text" class="tab-input ng-pristine ng-valid" ng-model="model.name">
                     <span style="height: 28px">
@@ -92,8 +88,8 @@
         </md-tabs>
     </div>
 
-    <div flex layout-fill class="md-padding" ng-if="project.visibleModels.length == 1">
-        <div ng-repeat="model in project.visibleModels">
+    <div flex layout-fill class="md-padding" ng-if="models().length == 1">
+        <div ng-repeat="model in models()">
             <ng-include src="model.view"></ng-include>
         </div>
     </div>

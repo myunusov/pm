@@ -72,25 +72,6 @@ pmc.config([
                         }
                     }
                 })
-                .state('chart', {
-                    url: '/chart/:projectId/:modelId',
-                    templateUrl: 'views/bounds.html',
-                    controller: 'ChartCtrl',
-                    resolve: {
-                        currentModel: function ($stateParams, project, projectService) {
-                            var projectId = $stateParams.projectId;
-                            var modelId = $stateParams.modelId;
-                            if (project.id && project.id === projectId) {
-                                return project.findModelById(modelId);
-                            }
-                            var prj = projectService.findBy(projectId);
-                            if (prj === null) {
-                                return null;
-                            }
-                            return project.clone(prj).findModelById(modelId);
-                        }
-                    }
-                })
                 .state('compare', {
                     url: '/compare',
                     templateUrl: 'views/compare.html',

@@ -8,17 +8,23 @@ controllers.controller('ProjectCtrl', function ($scope,
                                                 $log,
                                                 $mdDialog,
                                                 modelFactory,
-                                                compareProvider,
+                                                presentationModel,
                                                 currentProject) {
+
+    $scope.presentationModel = presentationModel;
 
     $scope.project = currentProject;
 
+    $scope.models = function() {
+        return presentationModel.visibleModels;
+    };
+
     $scope.model = function () {
-        return $scope.project.getCurrentModel();
+        return presentationModel.currentModel();
     };
 
     $scope.hideModel = function (model) {
-        $scope.project.visibleModels.remove(model);
+        presentationModel.hide(model);
     };
 
     $scope.newModel = function (ev) {
@@ -36,10 +42,11 @@ controllers.controller('ProjectCtrl', function ($scope,
                 } else if (answer === "EGM") {
                     model = modelFactory.egm("SEM " + $scope.project.sems().length);
                 } else {
-                    $scope.project.currentModelIndex = $scope.project.visibleModels.length - 1;
+                    presentationModel.reinit();
                     return;
                 }
                 $scope.project.addModel(model);
+                presentationModel.open(model);
 
             }, function () {
             });
@@ -59,7 +66,7 @@ controllers.controller('ProjectCtrl', function ($scope,
     }
 
     $scope.addToCompare = function (model) {
-        compareProvider.add(model);
+        presentationModel.addCompareModel(model);
     };
 
 });
@@ -243,6 +250,8 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
 
     ];
 
+    $scope.modeId = 0;
+
     $scope.change = function (fieldName, center) {
         var model = $scope.model;
         model.init();
@@ -287,7 +296,7 @@ controllers.controller('MainMenuCtrl', function ($scope,
                                                  $mdUtil,
                                                  $mdDialog,
                                                  $log,
-                                                 compareProvider,
+                                                 presentationModel,
                                                  project,
                                                  projectService) {
 
@@ -322,7 +331,17 @@ controllers.controller('MainMenuCtrl', function ($scope,
     };
 
     $scope.openModel = function (model) {
-        project.openModel(model);
+        presentationModel.open(model);
+        $mdSidenav('right').close()
+            .then(function () {
+                $log.debug("close RIGHT is done");
+            });
+    };
+
+
+    $scope.removeModel = function (model) {
+        project.removeModel(model);
+        presentationModel.hide(model);
         $mdSidenav('right').close()
             .then(function () {
                 $log.debug("close RIGHT is done");
@@ -387,11 +406,11 @@ controllers.controller('MainMenuCtrl', function ($scope,
     };
 
     $scope.isNotComparable = function () {
-        return compareProvider.models().length < 2;
+        return presentationModel.compareModels.length < 2;
     };
 
     $scope.compareModels = function () {
-        return compareProvider.models().length;
+        return presentationModel.compareModels.length;
     };
 
     $scope.fullScreenClass = function () {
@@ -465,9 +484,9 @@ function ComparableKind(models) {
     };
 }
 
-controllers.controller('ComparatorCtrl', function ($scope, compareProvider) {
+controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
 
-    $scope.kind = new ComparableKind(compareProvider.models());
+    $scope.kind = new ComparableKind(presentationModel.compareModels);
 
     $scope.setKind = function (kind) {
         $scope.kind.setUnit(kind);
@@ -475,15 +494,15 @@ controllers.controller('ComparatorCtrl', function ($scope, compareProvider) {
     };
 
     $scope.remove = function (model) {
-        compareProvider.remove(model);
+        presentationModel.removeCompareModel(model);
     };
 
     $scope.models = function () {
-        return compareProvider.models();
+        return presentationModel.compareModels;
     };
 
     $scope.classes = function () {
-        var models = compareProvider.models();
+        var models = presentationModel.compareModels;
         var result = [];
         models.each(
             function (m) {
@@ -509,7 +528,7 @@ controllers.controller('ComparatorCtrl', function ($scope, compareProvider) {
 
     $scope.resolve = function () {
         var result = {};
-        var models = compareProvider.models();
+        var models = presentationModel.compareModels;
         for (var i = 0; i < models.length; i++) {
             var m = models[i];
             result[m.id] = {};
@@ -551,7 +570,7 @@ controllers.controller('ComparatorCtrl', function ($scope, compareProvider) {
     }
 
     function modelById(id) {
-        var models = compareProvider.models();
+        var models = presentationModel.compareModels;
         for (var i = 0; i < models.length; i++) {
             if (models[i].id === id) {
                 return models[i];
@@ -724,9 +743,7 @@ controllers.controller('ToastCtrl', function ($scope, $mdToast) {
     }
 });
 
-controllers.controller('ChartCtrl', function ($scope, currentModel) {
-
-    $scope.model = currentModel;
+controllers.controller('ChartCtrl', function ($scope) {
 
     $scope.refresh = function () {
         if ($scope.model !== null) {

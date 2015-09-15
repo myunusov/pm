@@ -8,23 +8,12 @@ function Project(name, id) {
     this.description = "";
     this.models = [];
 
-    this.visibleModels = [];
-    this.currentModelIndex = 0;
-
     this.createDTO = function (memento) {
         memento.id = this.id;
         memento.name = this.name;
         memento.version = this.version;
         memento.description = this.description;
         memento.models = createArrayDTO(this.models);
-
-        memento.view = {};
-        memento.view.visibleModels = [];
-        for(var i = 0; i < this.visibleModels.length; i++) {
-            memento.view.visibleModels.push(this.visibleModels[i].id);
-        }
-        memento.view.currentModelIndex = this.currentModelIndex;
-
         return memento;
     };
 
@@ -34,8 +23,7 @@ function Project(name, id) {
         this.version = memento.version;
         this.description = memento.description;
         this.models = [];
-        this.visibleModels = [];
-        this.currentModelIndex = memento.view.currentModelIndex;
+
         for (var i = 0; i < memento.models.length; i++) {
             var model;
             if (memento.models[i].type === "qnm") {
@@ -51,21 +39,15 @@ function Project(name, id) {
             }
             model.setDTO(memento.models[i]);
             this.models.push(model);
-            for(var j = 0; j < memento.view.visibleModels.length; j++) {
-                if (memento.view.visibleModels[j] === model.id)
-                this.visibleModels.push(model);
-            }
         }
     };
 
     this.removeModel = function (model) {
         this.models.remove(model);
-        this.visibleModels.remove(model);
     };
 
     this.addModel = function (model) {
         this.models.push(model);
-        this.visibleModels.push(model);
     };
 
     this.findModelById = function(id) {
@@ -75,22 +57,6 @@ function Project(name, id) {
             }
         }
         return null;
-    };
-
-    this.openModel = function (model) {
-        for(var i = 0; i < this.visibleModels.length; i++) {
-            if (this.visibleModels[i].id === model.id) {
-                this.currentModelIndex = i;
-                return;
-            }
-        }
-        this.visibleModels.push(model);
-        this.currentModelIndex = this.visibleModels.length - 1;
-    };
-
-
-    this.getCurrentModel = function () {
-        return this.visibleModels[this.currentModelIndex];
     };
 
     this.modelsBy = function(type) {
@@ -119,9 +85,6 @@ function Project(name, id) {
         this.description = project.description;
         this.version = project.version;
         this.models = project.models;
-        this.visibleModels = project.visibleModels;
-        this.currentModelIndex = project.currentModelIndex;
-
         return this;
     };
 
