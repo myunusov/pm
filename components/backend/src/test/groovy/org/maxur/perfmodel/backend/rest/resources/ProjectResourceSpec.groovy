@@ -13,15 +13,15 @@
  *    limitations under the License.
  */
 
-package org.maxur.perfmodel.backend.rest
-
+package org.maxur.perfmodel.backend.rest.resources
 import org.glassfish.hk2.api.TypeLiteral
 import org.glassfish.hk2.utilities.binding.AbstractBinder
 import org.maxur.perfmodel.backend.domain.ConflictException
 import org.maxur.perfmodel.backend.domain.Project
 import org.maxur.perfmodel.backend.domain.Repository
+import org.maxur.perfmodel.backend.rest.AbstractRestSpec
+import org.maxur.perfmodel.backend.rest.InstanceFactory
 import org.maxur.perfmodel.backend.rest.dto.ProjectDto
-import org.maxur.perfmodel.backend.rest.resources.ProjectResource
 import org.spockframework.gentyref.TypeToken
 import spock.lang.Shared
 
@@ -30,7 +30,6 @@ import javax.ws.rs.core.Response
 
 import static java.util.Optional.empty
 import static javax.ws.rs.client.Entity.json
-
 /**
  * @author myunusov
  * @version 1.0

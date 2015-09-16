@@ -25,10 +25,12 @@
         <logback.version>1.1.3</logback.version>
         <jersey.version>2.21</jersey.version>
         <jackson.version>2.5.4</jackson.version>
-        <resteasy.version>3.0.12.Final</resteasy.version>
         <jmockit.version>1.19</jmockit.version>
         <groovy.version>2.4.1</groovy.version>
         <cglib.version>3.1</cglib.version>
+        <speed4j.version>0.18</speed4j.version>
+        <config.version>1.3.0</config.version>
+        <guava.version>18.0</guava.version>
     </properties>
 
     <scm>
@@ -211,7 +213,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>18.0</version>
+            <version>${guava.version}</version>
         </dependency>
 
         <!-- Logging -->
@@ -245,7 +247,7 @@
         <dependency>
             <groupId>com.ecyrd.speed4j</groupId>
             <artifactId>speed4j</artifactId>
-            <version>0.18</version>
+            <version>${speed4j.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-api</artifactId>
@@ -258,7 +260,7 @@
         <dependency>
             <groupId>com.typesafe</groupId>
             <artifactId>config</artifactId>
-            <version>1.3.0</version>
+            <version>${config.version}</version>
         </dependency>
 
         <!-- Unit Testing -->
