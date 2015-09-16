@@ -784,8 +784,8 @@ controllers.controller('ChartCtrl', function ($scope) {
         var maxXChart = builder.buildMaxXChart();
 
         $(function () {
-            $('#rmin').highcharts(minRChart);
-            $('#xmax').highcharts(maxXChart);
+            $('#r' + model.id).highcharts(minRChart);
+            $('#x' + model.id).highcharts(maxXChart);
             $(window).resize();
         });
 
