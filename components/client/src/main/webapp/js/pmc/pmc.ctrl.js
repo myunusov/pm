@@ -15,7 +15,7 @@ controllers.controller('ProjectCtrl', function ($scope,
 
     $scope.project = currentProject;
 
-    $scope.models = function() {
+    $scope.models = function () {
         return presentationModel.visibleModels;
     };
 
@@ -502,6 +502,8 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
 
     $scope.kind = new ComparableKind(presentationModel.compareModels);
 
+    $scope.info = {};
+
     $scope.setKind = function (kind) {
         $scope.kind.setUnit(kind);
         $scope.info = $scope.resolve();
@@ -541,11 +543,11 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
     };
 
     $scope.resolve = function () {
-        var result = {};
+        $scope.info = {};
         var models = presentationModel.compareModels;
         for (var i = 0; i < models.length; i++) {
             var m = models[i];
-            result[m.id] = {};
+            $scope.info[m.id] = {};
             for (var j = 0; j < m.classes.length; j++) {
                 var c = m.classes[j];
                 var v = {};
@@ -554,24 +556,26 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
                 v["xAsString"] = f.xAsString();
                 v["rClass"] = f.rClass();
                 v["xClass"] = f.xClass();
-                result[m.id][c.name.value] = v;
+                $scope.info[m.id][c.name.value] = v;
             }
         }
-        return result;
     };
 
-    $scope.info = $scope.resolve();
+    $scope.resolve();
 
     $scope.cells = function (mid, cname) {
+        if (!$scope.info || !$scope.info[mid]) {
+            $scope.resolve();
+        }
         var result = $scope.info[mid][cname];
         return !result ?
         {
             "rAsString": "",
             "xAsString": "",
-            "rClass" : "non",
-            "xClass" : "non"
-        }:
-        result;
+            "rClass": "non",
+            "xClass": "non"
+        } :
+            result;
     };
 
     function classByName(model, cname) {

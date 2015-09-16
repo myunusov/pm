@@ -16,39 +16,6 @@
                     </span>
             </md-tab-label>
             <md-tab-body>
-                <div ng-if="modeId == 0">
-
-                    <md-content flex layout-padding layout-fill layout-gt-lg="row" layout-wrap layout="column">
-                        <div flex="40">
-                            <md-card>
-                                <md-card-content style="padding: 2px">
-                                    <ng-include src="'views/nodes.html'" include-replace>
-                                    </ng-include>
-                                </md-card-content>
-                            </md-card>
-                        </div>
-
-                        <div flex="60">
-                            <md-card>
-                                <md-card-content style="padding: 2px">
-                                    <ng-include src="'views/classes.html'" include-replace>
-                                    </ng-include>
-                                </md-card-content>
-                            </md-card>
-                        </div>
-
-                        <div flex="100">
-                            <md-card>
-                                <md-card-content style="padding: 2px">
-                                    <ng-include src="'views/visits.html'" include-replace>
-                                    </ng-include>
-                                </md-card-content>
-                            </md-card>
-                        </div>
-
-                    </md-content>
-
-                </div>
             </md-tab-body>
         </md-tab>
         <md-tab>
@@ -61,35 +28,7 @@
                     </span>
             </md-tab-label>
             <md-tab-body>
-                <div class="qnm" ng-if="modeId == 1">
-                    <div ng-controller="ChartCtrl" layout="column" flex layout-fill>
-                        <md-content flex layout-padding layout-fill layout-wrap layout-gt-lg="row" layout="column">
-                            <div class="framehdr" flex="100">
-                                <i class="mdi mdi-chart-line"></i>&nbsp;{{model.name}}: Asymptotic Bounds
-                                <button ng-click="refresh()">
-                                    <i class="mdi mdi-refresh"></i>
-                                    <md-tooltip>Refresh</md-tooltip>
-                                </button>
-                            </div>
-                            <div flex="50">
-                                <md-card>
-                                    <md-card-content>
-                                        <div id="rmin" class="bounds-chart" style="width: 100%"></div>
-                                    </md-card-content>
-                                </md-card>
-                            </div>
-                            <div flex="50">
-                                <md-card>
-                                    <md-card-content>
-                                        <div id="xmax" class="bounds-chart" style="width: 100%"></div>
-                                    </md-card-content>
-                                </md-card>
-                            </div>
-                        </md-content>
-                    </div>
-                </div>
             </md-tab-body>
-
         </md-tab>
         <md-tab>
             <md-tab-label>
@@ -104,96 +43,24 @@
                     </span>
             </md-tab-label>
             <md-tab-body>
-                <div flex layout-padding layout-fill layout-gt-lg="row" layout-wrap layout="column">
-                    <div flex="100" style="min-height: 100px" ng-controller="ComparatorCtrl">
-                        <md-card>
-                            <div style="padding: 2px" ng-if="modeId == 2">
-                                <div class="frame" flex="100">
-                                    <table class="compare" ng-init="models=models()" style="width: 100%">
-                                        <tr>
-                                            <td colspan="{{models.length + 1}}">
-                                                <div class="framehdr" layout="row" layout-align="space-between start" flex="100">
-                                                    <div style="height: 25px">
-                                                        <i class="mdi mdi-compare"></i>
-                                                    </div>
-                                                    <div style="height: 25px">
-                                                        &nbsp;Compare Models
-                                                    </div>
-                                                    <div style="height: 25px">
-                                                        <md-menu>
-                                                            <button aria-label="Select Comparable Type"
-                                                                    class="md-icon-button"
-                                                                    ng-click="$mdOpenMenu()">
-                                                                {{kind.unit.title}}
-                                                            </button>
-                                                            <md-menu-content width="4">
-                                                                <md-menu-item ng-repeat="item in kind.availableUnits()">
-                                                                    <md-button aria-label="Select Model Type" ng-click="setKind(item)"
-                                                                               style="height: 31px;">
-                                                                        {{item.title}}
-                                                                    </md-button>
-                                                                </md-menu-item>
-                                                            </md-menu-content>
-                                                        </md-menu>
-                                                    </div>
-                                                    <!--                                    <div>
-                                                                                            <button ng-click="refresh()">
-                                                                                                <i class="mdi mdi-refresh"></i>
-                                                                                                <md-tooltip>Refresh</md-tooltip>
-                                                                                            </button>
-                                                                                        </div>-->
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tbody ng-if="models.length > 1">
-                                        <tr>
-                                            <th rowspan="2">Classes</th>
-                                            <th colspan="{{models.length}}" style="text-align: center;">Models</th>
-                                        </tr>
-                                        <tr>
-                                            <th ng-repeat="model in models">
-                                                {{model.name}}
-                <span style="height: 28px">
-                    <button class="hdrbutton"
-                            aria-label="Remove Model {{model.name}}"
-                            ng-click="remove(model)">
-                        <i class="mdi mdi-close"></i>
-                        <md-tooltip>Remove Model</md-tooltip>
-                    </button>
-                </span>
-                                            </th>
-                                        </tr>
-                                        <tr ng-repeat="className in classes()">
-                                            <th data-ng-bind="className"></th>
-                                            <td ng-repeat="model in models">
-                                                <table class="inner">
-                                                    <tr>
-                                                        <td ng-class="cells(model.id, className).rClass"
-                                                            ng-bind="cells(model.id, className).rAsString">
-
-                                                        </td>
-                                                        <td ng-class="cells(model.id, className).xClass"
-                                                            ng-bind="cells(model.id, className).xAsString">
-
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                        <tbody ng-if="models.length < 2">
-                                        <tr><td>You needs add new models to compare</td></tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                            </div>
-                        </md-card>
-                    </div>
-                </div>
             </md-tab-body>
         </md-tab>
     </md-tabs>
+
+    <div ng-if="modeId == 0">
+        <ng-include src="'views/qnm-edit.html'" include-replace>
+        </ng-include>
+    </div>
+
+    <div ng-if="modeId == 1" >
+        <ng-include src="'views/qnm-chart.html'" include-replace>
+        </ng-include>
+    </div>
+
+    <div ng-if="modeId == 2">
+        <ng-include src="'views/qnm-compare.html'" include-replace>
+        </ng-include>
+    </div>
 
 </div>
 
