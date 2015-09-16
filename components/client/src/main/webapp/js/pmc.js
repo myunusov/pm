@@ -72,11 +72,6 @@ pmc.config([
                         }
                     }
                 })
-                .state('compare', {
-                    url: '/compare',
-                    templateUrl: 'views/compare.html',
-                    controller: 'ComparatorCtrl'
-                });
         }
     ]
 );

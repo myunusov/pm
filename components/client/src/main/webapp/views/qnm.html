@@ -10,7 +10,7 @@
             <md-tab-label>
                     <span style="height: 28px">
                         <button class="tab-button">
-                            <i class="mdi mdi-pen"></i>
+                            <i class="mdi mdi-pen" style="font-size: 22px"></i>
                             <md-tooltip>Text View</md-tooltip>
                         </button>
                     </span>
@@ -55,7 +55,7 @@
             <md-tab-label>
                     <span style="height: 28px">
                         <button class="tab-button">
-                            <i class="mdi mdi-chart-line"></i>
+                            <i class="mdi mdi-chart-line" style="font-size: 22px"></i>
                             <md-tooltip>Chart View</md-tooltip>
                         </button>
                     </span>
@@ -90,6 +90,108 @@
                 </div>
             </md-tab-body>
 
+        </md-tab>
+        <md-tab>
+            <md-tab-label>
+                    <span style="height: 28px">
+                        <button class="tab-button">
+                            <i class="mdi mdi-compare" style="font-size: 22px" ng-click="compare()">
+                                <span class="badge-w" ng-if="!isInComparator()"><span class="badge">+</span></span>
+                                <span class="badge-w" ng-if="isInComparator()"><span class="badge">{{compareModels()}}</span></span>
+                            </i>
+                            <md-tooltip>Comparator View</md-tooltip>
+                        </button>
+                    </span>
+            </md-tab-label>
+            <md-tab-body>
+                <div flex layout-padding layout-fill layout-gt-lg="row" layout-wrap layout="column">
+                    <div flex="100" style="min-height: 100px" ng-controller="ComparatorCtrl">
+                        <md-card>
+                            <div style="padding: 2px" ng-if="modeId == 2">
+                                <div class="frame" flex="100">
+                                    <table class="compare" ng-init="models=models()" style="width: 100%">
+                                        <tr>
+                                            <td colspan="{{models.length + 1}}">
+                                                <div class="framehdr" layout="row" layout-align="space-between start" flex="100">
+                                                    <div style="height: 25px">
+                                                        <i class="mdi mdi-compare"></i>
+                                                    </div>
+                                                    <div style="height: 25px">
+                                                        &nbsp;Compare Models
+                                                    </div>
+                                                    <div style="height: 25px">
+                                                        <md-menu>
+                                                            <button aria-label="Select Comparable Type"
+                                                                    class="md-icon-button"
+                                                                    ng-click="$mdOpenMenu()">
+                                                                {{kind.unit.title}}
+                                                            </button>
+                                                            <md-menu-content width="4">
+                                                                <md-menu-item ng-repeat="item in kind.availableUnits()">
+                                                                    <md-button aria-label="Select Model Type" ng-click="setKind(item)"
+                                                                               style="height: 31px;">
+                                                                        {{item.title}}
+                                                                    </md-button>
+                                                                </md-menu-item>
+                                                            </md-menu-content>
+                                                        </md-menu>
+                                                    </div>
+                                                    <!--                                    <div>
+                                                                                            <button ng-click="refresh()">
+                                                                                                <i class="mdi mdi-refresh"></i>
+                                                                                                <md-tooltip>Refresh</md-tooltip>
+                                                                                            </button>
+                                                                                        </div>-->
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tbody ng-if="models.length > 1">
+                                        <tr>
+                                            <th rowspan="2">Classes</th>
+                                            <th colspan="{{models.length}}" style="text-align: center;">Models</th>
+                                        </tr>
+                                        <tr>
+                                            <th ng-repeat="model in models">
+                                                {{model.name}}
+                <span style="height: 28px">
+                    <button class="hdrbutton"
+                            aria-label="Remove Model {{model.name}}"
+                            ng-click="remove(model)">
+                        <i class="mdi mdi-close"></i>
+                        <md-tooltip>Remove Model</md-tooltip>
+                    </button>
+                </span>
+                                            </th>
+                                        </tr>
+                                        <tr ng-repeat="className in classes()">
+                                            <th data-ng-bind="className"></th>
+                                            <td ng-repeat="model in models">
+                                                <table class="inner">
+                                                    <tr>
+                                                        <td ng-class="cells(model.id, className).rClass"
+                                                            ng-bind="cells(model.id, className).rAsString">
+
+                                                        </td>
+                                                        <td ng-class="cells(model.id, className).xClass"
+                                                            ng-bind="cells(model.id, className).xAsString">
+
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                        <tbody ng-if="models.length < 2">
+                                        <tr><td>You needs add new models to compare</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </md-card>
+                    </div>
+                </div>
+            </md-tab-body>
         </md-tab>
     </md-tabs>
 

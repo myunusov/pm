@@ -91,7 +91,7 @@ controllers.controller('EGMCtrl', function ($scope) {
 
 });
 
-controllers.controller('QNMCtrl', function ($scope, messageService) {
+controllers.controller('QNMCtrl', function ($scope, messageService, presentationModel) {
 
     $scope.nodeTypes = [
         {
@@ -274,6 +274,20 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         $scope.model.addClass();
         $scope.model.cleanCalcFields();
         $scope.model.recalculate();
+    };
+
+    $scope.isInComparator = function () {
+        var models = presentationModel.compareModels;
+        for (var i = 0; i < models.length; i++) {
+            if (models[i].id === $scope.model.id) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    $scope.compare = function () {
+        presentationModel.addCompareModel($scope.model);
     };
 
     $scope.remove = function (center) {
