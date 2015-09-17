@@ -15,7 +15,7 @@ controllers.controller('ProjectCtrl', function ($scope,
 
     $scope.project = currentProject;
 
-    $scope.models = function() {
+    $scope.models = function () {
         return presentationModel.visibleModels;
     };
 
@@ -91,7 +91,7 @@ controllers.controller('EGMCtrl', function ($scope) {
 
 });
 
-controllers.controller('QNMCtrl', function ($scope, messageService) {
+controllers.controller('QNMCtrl', function ($scope, messageService, presentationModel) {
 
     $scope.nodeTypes = [
         {
@@ -274,6 +274,20 @@ controllers.controller('QNMCtrl', function ($scope, messageService) {
         $scope.model.addClass();
         $scope.model.cleanCalcFields();
         $scope.model.recalculate();
+    };
+
+    $scope.isInComparator = function () {
+        var models = presentationModel.compareModels;
+        for (var i = 0; i < models.length; i++) {
+            if (models[i].id === $scope.model.id) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    $scope.compare = function () {
+        presentationModel.addCompareModel($scope.model);
     };
 
     $scope.remove = function (center) {
@@ -488,6 +502,8 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
 
     $scope.kind = new ComparableKind(presentationModel.compareModels);
 
+    $scope.info = {};
+
     $scope.setKind = function (kind) {
         $scope.kind.setUnit(kind);
         $scope.info = $scope.resolve();
@@ -527,11 +543,11 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
     };
 
     $scope.resolve = function () {
-        var result = {};
+        $scope.info = {};
         var models = presentationModel.compareModels;
         for (var i = 0; i < models.length; i++) {
             var m = models[i];
-            result[m.id] = {};
+            $scope.info[m.id] = {};
             for (var j = 0; j < m.classes.length; j++) {
                 var c = m.classes[j];
                 var v = {};
@@ -540,24 +556,26 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
                 v["xAsString"] = f.xAsString();
                 v["rClass"] = f.rClass();
                 v["xClass"] = f.xClass();
-                result[m.id][c.name.value] = v;
+                $scope.info[m.id][c.name.value] = v;
             }
         }
-        return result;
     };
 
-    $scope.info = $scope.resolve();
+    $scope.resolve();
 
     $scope.cells = function (mid, cname) {
+        if (!$scope.info || !$scope.info[mid]) {
+            $scope.resolve();
+        }
         var result = $scope.info[mid][cname];
         return !result ?
         {
             "rAsString": "",
             "xAsString": "",
-            "rClass" : "non",
-            "xClass" : "non"
-        }:
-        result;
+            "rClass": "non",
+            "xClass": "non"
+        } :
+            result;
     };
 
     function classByName(model, cname) {
@@ -603,10 +621,10 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
     function absolute(clazz) {
         return new function () {
             this.rAsString = function () {
-                return "R:" + formatNumber(clazz.responseTime.value) + " " + clazz.responseTime.unit.title;
+                return "R:" + formatNumber(clazz.responseTime.text) + " " + clazz.responseTime.unit.title;
             };
             this.xAsString = function () {
-                return "X:" + formatNumber(clazz.throughput.value) + " " + clazz.throughput.unit.title;
+                return "X:" + formatNumber(clazz.throughput.text) + " " + clazz.throughput.unit.title;
             };
             this.rClass = function () {
                 return "abs";
@@ -642,7 +660,7 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
             var throughput1 = class1.throughput;
             var throughput2 = class2.throughput;
             if (throughput1.value && throughput2.value) {
-                return throughput1.value / throughput2.value;
+                return throughput2.value / throughput1.value;
             }
             return null;
         }
@@ -674,7 +692,7 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
             if (!this.r || this.r == 1) {
                 return "non";
             }
-            return this.r < 1 ? "down" : "up";
+            return this.r < 1 ? "up" : "down";
         };
 
         this.xClass = function () {
@@ -766,8 +784,8 @@ controllers.controller('ChartCtrl', function ($scope) {
         var maxXChart = builder.buildMaxXChart();
 
         $(function () {
-            $('#rmin').highcharts(minRChart);
-            $('#xmax').highcharts(maxXChart);
+            $('#r' + model.id).highcharts(minRChart);
+            $('#x' + model.id).highcharts(maxXChart);
             $(window).resize();
         });
 

@@ -1,97 +1,65 @@
 <div class="qnm" ng-controller="QNMCtrl">
 
     <md-tabs md-selected="modeId"
-             md-border-top
-             md-autoselect
              md-dynamic-height
              md-stretch-tabs="mobile"
-             md-align-tabs="top">
+             md-align-tabs="top"
+            >
         <md-tab>
             <md-tab-label>
-                    <span style="height: 28px">
-                        <button class="tab-button">
-                            <i class="mdi mdi-pen"></i>
+                    <span>
+                        <button class="tab-button" style="padding: 0 5px 0 5px">
+                            <i class="mdi mdi-pen" style="font-size: 22px"></i>
                             <md-tooltip>Text View</md-tooltip>
                         </button>
                     </span>
             </md-tab-label>
             <md-tab-body>
-                <div ng-if="modeId == 0">
-
-                    <md-content flex layout-padding layout-fill layout-gt-lg="row" layout-wrap layout="column">
-                        <div flex="40">
-                            <md-card>
-                                <md-card-content style="padding: 2px">
-                                    <ng-include src="'views/nodes.html'" include-replace>
-                                    </ng-include>
-                                </md-card-content>
-                            </md-card>
-                        </div>
-
-                        <div flex="60">
-                            <md-card>
-                                <md-card-content style="padding: 2px">
-                                    <ng-include src="'views/classes.html'" include-replace>
-                                    </ng-include>
-                                </md-card-content>
-                            </md-card>
-                        </div>
-
-                        <div flex="100">
-                            <md-card>
-                                <md-card-content style="padding: 2px">
-                                    <ng-include src="'views/visits.html'" include-replace>
-                                    </ng-include>
-                                </md-card-content>
-                            </md-card>
-                        </div>
-
-                    </md-content>
-
-                </div>
             </md-tab-body>
         </md-tab>
         <md-tab>
             <md-tab-label>
-                    <span style="height: 28px">
-                        <button class="tab-button">
-                            <i class="mdi mdi-chart-line"></i>
+                    <span>
+                        <button class="tab-button" style="padding: 0 5px 0 5px">
+                            <i class="mdi mdi-chart-line" style="font-size: 22px"></i>
                             <md-tooltip>Chart View</md-tooltip>
                         </button>
                     </span>
             </md-tab-label>
             <md-tab-body>
-                <div class="qnm" ng-if="modeId == 1">
-                    <div ng-controller="ChartCtrl" layout="column" flex layout-fill>
-                        <md-content flex layout-padding layout-fill layout-wrap layout-gt-lg="row" layout="column">
-                            <div class="framehdr" flex="100">
-                                <i class="mdi mdi-chart-line"></i>&nbsp;{{model.name}}: Asymptotic Bounds
-                                <button ng-click="refresh()">
-                                    <i class="mdi mdi-refresh"></i>
-                                    <md-tooltip>Refresh</md-tooltip>
-                                </button>
-                            </div>
-                            <div flex="50">
-                                <md-card>
-                                    <md-card-content>
-                                        <div id="rmin" class="bounds-chart" style="width: 100%"></div>
-                                    </md-card-content>
-                                </md-card>
-                            </div>
-                            <div flex="50">
-                                <md-card>
-                                    <md-card-content>
-                                        <div id="xmax" class="bounds-chart" style="width: 100%"></div>
-                                    </md-card-content>
-                                </md-card>
-                            </div>
-                        </md-content>
-                    </div>
-                </div>
             </md-tab-body>
-
+        </md-tab>
+        <md-tab ng-click="compare()">
+            <md-tab-label>
+                    <span>
+                        <button class="tab-button" style="padding: 0 5px 0 5px">
+                            <i class="mdi mdi-compare" style="font-size: 22px">
+                                <span class="badge-w" ng-if="!isInComparator()"><span class="badge">+</span></span>
+                                <span class="badge-w" ng-if="isInComparator()"><span class="badge">{{compareModels()}}</span></span>
+                            </i>
+                            <md-tooltip>Comparator View</md-tooltip>
+                        </button>
+                    </span>
+            </md-tab-label>
+            <md-tab-body>
+            </md-tab-body>
         </md-tab>
     </md-tabs>
+
+    <div ng-if="modeId == 0">
+        <ng-include src="'views/qnm-edit.html'" include-replace>
+        </ng-include>
+    </div>
+
+    <div ng-if="modeId == 1" >
+        <ng-include src="'views/qnm-chart.html'" include-replace>
+        </ng-include>
+    </div>
+
+    <div ng-if="modeId == 2">
+        <ng-include src="'views/qnm-compare.html'" include-replace>
+        </ng-include>
+    </div>
 
 </div>
 

@@ -1,0 +1,26 @@
+<md-content flex layout-padding layout-fill layout-gt-lg="row" layout-wrap layout="column">
+    <div flex="40">
+        <md-card>
+            <md-card-content style="padding: 2px">
+                <ng-include src="'views/nodes.html'" include-replace>
+                </ng-include>
+            </md-card-content>
+        </md-card>
+    </div>
+    <div flex="60">
+        <md-card>
+            <md-card-content style="padding: 2px">
+                <ng-include src="'views/classes.html'" include-replace>
+                </ng-include>
+            </md-card-content>
+        </md-card>
+    </div>
+    <div flex="100">
+        <md-card>
+            <md-card-content style="padding: 2px">
+                <ng-include src="'views/visits.html'" include-replace>
+                </ng-include>
+            </md-card-content>
+        </md-card>
+    </div>
+</md-content>

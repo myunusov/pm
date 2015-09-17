@@ -46,14 +46,6 @@
                 <md-tooltip>Save Project</md-tooltip>
             </md-button>
 
-            <md-button aria-label="Compare" hide-sm class="md-icon-button" ui-sref="compare"
-                       ng-disabled="isNotComparable()">
-                <md-icon class="mdi mdi-compare">
-                    <span class="badge-w"><span class="badge">{{compareModels()}}</span></span>
-                </md-icon>
-                <md-tooltip>Compare</md-tooltip>
-            </md-button>
-
             <md-button aria-label="Full Screen" hide-sm class="md-icon-button">
                 <md-icon class="mdi" ng-click="toggleFullScreen();" ng-class="fullScreenClass()"></md-icon>
                 <md-tooltip>Toggle Full Screen</md-tooltip>
@@ -84,10 +76,6 @@
                 <md-list-item ng-click="showProjects()">
                     <md-icon class="mdi mdi-server"></md-icon>
                     <p> Project Repository </p>
-                </md-list-item>
-                <md-list-item ng-click="showComparator()" ng-hide="isNotComparable()">
-                    <md-icon class="mdi mdi-compare"></md-icon>
-                    <p> Compare Models </p>
                 </md-list-item>
                 <md-divider></md-divider>
                 <md-subheader class="md-no-sticky">Project</md-subheader>
