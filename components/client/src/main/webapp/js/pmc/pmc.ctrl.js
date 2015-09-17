@@ -621,10 +621,10 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
     function absolute(clazz) {
         return new function () {
             this.rAsString = function () {
-                return "R:" + formatNumber(clazz.responseTime.value) + " " + clazz.responseTime.unit.title;
+                return "R:" + formatNumber(clazz.responseTime.text) + " " + clazz.responseTime.unit.title;
             };
             this.xAsString = function () {
-                return "X:" + formatNumber(clazz.throughput.value) + " " + clazz.throughput.unit.title;
+                return "X:" + formatNumber(clazz.throughput.text) + " " + clazz.throughput.unit.title;
             };
             this.rClass = function () {
                 return "abs";
@@ -660,7 +660,7 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
             var throughput1 = class1.throughput;
             var throughput2 = class2.throughput;
             if (throughput1.value && throughput2.value) {
-                return throughput1.value / throughput2.value;
+                return throughput2.value / throughput1.value;
             }
             return null;
         }
@@ -692,7 +692,7 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
             if (!this.r || this.r == 1) {
                 return "non";
             }
-            return this.r < 1 ? "down" : "up";
+            return this.r < 1 ? "up" : "down";
         };
 
         this.xClass = function () {
