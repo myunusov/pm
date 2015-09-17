@@ -39,12 +39,23 @@ function SEMValues(owner) {
 
     this.set = function (value) {
         var resources = owner.getResources();
-        if (!value) {
+        if (!value && value != 0) {
             return;
         }
         for (var j = 0; j < resources.length; j++) {
             var key = resources[j].id;
             this.values[key] = value;
+        }
+    };
+
+    this.setAll = function (values) {
+        var resources = owner.getResources();
+        if (!values) {
+            return;
+        }
+        for (var j = 0; j < resources.length; j++) {
+            var key = resources[j].id;
+            this.values[key] = values[key];
         }
     };
 
@@ -280,8 +291,8 @@ function EGMStep(type) {
 
     this.recalc = function () {
         if (this.isLeaf()) {
-            this.worst = this.avg;
-            this.best = this.avg;
+            this.worst.setAll(this.avg.values);
+            this.best.setAll(this.avg.values);
         } else {
             for (var i = 0; i < this.steps.length; i++) {
                 this.steps[i].recalc();
