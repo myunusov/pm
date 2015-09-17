@@ -3,11 +3,12 @@
     <md-tabs md-selected="modeId"
              md-dynamic-height
              md-stretch-tabs="mobile"
-             md-align-tabs="top">
+             md-align-tabs="top"
+            >
         <md-tab>
             <md-tab-label>
-                    <span style="height: 28px">
-                        <button class="tab-button">
+                    <span>
+                        <button class="tab-button" style="padding: 0 5px 0 5px">
                             <i class="mdi mdi-pen" style="font-size: 22px"></i>
                             <md-tooltip>Text View</md-tooltip>
                         </button>
@@ -18,8 +19,8 @@
         </md-tab>
         <md-tab>
             <md-tab-label>
-                    <span style="height: 28px">
-                        <button class="tab-button">
+                    <span>
+                        <button class="tab-button" style="padding: 0 5px 0 5px">
                             <i class="mdi mdi-chart-line" style="font-size: 22px"></i>
                             <md-tooltip>Chart View</md-tooltip>
                         </button>
@@ -28,11 +29,11 @@
             <md-tab-body>
             </md-tab-body>
         </md-tab>
-        <md-tab>
+        <md-tab ng-click="compare()">
             <md-tab-label>
-                    <span style="height: 28px">
-                        <button class="tab-button">
-                            <i class="mdi mdi-compare" style="font-size: 22px" ng-click="compare()">
+                    <span>
+                        <button class="tab-button" style="padding: 0 5px 0 5px">
+                            <i class="mdi mdi-compare" style="font-size: 22px">
                                 <span class="badge-w" ng-if="!isInComparator()"><span class="badge">+</span></span>
                                 <span class="badge-w" ng-if="isInComparator()"><span class="badge">{{compareModels()}}</span></span>
                             </i>
