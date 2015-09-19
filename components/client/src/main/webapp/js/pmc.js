@@ -10,6 +10,8 @@ var pmc = angular.module(
         'ngSanitize',
         'ngMaterial',
 
+        'mxObjects',
+
         'pmc.services',
         'pmc.directives',
         'pmc.controllers',

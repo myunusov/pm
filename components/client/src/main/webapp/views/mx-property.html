@@ -1,0 +1,27 @@
+<div  layout="row" layout-align="space-between start">
+    <b><span class="fst" data-ng-bind="type.stitle" hide-gt-sm flex="50"></span></b>
+    <label layout="row">
+        <input type="{{type.type}}"
+               flex
+               aria-label="Property {{type.title}}"
+               class="input input-small simplebox quantity {{prop.state}}"
+               ng-change="changeValue(type.id)"
+               ng-pattern="prop.pattern"
+               ng-model="prop.text"
+               ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }">
+    </label>
+    <div ng-if="prop.availableUnits().length > 0" style="padding: 0 0 0 2px" >
+    <md-menu>
+        <button aria-label="Select Unit" class="md-icon-button" ng-click="$mdOpenMenu()">
+            {{prop.unit.title}}
+        </button>
+        <md-menu-content width="1">
+            <md-menu-item ng-repeat="unit in prop.availableUnits()">
+                <md-button aria-label="Select Unit" ng-click="prop.setUnit(unit)" style="height: 31px;">
+                    {{unit.title}}
+                </md-button>
+            </md-menu-item>
+        </md-menu-content>
+    </md-menu>
+    </div>
+</div>

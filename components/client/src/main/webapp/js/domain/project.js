@@ -13,7 +13,7 @@ function Project(name, id) {
         memento.name = this.name;
         memento.version = this.version;
         memento.description = this.description;
-        memento.models = createArrayDTO(this.models);
+        memento.models = this.models.createDTO();
         return memento;
     };
 
@@ -23,23 +23,16 @@ function Project(name, id) {
         this.version = memento.version;
         this.description = memento.description;
         this.models = [];
-
-        for (var i = 0; i < memento.models.length; i++) {
-            var model;
-            if (memento.models[i].type === "qnm") {
-                model = new QNM(
-                    memento.models[i].name,
-                    memento.models[i].id
-                );
-            } else if (memento.models[i].type === "egm") {
-                model = new EGM(
-                    memento.models[i].name,
-                    memento.models[i].id
-                );
+        this.models.setDTO(
+            memento.models,
+            function(dto) {
+                if (dto.type === "qnm") {
+                    return new QNM();
+                } else if (dto.type === "egm") {
+                    return new EGM();
+                }
             }
-            model.setDTO(memento.models[i]);
-            this.models.push(model);
-        }
+        );
     };
 
     this.removeModel = function (model) {

@@ -179,7 +179,7 @@ function EGMStep(type) {
             values: this.avg.createDTO(),
             rate: this.rate
         };
-        result.steps = createArrayDTO(this.steps);
+        result.steps = this.steps.createDTO();
         return this.doCreateDTO(result);
     };
 
@@ -500,7 +500,7 @@ function EGMLink() {
 
 EGMLink.prototype = new EGMStep("C");
 
-function EGMScenario(id, model) {
+function EGMScenario(model, id) {
     this.id = id;
     this.name = "Scenario";
     this.model = model;
@@ -581,7 +581,6 @@ function EGMScenario(id, model) {
         }
     }
 }
-
 EGMScenario.prototype = new EGMStep("C");
 
 function EGMRoutine() {
@@ -818,8 +817,8 @@ function EGM(name, id) {
         memento.type = "egm";
         memento.resourcesNo = resourcesNo;
         memento.scenarioNo = scenarioNo;
-        memento.resources = createArrayDTO(this.resources);
-        memento.scenarios = createArrayDTO(this.scenarios);
+        memento.resources = this.resources.createDTO();
+        memento.scenarios = this.scenarios.createDTO();
         return memento;
     };
 
@@ -831,24 +830,22 @@ function EGM(name, id) {
         scenarioNo = memento.scenarioNo;
 
         this.resources = [];
-        for (var i1 = 0; i1 < memento.resources.length; i1++) {
-            var resource = new EGMResource(
-                memento.resources[i1].id,
-                memento.resources[i1].name
-            );
-            resource.setDTO(memento.resources[i1]);
-            this.resources.push(resource);
-        }
+        this.resources.setDTO(
+            memento.resources,
+            function() {
+                return new EGMResource();
+            }
+        );
 
+        var model = this;
         this.scenarios = [];
-        for (var i2 = 0; i2 < memento.scenarios.length; i2++) {
-            var scenario = new EGMScenario(
-                memento.scenarios[i2].id,
-                this
-            );
-            scenario.setDTO(memento.scenarios[i2]);
-            this.scenarios.push(scenario);
-        }
+        this.scenarios.setDTO(
+            memento.scenarios,
+            function() {
+                return new EGMScenario(model);
+            }
+        );
+
         this.init();
     };
 
@@ -869,7 +866,7 @@ function EGM(name, id) {
 
 
     this.addScenario = function () {
-        var scenario = new EGMScenario(++scenarioNo, this);
+        var scenario = new EGMScenario(this, ++scenarioNo);
         this.scenarios.push(scenario);
         return scenario;
     };

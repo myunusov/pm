@@ -32,7 +32,7 @@ dirs.directive('mxTree', function () {
             });
         },
         template: "<mx-branch step='step'></mx-branch>"
-    }
+    };
 });
 
 dirs.directive('mxBranch', function () {

@@ -21,31 +21,10 @@
 
         <div ng-repeat="center in model.visits" layout="column">
             <div flex layout="row" layout-sm="column">
-                <div flex="{{colWidth}}" class="cell">{{center.node.name.value}} / {{center.clazz.name.value}}</div>
+                <div flex="{{colWidth}}" class="cell">{{center.node.title()}} / {{center.clazz.title()}}</div>
                 <div flex="{{colWidth}}" class="cell" ng-repeat="type in totalVisitTypes"
-                     ng-init="prop=center.all[type.id]" layout="row" layout-align="space-between start">
-                    <b><span class="fst" data-ng-bind="type.stitle" hide-gt-sm flex="50"></span></b>
-                    <label>
-                        <input type="{{type.type}}"
-                               aria-label="Property {{type.title}}"
-                               class="input input-small simplebox quantity {{prop.state}}"
-                               ng-change="change(type.id, center)"
-                               ng-pattern="prop.pattern"
-                               ng-model="prop.text"
-                               ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }">
-                    </label>
-                    <md-menu style="padding: 0">
-                        <button aria-label="Select Unit" class="md-icon-button" ng-click="$mdOpenMenu()">
-                            {{prop.unit.title}}
-                        </button>
-                        <md-menu-content width="1">
-                            <md-menu-item ng-repeat="unit in prop.availableUnits()">
-                                <md-button aria-label="Select Unit" ng-click="prop.setUnit(unit)" style="height: 31px;">
-                                    {{unit.title}}
-                                </md-button>
-                            </md-menu-item>
-                        </md-menu-content>
-                    </md-menu>
+                     ng-init="prop=center.all[type.id]">
+                    <property value="prop" type="type" owner="center"></property>
                 </div>
                 <div flex-sm="100" class="act">
                 <span style="height: 28px;padding: 0" ng-show="center.hasDetails()">
@@ -66,34 +45,13 @@
             </div>
 
             <div flex layout="row" layout-sm="column" ng-show="center.isDetails()">
-                <div flex="{{colWidth}}" class="cell">{{center.node.name.value}} / {{center.clazz.name.value}}</div>
+                <div flex="{{colWidth}}" class="cell">{{center.node.title()}} / {{center.clazz.title()}}</div>
                 <div flex="{{colWidth}}" class="cell" ng-repeat="type in visitTypes" ng-init="prop=center.all[type.id]"
                      layout="row" layout-align="space-between start">
-                    <b><span class="fst" data-ng-bind="type.stitle" hide-gt-sm flex="50"></span></b>
-                    <label>
-                        <input type="text"
-                               aria-label="Property {{type.title}}"
-                               class="input input-small simplebox quantity {{prop.state}}"
-                               ng-change="change(type.id, center)"
-                               ng-pattern="prop.pattern"
-                               ng-model="prop.text"
-                               ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }">
-                    </label>
-                    <md-menu style="padding: 0">
-                        <button aria-label="Select Unit" class="md-icon-button" ng-click="$mdOpenMenu()">
-                            {{prop.unit.title}}
-                        </button>
-                        <md-menu-content width="1">
-                            <md-menu-item ng-repeat="unit in prop.availableUnits()">
-                                <md-button aria-label="Select Unit" ng-click="prop.setUnit(unit)" style="height: 31px;">
-                                    {{unit.title}}
-                                </md-button>
-                            </md-menu-item>
-                        </md-menu-content>
-                    </md-menu>
+                    <property value="prop" type="type" owner="center"></property>
                 </div>
                 <div class="act">
-                    &#x2715{{center.node.nodeNumber.value}}
+                    &#x2715{{center.node.nodeNumber()}}
                 </div>
             </div>
         </div>

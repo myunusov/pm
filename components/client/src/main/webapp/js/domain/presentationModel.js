@@ -38,7 +38,8 @@ function PresentationModel() {
         this.visibleModels = selectModelsByIds(project, view.visibleModels);
     };
     this.currentModel = function () {
-        return this.visibleModels[this.currentModelIndex];
+        var idx = this.visibleModels.length == 1 ? 0 : this.currentModelIndex;
+        return this.visibleModels[idx];
     };
     this.addCompareModel = function (model) {
         this.compareModels.push(model);

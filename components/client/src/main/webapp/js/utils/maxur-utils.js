@@ -64,6 +64,32 @@ if (typeof Array.prototype.contains !=='function') {
     };
 }
 
+if (typeof Array.prototype.setDTO !=='function') {
+    Array.prototype.setDTO = function (dto, creator) {
+        if (!(dto instanceof Array) || typeof creator !=='function') {
+            return;
+        }
+        for (var i = 0; i < dto.length; i++) {
+            var item = creator(dto[i]);
+            if (typeof item.setDTO === 'function') {
+                item.setDTO(dto[i]);
+            }
+            this.push(item);
+        }
+    };
+}
+
+if (typeof Array.prototype.createDTO !=='function') {
+    Array.prototype.createDTO = function () {
+        var result = [];
+        for (var i = 0; i < this.length; i++) {
+            result.push(this[i].createDTO());
+        }
+        return result;
+    };
+}
+
+
 if (typeof Array.prototype.clone !=='function') {
     Array.prototype.clone = function () {
         var result = [];
@@ -91,6 +117,7 @@ if (typeof Array.prototype.unique !=='function') {
         return result;
     };
 }
+
 
 if (typeof Array.prototype.filterBy !=='function') {
     Array.prototype.filterBy = function (condition) {
@@ -138,6 +165,7 @@ if (typeof Array.prototype.subst !=='function') {
     };
 }
 
+
 function empty(value) {
     return !(value || value === 0 || isNaN(value) || !isFinite(value));
 }
@@ -157,11 +185,5 @@ function uuid() {
 function Memento() {
 }
 
-function createArrayDTO(array) {
-    var result = [];
-    for (var i = 0; i < array.length; i++) {
-        result.push(array[i].createDTO());
-    }
-    return result;
-}
+
 

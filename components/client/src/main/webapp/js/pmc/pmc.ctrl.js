@@ -461,14 +461,15 @@ controllers.controller('MainMenuCtrl', function ($scope,
 
 });
 
-function ComparableKind(models) {
+function ComparableKind(presentationModel) {
 
-    this.units = [new QNMUnit('abs', 'by Absolute values')];
-    this.unit = this.unit || this.units[0];
+    this.abs =  new MXUnit('abs', 'by Absolute values');
+    this.unit = this.abs;
+    this.units = [this.abs];
 
-    for (var i = 0; i < models.length; i++) {
-        var m = models[i];
-        this.units.push(new QNMUnit(m.id, 'in Relation to ' + m.name));
+    for (var i = 0; i < presentationModel.compareModels.length; i++) {
+        var m = presentationModel.compareModels[i];
+        this.units.push(new MXUnit(m.id, 'in Relation to ' + m.name));
     }
 
     this.availableUnits = function () {
@@ -500,7 +501,7 @@ function ComparableKind(models) {
 
 controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
 
-    $scope.kind = new ComparableKind(presentationModel.compareModels);
+    $scope.kind = new ComparableKind(presentationModel);
 
     $scope.info = {};
 
@@ -524,7 +525,7 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
             function (m) {
                 m.classes.each(
                     function (c) {
-                        result.push(c.name.value);
+                        result.push(c.title());
                     }
                 )
             }
@@ -537,7 +538,7 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
             return absolute(clazz);
         } else {
             var baseModel = modelById($scope.kind.unit.id);
-            var baseClazz = classByName(baseModel, clazz.name.value);
+            var baseClazz = classByName(baseModel, clazz.title());
             return relative(baseClazz, clazz)
         }
     };
@@ -556,7 +557,7 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
                 v["xAsString"] = f.xAsString();
                 v["rClass"] = f.rClass();
                 v["xClass"] = f.xClass();
-                $scope.info[m.id][c.name.value] = v;
+                $scope.info[m.id][c.title()] = v;
             }
         }
     };
@@ -580,7 +581,7 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
 
     function classByName(model, cname) {
         for (var i = 0; i < model.classes.length; i++) {
-            if (model.classes[i].name.value === cname) {
+            if (model.classes[i].title() === cname) {
                 return model.classes[i];
             }
         }
@@ -595,10 +596,6 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
             }
         }
         return null;
-    }
-
-    function formatNumber(value) {
-        return Math.round(value) === value ? Math.round(value) : parseFloat(value).toPrecision(3);
     }
 
     function emptyInfo() {
@@ -621,10 +618,10 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
     function absolute(clazz) {
         return new function () {
             this.rAsString = function () {
-                return "R:" + formatNumber(clazz.responseTime.text) + " " + clazz.responseTime.unit.title;
+                return "R:" + clazz.responseTime().asString();
             };
             this.xAsString = function () {
-                return "X:" + formatNumber(clazz.throughput.text) + " " + clazz.throughput.unit.title;
+                return "X:" + clazz.throughput().asString();
             };
             this.rClass = function () {
                 return "abs";
@@ -648,8 +645,8 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
         this.x = xSpeedUp(class1, class2);
 
         function rSpeedUp(class1, class2) {
-            var time1 = class1.responseTime;
-            var time2 = class2.responseTime;
+            var time1 = class1.responseTime();
+            var time2 = class2.responseTime();
             if (time1.value && time2.value) {
                 return time2.value / time1.value;
             }
@@ -657,8 +654,8 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
         }
 
         function xSpeedUp(class1, class2) {
-            var throughput1 = class1.throughput;
-            var throughput2 = class2.throughput;
+            var throughput1 = class1.throughput();
+            var throughput2 = class2.throughput();
             if (throughput1.value && throughput2.value) {
                 return throughput2.value / throughput1.value;
             }
