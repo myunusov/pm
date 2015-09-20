@@ -18,14 +18,14 @@ describe('QN Model', function() {
         qnm.addNode();
         expect(qnm.nodes.length).toEqual(1);
         expect(qnm.nodes[0].id).toEqual(1);
-        expect(qnm.nodes[0].name.value).toEqual("Node 1");
+        expect(qnm.nodes[0].title()).toEqual("Node 1");
     });
 
     it("should be add new class", function () {
         qnm.addClass();
         expect(qnm.classes.length).toEqual(1);
         expect(qnm.classes[0].id).toEqual(1);
-        expect(qnm.classes[0].name.value).toEqual("Class 1");
+        expect(qnm.classes[0].title()).toEqual("Class 1");
     });
 
     it("should be add new visit", function () {
@@ -40,25 +40,26 @@ describe('QN Model', function() {
         qnm.addClass();
         qnm.init();
         var clazz = qnm.classes[0];
-        expect(clazz.throughput.value).toBeUndefined();
-        expect(clazz.thinkTime.value).toBeUndefined();
-        expect(clazz.userNumber.value).toBeUndefined();
-        expect(clazz.responseTime.value).toBeUndefined();
+        expect(clazz.all['X'].text).toBeUndefined();
+        expect(clazz.all['Z'].text).toBeUndefined();
+        expect(clazz.all['M'].text).toBeUndefined();
+        expect(clazz.all['RT'].text).toBeUndefined();
 
         var node = qnm.nodes[0];
-        expect(node.nodeNumber.value).toEqual(1);
-        expect(node.utilization.value).toBeUndefined();
-        expect(node.meanNumberTasks.value).toBeUndefined();
-        expect(node.totalMeanNumberTasks.value).toBeUndefined();
+        expect(node.all['NN'].text).toEqual(1);
+        expect(node.all['U'].text).toBeUndefined();
+        expect(node.all['N'].text).toBeUndefined();
+        expect(node.all['TN'].text).toBeUndefined();
 
         var visit = qnm.visits[0];
-        expect(visit.number.value).toBeUndefined();
-        expect(visit.totalNumber.value).toEqual(1);
-        expect(visit.serviceTime.value).toBeUndefined();
-        expect(visit.serviceDemands.value).toBeUndefined();
-        expect(visit.utilization.value).toBeUndefined();
-        expect(visit.residenceTime.value).toBeUndefined();
-        expect(visit.throughput.value).toBeUndefined();
+        expect(visit.all['V'].text).toBeUndefined();
+        expect(visit.all['TV'].text).toEqual(1);
+        expect(visit.all['S'].text).toBeUndefined();
+        expect(visit.all['D'].text).toBeUndefined();
+        expect(visit.all['U'].text).toBeUndefined();
+        expect(visit.all['RT'].text).toBeUndefined();
+        expect(visit.all['XI'].text).toBeUndefined();
+
     });
 
     /*
@@ -114,6 +115,7 @@ describe('QN Model', function() {
         expect (qnm.valid()).toEqual(true);
 
         expect (visit.all["RT"].text).toEqual(0.5);
+        expect (visit.all["RT"].asString()).toEqual("0.5 sec");
 
     });
 
@@ -138,7 +140,8 @@ describe('QN Model', function() {
         expect (qnm.calculate(new Parameter("V", visit))).toEqual(true);
         expect (qnm.valid()).toEqual(true);
 
-        clazz.all["X"].setUnit(new QNMUnit('tph', 'tph', 1 / 3600));
+        var tph = clazz.all["X"].unitById('tph');
+        clazz.all["X"].setUnit(tph);
         clazz.all["X"].text = 7200;
         expect (qnm.calculate(new Parameter("X", clazz))).toEqual(true);
         expect (qnm.valid()).toEqual(true);

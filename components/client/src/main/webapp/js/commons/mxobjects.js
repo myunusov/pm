@@ -126,8 +126,8 @@ MXName.prototype = new MXProperty();
 function MXNumber(value) {
     this.calculated = false;
     this.coflicted = false;
-    this.value = value || null;
-    this._text = value || null;
+    this.value = value || undefined;
+    this._text = value || undefined;
 
     /**
      * Post construct;
@@ -155,7 +155,7 @@ function MXNumber(value) {
         return number(this._text) ?
             this._text : (
             number(this.value) ?
-                formatNumber(this.value, 5) :
+                this.formatNumber(this.value, 5) :
                 this.value
         );
     };
@@ -163,7 +163,7 @@ function MXNumber(value) {
     this.setText = function (value) {
         this.calculated = false;
         this._text = value;
-        this.value = number(value) ? formatNumber(value, 10) : undefined;
+        this.value = number(value) ? this.formatNumber(value, 10) : undefined;
     };
 
     /**
@@ -191,16 +191,18 @@ function MXNumber(value) {
     };
 
     this.asString = function () {
-        return formatNumber(this.text, 5);
+        return this.text;
     };
 
-    function equals(value1, value2) {
+    this.formatNumber = function(value, prec) {
+        return Math.round(value) === value ? Math.round(value) : parseFloat(parseFloat(value).toPrecision(prec).toString());
+    };
+
+    function equals (value1, value2) {
         return parseFloat(value1).toPrecision(10) === parseFloat(value2).toPrecision(10);
     }
 
-    function formatNumber(value, prec) {
-        return Math.round(value) === value ? Math.round(value) : parseFloat(parseFloat(value).toPrecision(prec).toString());
-    }
+
 }
 MXNumber.prototype = new MXProperty();
 
@@ -224,7 +226,7 @@ function MXUnit(id, title, rate, add, pattern) {
 
 function MXQuantity() {
 
-    this.unit = null;
+    this.unit = undefined;
 
     /**
      * Post construct;
@@ -259,7 +261,7 @@ function MXQuantity() {
         return number(this._text) ?
             this._text : (
             number(this.value) ?
-                formatNumber(this.value / this.unit.rate, 5) :
+                this.formatNumber(this.value / this.unit.rate, 5) :
                 this.value
         );
     };
@@ -267,16 +269,17 @@ function MXQuantity() {
     this.setText = function (value) {
         this.calculated = false;
         this._text = value;
-        this.value = number(value) ? formatNumber(value * this.unit.rate, 10) : undefined;
+        this.value = number(value) ? this.formatNumber(value * this.unit.rate, 10) : undefined;
     };
 
     this.setValue = function (newValue) {
-        if (number(this._text) && equals(this._text, newValue)) { // TODO unit rate ?
+        // TODO compare with different unit
+        if (number(this._text) && equals(this._text, newValue)) {
             return;
         }
         this.value = parseFloat(newValue).toPrecision(10);
         this.calculated = true;
-        this.coflicted = number(this._text) && !equals(this._text, newValue); // TODO unit rate ?
+        this.coflicted = number(this._text) && !equals(this._text, newValue);
         this._text = null;
     };
 
@@ -315,16 +318,9 @@ function MXQuantity() {
     };
 
     this.asString = function () {
-        return formatNumber(this.text, 5) + " " + this.unit.title;
+        return this.text + " " + this.unit.title;
     };
 
-    function equals(value1, value2) {
-        return parseFloat(value1).toPrecision(10) === parseFloat(value2).toPrecision(10);
-    }
-
-    function formatNumber(value, prec) {
-        return Math.round(value) === value ? Math.round(value) : parseFloat(parseFloat(value).toPrecision(prec).toString());
-    }
 }
 MXQuantity.prototype = new MXNumber();
 

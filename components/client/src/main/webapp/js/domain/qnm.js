@@ -265,7 +265,7 @@ function QNMVisit(clazz, node) {
         'S': new MXDuration('ms'),     // service Time
         'D': new MXDuration('ms'),     // service Demands
         'U': new MXPercentage('percent'),     // utilization
-        'RT': new MXDuration(),        // residence Time
+        'RT': new MXDuration('sec'),        // residence Time
         'XI': new Throughput(),     // throughput
         'V': new MXNumber(),       // visits number
         'TV': new MXNumber(1),     // total visits number
