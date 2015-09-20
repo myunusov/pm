@@ -60,11 +60,11 @@ function MXProperty() {
         return false;
     };
 
-    this.getPattern = function() {
+    this.getPattern = function () {
         return ".*";
     };
 
-    this._getPattern = function() {
+    this._getPattern = function () {
         return this.getPattern();
     };
 
@@ -147,7 +147,7 @@ function MXNumber(value) {
         return this.calculated ? null : this.value;
     };
 
-    this.getPattern = function() {
+    this.getPattern = function () {
         return "\\d*[\\., \\,]?\\d*";
     };
 
@@ -194,11 +194,11 @@ function MXNumber(value) {
         return this.text;
     };
 
-    this.formatNumber = function(value, prec) {
+    this.formatNumber = function (value, prec) {
         return Math.round(value) === value ? Math.round(value) : parseFloat(parseFloat(value).toPrecision(prec).toString());
     };
 
-    function equals (value1, value2) {
+    function equals(value1, value2) {
         return parseFloat(value1).toPrecision(10) === parseFloat(value2).toPrecision(10);
     }
 
@@ -249,11 +249,24 @@ function MXQuantity() {
     this.createDTO = function () {
         return {
             value: this.calculated ? null : this.value,
-            unit:  this.unit ? this.unit.id : null
+            unit: this.unit ? this.unit.id : null
         }
     };
 
-    this.getPattern = function() {
+    this.speedUpBy = function (base) {
+        return number(base.value) && number(this.value) ? this.formatNumber(this.value / base.value, 3) : "?";
+    };
+
+    this.boost = function (base) {
+        if (!(number(base.value) && number(this.value))) {
+            return "?"
+        }
+        var speedUp = this.value / base.value;
+        return this.formatNumber(speedUp < 1 ? -(1 - speedUp) * 100 : (1 - 1 / speedUp) * 100, 3);
+
+    };
+
+    this.getPattern = function () {
         return this.unit.pattern;
     };
 
@@ -318,7 +331,7 @@ function MXQuantity() {
     };
 
     this.asString = function () {
-        return this.text + " " + this.unit.title;
+        return (this.text || "?") + " " + this.unit.title;
     };
 
 }
@@ -344,5 +357,18 @@ function MXDuration(unitId, value) {
         new MXUnit('hr', 'hr', 3600)
     ];
     this.init(unitId, value);
+    this.speedUpBy = function (base) {
+        return number(base.value) && number(this.value) ? this.formatNumber(base.value / this.value, 3) : "?";
+    };
 }
 MXDuration.prototype = new MXQuantity();
+
+function MXThroughput(unitId, value) {
+    this.units = [
+        new MXUnit('tps'),
+        new MXUnit('tpm', 'tpm', 1 / 60),
+        new MXUnit('tph', 'tph', 1 / 3600)
+    ];
+    this.init(unitId, value);
+}
+MXThroughput.prototype = new MXQuantity();

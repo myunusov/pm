@@ -601,10 +601,10 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
     function emptyInfo() {
         return new function () {
             this.rAsString = function () {
-                return "X";
+                return "";
             };
             this.xAsString = function () {
-                return "X";
+                return "";
             };
             this.rClass = function () {
                 return "non";
@@ -641,59 +641,35 @@ controllers.controller('ComparatorCtrl', function ($scope, presentationModel) {
 
     function ComparedItem(class1, class2) {
 
-        this.r = rSpeedUp(class1, class2);
-        this.x = xSpeedUp(class1, class2);
+        var time1 = class1.responseTime();
+        var time2 = class2.responseTime();
+        var throughput1 = class1.throughput();
+        var throughput2 = class2.throughput();
 
-        function rSpeedUp(class1, class2) {
-            var time1 = class1.responseTime();
-            var time2 = class2.responseTime();
-            if (time1.value && time2.value) {
-                return time2.value / time1.value;
-            }
-            return null;
-        }
+        this.r = time2.speedUpBy(time1);
+        this.x = throughput2.speedUpBy(throughput1);
 
-        function xSpeedUp(class1, class2) {
-            var throughput1 = class1.throughput();
-            var throughput2 = class2.throughput();
-            if (throughput1.value && throughput2.value) {
-                return throughput2.value / throughput1.value;
-            }
-            return null;
-        }
-
-        function boost(speedUp) {
-            return speedUp < 1 ? -(1 - speedUp) * 100 : (1 - 1 / speedUp) * 100;
-        }
-
-        function formatNumber(value) {
-            return Math.round(value) === value ? Math.round(value) : parseFloat(value).toPrecision(3);
-        }
+        this.rb = time2.boost(time1);
+        this.xb = throughput2.boost(throughput1);
 
         this.rAsString = function () {
-            if (!this.r) {
-                return "X";
-            }
-            return "R:" + formatNumber(this.r) + "  (" + formatNumber(boost(this.r)) + "%)";
+            return "R:" + this.r + "  (" + this.rb + "%)";
         };
 
         this.xAsString = function () {
-            if (!this.x) {
-                return "X";
-            }
-            return "X:" + formatNumber(this.x) + "  (" + formatNumber(boost(this.x)) + "%)";
+            return "X:" + this.x + "  (" + this.xb + "%)";
 
         };
 
         this.rClass = function () {
-            if (!this.r || this.r == 1) {
+            if (!this.r || this.r == 1 || this.r == '?') {
                 return "non";
             }
-            return this.r < 1 ? "up" : "down";
+            return this.r < 1 ? "down" : "up";
         };
 
         this.xClass = function () {
-            if (!this.x || this.x == 1) {
+            if (!this.x || this.x == 1 || this.x == '?') {
                 return "non";
             }
             return this.x < 1 ? "down" : "up";

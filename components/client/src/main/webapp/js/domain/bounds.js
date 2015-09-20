@@ -75,7 +75,7 @@ function ChartBuilder(qnm) {
         var classes = qnm.classes;
         for (var i = 0; i < classes.length; i++) {
             result.push({
-                name: classes[i].name.value,
+                name: classes[i].title(),
                 data: calcDataFor(classes[i], method)
             });
         }
@@ -99,9 +99,11 @@ function ChartBuilder(qnm) {
 
 function BoundsCalculator(visits) {
 
-    this.isValid = checkServiceDemands();
-    var maxDemand = this.isValid ? maxServiceDemand() : "Undefined";
-    var sumDemand = this.isValid ? sumServiceDemand() : "Undefined";
+    var demands = collectDemands();
+    var maxDemand = maxServiceDemand();
+    var sumDemand = sumServiceDemand();
+
+    this.isValid = maxDemand && sumDemand;
 
     this.calcMaxX = function(tn) {
         var result1 = 1 / maxDemand;
@@ -115,36 +117,30 @@ function BoundsCalculator(visits) {
         return result1 > result2 ? result1 : result2;
     };
 
-    function checkServiceDemands() {
+    function collectDemands() {
+        var result = [];
         for (var i = 0; i < visits.length; i++) {
-            var v = visits[i];
-            var d = v.serviceDemands.value;
-            if (!d || !number(d)) {
-                return false;
+            var d = visits[i].totalServiceDemands();
+            if (d && number(d)) {
+                result.push(d);
             }
         }
-        return true;
+        return result;
     }
 
     function sumServiceDemand() {
         var result = 0;
-        for (var i = 0; i < visits.length; i++) {
-            var v = visits[i];
-            var d = parseFloat(v.serviceDemands.value);
-            var nn = parseFloat(v.node.nodeNumber.value);
-            // TODO * nn ?
-            result += d * nn;
+        for (var i = 0; i < demands.length; i++) {
+            result += demands[i];
         }
         return result;
     }
 
     function maxServiceDemand() {
         var result = 0;
-        for (var i = 0; i < visits.length; i++) {
-            var v = visits[i];
-            var d = parseFloat(v.serviceDemands.value);
-            if (d > result) {
-                result = d;
+        for (var i = 0; i < demands.length; i++) {
+            if (demands[i] > result) {
+                result = demands[i];
             }
         }
         return result;

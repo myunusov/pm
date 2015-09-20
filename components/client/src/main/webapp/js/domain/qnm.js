@@ -61,16 +61,6 @@ function QNMModelKind() {
     };
 }
 
-function Throughput(unitId, value) {
-    this.units = [
-        new MXUnit('tps'),
-        new MXUnit('tpm', 'tpm', 1 / 60),
-        new MXUnit('tph', 'tph', 1 / 3600)
-    ];
-    this.init(unitId, value)
-}
-Throughput.prototype = new MXQuantity();
-
 function QNMCenter() {
 
     this.lastEvalParam = null;
@@ -159,7 +149,7 @@ function QNMClass(id, modelKind, name) {
         'NAME': new MXName(name || "Class " + id),
         'M': new MXNumber(),       // userNumber
         'Z': new MXDuration('sec'),    // thinkTime
-        'X': new Throughput('tps'), // throughput
+        'X': new MXThroughput('tps'), // throughput
         'R': new MXDuration('sec'),    // responseTime
         'RT': new MXDuration('sec')    // residenceTime
     };
@@ -266,7 +256,7 @@ function QNMVisit(clazz, node) {
         'D': new MXDuration('ms'),     // service Demands
         'U': new MXPercentage('percent'),     // utilization
         'RT': new MXDuration('sec'),        // residence Time
-        'XI': new Throughput(),     // throughput
+        'XI': new MXThroughput(),     // throughput
         'V': new MXNumber(),       // visits number
         'TV': new MXNumber(1),     // total visits number
         'TD': new MXDuration('ms'),    // total service Demands
@@ -314,29 +304,33 @@ function QNMVisit(clazz, node) {
         return result;
     };
 
-    this.equals = function (other) {
-        if (!other) {
-            return null;
-        }
-        return (other instanceof QNMVisit) &&
-            other.id === this.id;
+    this.totalServiceDemands = function () {
+        return parseFloat(this.all['D'].value);
+    };
+
+    this.hideDetails = function () {
+        this.details = false;
+    };
+
+    this.showDetails = function () {
+        this.details = true;
     };
 
     this.isDetails = function () {
         return this.node.hasDetails() && this.details;
     };
 
+
     this.hasDetails = function () {
         return this.node.hasDetails();
     };
 
-
-    this.showDetails = function () {
-        this.details = true;
-    };
-
-    this.hideDetails = function () {
-        this.details = false;
+    this.equals = function (other) {
+        if (!other) {
+            return null;
+        }
+        return (other instanceof QNMVisit) &&
+            other.id === this.id;
     };
 
 
@@ -347,6 +341,29 @@ function Parameter(name, center) {
     this.name = name;
     this.center = center;
     this.value = center ? center.propertyById(name).value : null;
+
+    this.createDTO = function () {
+        return {
+            name: this.name,
+            value: this.value,
+            centerId: this.center.id,
+            centerType: this.center instanceof QNMClass ? "clazz" :
+                (this.center instanceof QNMNode ? "node" : "visit")
+        };
+    };
+
+    this.sync = function () {
+        if (empty(this.value) || (!this.center)) {
+            return null;
+        }
+        this.center.setValue(this);
+        return this;
+    };
+
+    this.setDTO = function (dto) {
+        this.value = dto.value;
+        this.name = dto.name;
+    };
 
     this.isUndefined = function () {
         return empty(this.value);
@@ -359,28 +376,6 @@ function Parameter(name, center) {
             other.center.equals(this.center);
     };
 
-    this.sync = function () {
-        if (empty(this.value) || (!this.center)) {
-            return null;
-        }
-        this.center.setValue(this);
-        return this;
-    };
-
-    this.createDTO = function () {
-        return {
-            name: this.name,
-            value: this.value,
-            centerId: this.center.id,
-            centerType: this.center instanceof QNMClass ? "clazz" :
-                (this.center instanceof QNMNode ? "node" : "visit")
-        };
-    };
-
-    this.setDTO = function (dto) {
-        this.value = dto.value;
-        this.name = dto.name;
-    }
 }
 
 function Calculator(fields, expressions) {
