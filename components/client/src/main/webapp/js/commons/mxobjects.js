@@ -110,6 +110,9 @@ function MXProperty() {
         set: this._setText
     });
 
+
+    this.cleanValue = function () {
+    };
 }
 
 function MXName(value) {
@@ -186,6 +189,12 @@ function MXNumber(value) {
     };
     this.isCalculated = function () {
         return !this._text;
+    };
+
+    this.cleanValue = function () {
+        if (this.isCalculated()) {
+            this.value = undefined;
+        }
     };
 
     this.asString = function () {

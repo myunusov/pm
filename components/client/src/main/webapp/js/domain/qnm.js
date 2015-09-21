@@ -705,20 +705,17 @@ function QNM(name, id) {
         return fields;
     };
 
-    this.valid = function () {
-        var result = true;
+    this.validate = function () {
         [this.classes, this.nodes, this.visits].each(
             function (u) {
                 var fields = u.getAll();
                 for (var i = 0; i < fields.length; i++) {
                     if (!fields[i].isValid()) {
-                        result = false;
-                        break;
+                        throw "Performance Model is invalid";
                     }
                 }
             }
         );
-        return result;
     };
 
     // R = SUM(RT * V)
@@ -778,23 +775,29 @@ function QNM(name, id) {
     };
 
     this.changeValue = function (changedFieldName, center) {
-        this.initFields();
         var changedField = new Parameter(changedFieldName, center);
         this.calculate(changedField);
-        if (!this.valid()) {
-            throw "Performance Model is invalid";
-        }
+        this.validate();
     };
 
-    this.initFields = function () {
-        [this.classes, this.visits, this.nodes].each(
-            function (u) {
-                var all = u.getAll();
-                for (var j = 0; j < all.length; j++) {
-                    all[j].conflicted = false;
-                }
+    this.calculate = function (changedField) {
+        if (!this.applyChangedField(changedField)) {
+            return;
+        }
+        this.recalculate();
+    };
+
+    this.recalculate = function () {
+        var calculator = this.makeCalculator();
+        if (!calculator) {
+            return;
+        }
+        for (var result = null; result || calculator.next();) {
+            result = calculator.execute();
+            if (calculator.error) {
+                throw "Performance Model is not consistent";
             }
-        );
+        }
     };
 
     this.makeCalculator = function () {
@@ -814,27 +817,13 @@ function QNM(name, id) {
             function (u) {
                 var all = u.getAll();
                 for (var j = 0; j < all.length; j++) {
-                    if (all[j].calculated) {
-                        all[j].text = undefined;
-                        all[j].calculated = false;
-                    }
+                    all[j].cleanValue();
                 }
             }
         );
     };
 
-    this.recalculate = function () {
-        var calculator = this.makeCalculator();
-        if (!calculator) {
-            return;
-        }
-        for (var result = null; result || calculator.next();) {
-            result = calculator.execute();
-            if (calculator.error) {
-                throw "Performance Model is not consistent";
-            }
-        }
-    };
+
 
     this.applyChangedField = function (changedField) {
         if (changedFields.contains(changedField)) {
@@ -847,12 +836,7 @@ function QNM(name, id) {
         return true;
     };
 
-    this.calculate = function (changedField) {
-        if (!this.applyChangedField(changedField)) {
-            return;
-        }
-        this.recalculate();
-    };
+
 
     this.setKind = function(kind) {
         this.kind.setUnit(kind);
