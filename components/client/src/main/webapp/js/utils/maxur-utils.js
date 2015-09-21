@@ -167,7 +167,7 @@ if (typeof Array.prototype.subst !=='function') {
 
 
 function empty(value) {
-    return !(value || value === 0 || isNaN(value) || !isFinite(value));
+    return !( value || value === 0 || isNaN(value) || !isFinite(value));
 }
 
 function number(value) {

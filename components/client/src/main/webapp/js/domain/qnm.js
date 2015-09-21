@@ -352,6 +352,11 @@ function Parameter(name, center) {
         };
     };
 
+    this.setDTO = function (dto) {
+        this.value = dto.value;
+        this.name = dto.name;
+    };
+
     this.sync = function () {
         if (empty(this.value) || (!this.center)) {
             return null;
@@ -360,13 +365,8 @@ function Parameter(name, center) {
         return this;
     };
 
-    this.setDTO = function (dto) {
-        this.value = dto.value;
-        this.name = dto.name;
-    };
-
     this.isUndefined = function () {
-        return empty(this.value);
+        return !number(this.value);
     };
 
     this.equals = function (other) {
@@ -777,12 +777,21 @@ function QNM(name, id) {
         return expressions;
     };
 
-    this.init = function () {
+    this.changeValue = function (changedFieldName, center) {
+        this.initFields();
+        var changedField = new Parameter(changedFieldName, center);
+        this.calculate(changedField);
+        if (!this.valid()) {
+            throw "Performance Model is invalid";
+        }
+    };
+
+    this.initFields = function () {
         [this.classes, this.visits, this.nodes].each(
             function (u) {
                 var all = u.getAll();
                 for (var j = 0; j < all.length; j++) {
-                    all[j].coflicted = false;
+                    all[j].conflicted = false;
                 }
             }
         );
@@ -817,15 +826,14 @@ function QNM(name, id) {
     this.recalculate = function () {
         var calculator = this.makeCalculator();
         if (!calculator) {
-            return true;
+            return;
         }
         for (var result = null; result || calculator.next();) {
             result = calculator.execute();
             if (calculator.error) {
-                return false;
+                throw "Performance Model is not consistent";
             }
         }
-        return true;
     };
 
     this.applyChangedField = function (changedField) {
@@ -841,9 +849,9 @@ function QNM(name, id) {
 
     this.calculate = function (changedField) {
         if (!this.applyChangedField(changedField)) {
-            return true;
+            return;
         }
-        return this.recalculate();
+        this.recalculate();
     };
 
     this.setKind = function(kind) {

@@ -252,17 +252,6 @@ controllers.controller('QNMCtrl', function ($scope, messageService, presentation
 
     $scope.modeId = 0;
 
-    $scope.change = function (fieldName, center) {
-        var model = $scope.model;
-        model.init();
-        var changedField = new Parameter(fieldName, center);
-        if (!model.calculate(changedField)) {
-            messageService.error("Performance Model is not consistent");
-        }
-        if (!model.valid()) {
-            messageService.error("Performance Model is invalid");
-        }
-    };
 
     $scope.addNode = function () {
         $scope.model.addNode();
@@ -272,6 +261,18 @@ controllers.controller('QNMCtrl', function ($scope, messageService, presentation
 
     $scope.addClass = function () {
         $scope.model.addClass();
+        $scope.model.cleanCalcFields();
+        $scope.model.recalculate();
+    };
+
+    $scope.remove = function (center) {
+        if (center instanceof QNMNode) {
+            $scope.model.removeNode(center);
+        } else if (center instanceof QNMClass) {
+            $scope.model.removeClass(center);
+        } else {
+            return;
+        }
         $scope.model.cleanCalcFields();
         $scope.model.recalculate();
     };
@@ -288,18 +289,6 @@ controllers.controller('QNMCtrl', function ($scope, messageService, presentation
 
     $scope.compare = function () {
         presentationModel.addCompareModel($scope.model);
-    };
-
-    $scope.remove = function (center) {
-        if (center instanceof QNMNode) {
-            $scope.model.removeNode(center);
-        } else if (center instanceof QNMClass) {
-            $scope.model.removeClass(center);
-        } else {
-            return;
-        }
-        $scope.model.cleanCalcFields();
-        $scope.model.recalculate();
     };
 
 });

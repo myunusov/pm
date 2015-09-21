@@ -10,13 +10,10 @@ var mxObjects = angular.module('mxObjects', []);
 mxObjects.controller('PropCtrl', function ($scope, messageService, presentationModel) {
     $scope.changeValue = function (fieldName) {
         var model = presentationModel.currentModel();
-        model.init();
-        var changedField = new Parameter(fieldName, $scope.owner);
-        if (!model.calculate(changedField)) {
-            messageService.error("Performance Model is not consistent");
-        }
-        if (!model.valid()) {
-            messageService.error("Performance Model is invalid");
+        try {
+            model.changeValue(fieldName, $scope.owner);
+        } catch (e) {
+            messageService.error(e);
         }
     };
 });
@@ -53,7 +50,7 @@ function MXProperty() {
     this.isValid = function () {
         return true;
     };
-    this.isCoflicted = function () {
+    this.isConflicted = function () {
         return false;
     };
     this.isCalculated = function () {
@@ -76,7 +73,7 @@ function MXProperty() {
         if (!this.isValid()) {
             return "invalid";
         }
-        if (this.isCoflicted()) {
+        if (this.isConflicted()) {
             return "conflict";
         }
         if (this.isCalculated()) {
@@ -124,8 +121,7 @@ function MXName(value) {
 MXName.prototype = new MXProperty();
 
 function MXNumber(value) {
-    this.calculated = false;
-    this.coflicted = false;
+
     this.value = value || undefined;
     this._text = value || undefined;
 
@@ -137,14 +133,14 @@ function MXNumber(value) {
         this.value = value;
         this._text = value;
     };
-    this.setDTO = function (dto) {
-        this._text = dto;
-        this.value = dto;
-        this.calculated = false;
-    };
 
     this.createDTO = function () {
-        return this.calculated ? null : this.value;
+        return this._text;
+    };
+
+    this.setDTO = function (dto) {
+        this._text = dto;
+        this.value = this.textToValue(dto);
     };
 
     this.getPattern = function () {
@@ -152,18 +148,23 @@ function MXNumber(value) {
     };
 
     this.getText = function () {
-        return number(this._text) ?
-            this._text : (
-            number(this.value) ?
-                this.formatNumber(this.value, 5) :
-                this.value
-        );
+        if (!this.isCalculated  && !this.isConflicted()) {
+            return this._text;
+        }
+        return this.valueToText(this.value);
     };
 
-    this.setText = function (value) {
-        this.calculated = false;
-        this._text = value;
-        this.value = number(value) ? this.formatNumber(value, 10) : undefined;
+    this.setText = function (text) {
+        this._text = text;
+        this.value =  this.textToValue(text);
+    };
+
+    this.textToValue = function(text) {
+        return number(text) ? this.formatNumber(text, 10) : undefined;
+    };
+
+    this.valueToText = function(value) {
+        return number(value) ? this.formatNumber(this.value, 5) : value;
     };
 
     /**
@@ -171,23 +172,20 @@ function MXNumber(value) {
      * @param newValue new Value
      */
     this.setValue = function (newValue) {
-        if (number(this._text) && equals(this._text, newValue)) {
-            return;
+        if (this.isConflicted()) {
+            this._text = null;
         }
         this.value = parseFloat(newValue).toPrecision(10);
-        this.calculated = true;
-        this.coflicted = number(this._text) && !equals(this._text, newValue);
-        this._text = null;
     };
 
     this.isValid = function () {
         return !this.value || (number(this.value) && this.value >= 0);
     };
-    this.isCoflicted = function () {
-        return this.coflicted;
+    this.isConflicted = function () {
+        return number(this._text) && !equals(this.textToValue(this._text), this.value);
     };
     this.isCalculated = function () {
-        return this.calculated;
+        return !this._text;
     };
 
     this.asString = function () {
@@ -199,7 +197,7 @@ function MXNumber(value) {
     };
 
     function equals(value1, value2) {
-        return parseFloat(value1).toPrecision(10) === parseFloat(value2).toPrecision(10);
+        return parseFloat(value1).toPrecision(5) === parseFloat(value2).toPrecision(5);
     }
 
 
@@ -239,18 +237,17 @@ function MXQuantity() {
         this.unit = this.unitById(unitId) || this.units[0];
     };
 
-    this.setDTO = function (dto) {
-        this._text = null;
-        this.value = dto.value;
-        this.unit = this.unitById(dto.unit);
-        this.calculated = false;
-    };
-
     this.createDTO = function () {
         return {
-            value: this.calculated ? null : this.value,
+            text: this._text,
             unit: this.unit ? this.unit.id : null
         }
+    };
+
+    this.setDTO = function (dto) {
+        this.unit = this.unitById(dto.unit);
+        this._text = dto.text;
+        this.value = this.textToValue(dto.text);
     };
 
     this.speedUpBy = function (base) {
@@ -270,35 +267,19 @@ function MXQuantity() {
         return this.unit.pattern;
     };
 
-    this.getText = function () {
-        return number(this._text) ?
-            this._text : (
-            number(this.value) ?
-                this.formatNumber(this.value / this.unit.rate, 5) :
-                this.value
-        );
-    };
-
-    this.setText = function (value) {
-        this.calculated = false;
-        this._text = value;
-        this.value = number(value) ? this.formatNumber(value * this.unit.rate, 10) : undefined;
-    };
-
-    this.setValue = function (newValue) {
-        // TODO compare with different unit
-        if (number(this._text) && equals(this._text, newValue)) {
-            return;
-        }
-        this.value = parseFloat(newValue).toPrecision(10);
-        this.calculated = true;
-        this.coflicted = number(this._text) && !equals(this._text, newValue);
-        this._text = null;
-    };
-
     this.setUnit = function (newValue) {
         this.unit = newValue;
-        this._text = null;
+        if (!this.isCalculated()) {
+            this._text = valueToText(newValue);
+        }
+    };
+
+    this.textToValue = function(text) {
+        return number(text) ? this.formatNumber(text * this.unit.rate, 10) : undefined;
+    };
+
+    this.valueToText = function(value) {
+        return number(value) ? this.formatNumber(value / this.unit.rate, 5) : value;
     };
 
     this.empty = function () {
