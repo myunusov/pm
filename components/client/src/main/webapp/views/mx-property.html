@@ -5,7 +5,7 @@
                flex
                aria-label="Property {{type.title}}"
                class="input input-small simplebox quantity {{prop.state}}"
-               ng-change="changeValue(type.id)"
+               ng-change="calculate()"
                ng-pattern="prop.pattern"
                ng-model="prop.text"
                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }">

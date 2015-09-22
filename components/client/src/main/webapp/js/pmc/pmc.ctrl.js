@@ -256,13 +256,13 @@ controllers.controller('QNMCtrl', function ($scope, messageService, presentation
     $scope.addNode = function () {
         $scope.model.addNode();
         $scope.model.cleanCalcFields();
-        $scope.model.recalculate();
+        $scope.model.calculate();
     };
 
     $scope.addClass = function () {
         $scope.model.addClass();
         $scope.model.cleanCalcFields();
-        $scope.model.recalculate();
+        $scope.model.calculate();
     };
 
     $scope.remove = function (center) {
@@ -274,7 +274,7 @@ controllers.controller('QNMCtrl', function ($scope, messageService, presentation
             return;
         }
         $scope.model.cleanCalcFields();
-        $scope.model.recalculate();
+        $scope.model.calculate();
     };
 
     $scope.isInComparator = function () {

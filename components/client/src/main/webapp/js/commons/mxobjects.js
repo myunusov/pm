@@ -8,10 +8,10 @@
 var mxObjects = angular.module('mxObjects', []);
 
 mxObjects.controller('PropCtrl', function ($scope, messageService, presentationModel) {
-    $scope.changeValue = function (fieldName) {
+    $scope.calculate = function () {
         var model = presentationModel.currentModel();
         try {
-            model.changeValue(fieldName, $scope.owner);
+            model.calculate();
         } catch (e) {
             messageService.error(e);
         }
@@ -33,6 +33,9 @@ mxObjects.directive('property', function () {
 });
 
 function MXProperty() {
+
+    this.owner = null;
+
     /**
      * Post construct;
      * @param value initial value
@@ -100,6 +103,9 @@ function MXProperty() {
 
     this._setText = function (value) {
         this.setText(value);
+        if (this.owner) {
+            this.owner.onchange(this);
+        }
     };
 
     /**

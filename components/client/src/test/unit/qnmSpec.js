@@ -75,12 +75,8 @@ describe('QN Model', function() {
         var visit = qnm.visits[0];
 
         visit.all["XI"].text = 1000;
-        qnm.calculate(new Parameter("XI", visit));
-        qnm.validate();
-
         visit.all["S"].text = 0.15;
-        qnm.calculate(new Parameter("S", visit));
-        qnm.validate();
+        qnm.calculate();
 
         expect (visit.all["D"].text).toEqual(0.15);
         expect (visit.all["U"].text).toEqual(15);
@@ -104,12 +100,8 @@ describe('QN Model', function() {
         var node = qnm.nodes[0];
 
         visit.all["XI"].text = 10800 / (30 * 60);
-        qnm.calculate(new Parameter("XI", visit));
-        qnm.validate();
-
         node.all["N"].text = 3;
-        qnm.calculate(new Parameter("N", node));
-        qnm.validate();
+        qnm.calculate();
 
         expect (visit.all["RT"].text).toEqual(0.5);
         expect (visit.all["RT"].asString()).toEqual("0.5 sec");
@@ -133,18 +125,11 @@ describe('QN Model', function() {
         var clazz = qnm.classes[0];
 
         visit.all["V"].text = 4.5;
-        qnm.calculate(new Parameter("V", visit));
-        qnm.validate();
-
         var tph = clazz.all["X"].unitById('tph');
         clazz.all["X"].setUnit(tph);
         clazz.all["X"].text = 7200;
-        qnm.calculate(new Parameter("X", clazz));
-        qnm.validate();
-
         visit.all["S"].text = 20;
-        qnm.calculate(new Parameter("S", visit));
-        qnm.validate();
+        qnm.calculate();
 
         expect (visit.all["XI"].text).toEqual(9);
         expect (visit.all["U"].text).toEqual(18);
@@ -179,33 +164,14 @@ describe('QN Model', function() {
         var visit3 = qnm.visits[2];
 
         clazz.all["X"].text = 5;
-        qnm.calculate(new Parameter("X", clazz));
-        qnm.validate();
-
         visit1.all["V"].text = 5;
-        qnm.calculate(new Parameter("V", visit1));
-        qnm.validate();
-
         visit2.all["V"].text = 3;
-        qnm.calculate(new Parameter("V", visit2));
-        qnm.validate();
-
         visit3.all["V"].text = 1;
-        qnm.calculate(new Parameter("V", visit3));
-        qnm.validate();
-
-
         visit1.all["S"].text = 10;
-        qnm.calculate(new Parameter("S", visit1));
-        qnm.validate();
-
         visit2.all["S"].text = 30;
-        qnm.calculate(new Parameter("S", visit2));
-        qnm.validate();
-
         visit3.all["S"].text = 20;
-        qnm.calculate(new Parameter("S", visit3));
-        qnm.validate();
+
+        qnm.calculate();
 
         expect (visit1.all["XI"].text).toEqual(25);
         expect (visit2.all["XI"].text).toEqual(15);
@@ -259,37 +225,14 @@ describe('QN Model', function() {
 
 
         read.all["X"].text = 5;
-        qnm.calculate(new Parameter("X", read));
-        qnm.validate();
-
         write.all["X"].text = 2;
-        qnm.calculate(new Parameter("X", write));
-        qnm.validate();
-
-
         read_cpu.all["S"].text = 100;
-        qnm.calculate(new Parameter("S", read_cpu));
-        qnm.validate();
-
         read_disk1.all["S"].text = 80;
-        qnm.calculate(new Parameter("S", read_disk1));
-        qnm.validate();
-
         read_disk2.all["S"].text = 70;
-        qnm.calculate(new Parameter("S", read_disk2));
-        qnm.validate();
-
         write_cpu.all["S"].text = 150;
-        qnm.calculate(new Parameter("S", write_cpu));
-        qnm.validate();
-
         write_disk1.all["S"].text = 200;
-        qnm.calculate(new Parameter("S", write_disk1));
-        qnm.validate();
-
         write_disk2.all["S"].text = 100;
-        qnm.calculate(new Parameter("S", write_disk2));
-        qnm.validate();
+        qnm.calculate();
 
         expect (read_cpu.all["U"].text).toEqual(50);
         expect (read_disk1.all["U"].text).toEqual(40);
@@ -340,25 +283,11 @@ describe('QN Model', function() {
         var visit = qnm.getVisitBy(request, disk);
 
         visit.all["U"].text = 50;
-        qnm.calculate(new Parameter("U", visit));
-        qnm.validate();
-
         visit.all["V"].text = 2;
-        qnm.calculate(new Parameter("V", visit));
-        qnm.validate();
-
         visit.all["S"].text = 25;
-        qnm.calculate(new Parameter("S", visit));
-        qnm.validate();
-
         request.all["M"].text = 150;
-        qnm.calculate(new Parameter("M", request));
-        qnm.validate();
-
         request.all["Z"].text = 10;
-        qnm.calculate(new Parameter("Z", request));
-        qnm.validate();
-
+        qnm.calculate();
 
         expect (request.all["R"].text).toEqual(5);
     });
