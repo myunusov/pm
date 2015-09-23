@@ -131,8 +131,8 @@ MXName.prototype = new MXProperty();
 
 function MXNumber(value) {
 
-    this.value = value || undefined;
     this._text = value || undefined;
+    this.value = value || undefined;
 
     /**
      * Post construct;
@@ -285,7 +285,7 @@ function MXQuantity() {
     this.setUnit = function (newValue) {
         this.unit = newValue;
         if (!this.isCalculated()) {
-            this._text = valueToText(newValue);
+            this._text = this.valueToText(newValue);
         }
     };
 

@@ -97,6 +97,10 @@ function QNMCenter() {
         value.owner = this;
     };
 
+    this.parameter = function (key, property) {
+        return new Parameter(key, this, property || this.all[key])
+    };
+
     this.propertyById = function (name) {
         return this.all[name];
     };
@@ -106,15 +110,22 @@ function QNMCenter() {
         quantity.setValue(param.value);
     };
 
-    this.onchange = function(property) {
+    this.onchange = function (property) {
+        var name = this.getNameFor(property);
+        if (name) {
+            this.owner.onchange(this.parameter(name, property));
+        }
+    };
+
+    this.getNameFor = function (property) {
         for (var name in this.all) {
             if (this.all.hasOwnProperty(name)) {
-                if (this.propertyById(name) ===  property) {
-                    this.owner.onchange(this, name);
-                    return;
+                if (this.propertyById(name) === property) {
+                    return name;
                 }
             }
         }
+        return null;
     };
 
     this.getAll = function () {
@@ -133,7 +144,7 @@ function QNMCenter() {
             if (this.all.hasOwnProperty(name)) {
                 var property = this.propertyById(name);
                 if (number(property.value) && !property.isCalculated()) {
-                    result.push(new Parameter(name, this));
+                    result.push(this.parameter(name));
                 }
             }
         }
@@ -273,7 +284,7 @@ function QNMVisit(owner, clazz, node) {
     this.expressions = function () {
         return [
             new Expression([
-                ['V', new Parameter('X', this.clazz)],
+                ['V', this.clazz.parameter('X')],
                 [-1, 'XI']
             ], this),
             new Expression([
@@ -290,17 +301,17 @@ function QNMVisit(owner, clazz, node) {
             ], this),
             new Expression([
                 [-1, 'TV'],
-                ['V', new Parameter('NN', this.node)]
+                ['V', this.node.parameter('NN')]
             ], this),
             new Expression([
                 [-1, 'TD'],
-                ['D', new Parameter('NN', this.node)]
+                ['D', this.node.parameter('NN')]
             ], this),
             // RT = S/(1 - SUM(U)) ->  RT = S + SUM(U * RT)
             new Expression([
                 [-1, 'RT'],
                 ['S'],
-                [new Parameter('U', this.node), 'RT']
+                [this.node.parameter('U'), 'RT']
             ], this)
         ];
     };
@@ -348,7 +359,7 @@ function QNMVisit(owner, clazz, node) {
 }
 QNMVisit.prototype = new QNMCenter();
 
-function Parameter(name, center) {
+function Parameter(name, center, property) {
     this.name = name;
     this.center = center;
     this.value = center ? center.propertyById(name).value : null;
@@ -368,11 +379,14 @@ function Parameter(name, center) {
         this.name = dto.name;
     };
 
-    this.sync = function () {
+    this.setToModel = function () {
         if (empty(this.value) || (!this.center)) {
             return null;
         }
-        this.center.setValue(this);
+        if (!property) {
+            property = center.propertyById(this.name);
+        }
+        property.setValue(this.value);
         return this;
     };
 
@@ -390,64 +404,46 @@ function Parameter(name, center) {
 }
 
 function Calculator(fields, expressions) {
-    this.fields = fields;
-    this.parameters = [];
-    this.expressions = expressions;
-    this.error = false;
+
+    var parameters = [];
+
+    this.calculate = function () {
+        while (this.next()) { // are there new manual params
+            while (this.execute()) { // are there new calculated params
+            }
+        }
+    };
 
     this.next = function () {
-        if (this.fields.length === 0) {
+        if (fields.length === 0) {
             return false;
         }
-        var field = this.fields[0];
-        this.fields.remove(field);
-        return this.input(field);
+        return take(fields[0]);
     };
 
     this.execute = function () {
-        for (var i = this.expressions.length - 1; i >= 0; i--) {
-            var exp = this.expressions[i];
-            var result = exp.solve(this.parameters);
+        for (var i = expressions.length - 1; i >= 0; i--) {
+            var result = expressions[i].solve(parameters);
             if (result) {
-                this.expressions.remove(exp);
-                this.error = !result.sync();
-                if (!this.error) {
-                    this.parameters.push(result);
-                    for (var j = 0; j < this.fields.length; j++) {
-                        if (this.fields[j].equals(result)) {
-                            this.fields.remove(this.fields[j]);
-                            break;
-                        }
-                    }
-
+                expressions.remove(expressions[i]);
+                if (!result.setToModel()) {
+                    throw "Performance Model is not consistent";
                 }
-                return result;
+                return take(result);
             }
         }
         return null;
     };
 
-    this.input = function (param) {
-        if (this.parameters.contains(param)) {
-            this.error = true;
+    // from fields to params
+    function take(param) {
+        fields.remove(param);
+        if (parameters.contains(param) || param.isUndefined()) {
             return null;
         }
-        this.error = param.isUndefined();
-        if (this.error) {
-            return null;
-        }
-        this.parameters.push(param);
+        parameters.push(param);
         return param;
-    };
-
-
-    this.last = function () {
-        return this.parameters[this.parameters.length - 1];
-    };
-
-    this.number = function () {
-        return this.parameters.length;
-    };
+    }
 
 }
 
@@ -458,7 +454,7 @@ function Expression(expression, center) {
     if (center) {
         this.expression.subst(
             function (v) {
-                return (number(v) || v instanceof Parameter) ? v : new Parameter(v, center);
+                return (number(v) || v instanceof Parameter) ? v : center.parameter(v);
             }
         );
     }
@@ -586,8 +582,7 @@ function QNM(name, id) {
         changedFields.setDTO(
             memento.changedFields,
             function (dto) {
-                var center = model.getCenterBy(dto);
-                return new Parameter(dto.name, center);
+                return model.getCenterBy(dto).parameter(dto.name);
             }
         );
 
@@ -739,31 +734,31 @@ function QNM(name, id) {
     // R = SUM(RT * V)
     this.makeRXNExps = function (clazz) {
         var result = [
-            [new Parameter('RT', clazz)]
+            [clazz.parameter('RT')]
         ];
         var visits = this.getVisitsByClass(clazz);
         for (var j = 0; j < visits.length; j++) {
-            result.push([-1, new Parameter('RT', visits[j]), new Parameter('V', visits[j])]);
+            result.push([-1, visits[j].parameter('RT'), visits[j].parameter('V')]);
         }
         return new Expression(result);
     };
 
     // U =  SUM(U)
     this.makeUExp = function (node) {
-        var result = [[-1, new Parameter('U', node)]];
+        var result = [[-1, node.parameter('U')]];
         var visits = this.getVisitsByNode(node);
         for (var j = 0; j < visits.length; j++) {
-            result.push([new Parameter('U', visits[j])]);
+            result.push([visits[j].parameter('U')]);
         }
         return new Expression(result);
     };
 
     // N =  SUM(N)
     this.makeNExp = function (node) {
-        var result = [[-1, new Parameter('TN', node)]];
+        var result = [[-1, node.parameter('TN')]];
         var visits = this.getVisitsByNode(node);
         for (var j = 0; j < visits.length; j++) {
-            result.push([new Parameter('NI', visits[j])]);
+            result.push([visits[j].parameter('NI')]);
         }
         return new Expression(result);
     };
@@ -792,8 +787,7 @@ function QNM(name, id) {
         return expressions;
     };
 
-    this.onchange = function (center, propertyName) {
-        var changedField = new Parameter(propertyName, center);
+    this.onchange = function (changedField) {
         if (changedFields.contains(changedField)) {
             changedFields.remove(changedField);
         }
@@ -807,12 +801,8 @@ function QNM(name, id) {
         if (!calculator) {
             return;
         }
-        for (var result = null; result || calculator.next();) {
-            result = calculator.execute();
-            if (calculator.error) {
-                throw "Performance Model is not consistent";
-            }
-        }
+        calculator.calculate();
+
         this.validate();
     };
 
