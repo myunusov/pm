@@ -18,7 +18,7 @@
         <project.root>./..</project.root>
         <release.repositoryId>myunusov/pm</release.repositoryId>
         <release.artifact>${project.basedir}/target/assemblies-${project.version}.zip</release.artifact>
-        <jsondoc.path>jsondoc.json</jsondoc.path>
+        <jsondoc.path>/api/application/jsondoc</jsondoc.path>
     </properties>
 
 

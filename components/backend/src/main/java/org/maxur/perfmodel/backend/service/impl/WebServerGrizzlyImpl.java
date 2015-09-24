@@ -15,6 +15,7 @@
 
 package org.maxur.perfmodel.backend.service.impl;
 
+import org.glassfish.grizzly.Grizzly;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.StaticHttpHandler;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -66,6 +67,10 @@ public class WebServerGrizzlyImpl extends WebServer {
         httpServer.shutdownNow();
     }
 
+    @Override
+    protected String version() {
+        return "Grizzly Http Server " + Grizzly.getDotedVersion();
+    }
 
     @Override
     public boolean isStarted() {

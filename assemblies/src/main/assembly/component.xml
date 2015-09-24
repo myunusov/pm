@@ -15,8 +15,6 @@
 
 <component>
 
-
-
     <fileSets>
         <fileSet>
             <directory>target</directory>
@@ -56,24 +54,18 @@
 
         <fileSet>
             <directory>${project.build.directory}/jsondoc-ui</directory>
-            <outputDirectory>.//webapp</outputDirectory>
+            <outputDirectory>./webapp</outputDirectory>
             <filtered>true</filtered>
             <excludes>
                 <exclude>**/META-INF/**</exclude>
             </excludes>
         </fileSet>
 
-        <fileSet>
-            <directory>../components/backend/target/jsondoc-ui</directory>
-            <outputDirectory>.//webapp</outputDirectory>
-            <filtered>false</filtered>
-        </fileSet>
-
     </fileSets>
 
     <dependencySets>
         <dependencySet>
-            <outputDirectory>.//webapp</outputDirectory>
+            <outputDirectory>./webapp</outputDirectory>
             <fileMode>0755</fileMode>
             <directoryMode>0755</directoryMode>
             <includes>

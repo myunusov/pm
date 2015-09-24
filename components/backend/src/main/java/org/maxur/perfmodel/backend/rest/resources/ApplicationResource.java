@@ -3,6 +3,8 @@ package org.maxur.perfmodel.backend.rest.resources;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 import org.jsondoc.core.annotation.*;
 import org.jsondoc.core.pojo.ApiVerb;
 import org.maxur.perfmodel.backend.service.Application;
@@ -10,10 +12,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +38,34 @@ public class ApplicationResource {
 
     @Inject
     private Application application;
+
+
+    @SuppressWarnings("unused")
+    @Named("webapp.url")
+    private String webappUrl;
+
+    @GET
+    @Path("/jsondoc")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiMethod(
+            path = "/application/jsondoc",
+            verb = ApiVerb.GET,
+            description = "Gets a application documentation",
+            produces = { MediaType.APPLICATION_JSON },
+            responsestatuscode = "200 - OK"
+    )
+    @ApiErrors(apierrors={
+            @ApiError(code="500", description="Application critical error")
+    })
+    public @ApiResponseObject String getJsonDoc() {
+        URL url = Resources.getResource("jsondoc.json");
+        try {
+            final String jsonDoc = Resources.toString(url, Charsets.UTF_8);
+            return jsonDoc.replaceAll("http://127.0.0.1:8080/api", webappUrl + "api");
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
     @GET
     @Path("/version")

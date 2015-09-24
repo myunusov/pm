@@ -34,7 +34,7 @@ public abstract class WebServer {
 
     protected static final String WEB_APP_URL = "/";
 
-    protected static final String REST_APP_URL = "api/";
+    public static final String REST_APP_URL = "api/";
 
     @SuppressWarnings("unused")
     @Named("webapp.folderName")
@@ -44,7 +44,7 @@ public abstract class WebServer {
      * Start Web server.
      */
     public void start() {
-        LOGGER.info("Start Web Server");
+        LOGGER.info("Start Web Server ({})", version());
         launch();
         LOGGER.info("Starting on " + webappUrl);
     }
@@ -66,6 +66,7 @@ public abstract class WebServer {
         shutdown();
     }
 
+    protected abstract String version();
 
     protected abstract void launch();
 

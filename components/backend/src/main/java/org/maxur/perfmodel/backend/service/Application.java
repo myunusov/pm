@@ -56,7 +56,6 @@ public abstract class Application {
         db.stop();
         onStop();
         LOGGER.info("Performance Model Calculator Server is stopped");
-        System.exit(0);
     }
 
     public String version() {

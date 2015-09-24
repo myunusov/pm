@@ -56,8 +56,9 @@ public class DataSourceLevelDbImpl implements DataSource, Database {
         final Options options = new Options();
         options.createIfMissing(true);
         try {
-            db = Iq80DBFactory.factory.open(new File(dbFolderName), options);
-            LOGGER.info("LevelDb Database is opened");
+            final Iq80DBFactory factory = Iq80DBFactory.factory;
+            db = factory.open(new File(dbFolderName), options);
+            LOGGER.info("LevelDb Database ({}) is opened", factory.toString());
         } catch (IOException e) {
             final String msg = "LevelDb Database is not opened";
             LOGGER.error(msg, e);

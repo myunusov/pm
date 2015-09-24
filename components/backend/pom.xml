@@ -473,7 +473,7 @@
                             <packages>
                                 <package>org.maxur.perfmodel.backend.rest</package>
                             </packages>
-                            <outputFile>${project.build.directory}/jsondoc-ui/jsondoc.json</outputFile>
+                            <outputFile>${project.build.directory}/classes/jsondoc.json</outputFile>
                             <scanner>org.jsondoc.core.scanner.DefaultJSONDocScanner</scanner>
                             <playgroundEnabled>true</playgroundEnabled> <!-- optional -->
                             <displayMethodAs>URI</displayMethodAs> <!-- optional -->

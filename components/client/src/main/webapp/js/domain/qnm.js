@@ -92,7 +92,7 @@ function QNMCenter() {
         return result;
     };
 
-    this.setParameter = function (key, value) {
+    this.setProperty = function (key, value) {
         this.all[key] = value;
         value.owner = this;
     };
@@ -166,12 +166,12 @@ function QNMClass(owner, id, modelKind) {
     this.owner = owner;
     this.all = {};
 
-    this.setParameter('NAME', new MXName("Class " + id));
-    this.setParameter('M', new MXNumber()); // userNumber
-    this.setParameter('Z', new MXDuration('sec')); // thinkTime
-    this.setParameter('X', new MXThroughput('tps')); // throughput
-    this.setParameter('R', new MXDuration('sec')); // responseTime
-    this.setParameter('RT', new MXDuration('sec')); // residenceTime
+    this.setProperty('NAME', new MXName("Class " + id));
+    this.setProperty('M', new MXNumber()); // userNumber
+    this.setProperty('Z', new MXDuration('sec')); // thinkTime
+    this.setProperty('X', new MXThroughput('tps')); // throughput
+    this.setProperty('R', new MXDuration('sec')); // responseTime
+    this.setProperty('RT', new MXDuration('sec')); // residenceTime
 
     this.title = function () {
         return this.all['NAME'].text;
@@ -220,11 +220,11 @@ function QNMNode(owner, id) {
     this.owner = owner;
     this.all = {};
 
-    this.setParameter('NAME', new QNMNodeName("Node " + id));
-    this.setParameter('NN', new MXNumber(1)); // nodeNumber
-    this.setParameter('U', new MXPercentage('percent')); // utilization
-    this.setParameter('N', new MXNumber()); // meanNumberTasks
-    this.setParameter('TN', new MXNumber()); // totalMeanNumberTasks
+    this.setProperty('NAME', new QNMNodeName("Node " + id));
+    this.setProperty('NN', new MXNumber(1)); // nodeNumber
+    this.setProperty('U', new MXPercentage('percent')); // utilization
+    this.setProperty('N', new MXNumber()); // meanNumberTasks
+    this.setProperty('TN', new MXNumber()); // totalMeanNumberTasks
 
     this.expressions = function () {
         return [
@@ -271,15 +271,15 @@ function QNMVisit(owner, clazz, node) {
     this.node = node;
     this.details = false;
 
-    this.setParameter('S', new MXDuration('ms')); // service Time
-    this.setParameter('D', new MXDuration('ms')); // service Demands
-    this.setParameter('U', new MXPercentage('percent')); // utilization
-    this.setParameter('RT', new MXDuration('sec')); // residence Time
-    this.setParameter('XI', new MXThroughput()); // throughput
-    this.setParameter('V', new MXNumber()); // visits number
-    this.setParameter('TV', new MXNumber(1)); // total visits number
-    this.setParameter('TD', new MXDuration('ms')); // total service Demands
-    this.setParameter('NI', new MXNumber()); //  mean Number Tasks
+    this.setProperty('S', new MXDuration('ms')); // service Time
+    this.setProperty('D', new MXDuration('ms')); // service Demands
+    this.setProperty('U', new MXPercentage('percent')); // utilization
+    this.setProperty('RT', new MXDuration('sec')); // residence Time
+    this.setProperty('XI', new MXThroughput()); // throughput
+    this.setProperty('V', new MXNumber()); // visits number
+    this.setProperty('TV', new MXNumber(1)); // total visits number
+    this.setProperty('TD', new MXDuration('ms')); // total service Demands
+    this.setProperty('NI', new MXNumber()); //  mean Number Tasks
 
     this.expressions = function () {
         return [
@@ -829,7 +829,6 @@ function QNM(name, id) {
             }
         );
     };
-
 
     this.setKind = function (kind) {
         this.cleanCalcFields();
