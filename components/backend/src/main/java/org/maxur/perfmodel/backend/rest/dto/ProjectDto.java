@@ -105,7 +105,7 @@ public class ProjectDto implements Serializable {
 
     /**
      * Creation method. Create DTO List by Project List.
-     * <p/>
+     * <p>
      * @param all list of Projects.
      * @return project's dto List.
      */
@@ -115,7 +115,7 @@ public class ProjectDto implements Serializable {
 
     /**
      * Creation method. Create Full DTO by Project.
-     * <p/>
+     * <p>
      * @param project domain object 'Project'.
      * @return project's dto.
      */

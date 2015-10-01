@@ -28,7 +28,7 @@ public class ConflictException extends Exception {
 
     /**
      * Create Validation Exception.
-     * <p/>
+     * <p>
      * @param message message template.
      * @param args Arguments referenced by the format specifiers in the format string.
      */

@@ -38,10 +38,10 @@ public final class Launcher {
     /**
      * Command line entry point. This method kicks off the building of a application  object
      * and executes it.
-     *
+     * <p>
      * @param args - arguments of command.
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         final ServiceLocatorFactory locatorFactory = ServiceLocatorFactory.getInstance();
         final ServiceLocator locator = locatorFactory.create("PmcLocator");
         bind(locator, new Config());
