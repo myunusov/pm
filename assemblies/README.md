@@ -11,7 +11,7 @@ PMC:Component (with api doc)
 PMC: root
     mvn site:stage
   
-#### 3. Check Prject, Prepare POM's, make tag etc 
+#### 3. Check Project, Prepare POM's, make tag etc 
 
 ```
 mvn release:prepare -PPROD,nexus,zip

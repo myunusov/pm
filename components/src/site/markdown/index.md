@@ -1,6 +1,6 @@
 #### [About][pmc]
 
-[![About](images/screen.png)][pmc]
+[![About](images/screen4.png)][pmc]
 
 Performance Model Calculator is a tool designed to support high performance software system development.
 
@@ -15,6 +15,32 @@ Execution Graph represents Software Model of System
 [![Queuing networks model](images/screen2.png)][pmc]
 
 Queuing networks model represents System Execution Models
+
+#### [Queuing networks model][pmc]
+
+[![Queuing networks model](images/screen3.png)][pmc]
+
+Queuing networks model represents System Execution Models
+
+#### [Queuing networks model][pmc]
+
+[![Queuing networks model](images/screen5.png)][pmc]
+
+Queuing networks model represents System Execution Models
+
+#### [Queuing networks model][pmc]
+
+[![Queuing networks model](images/screen6.png)][pmc]
+
+Queuing networks model represents System Execution Models
+
+
+#### [QA][pmc]
+
+[![QA](images/screen7.png)][pmc]
+
+This application is mobile friendly
+
 
 [pmc]: https://github.com/myunusov/pm/
 
