@@ -1,0 +1,8 @@
+<map id="G" name="G">
+<area shape="rect" id="node1_0" href="./PropertiesService.html" title="org.maxur.perfmodel.backend.service.PropertiesService" alt="" coords="58,107,177,146"/>
+<area shape="rect" id="node1" href="./PropertiesService.html" title="&lt;TABLE&gt;" alt="" coords="47,102,187,151"/>
+<area shape="rect" id="node3_1" href="./impl/PropertiesServiceHoconImpl.html" title="org.maxur.perfmodel.backend.service.impl.PropertiesServiceHoconImpl" alt="" coords="15,206,219,242"/>
+<area shape="rect" id="node3" href="./impl/PropertiesServiceHoconImpl.html" title="&lt;TABLE&gt;" alt="" coords="5,200,230,248"/>
+<area shape="rect" id="node2_2" href="./ConfigurationInjectionResolver.html" title="org.maxur.perfmodel.backend.service.ConfigurationInjectionResolver" alt="" coords="22,17,213,41"/>
+<area shape="rect" id="node2" href="./ConfigurationInjectionResolver.html" title="&lt;TABLE&gt;" alt="" coords="11,5,223,53"/>
+</map>

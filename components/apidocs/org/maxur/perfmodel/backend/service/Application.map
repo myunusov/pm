@@ -1,0 +1,16 @@
+<map id="G" name="G">
+<area shape="rect" id="node1_0" href="../ApplicationProvider.html" title="org.maxur.perfmodel.backend.ApplicationProvider" alt="" coords="385,11,535,47"/>
+<area shape="rect" id="node1" href="../ApplicationProvider.html" title="&lt;TABLE&gt;" alt="" coords="375,5,545,53"/>
+<area shape="rect" id="node5_1" href="./Application.html" title="org.maxur.perfmodel.backend.service.Application" alt="" coords="419,113,501,137"/>
+<area shape="rect" id="node5" href="./Application.html" title="&lt;TABLE&gt;" alt="" coords="408,101,512,149"/>
+<area shape="rect" id="node2_2" href="../rest/resources/ApplicationResource.html" title="org.maxur.perfmodel.backend.rest.resources.ApplicationResource" alt="" coords="581,11,795,47"/>
+<area shape="rect" id="node2" href="../rest/resources/ApplicationResource.html" title="&lt;TABLE&gt;" alt="" coords="570,5,806,53"/>
+<area shape="rect" id="node3_3" href="./WebServer.html" title="org.maxur.perfmodel.backend.service.WebServer" alt="" coords="515,211,595,235"/>
+<area shape="rect" id="node3" href="./WebServer.html" title="&lt;TABLE&gt;" alt="" coords="504,199,605,247"/>
+<area shape="rect" id="node4_4" href="./Database.html" title="org.maxur.perfmodel.backend.service.Database" alt="" coords="641,203,725,242"/>
+<area shape="rect" id="node4" href="./Database.html" title="&lt;TABLE&gt;" alt="" coords="630,198,735,247"/>
+<area shape="rect" id="node6_5" href="./impl/TrayIconApplication.html" title="org.maxur.perfmodel.backend.service.impl.TrayIconApplication" alt="" coords="15,205,219,241"/>
+<area shape="rect" id="node6" href="./impl/TrayIconApplication.html" title="&lt;TABLE&gt;" alt="" coords="5,199,230,247"/>
+<area shape="rect" id="node7_6" href="./impl/CliApplication.html" title="org.maxur.perfmodel.backend.service.impl.CliApplication" alt="" coords="265,205,469,241"/>
+<area shape="rect" id="node7" href="./impl/CliApplication.html" title="&lt;TABLE&gt;" alt="" coords="254,199,479,247"/>
+</map>

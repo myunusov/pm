@@ -10,10 +10,16 @@ digraph G {
 	nodesep=0.25;
 	ranksep=0.5;
 	// org.maxur.perfmodel.backend.utils.OsUtils
-	c69 [label=<<table title="org.maxur.perfmodel.backend.utils.OsUtils" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./OsUtils.html">
+	c277 [label=<<table title="org.maxur.perfmodel.backend.utils.OsUtils" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./OsUtils.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"><font face="Trebuchet MS"> OsUtils </font></td></tr>
 		</table></td></tr>
 		</table>>, URL="./OsUtils.html", fontname="Trebuchet MS", fontcolor="black", fontsize=9.0];
+	// org.maxur.perfmodel.backend.utils.DateTimeUtils
+	c278 [label=<<table title="org.maxur.perfmodel.backend.utils.DateTimeUtils" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./DateTimeUtils.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"><font face="Trebuchet MS"> DateTimeUtils </font></td></tr>
+		</table></td></tr>
+		</table>>, URL="./DateTimeUtils.html", fontname="Trebuchet MS", fontcolor="black", fontsize=9.0];
 }
 

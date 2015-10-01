@@ -1,55 +1,64 @@
-<div class="qnm" ng-controller="QNMCtrl" ng-init="init()">
+<div class="qnm" ng-controller="QNMCtrl">
 
-    <div>
+    <md-tabs md-selected="modeId"
+             md-dynamic-height
+             md-stretch-tabs="mobile"
+             md-align-tabs="top"
+            >
+        <md-tab>
+            <md-tab-label>
+                    <span>
+                        <button class="tab-button" style="padding: 0 5px 0 5px">
+                            <i class="mdi mdi-pen" style="font-size: 22px"></i>
+                            <md-tooltip>Text View</md-tooltip>
+                        </button>
+                    </span>
+            </md-tab-label>
+            <md-tab-body>
+            </md-tab-body>
+        </md-tab>
+        <md-tab>
+            <md-tab-label>
+                    <span>
+                        <button class="tab-button" style="padding: 0 5px 0 5px">
+                            <i class="mdi mdi-chart-line" style="font-size: 22px"></i>
+                            <md-tooltip>Chart View</md-tooltip>
+                        </button>
+                    </span>
+            </md-tab-label>
+            <md-tab-body>
+            </md-tab-body>
+        </md-tab>
+        <md-tab ng-click="compare()">
+            <md-tab-label>
+                    <span>
+                        <button class="tab-button" style="padding: 0 5px 0 5px">
+                            <i class="mdi mdi-compare" style="font-size: 22px">
+                                <span class="badge-w" ng-if="!isInComparator()"><span class="badge">+</span></span>
+                                <span class="badge-w" ng-if="isInComparator()"><span class="badge">{{compareModels()}}</span></span>
+                            </i>
+                            <md-tooltip>Comparator View</md-tooltip>
+                        </button>
+                    </span>
+            </md-tab-label>
+            <md-tab-body>
+            </md-tab-body>
+        </md-tab>
+    </md-tabs>
 
-        <md-content flex layout-padding layout-fill layout-gt-lg="row" layout-wrap layout="column" >
-            <div flex = "40">
-                <md-card>
-                    <md-card-content style="padding: 2px">
-                        <ng-include src="'views/nodes.html'" include-replace>
-                        </ng-include>
-                    </md-card-content>
-                </md-card>
-            </div>
+    <div ng-if="modeId == 0">
+        <ng-include src="'views/qnm-edit.html'" include-replace>
+        </ng-include>
+    </div>
 
-            <div flex = "60">
-                <md-card>
-                    <md-card-content style="padding: 2px">
-                        <ng-include src="'views/classes.html'" include-replace>
-                        </ng-include>
-                    </md-card-content>
-                </md-card>
-            </div>
+    <div ng-if="modeId == 1" >
+        <ng-include src="'views/qnm-chart.html'" include-replace>
+        </ng-include>
+    </div>
 
-            <div flex = "100">
-                <md-card>
-                    <md-card-content style="padding: 2px">
-                        <ng-include src="'views/visits.html'" include-replace>
-                        </ng-include>
-                    </md-card-content>
-                </md-card>
-            </div>
-
-        </md-content>
-
-        <div class="lock-size" layout="row" layout-align="left center">
-            <md-fab-speed-dial md-open="false" md-direction="right" class="md-scale">
-                <md-fab-trigger>
-                    <md-button aria-label="menu" class="md-fab md-warn">
-                        <md-icon md-svg-src="img/icons/menu.svg"></md-icon>
-                    </md-button>
-                </md-fab-trigger>
-                <md-fab-actions>
-                    <md-button aria-label="chart" class="md-fab md-raised md-mini" href="#chart/{{project.id}}/{{model.id}}">
-                        <i class="mdi mdi-chart-line"></i>
-                    </md-button>
-                    <md-button aria-label="compare" class="md-fab md-raised md-mini" ng-click="addToCompare(model)">
-                        <i class="mdi mdi-compare"></i>
-                    </md-button>
-                </md-fab-actions>
-            </md-fab-speed-dial>
-        </div>
-
+    <div ng-if="modeId == 2">
+        <ng-include src="'views/qnm-compare.html'" include-replace>
+        </ng-include>
     </div>
 
 </div>

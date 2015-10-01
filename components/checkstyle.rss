@@ -25,10 +25,10 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2015 Maxim Yunusov</copyright>
     <item>
-      <title>File: 19,
+      <title>File: 39,
              Errors: 0,
-             Warnings: 1,
-             Infos: 4
+             Warnings: 2,
+             Infos: 14
       </title>
             <link>http://myunusov.github.io/pm/components/components//checkstyle.html</link>
       <description>
@@ -46,10 +46,248 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.TrayIconApplication.java">org/maxur/perfmodel/backend/TrayIconApplication.java</a>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.service.ConfigurationInjectionResolver.java">org/maxur/perfmodel/backend/service/ConfigurationInjectionResolver.java</a>
                 </td>
                 <td>
-                  4
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.domain.ConflictException.java">org/maxur/perfmodel/backend/domain/ConflictException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.rest.resources.ProjectResource.java">org/maxur/perfmodel/backend/rest/resources/ProjectResource.java</a>
+                </td>
+                <td>
+                  5
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.rest.WebException.java">org/maxur/perfmodel/backend/rest/WebException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.service.WebServer.java">org/maxur/perfmodel/backend/service/WebServer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.service.impl.WebServerGrizzlyImpl.java">org/maxur/perfmodel/backend/service/impl/WebServerGrizzlyImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.rest.package-info.java">org/maxur/perfmodel/backend/rest/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.service.BenchmarkMethodInterceptor.java">org/maxur/perfmodel/backend/service/BenchmarkMethodInterceptor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.rest.RuntimeExceptionHandler.java">org/maxur/perfmodel/backend/rest/RuntimeExceptionHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.service.Application.java">org/maxur/perfmodel/backend/service/Application.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.rest.dto.ProjectDto.java">org/maxur/perfmodel/backend/rest/dto/ProjectDto.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.service.impl.CliApplication.java">org/maxur/perfmodel/backend/service/impl/CliApplication.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.utils.package-info.java">org/maxur/perfmodel/backend/utils/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.service.impl.package-info.java">org/maxur/perfmodel/backend/service/impl/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.service.Benchmark.java">org/maxur/perfmodel/backend/service/Benchmark.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.service.package-info.java">org/maxur/perfmodel/backend/service/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.rest.resources.ApplicationResource.java">org/maxur/perfmodel/backend/rest/resources/ApplicationResource.java</a>
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.service.PropertiesService.java">org/maxur/perfmodel/backend/service/PropertiesService.java</a>
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
@@ -66,7 +304,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
                 <td>
                   0
@@ -88,7 +326,49 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.rest.WebException.java">org/maxur/perfmodel/backend/rest/WebException.java</a>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.service.impl.PropertiesServiceHoconImpl.java">org/maxur/perfmodel/backend/service/impl/PropertiesServiceHoconImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.DataSourceProvider.java">org/maxur/perfmodel/backend/DataSourceProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.infrastructure.ProjectRepositoryLevelDbImpl.java">org/maxur/perfmodel/backend/infrastructure/ProjectRepositoryLevelDbImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.service.Database.java">org/maxur/perfmodel/backend/service/Database.java</a>
                 </td>
                 <td>
                   0
@@ -122,7 +402,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  1
                 </td>
                 <td>
                   0
@@ -144,7 +424,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.domain.ValidationException.java">org/maxur/perfmodel/backend/domain/ValidationException.java</a>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.ApplicationProvider.java">org/maxur/perfmodel/backend/ApplicationProvider.java</a>
                 </td>
                 <td>
                   0
@@ -158,35 +438,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.infrastructure.SimpleFileRepository.java">org/maxur/perfmodel/backend/infrastructure/SimpleFileRepository.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.rest.package-info.java">org/maxur/perfmodel/backend/rest/package-info.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.rest.PMObjectMapperProvider.java">org/maxur/perfmodel/backend/rest/PMObjectMapperProvider.java</a>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.infrastructure.DataSourceLevelDbImpl.java">org/maxur/perfmodel/backend/infrastructure/DataSourceLevelDbImpl.java</a>
                 </td>
                 <td>
                   0
@@ -228,10 +480,10 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.rest.ApplicationResource.java">org/maxur/perfmodel/backend/rest/ApplicationResource.java</a>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.service.impl.TrayIconApplication.java">org/maxur/perfmodel/backend/service/impl/TrayIconApplication.java</a>
                 </td>
                 <td>
-                  0
+                  4
                 </td>
                 <td>
                   0
@@ -256,7 +508,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.infrastructure.PropertiesService.java">org/maxur/perfmodel/backend/infrastructure/PropertiesService.java</a>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.rest.PmcObjectMapperProvider.java">org/maxur/perfmodel/backend/rest/PmcObjectMapperProvider.java</a>
                 </td>
                 <td>
                   0
@@ -270,7 +522,21 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.utils.package-info.java">org/maxur/perfmodel/backend/utils/package-info.java</a>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.service.HK2InterceptionService.java">org/maxur/perfmodel/backend/service/HK2InterceptionService.java</a>
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.service.DataSource.java">org/maxur/perfmodel/backend/service/DataSource.java</a>
                 </td>
                 <td>
                   0
@@ -284,7 +550,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.infrastructure.WebServer.java">org/maxur/perfmodel/backend/infrastructure/WebServer.java</a>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.Config.java">org/maxur/perfmodel/backend/Config.java</a>
                 </td>
                 <td>
                   0
@@ -298,7 +564,21 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.rest.ProjectResource.java">org/maxur/perfmodel/backend/rest/ProjectResource.java</a>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.utils.DateTimeUtils.java">org/maxur/perfmodel/backend/utils/DateTimeUtils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://myunusov.github.io/pm/components/components//checkstyle.html#org.maxur.perfmodel.backend.rest.RestServiceConfig.java">org/maxur/perfmodel/backend/rest/RestServiceConfig.java</a>
                 </td>
                 <td>
                   0

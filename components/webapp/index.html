@@ -14,73 +14,68 @@
 
 <body>
 
-<div id="main" flex layout="column" ng-controller="MainMenuCtrl">
+<div flex layout="column" resize ng-style="height()" ng-controller="MainMenuCtrl">
 
-<!--MAIN MENU-->
-<md-toolbar md-scroll-shrink class="md-whiteframe-glow-z1 site-content-toolbar md-default-theme" >
-    <div class="md-toolbar-tools">
+    <!--MAIN MENU-->
+    <md-toolbar class="md-whiteframe-glow-z1 site-content-toolbar md-scroll-shrink md-default-theme">
+        <div class="md-toolbar-tools">
 
-        <md-button aria-label="Menu" hide-gt-sm class="md-icon-button" ng-click="toggleLeft()">
-            <md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
-            <md-tooltip>Main Menu</md-tooltip>
-        </md-button>
+            <md-button aria-label="Menu" hide-gt-sm class="md-icon-button" ng-click="toggleLeft()">
+                <md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
+                <md-tooltip>Main Menu</md-tooltip>
+            </md-button>
 
-        <md-button aria-label="About" ng-click="showAbout($event)">
-            <h2><span>Performance Model Calculator</span></h2>
-        </md-button>
+            <md-button aria-label="About" ng-click="showAbout($event)">
+                <h2><span>Performance Model Calculator</span></h2>
+            </md-button>
 
-        <span flex></span>
+            <span flex></span>
 
-        <md-button aria-label="Repository" class="md-icon-button" hide-sm  ui-sref="projects" >
-            <md-icon class="mdi mdi-server"></md-icon>
-            <md-tooltip>Repository</md-tooltip>
-        </md-button>
+            <md-button aria-label="Repository" class="md-icon-button" hide-sm ui-sref="projects">
+                <md-icon class="mdi mdi-server"></md-icon>
+                <md-tooltip>Repository</md-tooltip>
+            </md-button>
 
-        <md-button aria-label="New Project" hide-sm class="md-icon-button" ng-click="make()">
-            <md-icon class="mdi mdi-file-outline"></md-icon>
-            <md-tooltip>New Project</md-tooltip>
-        </md-button>
+            <md-button aria-label="New Project" hide-sm class="md-icon-button" ng-click="make()">
+                <md-icon class="mdi mdi-file-outline"></md-icon>
+                <md-tooltip>New Project</md-tooltip>
+            </md-button>
 
-        <md-button aria-label="Save Project" hide-sm class="md-icon-button" ng-click="save()">
-            <md-icon class="mdi mdi-content-save"></md-icon>
-            <md-tooltip>Save Project</md-tooltip>
-        </md-button>
+            <md-button aria-label="Save Project" hide-sm class="md-icon-button" ng-click="save()">
+                <md-icon class="mdi mdi-content-save"></md-icon>
+                <md-tooltip>Save Project</md-tooltip>
+            </md-button>
 
-        <md-button aria-label="Compare" hide-sm class="md-icon-button" href="#compare" ng-disabled="isNotComparable()">
-            <md-icon class="mdi mdi-compare">
-                <span class="badge-w"><span class="badge">{{compareModels()}}</span></span>
-            </md-icon>
-            <md-tooltip>Compare</md-tooltip>
-        </md-button>
+            <md-button aria-label="Full Screen" hide-sm class="md-icon-button">
+                <md-icon class="mdi" ng-click="toggleFullScreen();" ng-class="fullScreenClass()"></md-icon>
+                <md-tooltip>Toggle Full Screen</md-tooltip>
+            </md-button>
 
-        <md-button aria-label="Full Screen" hide-sm class="md-icon-button" >
-            <md-icon class="mdi" ng-click="toggleFullScreen();" ng-class="fullScreenClass()"></md-icon>
-            <md-tooltip>Toggle Full Screen</md-tooltip>
-        </md-button>
-    </div>
-</md-toolbar>
+            <md-button aria-label="Project Structure" class="md-icon-button" ng-click="toggleRight()">
+                <md-icon md-svg-icon="img/icons/sitemap.svg"></md-icon>
+                <md-tooltip>Project Structure</md-tooltip>
+            </md-button>
+        </div>
+    </md-toolbar>
 
-<md-content flex layout="row" style="min-height: 400px">
+    <md-content flex>
 
-    <!-- LEFT SIDEBAR -->
-    <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left">
-        <md-toolbar>
-            <div class="md-toolbar-tools">
-                <h3 class="md-toolbar-tools">Main Menu</h3>
-                <span flex></span>
-                <md-button class="md-icon-button" aria-label="Close" ng-click="closeMenu()">
-                    <md-icon class="mdi mdi-close"></md-icon>
-                </md-button>
-            </div>
+        <!-- LEFT SIDEBAR -->
+        <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left">
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h3 class="md-toolbar-tools">Main Menu</h3>
+                    <span flex></span>
+                    <md-button class="md-icon-button" aria-label="Close Menu Panel" ng-click="closeMenu()">
+                        <md-icon class="mdi mdi-arrow-left"></md-icon>
+                    </md-button>
+                </div>
+            </md-toolbar>
 
             <md-list>
                 <md-list-item ng-click="showProjects()">
                     <md-icon class="mdi mdi-server"></md-icon>
                     <p> Project Repository </p>
-                </md-list-item>
-                <md-list-item ng-click="showComparator()" ng-hide="isNotComparable()">
-                    <md-icon class="mdi mdi-compare"></md-icon>
-                    <p> Compare Models </p>
                 </md-list-item>
                 <md-divider></md-divider>
                 <md-subheader class="md-no-sticky">Project</md-subheader>
@@ -94,36 +89,78 @@
                 </md-list-item>
             </md-list>
 
-        </md-toolbar>
+        </md-sidenav>
 
-        <md-content layout-padding>
+        <!-- RIGHT SIDEBAR -->
+        <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="right">
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h3 class="md-toolbar-tools">Project Structure</h3>
+                    <span flex></span>
+                    <md-button class="md-icon-button" aria-label="Close Structure Panel" ng-click="closeStructure()">
+                        <md-icon class="mdi mdi-arrow-right"></md-icon>
+                    </md-button>
+                </div>
+            </md-toolbar>
 
-        </md-content>
-    </md-sidenav>
+            <md-list>
+                <md-subheader class="md-no-sticky">Software Execution Models</md-subheader>
+                <md-list-item ng-repeat="model in project.sems()" layout-padding="2px" class="frame">
+                    <md-button class="md-icon-button" aria-label="Open Model" ng-click="openModel(model)">
+                        <md-icon class="mdi mdi-package-variant" ></md-icon>
+                    </md-button>
+                    <label>
+                        <input type="text" class="simplebox ng-pristine ng-valid" ng-model="model.name">
+                    </label>
+                    <span flex></span>
+                    <md-button class="md-icon-button" aria-label="Remove Model" ng-click="removeModel(model)">
+                        <md-icon class="mdi mdi-close"></md-icon>
+                    </md-button>
+                </md-list-item>
+                <md-divider></md-divider>
+                <md-subheader class="md-no-sticky">Queue Network Models</md-subheader>
+                <md-list-item ng-repeat="model in project.qnms()" layout-padding="2px" class="frame">
+                    <md-button class="md-icon-button" aria-label="Open Model" ng-click="openModel(model)">
+                        <md-icon class="mdi mdi-package-variant" ></md-icon>
+                    </md-button>
+                    <label>
+                        <input type="text" class="simplebox ng-pristine ng-valid" ng-model="model.name">
+                    </label>
+                    <span flex></span>
+                    <md-button class="md-icon-button" aria-label="Remove Model" ng-click="removeModel(model)">
+                        <md-icon class="mdi mdi-close"></md-icon>
+                    </md-button>
+                </md-list-item>
+            </md-list>
 
-    <!-- CONTEXT -->
-    <div flex ui-view autoscroll="false">
-    </div>
+            <md-content layout-padding>
+
+            </md-content>
+        </md-sidenav>
+
+        <!-- CONTEXT -->
+        <div flex ui-view autoscroll="true">
+        </div>
 
 
-</md-content>
+    </md-content>
 
 
 </div>
 
-<!--FOOTER
-<footer class="page-footer teal lighten-2">
+<!--FOOTER -->
+<div hide show-gt-md>
     <div class="footer-copyright">
         <div class="container">
             <span>Code licensed under <a class="grey-text text-lighten-4"
                                          href="http://www.apache.org/licenses/LICENSE-2.0.html" target="_blank">Apache
                 License</a>, Version
                     2.0.</span>
-            <span class="right"> Design and Developed by <a class="grey-text text-lighten-4"
+            <span class="right"> Design and Development by <a class="grey-text text-lighten-4"
                                                             href="http://www.maxur.org">Maxim Yunusov</a></span>
         </div>
     </div>
-</footer>-->
+</div>
 
 <script src="libs/jquery/js/jquery.js"></script>
 <script src="libs/jquery-json/js/jquery.json.js"></script>
@@ -133,6 +170,7 @@
 
 <script src="libs/angular-aria/js/angular-aria.js"></script>
 <script src="libs/angular-animate/js/angular-animate.js"></script>
+<script src="libs/angular-sanitize/js/angular-sanitize.js"></script>
 <script src="libs/angular-resource/js/angular-resource.js"></script>
 <script src="libs/angular-material/js/angular-material.js"></script>
 
@@ -141,9 +179,12 @@
 
 <script type="text/javascript" src="js/utils/maxur-utils.js"></script>
 
+<script type="text/javascript" src="js/commons/mxobjects.js"></script>
 <script type="text/javascript" src="js/domain/project.js"></script>
+<script type="text/javascript" src="js/domain/presentationModel.js"></script>
 <script type="text/javascript" src="js/domain/qnm.js"></script>
 <script type="text/javascript" src="js/domain/egm.js"></script>
+<script type="text/javascript" src="js/domain/bounds.js"></script>
 
 <script type="text/javascript" src="js/pmc/pmc.ctrl.js"></script>
 <script type="text/javascript" src="js/pmc/pmc.dir.js"></script>

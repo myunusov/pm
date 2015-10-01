@@ -10,28 +10,28 @@ digraph G {
 	nodesep=0.25;
 	ranksep=0.5;
 	// org.maxur.perfmodel.backend.rest.WebException
-	c51 [label=<<table title="org.maxur.perfmodel.backend.rest.WebException" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./WebException.html">
+	c134 [label=<<table title="org.maxur.perfmodel.backend.rest.WebException" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./WebException.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"><font face="Trebuchet MS"> WebException </font></td></tr>
 		</table></td></tr>
 		</table>>, URL="./WebException.html", fontname="Trebuchet MS", fontcolor="black", fontsize=9.0];
-	// org.maxur.perfmodel.backend.rest.ProjectResource
-	c52 [label=<<table title="org.maxur.perfmodel.backend.rest.ProjectResource" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./ProjectResource.html">
+	// org.maxur.perfmodel.backend.rest.RuntimeExceptionHandler
+	c135 [label=<<table title="org.maxur.perfmodel.backend.rest.RuntimeExceptionHandler" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./RuntimeExceptionHandler.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"><font face="Trebuchet MS"> ProjectResource </font></td></tr>
+<tr><td align="center" balign="center"><font face="Trebuchet MS"> RuntimeExceptionHandler </font></td></tr>
 		</table></td></tr>
-		</table>>, URL="./ProjectResource.html", fontname="Trebuchet MS", fontcolor="black", fontsize=9.0];
-	// org.maxur.perfmodel.backend.rest.PMObjectMapperProvider
-	c53 [label=<<table title="org.maxur.perfmodel.backend.rest.PMObjectMapperProvider" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./PMObjectMapperProvider.html">
+		</table>>, URL="./RuntimeExceptionHandler.html", fontname="Trebuchet MS", fontcolor="black", fontsize=9.0];
+	// org.maxur.perfmodel.backend.rest.RestServiceConfig
+	c136 [label=<<table title="org.maxur.perfmodel.backend.rest.RestServiceConfig" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./RestServiceConfig.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"><font face="Trebuchet MS"> PMObjectMapperProvider </font></td></tr>
+<tr><td align="center" balign="center"><font face="Trebuchet MS"> RestServiceConfig </font></td></tr>
 		</table></td></tr>
-		</table>>, URL="./PMObjectMapperProvider.html", fontname="Trebuchet MS", fontcolor="black", fontsize=9.0];
-	// org.maxur.perfmodel.backend.rest.ApplicationResource
-	c54 [label=<<table title="org.maxur.perfmodel.backend.rest.ApplicationResource" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./ApplicationResource.html">
+		</table>>, URL="./RestServiceConfig.html", fontname="Trebuchet MS", fontcolor="black", fontsize=9.0];
+	// org.maxur.perfmodel.backend.rest.PmcObjectMapperProvider
+	c137 [label=<<table title="org.maxur.perfmodel.backend.rest.PmcObjectMapperProvider" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./PmcObjectMapperProvider.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"><font face="Trebuchet MS"> ApplicationResource </font></td></tr>
+<tr><td align="center" balign="center"><font face="Trebuchet MS"> PmcObjectMapperProvider </font></td></tr>
 		</table></td></tr>
-		</table>>, URL="./ApplicationResource.html", fontname="Trebuchet MS", fontcolor="black", fontsize=9.0];
+		</table>>, URL="./PmcObjectMapperProvider.html", fontname="Trebuchet MS", fontcolor="black", fontsize=9.0];
 }
 

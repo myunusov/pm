@@ -1,8 +1,8 @@
 <map id="G" name="G">
 <area shape="rect" id="node1_0" href="./Repository.html" title="org.maxur.perfmodel.backend.domain.Repository" alt="" coords="73,107,172,146"/>
 <area shape="rect" id="node1" href="./Repository.html" title="&lt;TABLE&gt;" alt="" coords="63,102,183,151"/>
-<area shape="rect" id="node2_1" href="../infrastructure/SimpleFileRepository.html" title="org.maxur.perfmodel.backend.infrastructure.SimpleFileRepository" alt="" coords="16,206,229,242"/>
-<area shape="rect" id="node2" href="../infrastructure/SimpleFileRepository.html" title="&lt;TABLE&gt;" alt="" coords="5,200,240,248"/>
-<area shape="rect" id="node3_2" href="../rest/ProjectResource.html" title="org.maxur.perfmodel.backend.rest.ProjectResource" alt="" coords="38,11,207,47"/>
-<area shape="rect" id="node3" href="../rest/ProjectResource.html" title="&lt;TABLE&gt;" alt="" coords="27,5,218,53"/>
+<area shape="rect" id="node2_1" href="../infrastructure/ProjectRepositoryLevelDbImpl.html" title="org.maxur.perfmodel.backend.infrastructure.ProjectRepositoryLevelDbImpl" alt="" coords="16,206,229,242"/>
+<area shape="rect" id="node2" href="../infrastructure/ProjectRepositoryLevelDbImpl.html" title="&lt;TABLE&gt;" alt="" coords="5,200,240,248"/>
+<area shape="rect" id="node3_2" href="../rest/resources/ProjectResource.html" title="org.maxur.perfmodel.backend.rest.resources.ProjectResource" alt="" coords="15,11,230,47"/>
+<area shape="rect" id="node3" href="../rest/resources/ProjectResource.html" title="&lt;TABLE&gt;" alt="" coords="5,5,241,53"/>
 </map>

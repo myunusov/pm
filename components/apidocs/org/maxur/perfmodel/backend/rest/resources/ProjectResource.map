@@ -1,0 +1,10 @@
+<map id="G" name="G">
+<area shape="rect" id="node1_0" href="../../domain/Repository.html" title="org.maxur.perfmodel.backend.domain.Repository" alt="" coords="15,107,198,157"/>
+<area shape="rect" id="node1" href="../../domain/Repository.html" title="&lt;TABLE&gt;" alt="" coords="5,101,209,163"/>
+<area shape="rect" id="node2_1" href="../../domain/Project.html" title="org.maxur.perfmodel.backend.domain.Project" alt="" coords="317,217,499,253"/>
+<area shape="rect" id="node2" href="../../domain/Project.html" title="&lt;TABLE&gt;" alt="" coords="306,211,510,259"/>
+<area shape="rect" id="node3_2" href="../dto/ProjectDto.html" title="org.maxur.perfmodel.backend.rest.dto.ProjectDto" alt="" coords="244,114,431,150"/>
+<area shape="rect" id="node3" href="../dto/ProjectDto.html" title="&lt;TABLE&gt;" alt="" coords="233,108,441,156"/>
+<area shape="rect" id="node4_3" href="./ProjectResource.html" title="org.maxur.perfmodel.backend.rest.resources.ProjectResource" alt="" coords="280,17,395,41"/>
+<area shape="rect" id="node4" href="./ProjectResource.html" title="&lt;TABLE&gt;" alt="" coords="269,5,405,53"/>
+</map>

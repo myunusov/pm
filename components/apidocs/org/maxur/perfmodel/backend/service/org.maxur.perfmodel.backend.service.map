@@ -1,0 +1,20 @@
+<map id="G" name="G">
+<area shape="rect" id="node1_0" href="./WebServer.html" title="org.maxur.perfmodel.backend.service.WebServer" alt="" coords="16,117,96,141"/>
+<area shape="rect" id="node1" href="./WebServer.html" title="&lt;TABLE&gt;" alt="" coords="5,105,107,153"/>
+<area shape="rect" id="node2_1" href="./PropertiesService.html" title="org.maxur.perfmodel.backend.service.PropertiesService" alt="" coords="271,110,390,149"/>
+<area shape="rect" id="node2" href="./PropertiesService.html" title="&lt;TABLE&gt;" alt="" coords="261,105,401,154"/>
+<area shape="rect" id="node3_2" href="./HK2InterceptionService.html" title="org.maxur.perfmodel.backend.service.HK2InterceptionService" alt="" coords="472,19,624,43"/>
+<area shape="rect" id="node3" href="./HK2InterceptionService.html" title="&lt;TABLE&gt;" alt="" coords="461,7,635,55"/>
+<area shape="rect" id="node4_3" href="./DataSource.html" title="org.maxur.perfmodel.backend.service.DataSource" alt="" coords="670,11,754,50"/>
+<area shape="rect" id="node4" href="./DataSource.html" title="&lt;TABLE&gt;" alt="" coords="659,6,765,55"/>
+<area shape="rect" id="node5_4" href="./Database.html" title="org.maxur.perfmodel.backend.service.Database" alt="" coords="142,110,226,149"/>
+<area shape="rect" id="node5" href="./Database.html" title="&lt;TABLE&gt;" alt="" coords="131,105,237,154"/>
+<area shape="rect" id="node6_5" href="./ConfigurationInjectionResolver.html" title="org.maxur.perfmodel.backend.service.ConfigurationInjectionResolver" alt="" coords="235,19,426,43"/>
+<area shape="rect" id="node6" href="./ConfigurationInjectionResolver.html" title="&lt;TABLE&gt;" alt="" coords="225,7,437,55"/>
+<area shape="rect" id="node7_6" href="./BenchmarkMethodInterceptor.html" title="org.maxur.perfmodel.backend.service.BenchmarkMethodInterceptor" alt="" coords="800,19,989,43"/>
+<area shape="rect" id="node7" href="./BenchmarkMethodInterceptor.html" title="&lt;TABLE&gt;" alt="" coords="789,7,1000,55"/>
+<area shape="rect" id="node8_7" href="./Benchmark.html" title="org.maxur.perfmodel.backend.service.Benchmark" alt="" coords="1035,19,1117,43"/>
+<area shape="rect" id="node8" href="./Benchmark.html" title="&lt;TABLE&gt;" alt="" coords="1025,7,1127,55"/>
+<area shape="rect" id="node9_8" href="./Application.html" title="org.maxur.perfmodel.backend.service.Application" alt="" coords="60,19,143,43"/>
+<area shape="rect" id="node9" href="./Application.html" title="&lt;TABLE&gt;" alt="" coords="49,7,153,55"/>
+</map>

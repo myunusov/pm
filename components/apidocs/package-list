@@ -2,4 +2,8 @@ org.maxur.perfmodel.backend
 org.maxur.perfmodel.backend.domain
 org.maxur.perfmodel.backend.infrastructure
 org.maxur.perfmodel.backend.rest
+org.maxur.perfmodel.backend.rest.dto
+org.maxur.perfmodel.backend.rest.resources
+org.maxur.perfmodel.backend.service
+org.maxur.perfmodel.backend.service.impl
 org.maxur.perfmodel.backend.utils

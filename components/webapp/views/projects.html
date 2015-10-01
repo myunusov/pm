@@ -8,7 +8,7 @@
         </button>
     </div>
     <div flex layout-padding class="md-padding frame">
-        <md-card ng-repeat="project in remoteProjects | filter : {isLocal : false }">
+        <md-card ng-repeat="project in remoteProjects | filter : {isLocal : false } track by project.id">
             <md-card-content>
                 <div layout="row" layout-align="space-between center">
                     <div>
@@ -42,7 +42,7 @@
         </button>
     </div>
     <div flex layout-padding class="md-padding frame">
-        <md-card ng-repeat="project in localProjects | filter : {isLocal : true }">
+        <md-card ng-repeat="project in localProjects | filter : {isLocal : true } track by project.id">
             <md-card-content>
                 <div layout="row" layout-align="space-between center">
                     <div>

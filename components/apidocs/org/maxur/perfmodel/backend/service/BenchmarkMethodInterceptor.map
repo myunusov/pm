@@ -1,0 +1,10 @@
+<map id="G" name="G">
+<area shape="rect" id="node1_0" href="./BenchmarkMethodInterceptor.html" title="org.maxur.perfmodel.backend.service.BenchmarkMethodInterceptor" alt="" coords="67,127,256,151"/>
+<area shape="rect" id="node1" href="./BenchmarkMethodInterceptor.html" title="&lt;TABLE&gt;" alt="" coords="56,115,267,163"/>
+<area shape="rect" id="node3_1" href="http://java.sun.com/j2se/1.4.2/docs/api/com/ecyrd/speed4j/StopWatchFactory.html" title="com.ecyrd.speed4j.StopWatchFactory" alt="" coords="16,223,139,259"/>
+<area shape="rect" id="node3" href="http://java.sun.com/j2se/1.4.2/docs/api/com/ecyrd/speed4j/StopWatchFactory.html" title="&lt;TABLE&gt;" alt="" coords="5,217,149,265"/>
+<area shape="rect" id="node4_2" href="http://java.sun.com/j2se/1.4.2/docs/api/org/aopalliance/intercept/MethodInvocation.html" title="org.aopalliance.intercept.MethodInvocation" alt="" coords="184,216,309,267"/>
+<area shape="rect" id="node4" href="http://java.sun.com/j2se/1.4.2/docs/api/org/aopalliance/intercept/MethodInvocation.html" title="&lt;TABLE&gt;" alt="" coords="173,211,320,272"/>
+<area shape="rect" id="node2_3" href="http://java.sun.com/j2se/1.4.2/docs/api/org/aopalliance/intercept/MethodInterceptor.html" title="org.aopalliance.intercept.MethodInterceptor" alt="" coords="97,11,226,61"/>
+<area shape="rect" id="node2" href="http://java.sun.com/j2se/1.4.2/docs/api/org/aopalliance/intercept/MethodInterceptor.html" title="&lt;TABLE&gt;" alt="" coords="86,5,237,67"/>
+</map>

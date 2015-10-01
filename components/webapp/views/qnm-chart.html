@@ -1,0 +1,21 @@
+<div ng-controller="ChartCtrl" layout="column" flex layout-fill>
+    <md-content flex layout-padding layout-fill layout-wrap layout-gt-lg="row" layout="column">
+        <div class="framehdr" flex="100">
+            <i class="mdi mdi-chart-line"></i>&nbsp;{{model.name}}: Asymptotic Bounds
+        </div>
+        <div flex="50">
+            <md-card>
+                <md-card-content>
+                    <div id="{{'r' + model.id}}" class="bounds-chart" flex="100"></div>
+                </md-card-content>
+            </md-card>
+        </div>
+        <div flex="50">
+            <md-card>
+                <md-card-content>
+                    <div id="{{'x' + model.id}}" class="bounds-chart" flex="100"></div>
+                </md-card-content>
+            </md-card>
+        </div>
+    </md-content>
+</div>

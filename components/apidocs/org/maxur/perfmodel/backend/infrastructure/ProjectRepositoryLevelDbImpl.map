@@ -1,0 +1,10 @@
+<map id="G" name="G">
+<area shape="rect" id="node1_0" href="../domain/Repository.html" title="org.maxur.perfmodel.backend.domain.Repository" alt="" coords="129,11,311,61"/>
+<area shape="rect" id="node1" href="../domain/Repository.html" title="&lt;TABLE&gt;" alt="" coords="118,5,322,67"/>
+<area shape="rect" id="node3_1" href="./ProjectRepositoryLevelDbImpl.html" title="org.maxur.perfmodel.backend.infrastructure.ProjectRepositoryLevelDbImpl" alt="" coords="127,127,313,151"/>
+<area shape="rect" id="node3" href="./ProjectRepositoryLevelDbImpl.html" title="&lt;TABLE&gt;" alt="" coords="117,115,323,163"/>
+<area shape="rect" id="node2_2" href="../domain/Project.html" title="org.maxur.perfmodel.backend.domain.Project" alt="" coords="243,223,426,259"/>
+<area shape="rect" id="node2" href="../domain/Project.html" title="&lt;TABLE&gt;" alt="" coords="233,217,437,265"/>
+<area shape="rect" id="node4_3" href="../service/DataSource.html" title="org.maxur.perfmodel.backend.service.DataSource" alt="" coords="15,216,198,267"/>
+<area shape="rect" id="node4" href="../service/DataSource.html" title="&lt;TABLE&gt;" alt="" coords="5,211,209,272"/>
+</map>

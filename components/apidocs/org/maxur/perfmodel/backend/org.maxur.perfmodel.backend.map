@@ -1,6 +1,8 @@
 <map id="G" name="G">
-<area shape="rect" id="node1_0" href="./TrayIconApplication.html" title="org.maxur.perfmodel.backend.TrayIconApplication" alt="" coords="16,17,147,41"/>
-<area shape="rect" id="node1" href="./TrayIconApplication.html" title="&lt;TABLE&gt;" alt="" coords="5,5,157,53"/>
-<area shape="rect" id="node2_1" href="./Launcher.html" title="org.maxur.perfmodel.backend.Launcher" alt="" coords="193,17,266,41"/>
-<area shape="rect" id="node2" href="./Launcher.html" title="&lt;TABLE&gt;" alt="" coords="182,5,277,53"/>
+<area shape="rect" id="node1_0" href="./Launcher.html" title="org.maxur.perfmodel.backend.Launcher" alt="" coords="15,17,89,41"/>
+<area shape="rect" id="node1" href="./Launcher.html" title="&lt;TABLE&gt;" alt="" coords="5,5,99,53"/>
+<area shape="rect" id="node2_1" href="./DataSourceProvider.html" title="org.maxur.perfmodel.backend.DataSourceProvider" alt="" coords="134,17,263,41"/>
+<area shape="rect" id="node2" href="./DataSourceProvider.html" title="&lt;TABLE&gt;" alt="" coords="123,5,274,53"/>
+<area shape="rect" id="node3_2" href="./ApplicationProvider.html" title="org.maxur.perfmodel.backend.ApplicationProvider" alt="" coords="309,17,438,41"/>
+<area shape="rect" id="node3" href="./ApplicationProvider.html" title="&lt;TABLE&gt;" alt="" coords="298,5,449,53"/>
 </map>

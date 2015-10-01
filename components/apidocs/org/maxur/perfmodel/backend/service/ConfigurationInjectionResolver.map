@@ -1,0 +1,12 @@
+<map id="G" name="G">
+<area shape="rect" id="node1_0" href="./PropertiesService.html" title="org.maxur.perfmodel.backend.service.PropertiesService" alt="" coords="15,222,134,261"/>
+<area shape="rect" id="node1" href="./PropertiesService.html" title="&lt;TABLE&gt;" alt="" coords="5,217,145,266"/>
+<area shape="rect" id="node2_1" href="./ConfigurationInjectionResolver.html" title="org.maxur.perfmodel.backend.service.ConfigurationInjectionResolver" alt="" coords="143,127,334,151"/>
+<area shape="rect" id="node2" href="./ConfigurationInjectionResolver.html" title="&lt;TABLE&gt;" alt="" coords="133,115,345,163"/>
+<area shape="rect" id="node4_2" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/hk2/api/ServiceHandle.html" title="org.glassfish.hk2.api.ServiceHandle" alt="" coords="180,216,297,267"/>
+<area shape="rect" id="node4" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/hk2/api/ServiceHandle.html" title="&lt;TABLE&gt;" alt="" coords="169,211,308,272"/>
+<area shape="rect" id="node5_3" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/hk2/api/Injectee.html" title="org.glassfish.hk2.api.Injectee" alt="" coords="343,216,449,267"/>
+<area shape="rect" id="node5" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/hk2/api/Injectee.html" title="&lt;TABLE&gt;" alt="" coords="333,211,459,272"/>
+<area shape="rect" id="node3_4" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/hk2/api/InjectionResolver.html" title="org.glassfish.hk2.api.InjectionResolver" alt="" coords="171,11,307,61"/>
+<area shape="rect" id="node3" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/hk2/api/InjectionResolver.html" title="&lt;TABLE&gt;" alt="" coords="160,5,317,67"/>
+</map>

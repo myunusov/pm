@@ -1,0 +1,10 @@
+<map id="G" name="G">
+<area shape="rect" id="node1_0" href="./DataSourceProvider.html" title="org.maxur.perfmodel.backend.DataSourceProvider" alt="" coords="106,127,235,151"/>
+<area shape="rect" id="node1" href="./DataSourceProvider.html" title="&lt;TABLE&gt;" alt="" coords="95,115,246,163"/>
+<area shape="rect" id="node4_1" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/hk2/api/ServiceLocator.html" title="org.glassfish.hk2.api.ServiceLocator" alt="" coords="15,216,121,267"/>
+<area shape="rect" id="node4" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/hk2/api/ServiceLocator.html" title="&lt;TABLE&gt;" alt="" coords="5,211,131,272"/>
+<area shape="rect" id="node2_2" href="./infrastructure/DataSourceLevelDbImpl.html" title="org.maxur.perfmodel.backend.infrastructure.DataSourceLevelDbImpl" alt="" coords="167,223,380,259"/>
+<area shape="rect" id="node2" href="./infrastructure/DataSourceLevelDbImpl.html" title="&lt;TABLE&gt;" alt="" coords="156,217,391,265"/>
+<area shape="rect" id="node3_3" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/hk2/api/Factory.html" title="org.glassfish.hk2.api.Factory" alt="" coords="118,11,223,61"/>
+<area shape="rect" id="node3" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/hk2/api/Factory.html" title="&lt;TABLE&gt;" alt="" coords="107,5,234,67"/>
+</map>
