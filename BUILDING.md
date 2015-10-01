@@ -20,4 +20,4 @@ Building the Web App
 
 Result
 -------------
- Result can be found in "./assemblies/zip/target/assemblies-2.1-SNAPSHOT.zip" file
+ Result can be found in "./assemblies/zip/target/assemblies-2.2-SNAPSHOT.zip" file

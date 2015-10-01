@@ -13,11 +13,19 @@ The history of Performance Model Calculator releases is documented below. For de
 Changes in this version include:
 
 #### New features:
+- SEM: Scenario can be shared 
 - System can save model to local repository without connection to service 
+- Add Sync and Async mode for open QN Model 
+- Comparation views must presents absolute value for comparable models as option 
+- All model calculations must be coveraged by UT  
+- Compared models can be removed from comparation view 
+- The routine can be reordered 
 
+#### Enhancements:
+- The bottleneck node must be colored  
 
 #### Fixed Bugs:
-- Microsoft Edge and IE (11) repeat init script 
+- Interactive Response Time Law 
 
 
 
