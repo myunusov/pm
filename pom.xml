@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.maxur.perfmodel</groupId>
     <artifactId>base</artifactId>
-    <version>2.1-SNAPSHOT</version>
+    <version>2.1</version>
     <packaging>pom</packaging>
 
     <url>http://myunusov.github.io/pm/components/</url>
@@ -30,7 +29,7 @@
 
         <jsondoc.version>1.2.4</jsondoc.version>
 
-        <site.deploy.url/>
+        <site.deploy.url />
 
         <sonar.artifact.path>${project.root}/assemblies/target/assemblies-${project.version}.zip</sonar.artifact.path>
 
@@ -80,7 +79,7 @@
         <connection>scm:git:https://github.com/myunusov/pm.git</connection>
         <developerConnection>scm:git:git@github.com:myunusov/pm.git</developerConnection>
         <url>https://github.com/myunusov/pm/tree/master/</url>
-        <tag>HEAD</tag>
+        <tag>base-2.1</tag>
     </scm>
 
     <issueManagement>
@@ -411,8 +410,8 @@
                                         <exclude>org.maxur.perfmodel:*</exclude>
                                     </excludes>
                                 </requireReleaseDeps>
-                                <requireUpperBoundDeps/>
-                                <DependencyConvergence/>
+                                <requireUpperBoundDeps />
+                                <DependencyConvergence />
                             </rules>
                             <fail>true</fail>
                         </configuration>
