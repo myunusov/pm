@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import java.net.URI;
+import java.util.function.Function;
 
 /**
  * @author Maxim Yunusov
@@ -31,43 +32,45 @@ public class PropertiesServiceHoconImpl implements PropertiesService {
         userConfig = ConfigFactory.load().getConfig("PMC");
     }
 
+    @Override
+    public URI asURI(final String key) {
+        return URI.create(asString(key));
+    }
 
     @Override
     public String asString(final String key) {
-        String value;
-        try {
-            try {
-                value = userConfig.getString(key);
-            } catch (ConfigException.Missing e) {
-                value = defaultConfig.getString(key);
-            }
-        } catch (ConfigException.Missing e) {
-            LOGGER.error("Configuration parameter '{}' is not found.", key);
-            throw e;
-        }
-        LOGGER.info("Configuration parameter {} = '{}'", key, value);
-        return value;
+        return getValue(key, this::getString);
     }
 
     @Override
     public Integer asInteger(final String key) {
-        Integer value;
+        return getValue(key, this::getInt);
+    }
+
+    private <T> T getValue(final String key, final Function<String, T> method) {
         try {
-            try {
-                value = userConfig.getInt(key);
-            } catch (ConfigException.Missing e) {
-                value = defaultConfig.getInt(key);
-            }
+            final T value = method.apply(key);
+            LOGGER.info("Configuration parameter {} = '{}'", key, value);
+            return value;
         } catch (ConfigException.Missing e) {
             LOGGER.error("Configuration parameter '{}' is not found.", key);
             throw e;
         }
-        LOGGER.info("Configuration parameter {} = '{}'", key, value);
-        return value;
     }
 
-    @Override
-    public URI asURI(final String key) {
-        return URI.create(asString(key));
+    private String getString(final String key) {
+        try {
+            return userConfig.getString(key);
+        } catch (ConfigException.Missing e) {
+            return defaultConfig.getString(key);
+        }
+    }
+
+    private Integer getInt(final String key) {
+        try {
+            return userConfig.getInt(key);
+        } catch (ConfigException.Missing e) {
+            return defaultConfig.getInt(key);
+        }
     }
 }
