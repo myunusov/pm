@@ -33,6 +33,12 @@ public class ConfigurationInjectionResolver implements InjectionResolver<Named> 
             case "java.lang.String": {
                 return propertiesService.asString(name);
             }
+            case "java.lang.Integer": {
+                return propertiesService.asInteger(name);
+            }
+            case "java.net.URI": {
+                return propertiesService.asURI(name);
+            }
             default: {
                 LOGGER.error("Unsupported property type {}", type.getTypeName());
                 throw new IllegalStateException(format("Unsupported property type %s", type.getTypeName()));

@@ -20,6 +20,6 @@ mvn release:prepare -PPROD,nexus,zip
 #### 4. Deploy artifact on nexus and site on github. Create Release on gitHub and upload artifact. (see github-release-plugin)
 
 ```
-mvn release:deploy -PPROD,nexus,zip
+mvn release:deploy -PPROD,nexus,zip 
 ```
                          

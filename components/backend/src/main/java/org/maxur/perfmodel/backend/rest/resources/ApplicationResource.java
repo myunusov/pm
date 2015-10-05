@@ -39,10 +39,14 @@ public class ApplicationResource {
     @Inject
     private Application application;
 
+    @SuppressWarnings("unused")
+    @Named("api.url")
+    private String apiUrl;
 
     @SuppressWarnings("unused")
-    @Named("webapp.url")
-    private String webappUrl;
+    @Named("delay.before.stop")
+    private Integer delayBeforeStop;
+
 
     @GET
     @Path("/jsondoc")
@@ -57,11 +61,12 @@ public class ApplicationResource {
     @ApiErrors(apierrors={
             @ApiError(code="500", description="Application critical error")
     })
-    public @ApiResponseObject String getJsonDoc() {
+    @ApiResponseObject
+    public String getJsonDoc() {
         URL url = Resources.getResource("jsondoc.json");
         try {
             final String jsonDoc = Resources.toString(url, Charsets.UTF_8);
-            return jsonDoc.replaceAll("http://127.0.0.1:8080/api", webappUrl + "api");
+            return jsonDoc.replaceAll("http://127.0.0.1:8080/api", apiUrl);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -80,7 +85,8 @@ public class ApplicationResource {
     @ApiErrors(apierrors={
             @ApiError(code="500", description="Application critical error")
     })
-    public @ApiResponseObject String getVersion() {
+    @ApiResponseObject
+    public String getVersion() {
         return application.version();
     }
 
@@ -107,7 +113,7 @@ public class ApplicationResource {
             final String status = (String) map.get("status");
             switch (status) {
                 case "stopped":
-                    schedule(application::stop, 100);
+                    schedule(application::stop, delayBeforeStop);
                     break;
                 default:
                     throw badRequestException("Status '%s' is not valid", status);

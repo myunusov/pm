@@ -15,6 +15,8 @@
 
 package org.maxur.perfmodel.backend.service;
 
+import java.net.URI;
+
 /**
  * @author myunusov
  * @version 1.0
@@ -24,4 +26,7 @@ public interface PropertiesService {
 
     String asString(String key);
 
+    Integer asInteger(String key);
+
+    URI asURI(String key);
 }

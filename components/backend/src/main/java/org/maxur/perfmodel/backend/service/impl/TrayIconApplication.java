@@ -23,14 +23,16 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Named;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Optional;
 
+import static java.awt.Desktop.Action.BROWSE;
+import static java.awt.Desktop.getDesktop;
+import static java.awt.Desktop.isDesktopSupported;
+import static java.awt.SystemTray.getSystemTray;
 import static java.lang.String.format;
-import static java.util.Optional.empty;
+import static javax.swing.JOptionPane.showMessageDialog;
 import static javax.swing.SwingUtilities.invokeLater;
 import static org.maxur.perfmodel.backend.utils.OsUtils.isWindows;
 
@@ -54,8 +56,8 @@ public class TrayIconApplication extends Application {
     private TrayIcon trayIcon;
 
     @SuppressWarnings("unused")
-    @Named("webapp.folderName")
-    private String webappUrl;
+    @Named("webapp.url")
+    private URI webappUri;
 
     public TrayIconApplication() {
     }
@@ -87,42 +89,27 @@ public class TrayIconApplication extends Application {
     }
 
     private void run() {
-        final PopupMenu popup = new PopupMenu();
-        final Optional<Image> image = createImage(IMG_FAVICON_PATH, "tray icon");
-        final Image img;
-        if (image.isPresent()) {
-            img = image.get();
-        } else {
-            img = createImageFrom();
-            LOGGER.error(format("Resource '%s' is not found", IMG_FAVICON_PATH));
-        }
-        trayIcon = new TrayIcon(img);
+        trayIcon = new TrayIcon(createImage(IMG_FAVICON_PATH, "tray icon"));
         trayIcon.setToolTip("Performance Model Calculator");
         trayIcon.setImageAutoSize(true);
-
-        MenuItem aboutItem = new MenuItem("About");
-        MenuItem startClientItem = new MenuItem("Start Client");
-        MenuItem manageServiceItem = new MenuItem("Stop Service");
-        MenuItem exitItem = new MenuItem("Exit");
-
-        //Add components to popup menu
-        popup.add(startClientItem);
-        popup.add(manageServiceItem);
-        popup.add(aboutItem);
-        popup.addSeparator();
-        popup.add(exitItem);
-
-        trayIcon.setPopupMenu(popup);
-
-        try {
-            SystemTray.getSystemTray().add(trayIcon);
-        } catch (AWTException e) {
-            LOGGER.debug("TrayIcon could not be added.", e);
-            LOGGER.error("TrayIcon could not be added.");
-            return;
-        }
-
+        trayIcon.setPopupMenu(createPopupMenu());
         trayIcon.addActionListener(e -> openBrowser());
+        try {
+            getSystemTray().add(trayIcon);
+        } catch (AWTException e) {
+            final String msg = "TrayIcon could not be added.";
+            LOGGER.error(msg);
+            throw new IllegalStateException(msg, e);
+        }
+    }
+
+    private PopupMenu createPopupMenu() {
+        final PopupMenu popup = new PopupMenu();
+
+        final MenuItem aboutItem = new MenuItem("About");
+        final MenuItem startClientItem = new MenuItem("Start Client");
+        final MenuItem manageServiceItem = new MenuItem("Stop Service");
+        final MenuItem exitItem = new MenuItem("Exit");
 
         startClientItem.addActionListener(e -> openBrowser());
 
@@ -141,46 +128,52 @@ public class TrayIconApplication extends Application {
             startClientItem.setEnabled(webServer().isStarted());
         });
 
-        aboutItem.addActionListener(e -> JOptionPane.showMessageDialog(null,
-                "Performance Model Calculator. Version: " + this.getClass().getPackage().getImplementationVersion()));
+        aboutItem.addActionListener(e ->
+                        showMessageDialog(null, "Performance Model Calculator. Version: " + version())
+        );
 
+        exitItem.addActionListener(e -> stop());
 
-        exitItem.addActionListener(e -> {
-            stop();
-        });
+        popup.add(aboutItem);
+        popup.add(startClientItem);
+        popup.add(manageServiceItem);
+        popup.addSeparator();
+        popup.add(exitItem);
+
+        return popup;
     }
 
     @Override
     protected void onStop() {
-        SystemTray.getSystemTray().remove(trayIcon);
+        getSystemTray().remove(trayIcon);
     }
 
-    private static Image createImageFrom() {
-        BufferedImage bufferedImage = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
-        Graphics graphics = bufferedImage.getGraphics();
-        graphics.setColor(Color.RED);
-        graphics.fillRect(0, 0, 100, 100);
-        return bufferedImage;
-    }
-
-    //Obtain the image URL
-    private static Optional<Image> createImage(String path, String description) {
+    private static Image createImage(final String path, final String description) {
         final URL imageURL = TrayIconApplication.class.getResource(path);
-        return imageURL == null ? empty() : Optional.of((new ImageIcon(imageURL, description)).getImage());
+        if (imageURL == null) {
+            final String msg = format("Resource '%s' is not found", IMG_FAVICON_PATH);
+            LOGGER.error(msg);
+            throw new IllegalStateException(msg);
+        }
+        return (new ImageIcon(imageURL, description)).getImage();
     }
 
     private void openBrowser() {
-        URI uri = URI.create(webappUrl);
-        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
-        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-            try {
-                desktop.browse(uri);
-            } catch (IOException e) {
-                LOGGER.error("Cannot open browser", e);
-            }
+        if (!isDesktopSupported()) {
+            LOGGER.error("Cannot open browser. Desktop is not supported");
+            return;
+        }
+        final Desktop desktop = getDesktop();
+        if (!desktop.isSupported(BROWSE)) {
+            LOGGER.error("Cannot open browser. Desktop is not supported browse action");
+            return;
+        }
+        try {
+            desktop.browse(webappUri);
+        } catch (IOException e) {
+            LOGGER.error("Cannot open browser", e);
         }
     }
-
 
 }
 

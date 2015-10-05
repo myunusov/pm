@@ -91,10 +91,6 @@
         <module name="ParameterAssignment">
             <property name="severity" value="warning"/>
         </module>
-        <module name="RedundantThrows">
-            <property name="severity" value="info"/>
-            <property name="suppressLoadErrors" value="true"/>
-        </module>
         <module name="UnusedImports">
             <property name="severity" value="info"/>
             <property name="processJavadoc" value="false"/>
@@ -111,9 +107,11 @@
             <property name="severity" value="warning"/>
         </module>
         <module name="SimplifyBooleanExpression">
+            <property name="id" value="checkstyle:simplifybooleanexpression" />
             <property name="severity" value="warning"/>
         </module>
         <module name="ModifierOrder">
+            <property name="id" value="checkstyle:modifierorder"/>
             <property name="severity" value="info"/>
         </module>
         <module name="BooleanExpressionComplexity">

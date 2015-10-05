@@ -108,16 +108,15 @@ public class Project implements Serializable {
     }
 
     public boolean isSame(final Optional<Project> other) {
-        if (!other.isPresent()) {
-            return false;
-        }
-        Project project = other.get();
-        return Objects.equals(id, project.id)
-                && Objects.equals(this.name, project.name)
-                && this.version == project.version
-                && Objects.equals(this.description, project.description)
-                && Objects.equals(this.models, project.models)
-                && Objects.equals(this.view, project.view);
+        //CHECKSTYLE:OFF: checkstyle:simplifybooleanexpression
+        return other.isPresent()
+                && Objects.equals(id, other.get().id)
+                && Objects.equals(this.name, other.get().name)
+                && this.version == other.get().version &&
+                Objects.equals(this.description, other.get().description)
+                && Objects.equals(this.models, other.get().models)
+                && Objects.equals(this.view, other.get().view);
+        //CHECKSTYLE:ON: checkstyle:simplifybooleanexpression
     }
 
     public void checkNamesakes(final Optional<Project> namesake) throws ConflictException {

@@ -45,20 +45,16 @@ public class WebServerGrizzlyImpl extends WebServer {
     private String webappFolderName;
 
     @SuppressWarnings("unused")
-    @Named("webapp.url")
-    private String webappUrl;
+    @Named("api.url")
+    private URI apiUri;
 
 
     @Override
     protected void launch() {
-        httpServer = createHttpServer(
-            URI.create(webappUrl + REST_APP_URL),
-            config,
-            locator
-        );
+        httpServer = createHttpServer(apiUri, config, locator);
         httpServer.getServerConfiguration().addHttpHandler(
-            new StaticHttpHandler(webappFolderName),
-            WEB_APP_URL
+                new StaticHttpHandler(webappFolderName),
+                WEB_APP_URL
         );
     }
 

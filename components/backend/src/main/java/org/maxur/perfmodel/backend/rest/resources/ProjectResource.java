@@ -52,7 +52,8 @@ public class ProjectResource {
     @ApiErrors(apierrors={
             @ApiError(code="500", description="Application critical error")
     })
-    public @ApiResponseObject Collection<ProjectDto> findAll() {
+    @ApiResponseObject
+    public Collection<ProjectDto> findAll() {
         return dtoList(repository.findAll());
     }
 
@@ -71,7 +72,8 @@ public class ProjectResource {
             @ApiError(code="404", description="Project not found"),
             @ApiError(code="500", description="Application critical error")
     })
-    public @ApiResponseObject ProjectDto load(
+    @ApiResponseObject
+    public ProjectDto load(
             @ApiPathParam(name = "id", description = "The project identifier")
             @PathParam("id") String id
     ) {
@@ -96,7 +98,8 @@ public class ProjectResource {
             @ApiError(code="404", description="Project not found"),
             @ApiError(code="500", description="Application critical error")
     })
-    public @ApiResponseObject ProjectDto delete(
+    @ApiResponseObject
+    public ProjectDto delete(
             @ApiPathParam(name = "id", description = "The project identifier")
             @PathParam("id") String id
     ) {
@@ -122,7 +125,8 @@ public class ProjectResource {
             @ApiError(code="404", description="Project not found"),
             @ApiError(code="500", description="Application critical error")
     })
-    public @ApiResponseObject Response create(
+    @ApiResponseObject
+    public Response create(
             @ApiBodyObject final ProjectDto dto
     ) {
         try {
@@ -156,7 +160,8 @@ public class ProjectResource {
             @ApiError(code="404", description="Project not found"),
             @ApiError(code="500", description="Application critical error")
     })
-    public @ApiResponseObject ProjectDto update(
+    @ApiResponseObject
+    public ProjectDto update(
             @ApiPathParam(name = "id", description = "The project identifier")
             @PathParam("id") String id,
             @ApiBodyObject final ProjectDto dto

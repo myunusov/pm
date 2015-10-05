@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
+import java.net.URI;
 
 /**
  * @author Maxim Yunusov
@@ -48,6 +49,25 @@ public class PropertiesServiceHoconImpl implements PropertiesService {
         return value;
     }
 
+    @Override
+    public Integer asInteger(final String key) {
+        Integer value;
+        try {
+            try {
+                value = userConfig.getInt(key);
+            } catch (ConfigException.Missing e) {
+                value = defaultConfig.getInt(key);
+            }
+        } catch (ConfigException.Missing e) {
+            LOGGER.error("Configuration parameter '{}' is not found.", key);
+            throw e;
+        }
+        LOGGER.info("Configuration parameter {} = '{}'", key, value);
+        return value;
+    }
 
-
+    @Override
+    public URI asURI(final String key) {
+        return URI.create(asString(key));
+    }
 }

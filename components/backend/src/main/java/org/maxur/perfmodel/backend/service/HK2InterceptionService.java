@@ -35,9 +35,9 @@ import java.util.List;
 @Service
 public class HK2InterceptionService implements InterceptionService {
 
-    private final static MethodInterceptor METHOD_INTERCEPTOR = new BenchmarkMethodInterceptor();
+    private static final MethodInterceptor METHOD_INTERCEPTOR = new BenchmarkMethodInterceptor();
 
-    private final static List<MethodInterceptor> METHOD_LIST = Collections.singletonList(METHOD_INTERCEPTOR);
+    private static final List<MethodInterceptor> METHOD_LIST = Collections.singletonList(METHOD_INTERCEPTOR);
 
     public Filter getDescriptorFilter() {
         return BuilderHelper.allFilter();

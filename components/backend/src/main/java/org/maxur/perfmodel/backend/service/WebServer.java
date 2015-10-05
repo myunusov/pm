@@ -34,8 +34,6 @@ public abstract class WebServer {
 
     protected static final String WEB_APP_URL = "/";
 
-    public static final String REST_APP_URL = "api/";
-
     @SuppressWarnings("unused")
     @Named("webapp.folderName")
     private String webappUrl;
