@@ -43,9 +43,9 @@
 <span class="sourceLineNo">035</span>@Service<a name="line.35"></a>
 <span class="sourceLineNo">036</span>public class HK2InterceptionService implements InterceptionService {<a name="line.36"></a>
 <span class="sourceLineNo">037</span><a name="line.37"></a>
-<span class="sourceLineNo">038</span>    private final static MethodInterceptor METHOD_INTERCEPTOR = new BenchmarkMethodInterceptor();<a name="line.38"></a>
+<span class="sourceLineNo">038</span>    private static final MethodInterceptor METHOD_INTERCEPTOR = new BenchmarkMethodInterceptor();<a name="line.38"></a>
 <span class="sourceLineNo">039</span><a name="line.39"></a>
-<span class="sourceLineNo">040</span>    private final static List&lt;MethodInterceptor&gt; METHOD_LIST = Collections.singletonList(METHOD_INTERCEPTOR);<a name="line.40"></a>
+<span class="sourceLineNo">040</span>    private static final List&lt;MethodInterceptor&gt; METHOD_LIST = Collections.singletonList(METHOD_INTERCEPTOR);<a name="line.40"></a>
 <span class="sourceLineNo">041</span><a name="line.41"></a>
 <span class="sourceLineNo">042</span>    public Filter getDescriptorFilter() {<a name="line.42"></a>
 <span class="sourceLineNo">043</span>        return BuilderHelper.allFilter();<a name="line.43"></a>

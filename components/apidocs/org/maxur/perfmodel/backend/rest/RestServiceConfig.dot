@@ -10,15 +10,15 @@ digraph G {
 	nodesep=0.25;
 	ranksep=0.5;
 	// org.maxur.perfmodel.backend.rest.RestServiceConfig
-	c1228 [label=<<table title="org.maxur.perfmodel.backend.rest.RestServiceConfig" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./RestServiceConfig.html">
+	c1232 [label=<<table title="org.maxur.perfmodel.backend.rest.RestServiceConfig" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./RestServiceConfig.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"><font face="Trebuchet MS"> RestServiceConfig </font></td></tr>
 		</table></td></tr>
 		</table>>, URL="./RestServiceConfig.html", fontname="Trebuchet MS", fontcolor="black", fontsize=9.0];
 	//org.maxur.perfmodel.backend.rest.RestServiceConfig extends org.glassfish.jersey.server.ResourceConfig
-	c1256:p -> c1228:p [dir=back,arrowtail=empty];
+	c1260:p -> c1232:p [dir=back,arrowtail=empty];
 	// org.glassfish.jersey.server.ResourceConfig
-	c1256 [label=<<table title="org.glassfish.jersey.server.ResourceConfig" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/jersey/server/ResourceConfig.html">
+	c1260 [label=<<table title="org.glassfish.jersey.server.ResourceConfig" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/jersey/server/ResourceConfig.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"><font face="Trebuchet MS"> ResourceConfig </font></td></tr>
 <tr><td align="center" balign="center"><font face="Trebuchet MS" point-size="7.0"> org.glassfish.jersey.server </font></td></tr>

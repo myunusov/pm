@@ -10,19 +10,19 @@ digraph G {
 	nodesep=0.25;
 	ranksep=0.5;
 	// org.maxur.perfmodel.backend.service.Application
-	c538 [label=<<table title="org.maxur.perfmodel.backend.service.Application" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../Application.html">
+	c542 [label=<<table title="org.maxur.perfmodel.backend.service.Application" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../Application.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"><font face="Trebuchet MS"> Application </font></td></tr>
 <tr><td align="center" balign="center"><font face="Trebuchet MS" point-size="7.0"> org.maxur.perfmodel.backend.service </font></td></tr>
 		</table></td></tr>
 		</table>>, URL="../Application.html", fontname="Trebuchet MS", fontcolor="black", fontsize=9.0];
 	// org.maxur.perfmodel.backend.service.impl.CliApplication
-	c542 [label=<<table title="org.maxur.perfmodel.backend.service.impl.CliApplication" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./CliApplication.html">
+	c546 [label=<<table title="org.maxur.perfmodel.backend.service.impl.CliApplication" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./CliApplication.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"><font face="Trebuchet MS"> CliApplication </font></td></tr>
 		</table></td></tr>
 		</table>>, URL="./CliApplication.html", fontname="Trebuchet MS", fontcolor="black", fontsize=9.0];
 	//org.maxur.perfmodel.backend.service.impl.CliApplication extends org.maxur.perfmodel.backend.service.Application
-	c538:p -> c542:p [dir=back,arrowtail=empty];
+	c542:p -> c546:p [dir=back,arrowtail=empty];
 }
 

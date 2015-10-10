@@ -10,28 +10,28 @@ digraph G {
 	nodesep=0.25;
 	ranksep=0.5;
 	// org.maxur.perfmodel.backend.service.PropertiesService
-	c562 [label=<<table title="org.maxur.perfmodel.backend.service.PropertiesService" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./PropertiesService.html">
+	c566 [label=<<table title="org.maxur.perfmodel.backend.service.PropertiesService" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./PropertiesService.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> &#171;interface&#187; </td></tr>
 <tr><td align="center" balign="center"><font face="Trebuchet MS"> PropertiesService </font></td></tr>
 		</table></td></tr>
 		</table>>, URL="./PropertiesService.html", fontname="Trebuchet MS", fontcolor="black", fontsize=9.0];
 	// org.maxur.perfmodel.backend.service.ConfigurationInjectionResolver
-	c566 [label=<<table title="org.maxur.perfmodel.backend.service.ConfigurationInjectionResolver" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./ConfigurationInjectionResolver.html">
+	c570 [label=<<table title="org.maxur.perfmodel.backend.service.ConfigurationInjectionResolver" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./ConfigurationInjectionResolver.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"><font face="Trebuchet MS"> ConfigurationInjectionResolver </font></td></tr>
 		</table></td></tr>
 		</table>>, URL="./ConfigurationInjectionResolver.html", fontname="Trebuchet MS", fontcolor="black", fontsize=9.0];
 	//org.maxur.perfmodel.backend.service.ConfigurationInjectionResolver implements org.glassfish.hk2.api.InjectionResolver<T>
-	c576:p -> c566:p [dir=back,arrowtail=empty,style=dashed];
+	c580:p -> c570:p [dir=back,arrowtail=empty,style=dashed];
 	// org.maxur.perfmodel.backend.service.ConfigurationInjectionResolver NAVASSOC org.maxur.perfmodel.backend.service.PropertiesService
-	c566:p -> c562:p [taillabel="", label="", headlabel="", fontname="Trebuchet MS", fontcolor="black", fontsize=10.0, color="black", arrowhead=open];
-	// org.maxur.perfmodel.backend.service.ConfigurationInjectionResolver DEPEND org.glassfish.hk2.api.ServiceHandle<T>
-	c566:p -> c577:p [taillabel="", label="", headlabel="", fontname="Trebuchet MS", fontcolor="black", fontsize=10.0, color="black", arrowhead=open, style=dashed];
+	c570:p -> c566:p [taillabel="", label="", headlabel="", fontname="Trebuchet MS", fontcolor="black", fontsize=10.0, color="black", arrowhead=open];
 	// org.maxur.perfmodel.backend.service.ConfigurationInjectionResolver DEPEND org.glassfish.hk2.api.Injectee
-	c566:p -> c580:p [taillabel="", label="", headlabel="", fontname="Trebuchet MS", fontcolor="black", fontsize=10.0, color="black", arrowhead=open, style=dashed];
+	c570:p -> c583:p [taillabel="", label="", headlabel="", fontname="Trebuchet MS", fontcolor="black", fontsize=10.0, color="black", arrowhead=open, style=dashed];
+	// org.maxur.perfmodel.backend.service.ConfigurationInjectionResolver DEPEND org.glassfish.hk2.api.ServiceHandle<T>
+	c570:p -> c584:p [taillabel="", label="", headlabel="", fontname="Trebuchet MS", fontcolor="black", fontsize=10.0, color="black", arrowhead=open, style=dashed];
 	// org.glassfish.hk2.api.InjectionResolver<T>
-	c576 [label=<<table title="org.glassfish.hk2.api.InjectionResolver" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/hk2/api/InjectionResolver.html">
+	c580 [label=<<table title="org.glassfish.hk2.api.InjectionResolver" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/hk2/api/InjectionResolver.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> &#171;interface&#187; </td></tr>
 <tr><td align="center" balign="center"><font face="Trebuchet MS"> InjectionResolver&lt;T&gt; </font></td></tr>
@@ -39,7 +39,7 @@ digraph G {
 		</table></td></tr>
 		</table>>, URL="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/hk2/api/InjectionResolver.html", fontname="Trebuchet MS", fontcolor="black", fontsize=9.0];
 	// org.glassfish.hk2.api.ServiceHandle<T>
-	c577 [label=<<table title="org.glassfish.hk2.api.ServiceHandle" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/hk2/api/ServiceHandle.html">
+	c584 [label=<<table title="org.glassfish.hk2.api.ServiceHandle" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/hk2/api/ServiceHandle.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> &#171;interface&#187; </td></tr>
 <tr><td align="center" balign="center"><font face="Trebuchet MS"> ServiceHandle&lt;T&gt; </font></td></tr>
@@ -47,7 +47,7 @@ digraph G {
 		</table></td></tr>
 		</table>>, URL="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/hk2/api/ServiceHandle.html", fontname="Trebuchet MS", fontcolor="black", fontsize=9.0];
 	// org.glassfish.hk2.api.Injectee
-	c580 [label=<<table title="org.glassfish.hk2.api.Injectee" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/hk2/api/Injectee.html">
+	c583 [label=<<table title="org.glassfish.hk2.api.Injectee" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/org/glassfish/hk2/api/Injectee.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> &#171;interface&#187; </td></tr>
 <tr><td align="center" balign="center"><font face="Trebuchet MS"> Injectee </font></td></tr>

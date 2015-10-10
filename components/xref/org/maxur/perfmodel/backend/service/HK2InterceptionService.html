@@ -45,9 +45,9 @@
 <a class="jxr_linenumber" name="35" href="#35">35</a>  @Service
 <a class="jxr_linenumber" name="36" href="#36">36</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../org/maxur/perfmodel/backend/service/HK2InterceptionService.html">HK2InterceptionService</a> <strong class="jxr_keyword">implements</strong> InterceptionService {
 <a class="jxr_linenumber" name="37" href="#37">37</a>  
-<a class="jxr_linenumber" name="38" href="#38">38</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">static</strong> MethodInterceptor METHOD_INTERCEPTOR = <strong class="jxr_keyword">new</strong> <a href="../../../../../org/maxur/perfmodel/backend/service/BenchmarkMethodInterceptor.html">BenchmarkMethodInterceptor</a>();
+<a class="jxr_linenumber" name="38" href="#38">38</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> MethodInterceptor METHOD_INTERCEPTOR = <strong class="jxr_keyword">new</strong> <a href="../../../../../org/maxur/perfmodel/backend/service/BenchmarkMethodInterceptor.html">BenchmarkMethodInterceptor</a>();
 <a class="jxr_linenumber" name="39" href="#39">39</a>  
-<a class="jxr_linenumber" name="40" href="#40">40</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">static</strong> List&lt;MethodInterceptor&gt; METHOD_LIST = Collections.singletonList(METHOD_INTERCEPTOR);
+<a class="jxr_linenumber" name="40" href="#40">40</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> List&lt;MethodInterceptor&gt; METHOD_LIST = Collections.singletonList(METHOD_INTERCEPTOR);
 <a class="jxr_linenumber" name="41" href="#41">41</a>  
 <a class="jxr_linenumber" name="42" href="#42">42</a>      <strong class="jxr_keyword">public</strong> Filter getDescriptorFilter() {
 <a class="jxr_linenumber" name="43" href="#43">43</a>          <strong class="jxr_keyword">return</strong> BuilderHelper.allFilter();
